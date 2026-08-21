@@ -13,7 +13,7 @@ honor its STOP conditions, and update your row when done.
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| 001  | Project scaffold (Next.js, tokens, routes) | P1 | M | — | TODO |
+| 001  | Project scaffold (Next.js, tokens, routes) | P1 | M | — | DONE |
 | 002  | Design-system primitives + review page     | P1 | M | 001 | TODO |
 | 003  | Responsive app shell + static homepage     | P1 | L | 002 | TODO |
 | 004  | Offboard + Flexi case studies              | P1 | L | 003 | TODO |
@@ -61,6 +61,13 @@ LinkedIn/email/availability (003), case-study metrics + screenshots +
 research findings (004), evidence `detail` review (005), resume content —
 a hard launch blocker (008 Step 2), portrait (008). Plan 008 Step 7 compiles
 the full punch list into `plans/CONTENT-TODOS.md`.
+
+## Open questions raised during execution
+
+- **`--foreground-subtle` fails WCAG AA for text.** Measured 2.98:1 against
+  canvas (spec §26 requires 4.5:1). Left at the spec §6 value and restricted
+  to non-text use; darkening to roughly `35 6% 46%` would reach AA. Louie's
+  call — flagged in `app/globals.css` and revisited in Plans 002 and 008.
 
 ## Findings considered and rejected
 
