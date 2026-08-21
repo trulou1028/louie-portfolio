@@ -1,0 +1,297 @@
+import { CaseStudySection } from "@/components/portfolio/case-study-section";
+import {
+  SystemDiagram,
+  FlowDiagram,
+  TreeDiagram,
+} from "@/components/portfolio/system-diagram";
+import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
+import { PendingContent } from "@/components/portfolio/pending-content";
+
+{/*
+  Offboard case study — section anchors are fixed by spec §13 and are a
+  public contract (see lib/routes.ts). Narrative beats come from the spec;
+  anything requiring a fact the spec does not supply is a PendingContent
+  block rather than a guess (spec §29, §39.5).
+*/}
+
+<CaseStudySection id="context" title="The problem: context that never carries" eyebrow="Context">
+
+A job search is not one task. It is jobs, company research, contacts, resumes,
+application materials, interview preparation, tasks, and — increasingly — AI
+conversations. Each of those lives in a different tool, and none of those tools
+know anything about the others.
+
+The cost is not that any single tool is bad. It is that the job seeker becomes
+the integration layer. Every move between tools means re-establishing the same
+context by hand: who this company is, what the role asks for, what was already
+said, which version of the resume went out, what still needs doing.
+
+That work is invisible, repetitive, and paid for entirely in the applicant's
+time — at the exact moment they have least of it to spare.
+
+<SystemDiagram
+  title="Before and after"
+  description="A dozen disconnected point tools, each holding one fragment of a search, consolidated into a single persistent workspace per opportunity that keeps all of them together."
+>
+  <FlowDiagram
+    stages={[
+      {
+        parallel: [
+          { label: "Job boards", tone: "muted" },
+          { label: "Company research", tone: "muted" },
+          { label: "Contacts and outreach", tone: "muted" },
+        ],
+      },
+      {
+        parallel: [
+          { label: "Resume versions", tone: "muted" },
+          { label: "Interview prep", tone: "muted" },
+          { label: "AI chat threads", tone: "muted" },
+        ],
+      },
+      {
+        node: {
+          label: "One persistent workspace per opportunity",
+          note: "Context is kept, not rebuilt",
+          tone: "accent",
+        },
+      },
+    ]}
+  />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="system" title="The product model: every opportunity is a workspace" eyebrow="Product model">
+
+The central decision was to stop treating a job as a row in a list.
+
+> Make every opportunity a persistent workspace.
+
+An opportunity is the unit the whole product is organised around. Everything
+that accumulates during a search — the role, the company, the people, the
+research, the materials, the conversation — belongs to it and stays with it.
+Nothing has to be re-supplied to do the next piece of work.
+
+<SystemDiagram
+  title="What an opportunity contains"
+  description="A single Opportunity record holds the role, company, people, research, resume, application materials, interview preparation, tasks, conversation, and history — so any later step can draw on all of them."
+>
+  <TreeDiagram
+    root={{
+      label: "Opportunity",
+      children: [
+        { label: "Role" },
+        { label: "Company" },
+        { label: "People" },
+        { label: "Research" },
+        { label: "Resume" },
+        { label: "Application materials" },
+        { label: "Interview prep" },
+        { label: "Tasks" },
+        { label: "Conversation" },
+        { label: "History" },
+      ],
+    }}
+  />
+</SystemDiagram>
+
+LUMO, the AI layer, is not a separate chatbot bolted onto that structure. It
+operates across it. Because the workspace already holds the context, LUMO can
+act with knowledge of the specific role, company, and history rather than
+asking the user to paste it in again.
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-risk" title="Protect the user's effort" eyebrow="Decision 01">
+
+Tailoring an application is expensive. It takes real attention, and job seekers
+have a finite amount of it. Spending that attention on an opportunity that was
+never real is worse than doing nothing.
+
+So the system evaluates before it generates:
+
+> Do not burn a job seeker's time generating tailored materials before the
+> system has evaluated whether an opportunity appears worth pursuing.
+
+This is a gate, not a warning banner. Role intelligence and a risk assessment
+run first; if an opportunity looks like a ghost listing or otherwise low value,
+the product says so before the user invests in it.
+
+<SystemDiagram
+  title="The risk gate"
+  description="A submitted role is enriched with role intelligence, then risk-assessed. If the assessment is unfavourable the user is warned or the flow pauses; only if they continue does the research and application workflow begin."
+>
+  <FlowDiagram
+    stages={[
+      { node: { label: "Role submitted" } },
+      { node: { label: "Role intelligence" } },
+      { node: { label: "Risk assessment", tone: "accent" } },
+      {
+        node: { label: "Continue?" },
+        branch: { condition: "No", outcome: "Warn the user, or pause the workflow" },
+      },
+      { node: { label: "Research and application workflow", tone: "accent" } },
+    ]}
+  />
+</SystemDiagram>
+
+The interesting part is what this implies about the product's stance: it is
+willing to talk a user out of work. A tool measured on output volume would
+never do this.
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-control" title="AI acts with visible control" eyebrow="Decision 02">
+
+The AI in Offboard does not only answer — it acts. It can research, draft,
+revise, and update the workspace. That makes the question of control a design
+problem rather than a technical one.
+
+The pattern is that consequential actions are always previewed and always
+confirmed. The user sees which tool is about to run, on what, and what it will
+produce, before it happens — and sees the result afterwards as a discrete,
+attributable change rather than a silent mutation.
+
+<SystemDiagram
+  title="Human-in-the-loop action"
+  description="The assistant proposes an action, a specific tool is selected, a preview is generated, the user confirms, the action runs, and the result is shown as a visible change to the workspace."
+>
+  <FlowDiagram
+    stages={[
+      { node: { label: "AI suggestion" } },
+      { node: { label: "Tool selected" } },
+      { node: { label: "Preview", tone: "accent" } },
+      { node: { label: "User confirmation", tone: "accent" } },
+      { node: { label: "Action" } },
+      { node: { label: "Visible result" } },
+    ]}
+  />
+</SystemDiagram>
+
+<PendingContent
+  summary="Real examples of the confirmation pattern in the shipped product."
+  items={[
+    "One or two concrete actions that use the preview-and-confirm flow",
+    "A screenshot of a preview state and the resulting change",
+    "Any case where the pattern was deliberately relaxed, and why",
+  ]}
+/>
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-context" title="Context compounds" eyebrow="Decision 03">
+
+Most tools restart. Each new task begins from an empty box, and the user pays
+the setup cost again.
+
+Offboard is built so that work accumulates instead. The research done for an
+opportunity feeds the resume tailored to it; the resume and the research feed
+the outreach; all of it feeds interview preparation. Each artifact inherits
+what came before rather than asking for it again.
+
+<SystemDiagram
+  title="Downstream work inherits upstream work"
+  description="The role, company, and the user's own context feed a research layer. That research then informs the resume, the outreach, and the interview preparation in parallel, and those in turn produce the application materials and decisions."
+>
+  <FlowDiagram
+    stages={[
+      { node: { label: "Role + Company + User context" } },
+      { node: { label: "Research layer", tone: "accent" } },
+      {
+        parallel: [
+          { label: "Resume" },
+          { label: "Outreach" },
+          { label: "Interview prep" },
+        ],
+      },
+      { node: { label: "Application materials and decisions", tone: "accent" } },
+    ]}
+  />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="architecture" title="Architecture" eyebrow="How it is built">
+
+Offboard is a product I designed and built, so the architecture is part of the
+design story rather than an appendix to it. What follows is the shape of the
+system at a level a product designer or an engineer can both hold in their
+head — how data and actions actually move — rather than a wall of logos.
+
+<SystemDiagram
+  title="How data and actions move"
+  description="The client application talks to a backend that owns authentication, the opportunity data model with per-user row-level security, and a set of server-side functions. Those functions call model APIs, external research sources, and document generation, then write results back into the opportunity workspace, which the client reads."
+>
+  <FlowDiagram
+    stages={[
+      { node: { label: "Client application", note: "React · TypeScript · Tailwind · shadcn/ui" } },
+      { node: { label: "Authentication and access control", note: "Row-level security per user" } },
+      { node: { label: "Opportunity data model", note: "Postgres", tone: "accent" } },
+      { node: { label: "Server-side functions", note: "Edge functions" } },
+      {
+        parallel: [
+          { label: "Model APIs" },
+          { label: "External research" },
+          { label: "Document generation" },
+        ],
+      },
+      { node: { label: "Results written back to the workspace", tone: "accent" } },
+    ]}
+  />
+</SystemDiagram>
+
+<PendingContent
+  summary="Louie to confirm the architecture description is historically accurate before publishing. The spec lists these elements as candidates from current work, not as verified facts."
+  items={[
+    "The frontend framework actually used, and when it changed if it did",
+    "Whether payments and any other services belong in this diagram",
+    "Which parts Louie built personally versus specified",
+  ]}
+/>
+
+</CaseStudySection>
+
+<CaseStudySection id="product" title="The product" eyebrow="Product">
+
+The screens below are where the decisions above become something a person can
+use. Each caption connects the interface back to the argument it came from.
+
+{/* TODO(asset): opportunity workspace screenshot. */}
+<ArtifactFrame caption="The opportunity workspace: one record holding the role, the company, the research, and the conversation together, so no later step has to ask for them again." />
+
+{/* TODO(asset): risk gate screenshot. */}
+<ArtifactFrame caption="The risk gate as a user meets it — the assessment arrives before any tailored material is generated, not after." />
+
+{/* TODO(asset): preview-and-confirm screenshot. */}
+<ArtifactFrame caption="A preview-and-confirm step: what the assistant intends to do, shown in full before it does it." />
+
+</CaseStudySection>
+
+<CaseStudySection id="outcomes" title="Outcomes" eyebrow="Outcomes">
+
+<PendingContent
+  summary="Only verifiable outcomes belong here. Nothing has been estimated or inferred — where a number is not known, this section stays empty rather than carrying a plausible one (spec §13.8)."
+  items={[
+    "Whether the product is shipped and actively used, and by roughly how many people",
+    "Workflow completion or repeat-usage figures, if they are measured",
+    "Number of application packets or interview preparation sessions, if tracked",
+    "Any employer-sponsored users",
+    "Qualitative feedback that can be quoted, with permission",
+  ]}
+/>
+
+</CaseStudySection>
+
+<CaseStudySection id="learnings" title="Learnings" eyebrow="Learnings">
+
+<PendingContent
+  summary="A reflective close: what is working, where users struggle, and what Louie would change next. Written from real observation rather than generalities — reflective, not apologetic (spec §13.9)."
+  items={[
+    "The decision that has held up best in use",
+    "Where users still get stuck, or use the product differently than expected",
+    "What would change in the next iteration, and why",
+  ]}
+/>
+
+</CaseStudySection>

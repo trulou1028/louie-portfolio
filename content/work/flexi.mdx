@@ -1,0 +1,230 @@
+import { CaseStudySection } from "@/components/portfolio/case-study-section";
+import {
+  SystemDiagram,
+  FlowDiagram,
+  ColumnsDiagram,
+} from "@/components/portfolio/system-diagram";
+import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
+import { PendingContent } from "@/components/portfolio/pending-content";
+
+{/*
+  CK-12 Flexi case study — section anchors are fixed by spec §14 and are a
+  public contract (see lib/routes.ts). The research section is deliberately
+  prominent but carries no invented findings: spec §14 is explicit that
+  research statistics must not be fabricated.
+*/}
+
+<CaseStudySection id="context" title="An AI tutor at classroom scale" eyebrow="Context">
+
+Flexi is CK-12's AI tutor. It sits inside a learning platform used in real
+classrooms, which means its users are not a single group with a single goal.
+Students use it to get unstuck. Teachers depend on the learning still
+happening. Institutions need the whole thing to be safe, private, and
+observable.
+
+Designing it was less a question of making the AI capable and more a question
+of deciding what it should refuse to do.
+
+</CaseStudySection>
+
+<CaseStudySection id="tension" title="When giving the user what they ask for is the wrong answer" eyebrow="The tension">
+
+> What should AI do when giving the user exactly what they ask for undermines
+> the user's actual goal?
+
+A student asking for the answer to problem seven wants the answer to problem
+seven. Providing it satisfies the request completely and defeats the purpose
+of the exercise. Withholding it entirely is unhelpful and drives the student to
+a tool that will simply comply.
+
+The product has to hold three needs at once, and they do not naturally agree.
+
+<SystemDiagram
+  title="Three users, three definitions of success"
+  description="Students want immediate help. Teachers need the learning to remain intact. Institutions need trust, safety, privacy, and visibility. A design that fully satisfies any one of these on its own fails the other two."
+>
+  <ColumnsDiagram
+    columns={[
+      {
+        title: "Student",
+        body: "Wants immediate help, and will go elsewhere if the tool feels obstructive.",
+      },
+      {
+        title: "Teacher",
+        body: "Needs the learning to remain intact — an answered worksheet teaches nothing.",
+      },
+      {
+        title: "Institution",
+        body: "Needs trust, safety, privacy, and visibility into what students are being told.",
+      },
+    ]}
+  />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="research" title="Research" eyebrow="Research">
+
+Research is the backbone of this project rather than a preliminary phase. The
+questions it had to answer were behavioural: what students actually do when a
+tutor will not simply comply, where comprehension quietly breaks down, and what
+teachers need to see in order to trust the tool in their classroom.
+
+The areas studied included reading level and age-appropriate tone,
+accessibility, academic integrity and over-reliance, points of confusion,
+teacher visibility, and the tutor's failure modes.
+
+<PendingContent
+  summary="Real findings from student and teacher research. Spec §14 is explicit that research statistics must not be invented, so this section states the areas studied and stops there until Louie supplies the results."
+  items={[
+    "What the research method was — sessions, classroom observation, surveys, support data",
+    "Findings on reading level and age-appropriate tone",
+    "Findings on over-reliance and academic integrity",
+    "What teachers said they needed to see",
+    "Observed failure modes, and how they changed the design",
+    "Any quotes that can be used, with permission",
+  ]}
+/>
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-scaffolding" title="The answer is not the end" eyebrow="Decision 01">
+
+The first decision was to treat a response as the middle of an interaction
+rather than the end of one. Answering is where a search engine stops; a tutor
+has to find out whether anything was actually understood.
+
+So the loop continues past the response: check understanding, adapt the level
+of support based on what comes back, then stretch slightly beyond it. The
+tutor either continues the loop or hands off when it is no longer the right
+help.
+
+<SystemDiagram
+  title="The tutoring loop"
+  description="A student asks, the AI responds, the AI checks understanding, adapts its level of support based on the reply, then stretches the student's thinking — and either continues the loop or hands off."
+>
+  <FlowDiagram
+    stages={[
+      { node: { label: "Student asks" } },
+      { node: { label: "AI responds" } },
+      { node: { label: "Check understanding", tone: "accent" } },
+      { node: { label: "Adapt support", tone: "accent" } },
+      { node: { label: "Stretch thinking" } },
+      { node: { label: "Continue or hand off" } },
+    ]}
+    loopBackLabel="Continuing returns to the top of the loop with what the tutor has just learned about this student."
+  />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-uncertainty" title="Expose uncertainty rather than hide it" eyebrow="Decision 02">
+
+A tutor that is confidently wrong is worse than one that is visibly unsure. A
+student cannot calibrate their trust against a system that sounds identical
+whether it is right or guessing — and in a subject they are still learning,
+they have no independent way to tell.
+
+So the design surfaces the model's limits instead of smoothing over them, and
+treats recovery as a designed path rather than an error state.
+
+<PendingContent
+  summary="The specific product evidence for how uncertainty, confidence, limitations, and recovery were surfaced."
+  items={[
+    "The actual interface treatment for low confidence or refusal",
+    "What happens when the tutor gets something wrong and the student notices",
+    "Any guardrails around subjects the tutor declines to handle",
+  ]}
+/>
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-teacher" title="The teacher is a first-class user" eyebrow="Decision 03">
+
+The decision that changed the product's shape most was treating the teacher as
+a user rather than an administrator.
+
+Once teacher visibility is a designed surface rather than a reporting
+afterthought, Flexi stops being a chatbot a student talks to privately and
+becomes a multi-sided learning system: what happens in a tutoring session
+informs what the teacher does next with that student.
+
+<PendingContent
+  summary="What teachers can actually see, and how that visibility was designed given student privacy."
+  items={[
+    "The teacher-facing surface and what it shows",
+    "Where the line was drawn between visibility and surveillance",
+    "How teacher feedback changed the student experience",
+  ]}
+/>
+
+</CaseStudySection>
+
+<CaseStudySection id="system" title="System" eyebrow="System">
+
+Holding the three needs together is a system problem, not a prompt problem. The
+tutoring loop, the uncertainty behaviour, and teacher visibility are the three
+mechanisms that keep student help, learning integrity, and institutional trust
+from trading off against each other.
+
+<SystemDiagram
+  title="How the three needs are held together"
+  description="A student request enters the tutoring loop, which is bounded by the scaffolding rules that keep learning intact and by the uncertainty behaviour that governs what the tutor will claim. What happens in the session surfaces to the teacher, and the whole system sits inside institutional safety and privacy constraints."
+>
+  <FlowDiagram
+    stages={[
+      { node: { label: "Student request" } },
+      { node: { label: "Tutoring loop", note: "Scaffolding rules keep the learning intact", tone: "accent" } },
+      { node: { label: "Uncertainty behaviour", note: "Governs what the tutor will and will not claim" } },
+      {
+        parallel: [
+          { label: "Student receives help" },
+          { label: "Teacher gains visibility" },
+          { label: "Institution retains trust" },
+        ],
+      },
+    ]}
+  />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="product" title="The product" eyebrow="Product">
+
+{/* TODO(asset): tutoring exchange screenshot. */}
+<ArtifactFrame caption="A tutoring exchange working toward understanding rather than supplying an answer." />
+
+{/* TODO(asset): uncertainty treatment screenshot. */}
+<ArtifactFrame caption="How the tutor signals the edge of what it knows, in language a student can act on." />
+
+{/* TODO(asset): teacher view screenshot. */}
+<ArtifactFrame caption="The teacher-facing view — the surface that turns a private tutoring session into something a classroom can act on." />
+
+</CaseStudySection>
+
+<CaseStudySection id="outcomes" title="Outcomes" eyebrow="Outcomes">
+
+<PendingContent
+  summary="Verifiable outcomes only. Flexi operates at classroom scale, which makes real figures meaningful — and invented ones especially damaging."
+  items={[
+    "Scale: students, schools, or sessions, if the figures can be shared",
+    "Measured effects on learning behaviour, if any were studied",
+    "Teacher adoption or retention signals",
+    "What CK-12 considered the result of the work",
+  ]}
+/>
+
+</CaseStudySection>
+
+<CaseStudySection id="learnings" title="Learnings" eyebrow="Learnings">
+
+<PendingContent
+  summary="What holding these three needs together taught, and what Louie would approach differently now."
+  items={[
+    "Which of the three decisions proved hardest to hold in practice",
+    "Where students still route around the scaffolding",
+    "What this project changed about how Louie designs AI products",
+  ]}
+/>
+
+</CaseStudySection>
