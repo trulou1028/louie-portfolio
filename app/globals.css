@@ -1,26 +1,193 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+/* Kept so upstream shadcn components carrying `dark:` classes still compile.
+   No `.dark` palette is defined — dark mode is deferred (spec §6, §37). */
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   Design tokens — source of truth.
+   Color values are spec §6 verbatim (HSL triplets, consumed via hsl(var(--x))).
+   Radii are spec §9. Motion durations are spec §24.
+--------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --canvas: 42 28% 97%;
+  --surface: 40 24% 99%;
+  --surface-muted: 42 18% 95%;
+  --surface-raised: 40 30% 100%;
+  --foreground: 35 15% 9%;        /* 16.7:1 on canvas */
+  --foreground-muted: 35 8% 40%;  /* 5.25:1 on canvas — AA for body text */
+  /* --foreground-subtle measures 2.98:1 on canvas: BELOW the WCAG AA 4.5:1
+     required for text (spec §26). Use it only for non-text UI (rules,
+     separators, icon strokes) or large display text — never for body copy,
+     labels, or metadata. Darkening it to ~35 6% 46% would reach AA if a
+     text use case proves necessary; that is a token change for Louie to
+     approve (spec §6 permits tuning). Revisited in Plans 002 and 008. */
+  --foreground-subtle: 35 6% 56%;
+
+  --border-subtle: 35 13% 90%;
+  --border-default: 35 11% 84%;
+  --border-strong: 35 8% 72%;
+
+  --accent: 86 44% 31%;
+  --accent-hover: 86 47% 26%;
+  --accent-muted: 84 35% 91%;
+  --accent-soft: 84 33% 95%;
+  --accent-foreground: 85 55% 20%;
+
+  --danger: 0 68% 46%;
+  --success: 111 42% 35%;
+
+  /* Geometry — spec §9 */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-panel: 28px;
+  --radius: var(--radius-md);
+
+  /* Motion — spec §24 */
+  --duration-instant: 90ms;
+  --duration-fast: 160ms;
+  --duration-standard: 240ms;
+  --duration-deliberate: 380ms;
+
+  /* ---- shadcn/Base UI semantic bridge -------------------------------------
+     Upstream components reference these names; they are derived from the
+     tokens above so primitives inherit the portfolio palette automatically.
+     Do not hand-tune these — change the tokens above instead. */
+  --background: hsl(var(--canvas));
+  --card: hsl(var(--surface));
+  --card-foreground: hsl(var(--foreground));
+  --popover: hsl(var(--surface-raised));
+  --popover-foreground: hsl(var(--foreground));
+  --primary: hsl(var(--accent));
+  --primary-foreground: hsl(var(--surface));
+  --secondary: hsl(var(--surface-muted));
+  --secondary-foreground: hsl(var(--foreground));
+  --muted: hsl(var(--surface-muted));
+  --muted-foreground: hsl(var(--foreground-muted));
+  --destructive: hsl(var(--danger));
+  --border: hsl(var(--border-default));
+  --input: hsl(var(--border-default));
+  --ring: hsl(var(--accent));
 }
 
 @theme inline {
+  /* Portfolio color utilities */
+  --color-canvas: hsl(var(--canvas));
+  --color-surface: hsl(var(--surface));
+  --color-surface-muted: hsl(var(--surface-muted));
+  --color-surface-raised: hsl(var(--surface-raised));
+
+  --color-foreground: hsl(var(--foreground));
+  --color-foreground-muted: hsl(var(--foreground-muted));
+  --color-foreground-subtle: hsl(var(--foreground-subtle));
+
+  --color-border-subtle: hsl(var(--border-subtle));
+  --color-border-default: hsl(var(--border-default));
+  --color-border-strong: hsl(var(--border-strong));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-hover: hsl(var(--accent-hover));
+  --color-accent-muted: hsl(var(--accent-muted));
+  --color-accent-soft: hsl(var(--accent-soft));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-danger: hsl(var(--danger));
+  --color-success: hsl(var(--success));
+
+  /* shadcn semantic names, mapped onto the same palette */
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Typography — spec §7 */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale — spec §8. Display and heading sizes scale fluidly. */
+  --text-display-xl: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
+  --text-display-xl--line-height: 0.95;
+  --text-display-xl--letter-spacing: -0.035em;
+
+  --text-display-lg: clamp(2rem, 1.3rem + 3.5vw, 3.5rem);
+  --text-display-lg--line-height: 1;
+  --text-display-lg--letter-spacing: -0.03em;
+
+  --text-heading-xl: clamp(1.75rem, 1.3rem + 2.2vw, 2.625rem);
+  --text-heading-xl--line-height: 1.05;
+  --text-heading-xl--letter-spacing: -0.025em;
+
+  --text-heading-lg: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
+  --text-heading-lg--line-height: 1.1;
+  --text-heading-lg--letter-spacing: -0.02em;
+
+  --text-heading-md: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-heading-md--line-height: 1.2;
+  --text-heading-md--letter-spacing: -0.015em;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.55;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0.06em;
+
+  --text-system: 0.6875rem;
+  --text-system--line-height: 1.3;
+  --text-system--letter-spacing: 0.08em;
+
+  /* Geometry */
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-panel: var(--radius-panel);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-canvas text-foreground;
+  }
+  /* Motion explains state; it never decorates. Spec §24. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
