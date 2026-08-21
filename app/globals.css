@@ -48,6 +48,10 @@
   --radius-panel: 28px;
   --radius: var(--radius-md);
 
+  /* Elevation. Border first, background second, shadow last (spec §9). */
+  --shadow-soft:
+    0 1px 2px hsl(35 15% 9% / 0.04), 0 8px 24px hsl(35 15% 9% / 0.05);
+
   /* Motion — spec §24 */
   --duration-instant: 90ms;
   --duration-fast: 160ms;
@@ -160,6 +164,9 @@
   --text-system--line-height: 1.3;
   --text-system--letter-spacing: 0.08em;
 
+  /* Elevation */
+  --shadow-soft: var(--shadow-soft);
+
   /* Geometry */
   --radius-xs: var(--radius-xs);
   --radius-sm: var(--radius-sm);
@@ -167,6 +174,15 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
   --radius-panel: var(--radius-panel);
+}
+
+/* One focus treatment for the whole site, so every interactive element is
+   visibly focusable without each component reinventing it (spec §26). */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid hsl(var(--accent));
+    outline-offset: 2px;
+  }
 }
 
 @layer base {
