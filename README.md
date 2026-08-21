@@ -68,3 +68,39 @@ Recorded per spec §39.14.
 6. **No `.dark` palette.** The `dark` variant is still registered so upstream
    components carrying `dark:` classes compile, but no dark theme is defined —
    dark mode is deferred per spec §6 and §37.
+
+**Phase 2 (Plan 003)**
+
+7. **One responsive shell, not separate desktop/mobile shells.** Spec §4
+   sketches `desktop-shell.tsx` and `mobile-shell.tsx`; a single
+   `app-shell.tsx` with breakpoint classes is used instead so navigation state
+   cannot diverge between two trees. Spec §4 invites a structure "close to"
+   its sketch.
+8. **The "Paste a job description" suggestion is deferred.** Spec §11 §2 lists
+   it among the prompt chips, but the evaluator does not exist until Plan 007
+   and it is the one suggestion with no honest destination today. Shipping it
+   now would be a dead control, which spec §11 forbids. The other five
+   suggestions are real links.
+9. **The AI composer ships visibly disabled.** Until Plan 006 there is no
+   conversation to have. Rather than a text field that silently does nothing,
+   it is `disabled`, described by adjacent text explaining why, and paired
+   with suggestions that do work.
+10. **Contact links and availability are omitted, not faked.** The left rail,
+    drawer, and footer render LinkedIn, email, and the availability indicator
+    only once real values exist in `content/profile.ts` (spec §29).
+11. **`Action` does not route links through Base UI's Button.** Doing so
+    applied `role="button"` to `<a href>` elements, announcing navigation
+    links as buttons. Link-rendered Actions now take the styling directly and
+    keep link semantics (spec §26).
+
+## Testing
+
+```bash
+pnpm test:e2e
+```
+
+Playwright runs against a production build on port 3100, so a running
+`pnpm dev` never collides with it. Two projects: Chromium at 1440×900 and
+WebKit on an iPhone 13 profile — WebKit because a portfolio gets opened on
+Macs and iPhones, and it is the engine most likely to differ. No API keys are
+needed; every suite must pass without them (spec §31).

@@ -80,7 +80,7 @@ function Row({ title, children }: { title: string; children: React.ReactNode }) 
 
 export default function DesignSystemPage() {
   return (
-    <main className="mx-auto w-full max-w-[900px] px-6 py-16">
+    <div className="mx-auto w-full max-w-[900px] px-6 py-16">
       <SystemLabel tone="accent">Internal</SystemLabel>
       <h1 className="mt-4 font-serif text-display-lg">Design system</h1>
       <p className="mt-3 max-w-[65ch] text-body text-foreground-muted">
@@ -272,6 +272,6 @@ export default function DesignSystemPage() {
           ))}
         </div>
       </Row>
-    </main>
+    </div>
   );
 }

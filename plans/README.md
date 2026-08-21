@@ -15,7 +15,7 @@ honor its STOP conditions, and update your row when done.
 |------|-------|----------|--------|------------|--------|
 | 001  | Project scaffold (Next.js, tokens, routes) | P1 | M | — | DONE |
 | 002  | Design-system primitives + review page     | P1 | M | 001 | DONE |
-| 003  | Responsive app shell + static homepage     | P1 | L | 002 | TODO |
+| 003  | Responsive app shell + static homepage     | P1 | L | 002 | DONE |
 | 004  | Offboard + Flexi case studies              | P1 | L | 003 | TODO |
 | 005  | Evidence index + deterministic search      | P1 | M | 004 | TODO |
 | 006  | AI Louie text mode (chat, tools, grounding)| P1 | L | 005 | TODO |
