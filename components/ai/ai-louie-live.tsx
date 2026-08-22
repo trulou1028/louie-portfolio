@@ -49,7 +49,12 @@ function UserMessage() {
   return (
     <MessagePrimitive.Root className="flex justify-end">
       <div className="max-w-[85%] rounded-md rounded-br-xs border border-border-default bg-surface px-4 py-2.5 text-body text-foreground">
-        <MessagePrimitive.Parts />
+        {/* Reasoning is explicitly dropped. Reasoning-capable models stream
+            reasoning parts, and spec §21 forbids showing chain-of-thought.
+            assistant-ui's default already renders null for these, but stating
+            it here means the guarantee is ours rather than an inherited
+            default that a future components override could quietly undo. */}
+        <MessagePrimitive.Parts components={{ Reasoning: () => null }} />
       </div>
     </MessagePrimitive.Root>
   );
@@ -64,7 +69,12 @@ function AssistantMessage() {
           the thread-level notice below, and showing both means a visitor
           reads two apologies for one failure. */}
       <div className="flex min-w-0 flex-1 flex-col gap-3 pt-1 text-body text-foreground [&_p]:mb-3 last:[&_p]:mb-0">
-        <MessagePrimitive.Parts />
+        {/* Reasoning is explicitly dropped. Reasoning-capable models stream
+            reasoning parts, and spec §21 forbids showing chain-of-thought.
+            assistant-ui's default already renders null for these, but stating
+            it here means the guarantee is ours rather than an inherited
+            default that a future components override could quietly undo. */}
+        <MessagePrimitive.Parts components={{ Reasoning: () => null }} />
       </div>
     </MessagePrimitive.Root>
   );
