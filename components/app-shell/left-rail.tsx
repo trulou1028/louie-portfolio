@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Mail } from "lucide-react";
 
 import { LinkedInIcon } from "@/components/system/brand-icons";
+import { InlineLink } from "@/components/system/inline-link";
 
 import { NavItem } from "@/components/app-shell/nav-item";
 import { NAV_ICONS } from "@/components/app-shell/nav-icons";
@@ -62,6 +63,11 @@ function LeftRail() {
             <span className="pl-3.5 text-body-sm text-foreground-muted">
               {availability.detail}
             </span>
+          ) : null}
+          {links.calendly ? (
+            <InlineLink href={links.calendly} className="pl-3.5 text-body-sm">
+              Book time
+            </InlineLink>
           ) : null}
         </div>
       ) : null}

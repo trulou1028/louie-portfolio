@@ -84,8 +84,10 @@ test("structured data is present and parses", async ({ page }) => {
 
   const person = parsed.find((entry) => entry["@type"] === "Person");
   expect(person.name).toBe("Louie Sakoda");
-  // Unverified facts must not appear in structured data either.
-  expect(person.address).toBeUndefined();
+  // Location was withheld until the resume verified it; now it must agree
+  // with that source exactly.
+  expect(person.address?.addressLocality).toBe("San Francisco");
+  expect(person.sameAs).toContain("https://www.linkedin.com/in/louiesakoda");
 });
 
 test("case studies expose CreativeWork matching the visible title", async ({

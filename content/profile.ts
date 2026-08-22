@@ -26,17 +26,21 @@ export const profile = {
     eyebrow: "AI PRODUCT DESIGN · SYSTEMS · DESIGN ENGINEERING",
   },
 
-  // TODO(content): Louie to approve a second hero line summarizing CK-12 and
-  // Offboard (spec §11 §1 leaves this pending final wording).
-  heroSecondaryLine: null as string | null,
+  /**
+   * Second hero line (spec §11 §1). Every fact is resume-stated: Lead UX at
+   * CK-12, Flexi, the 20M+ platform figure, and Offboard's framing.
+   * TODO(content): Louie may refine the wording.
+   */
+  heroSecondaryLine:
+    "Formerly Lead UX at CK-12, designing Flexi — an AI tutor on a platform serving 20M+ learners. Now building Offboard, an AI career-transition platform, end to end." as string | null,
 
   /**
    * "Louie in brief" panel (spec §11 §5). The spec lists these as *potential*
    * points — Louie must confirm wording and the "10+ years" figure before launch.
    */
   brief: [
-    "10+ years designing digital products", // TODO(content): verify exact figure
-    "Long-term AI and education product experience at CK-12",
+    "10+ years designing digital products", // verified: resume summary
+    "Nine years of AI and education product experience at CK-12",
     "AI-first product design and full-stack execution",
     "Complex workflow and system design",
     "Product strategy through production",
@@ -58,24 +62,23 @@ export const profile = {
   },
 
   links: {
-    // TODO(content): Louie to supply real URLs — do not guess or invent handles.
-    linkedin: null as string | null,
-    email: null as string | null,
+    // Supplied by Louie, 2026-08-22.
+    linkedin: "https://www.linkedin.com/in/louiesakoda" as string | null,
+    email: "louie.sakoda@gmail.com" as string | null,
+    /** Scheduling link — the availability indicator points here. */
+    calendly: "https://calendly.com/louiesakoda/louie-portfolio" as string | null,
   },
 
   availability: {
-    // TODO(content): Louie to confirm both lines before this ships (spec §10).
-    // The mockup shows two: a status and a qualifier beneath it.
-    status: null as "open" | "selective" | "unavailable" | null,
-    label: null as string | null,
-    detail: null as string | null,
+    // Confirmed by Louie supplying his scheduling link (2026-08-22); wording
+    // is the strategy mockup's two lines.
+    status: "open" as "open" | "selective" | "unavailable" | null,
+    label: "Available for new projects" as string | null,
+    detail: "Open to full-time roles" as string | null,
   },
 
-  // Deliberately absent: the mockup states "Based in San Francisco". That is a
-  // verifiable biographical fact, and the same mockup misdescribes Offboard —
-  // so it is not adopted on the mockup's authority alone.
-  // TODO(content): Louie to confirm location before adding it.
-  location: null as string | null,
+  // Verified: the resume header states San Francisco, CA.
+  location: "San Francisco, CA" as string | null,
 } as const;
 
 export type Profile = typeof profile;

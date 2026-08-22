@@ -20,6 +20,9 @@ function SiteFooter() {
         {links.email ? (
           <InlineLink href={`mailto:${links.email}`}>Email</InlineLink>
         ) : null}
+        {links.calendly ? (
+          <InlineLink href={links.calendly}>Book time</InlineLink>
+        ) : null}
         <span className="ml-auto">
           © {year} {profile.name}
         </span>

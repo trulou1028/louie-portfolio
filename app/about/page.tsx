@@ -55,10 +55,13 @@ export default function AboutPage() {
               </li>
             ))}
           </ul>
+          {profile.location ? (
+            <p className="mt-4 text-body-sm text-foreground-muted">
+              Based in {profile.location}
+            </p>
+          ) : null}
           {/* TODO(asset): portrait or illustration (spec §11 §5). */}
-          {/* TODO(content): a fuller biography, and location if Louie wants it
-              published — the strategy mockup's "Based in San Francisco" is
-              unverified. */}
+          {/* TODO(content): a fuller biography, in Louie's own words. */}
         </section>
 
         <section className="mt-12">
@@ -98,6 +101,20 @@ export default function AboutPage() {
                   }
                 >
                   LinkedIn
+                </Action>
+              ) : null}
+              {links.calendly ? (
+                <Action
+                  size="sm"
+                  render={
+                    <a
+                      href={links.calendly}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    />
+                  }
+                >
+                  Book time
                 </Action>
               ) : null}
             </div>

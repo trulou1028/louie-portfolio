@@ -169,11 +169,16 @@ attributable change rather than a silent mutation.
   />
 </SystemDiagram>
 
+In the shipped product this shows up as a family of patterns rather than a
+single dialog: visible agent progress while the assistant works, outputs that
+stay editable rather than final, approval checkpoints before consequential
+steps, and confirmation-first actions — safeguards designed specifically for
+decisions that are emotionally high-stakes for the person making them.
+
 <PendingContent
-  summary="Real examples of the confirmation pattern in the shipped product."
+  summary="Screenshots of the pattern in use."
   items={[
-    "One or two concrete actions that use the preview-and-confirm flow",
-    "A screenshot of a preview state and the resulting change",
+    "A preview state and the resulting change",
     "Any case where the pattern was deliberately relaxed, and why",
   ]}
 />
@@ -225,10 +230,10 @@ head — how data and actions actually move — rather than a wall of logos.
 >
   <FlowDiagram
     stages={[
-      { node: { label: "Client application", note: "React · TypeScript · Tailwind · shadcn/ui" } },
+      { node: { label: "Client application", note: "Vite · React · TypeScript · Tailwind · shadcn/ui" } },
       { node: { label: "Authentication and access control", note: "Row-level security per user" } },
-      { node: { label: "Opportunity data model", note: "Postgres", tone: "accent" } },
-      { node: { label: "Server-side functions", note: "Edge functions" } },
+      { node: { label: "Opportunity data model", note: "Supabase · Postgres · RLS", tone: "accent" } },
+      { node: { label: "Server-side functions", note: "Deno edge functions" } },
       {
         parallel: [
           { label: "Model APIs" },
@@ -241,14 +246,18 @@ head — how data and actions actually move — rather than a wall of logos.
   />
 </SystemDiagram>
 
-<PendingContent
-  summary="Louie to confirm the architecture description is historically accurate before publishing. The spec lists these elements as candidates from current work, not as verified facts."
-  items={[
-    "The frontend framework actually used, and when it changed if it did",
-    "Whether payments and any other services belong in this diagram",
-    "Which parts Louie built personally versus specified",
-  ]}
-/>
+The stack is Vite, React, TypeScript, Tailwind, and shadcn/ui on the client,
+with Supabase providing Postgres under per-user row-level security and Deno
+edge functions doing the server-side work. Around that core sit the
+operational surfaces a real product needs: authentication, user data, AI
+credits, document generation, assistant experiences, employer workspaces, and
+paid plans.
+
+All of it is built solo, with AI development tools — Claude Code, Codex,
+Lovable — as part of the workflow. That is itself a design position: using
+AI-first tools daily is where the intuition comes from for how AI-first
+software should feel, where automation should defer to humans, and how model
+output becomes a usable product experience.
 
 </CaseStudySection>
 
@@ -269,6 +278,9 @@ use. Each caption connects the interface back to the argument it came from.
 </CaseStudySection>
 
 <CaseStudySection id="outcomes" title="Outcomes" eyebrow="Outcomes">
+
+Offboard has moved from ambiguous product concepts to live beta workflows —
+designed, built, and operated as a solo effort across the full stack.
 
 <PendingContent
   summary="Only verifiable outcomes belong here. Nothing has been estimated or inferred — where a number is not known, this section stays empty rather than carrying a plausible one (spec §13.8)."

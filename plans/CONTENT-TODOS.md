@@ -9,9 +9,20 @@ Generated during Plan 008. 35 markers across the codebase, plus 9
 
 ---
 
-## 1. Launch blockers
+## 1. Launch blockers — ✅ CLEARED 2026-08-22
 
-These stop a production launch.
+Louie supplied the resume PDF, contact links, and a Calendly scheduling link.
+`content/resume.ts` is fully populated, the PDF is downloadable at
+`/resume/louie-sakoda-resume.pdf`, and email/LinkedIn/availability render in
+the rail, footer, About page, and structured data. The resume also verified:
+San Francisco, the "10+ years" figure, the 20M+ CK-12 platform scale, and the
+full Offboard stack (Vite, Supabase, Postgres/RLS, Deno edge functions) —
+those entries and case-study sections have been updated accordingly.
+
+Note: Louie's phone number is on the PDF but deliberately NOT rendered on the
+HTML resume page (public + crawlable = spam risk). His call to reverse.
+
+Originally:
 
 ### Resume — `content/resume.ts`
 
@@ -43,10 +54,10 @@ gaps are visible as "Content pending" blocks on the live pages.
 
 ### Offboard — `content/work/offboard.mdx`
 
-- [ ] **Architecture accuracy.** The spec listed the stack as *candidates from
+- [x] **Architecture accuracy.** ✅ Resume-verified (Vite, Supabase, Postgres/RLS, Deno edge functions, paid plans, solo-built). The spec listed the stack as *candidates from
       current work*, not verified fact. Confirm the frontend framework, whether
       payments belong in the diagram, and which parts you built personally.
-- [ ] **Human-in-the-loop examples.** One or two concrete shipped actions that
+- [x] **Human-in-the-loop examples.** ✅ Pattern family resume-verified (visible progress, editable outputs, approval checkpoints, confirmation-first). Screenshots still wanted. One or two concrete shipped actions that
       use preview-and-confirm, and any case where you relaxed the pattern.
 - [ ] **Outcomes.** Only verifiable ones — shipped/actively used, usage or
       repeat-usage figures, application packets, interview prep sessions,
@@ -81,12 +92,12 @@ a labelled empty frame rather than a stand-in image.
 
 - [ ] **Portrait or illustration** for the About page and the rail profile.
 - [ ] **Open Graph share image** (1200×630). Metadata is wired; the image isn't.
-- [ ] **Second hero line** summarising CK-12 and Offboard — spec §11 §1 left
+- [x] **Second hero line** ✅ Set from resume facts; refine wording if desired. summarising CK-12 and Offboard — spec §11 §1 left
       the wording pending your approval.
-- [ ] **"10+ years designing digital products"** — confirm the figure.
+- [x] **"10+ years designing digital products"** ✅ Resume-verified.
 - [ ] **Pull quotes.** Two are in use from the strategy mockup; confirm or
       rewrite them.
-- [ ] **Location.** The mockup said "Based in San Francisco". Not adopted —
+- [x] **Location.** ✅ Resume-verified: San Francisco, CA. Now in About + Person schema. The mockup said "Based in San Francisco". Not adopted —
       that mockup also misdescribed Offboard, so its facts aren't trusted
       unverified.
 - [ ] **Experiments.** All four are honest placeholders. Each needs a summary

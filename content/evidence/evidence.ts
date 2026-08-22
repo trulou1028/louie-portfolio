@@ -104,7 +104,7 @@ export const evidence: EvidenceItem[] = [
     summary:
       "Consequential AI actions use visible approval checkpoints.",
     detail:
-      "The assistant proposes an action, a specific tool is selected, a preview is generated, and the user confirms before anything runs. The result then appears as a discrete, attributable change rather than a silent mutation — the user always sees which tool is about to act, on what, and what it will produce. TODO(content): Louie to add concrete shipped examples of this flow.",
+      "The assistant proposes an action, a specific tool is selected, a preview is generated, and the user confirms before anything runs. In the shipped product this is a family of patterns: visible agent progress, editable outputs, approval checkpoints, and confirmation-first actions — trust-building safeguards designed for emotionally high-stakes career decisions (resume-verified).",
     route: "/work/offboard",
     anchor: "decision-control",
     tags: ["agents", "human-in-the-loop", "ai ux", "tool calling", "confirmation"],
@@ -132,19 +132,21 @@ export const evidence: EvidenceItem[] = [
     summary:
       "How data and actions move through the product Louie both designed and built.",
     detail:
-      "A client application talks to a backend owning authentication, an opportunity data model with per-user row-level security, and server-side functions that call model APIs, external research, and document generation before writing results back into the workspace. TODO(content): Louie to confirm this description is historically accurate before publishing — the elements are candidates drawn from current work, not verified facts.",
+      "A Vite + React + TypeScript client with Tailwind and shadcn/ui talks to Supabase: Postgres under per-user row-level security, with Deno edge functions calling model APIs, external research, and document generation before writing results back into the workspace. Operational surfaces include authentication, user data, AI credits, assistant experiences, employer workspaces, and paid plans. Built solo, with AI development tools as part of the workflow (resume-verified).",
     route: "/work/offboard",
     anchor: "architecture",
     tags: ["architecture", "full-stack", "design engineering", "technical"],
     skills: ["Design Engineering", "Full-stack Development", "Systems Design"],
     technologies: [
+      "Vite",
       "React",
       "TypeScript",
       "Tailwind CSS",
       "shadcn/ui",
+      "Supabase",
       "Postgres",
       "Row-level security",
-      "Edge functions",
+      "Deno edge functions",
     ],
     evidenceType: "technical",
   },
@@ -227,7 +229,7 @@ export const evidence: EvidenceItem[] = [
     summary:
       "Research is the backbone of this project — what students do when a tutor will not simply comply, and what teachers need in order to trust it.",
     detail:
-      "The areas studied included reading level and age-appropriate tone, accessibility, academic integrity and over-reliance, points of confusion, teacher visibility, and the tutor's failure modes. TODO(content): findings themselves are pending. Spec §14 forbids inventing research statistics, so this entry names the areas studied and stops there.",
+      "Research and usability testing ran directly with students and teachers, and behavioural insights were translated into product improvements that reduced cognitive load and made complex workflows easier to navigate (resume-verified). Areas studied included reading level and age-appropriate tone, accessibility, academic integrity and over-reliance, points of confusion, teacher visibility, and the tutor's failure modes. Detailed findings are not yet published — spec §14 forbids inventing research statistics.",
     route: "/work/flexi",
     anchor: "research",
     tags: ["user research", "education", "students", "teachers", "over-reliance"],
@@ -247,5 +249,71 @@ export const evidence: EvidenceItem[] = [
     tags: ["systems design", "multi-sided", "education", "safety", "privacy"],
     skills: ["Systems Design", "AI Product Design", "Product Strategy"],
     evidenceType: "strategy",
+  },
+  // ------------------------------------------------------------------ Career
+  {
+    id: "career-experience-arc",
+    project: "career",
+    title: "10+ years across AI, education, and workflow products",
+    summary:
+      "Lead UX at CK-12 for nine years (2016\u20132025), now founding product designer and AI systems lead at Offboard \u2014 with earlier product leadership at OdysseyDAO and ecommerce design at Lowe's.",
+    detail:
+      "The arc: UX production design at Lowe's (2014\u20132016), product lead at OdysseyDAO (2021\u20132022) where an education platform onboarded 80,000+ learners, nine years as Lead UX Designer at CK-12 (2016\u20132025) on a K-12 platform serving 20M+ users worldwide, and since May 2025 Founding Product Designer & AI Systems Lead at Offboard. Education: BS in Entrepreneurship (University of Utah, 3.8 GPA, Academic All-American) and an MBA. Also a former professional football player in the CFL.",
+    route: "/resume",
+    tags: ["career", "experience", "ck-12", "offboard", "leadership"],
+    skills: ["Product Design", "AI Product Design", "Product Strategy"],
+    evidenceType: "career",
+  },
+  {
+    id: "career-technical-fluency",
+    project: "career",
+    title: "Technical depth: a designer who ships full-stack",
+    summary:
+      "Builds production software solo \u2014 Vite, React, TypeScript, Tailwind, shadcn/ui, Supabase, Postgres/RLS, Deno edge functions, Stripe, and Resend \u2014 using AI development tools as a core part of the workflow.",
+    detail:
+      "At Offboard, Louie designed and built the full product: client application, authentication, data model with row-level security, server-side AI workflows, document generation, payments, and email. His stated fluency spans React, TypeScript, JavaScript, Vite, Tailwind CSS, shadcn/ui, Supabase, Postgres/RLS, Deno edge functions, API integrations, Stripe, and Resend. He works with Claude Code, Codex, Lovable, and other AI development tools daily \u2014 the source of his intuition for where automation should defer to humans and how model output becomes usable product.",
+    route: "/resume",
+    tags: ["technical", "full-stack", "design engineering", "react", "typescript", "supabase"],
+    skills: ["Design Engineering", "Full-stack Development", "AI Product Design"],
+    technologies: [
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "Vite",
+      "Tailwind CSS",
+      "shadcn/ui",
+      "Supabase",
+      "Postgres/RLS",
+      "Deno edge functions",
+      "Stripe",
+      "Resend",
+    ],
+    evidenceType: "technical",
+  },
+  {
+    id: "career-ck12-scale",
+    project: "career",
+    title: "Nine years designing at 20M-user scale",
+    summary:
+      "Led UX for CK-12's multi-sided platform \u2014 students, teachers, administrators \u2014 serving 20M+ users worldwide, including Flexi, its LLM-powered tutor.",
+    detail:
+      "From 2016 to 2025 Louie led UX at CK-12, designing student, teacher, and administrator workflows across learning, practice, assignments, insights, content discovery, and support. He led design for Flexi, the LLM-powered student tutor, partnering with product, engineering, data science, curriculum, and research teams from early concept through shipped product.",
+    route: "/resume",
+    tags: ["scale", "education", "ck-12", "flexi", "multi-sided", "enterprise"],
+    skills: ["Product Design", "AI Product Design", "Systems Design"],
+    evidenceType: "career",
+  },
+  {
+    id: "career-design-systems",
+    project: "career",
+    title: "Design systems and accessibility at platform scale",
+    summary:
+      "Developed CK-12's 2.0 design system across web and responsive surfaces, aligned to WCAG, alongside a parallel React component library built with engineering.",
+    detail:
+      "Louie developed CK-12's 2.0 design system across web and responsive surfaces, aligning interaction patterns with WCAG accessibility guidelines and partnering with engineering on a parallel React component library \u2014 design-system work done with production code as a first-class concern, not an afterthought.",
+    route: "/resume",
+    tags: ["design systems", "accessibility", "wcag", "component library", "react"],
+    skills: ["Design Systems", "Accessibility", "Design Engineering"],
+    evidenceType: "career",
   },
 ];

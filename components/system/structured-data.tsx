@@ -38,6 +38,16 @@ export function PersonSchema() {
         url: SITE_URL,
         ...(sameAs.length > 0 ? { sameAs } : {}),
         ...(profile.links.email ? { email: profile.links.email } : {}),
+        // Rendered only now that the resume verifies it (spec §29).
+        ...(profile.location
+          ? {
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "San Francisco",
+                addressRegion: "CA",
+              },
+            }
+          : {}),
       }}
     />
   );

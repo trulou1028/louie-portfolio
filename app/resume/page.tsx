@@ -5,24 +5,23 @@ import { Download } from "lucide-react";
 import { Canvas } from "@/components/app-shell/contextual-rail";
 import { PendingContent } from "@/components/portfolio/pending-content";
 import { Action } from "@/components/system/action";
+import { InlineLink } from "@/components/system/inline-link";
 import { SectionLabel } from "@/components/system/section-label";
 import { profile } from "@/content/profile";
 import { resume } from "@/content/resume";
 
 export const metadata: Metadata = {
   title: "Resume",
-  description: `${profile.name} — ${profile.role}. Experience across AI product design, complex workflows, and design engineering.`,
+  description: `${profile.name} — ${resume.headline}. 10+ years designing and shipping AI-powered learning, workflow, and decision-support products.`,
+  alternates: { canonical: "/resume" },
 };
 
 /**
  * Resume, rendered as HTML in addition to the PDF (spec §28).
  *
- * The full structure is here and will render the moment `content/resume.ts`
- * is populated. Until then the page states the gap rather than showing
- * invented roles — a fabricated employment history is the single worst thing
- * this site could publish.
- *
- * Plan 008 treats this as a launch blocker.
+ * Content comes verbatim from `content/resume.ts`, which mirrors the PDF
+ * Louie supplied. The phone number on the PDF is deliberately not rendered
+ * here — a public, crawlable page is not the place for it.
  */
 export default function ResumePage() {
   const hasContent = resume.roles.length > 0;
@@ -36,8 +35,20 @@ export default function ResumePage() {
           {profile.name}
         </h1>
         <p className="mt-3 font-mono text-label uppercase text-foreground-muted">
-          {profile.role}
+          {resume.headline}
         </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-body-sm text-foreground-muted">
+          {profile.location ? <span>{profile.location}</span> : null}
+          {profile.links.email ? (
+            <InlineLink href={`mailto:${profile.links.email}`}>
+              {profile.links.email}
+            </InlineLink>
+          ) : null}
+          {profile.links.linkedin ? (
+            <InlineLink href={profile.links.linkedin}>LinkedIn</InlineLink>
+          ) : null}
+        </div>
 
         {resume.pdfPath ? (
           <div className="mt-7">
@@ -55,6 +66,13 @@ export default function ResumePage() {
         {hasContent ? (
           <>
             <section className="mt-12">
+              <SectionLabel>Summary</SectionLabel>
+              <p className="mt-5 max-w-[68ch] text-body text-foreground-muted">
+                {resume.summary}
+              </p>
+            </section>
+
+            <section className="mt-12">
               <SectionLabel>Experience</SectionLabel>
               <ol className="mt-6 flex flex-col gap-10">
                 {resume.roles.map((role) => (
@@ -68,25 +86,20 @@ export default function ResumePage() {
                       </span>
                     </div>
                     <p className="mt-1 text-body text-accent">{role.company}</p>
-                    <p className="mt-3 max-w-[68ch] text-body text-foreground-muted">
-                      {role.summary}
-                    </p>
-                    {role.highlights.length > 0 ? (
-                      <ul className="mt-4 flex flex-col gap-2">
-                        {role.highlights.map((highlight) => (
-                          <li
-                            key={highlight}
-                            className="flex gap-3 text-body-sm text-foreground-muted"
-                          >
-                            <span
-                              aria-hidden="true"
-                              className="mt-2 size-1 shrink-0 rounded-full bg-accent"
-                            />
-                            {highlight}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
+                    <ul className="mt-4 flex flex-col gap-2">
+                      {role.highlights.map((highlight) => (
+                        <li
+                          key={highlight}
+                          className="flex gap-3 text-body-sm text-foreground-muted"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="mt-2 size-1 shrink-0 rounded-full bg-accent"
+                          />
+                          {highlight}
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 ))}
               </ol>
@@ -103,6 +116,7 @@ export default function ResumePage() {
                       </p>
                       <p className="text-body-sm text-foreground-muted">
                         {entry.institution} · {entry.period}
+                        {entry.note ? ` · ${entry.note}` : ""}
                       </p>
                     </li>
                   ))}
@@ -110,16 +124,41 @@ export default function ResumePage() {
               </section>
             ) : null}
 
-            {resume.skills.length > 0 ? (
+            {resume.skillGroups.length > 0 ? (
               <section className="mt-12">
                 <SectionLabel>Skills</SectionLabel>
-                <ul className="mt-5 flex flex-wrap gap-x-2 gap-y-1.5">
-                  {resume.skills.map((skill) => (
+                <div className="mt-6 flex flex-col gap-5">
+                  {resume.skillGroups.map((group) => (
+                    <div key={group.label}>
+                      <h3 className="text-body-sm font-medium text-foreground">
+                        {group.label}
+                      </h3>
+                      <ul className="mt-2 flex flex-wrap gap-x-2 gap-y-1.5">
+                        {group.skills.map((skill) => (
+                          <li
+                            key={skill}
+                            className="rounded-xs border border-border-subtle bg-surface-muted px-2 py-0.5 text-body-sm text-foreground-muted"
+                          >
+                            {skill}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
+            {resume.additional.length > 0 ? (
+              <section className="mt-12">
+                <SectionLabel>Additional</SectionLabel>
+                <ul className="mt-5 flex flex-col gap-2">
+                  {resume.additional.map((item) => (
                     <li
-                      key={skill}
-                      className="rounded-xs border border-border-subtle bg-surface-muted px-2 py-0.5 text-body-sm text-foreground-muted"
+                      key={item}
+                      className="max-w-[68ch] text-body text-foreground-muted"
                     >
-                      {skill}
+                      {item}
                     </li>
                   ))}
                 </ul>
