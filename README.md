@@ -196,9 +196,10 @@ assigned to the production target automatically, even without `--prod`.
 **Before this can go public**, in the Vercel dashboard:
 
 1. Add environment variables — `OPENAI_API_KEY`, `OPENAI_MODEL`, and
-   `NEXT_PUBLIC_SITE_URL`. These are entered by the operator; nothing in this
-   repo handles secret values. The API routes read them per request, so adding
-   a key takes effect without a rebuild.
+   `NEXT_PUBLIC_SITE_URL`, under **Settings → Environment Variables**. These
+   are entered by the operator; nothing in this repo handles secret values.
+   **A redeploy is required afterwards** — Vercel binds environment variables
+   to a deployment, so existing deployments do not pick up new values.
 2. Attach the `louiesakoda.com` domain and update DNS.
 3. Turn off Deployment Protection when the content punch list is cleared —
    see [`plans/CONTENT-TODOS.md`](plans/CONTENT-TODOS.md). The resume is a
