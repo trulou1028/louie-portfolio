@@ -34,7 +34,9 @@ export default defineConfig({
   webServer: {
     command: `pnpm build && pnpm start --port ${PORT}`,
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
+    // Always rebuild. Reusing a running server silently tests stale code —
+    // it once made a real accessibility regression look like a pass.
+    reuseExistingServer: false,
     timeout: 180_000,
     env: {
       // Placeholders so the AI surface mounts and can be exercised. They are

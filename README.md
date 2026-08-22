@@ -185,6 +185,49 @@ serverless that is **per instance** and therefore best-effort — acceptable for
 portfolio, and deliberately not backed by new infrastructure (spec §3). If
 abuse appears, Vercel KV or Upstash is the upgrade path.
 
+## Deployment
+
+The project is linked to Vercel as `louie-portfolio` under `louie-5320`.
+
+**Current state:** deployed and **protected by Vercel Authentication**, so only
+the account owner can view it. The first `vercel deploy` on a new project is
+assigned to the production target automatically, even without `--prod`.
+
+**Before this can go public**, in the Vercel dashboard:
+
+1. Add environment variables — `OPENAI_API_KEY`, `OPENAI_MODEL`, and
+   `NEXT_PUBLIC_SITE_URL`. These are entered by the operator; nothing in this
+   repo handles secret values. The API routes read them per request, so adding
+   a key takes effect without a rebuild.
+2. Attach the `louiesakoda.com` domain and update DNS.
+3. Turn off Deployment Protection when the content punch list is cleared —
+   see [`plans/CONTENT-TODOS.md`](plans/CONTENT-TODOS.md). The resume is a
+   launch blocker.
+4. Run Lighthouse against the deployed URL. Spec §27 targets 90+; local
+   measurements are below, but a production run over real network conditions
+   is the number that counts.
+
+```bash
+npx vercel deploy          # preview (after the first deployment)
+npx vercel deploy --prod   # production
+```
+
+### Measured performance
+
+JavaScript delivered per route, from a production build:
+
+| Route            | Before splitting | After |
+|------------------|------------------|-------|
+| `/about`         | 1076 KB          | 275 KB |
+| `/work/offboard` | 1061 KB          | 232 KB |
+| `/`              | 911 KB           | 1079 KB* |
+
+\* The homepage still loads the assistant runtime because the AI panel sits
+near the fold, which is what spec §27 describes ("until the user approaches or
+activates the AI surface"). The win is that every other route no longer pays
+for a runtime it never uses — Next prefetches route chunks, so before the
+split even `/about` was downloading the assistant.
+
 ## Testing
 
 ```bash

@@ -45,7 +45,9 @@ const surfaceVariants = cva("bg-clip-padding", {
   },
 });
 
-type SurfaceProps = React.ComponentPropsWithoutRef<"div"> &
+// WithRef, not WithoutRef: React 19 passes `ref` as an ordinary prop, and
+// callers need one to observe the element (e.g. lazy-loading the AI panel).
+type SurfaceProps = React.ComponentPropsWithRef<"div"> &
   VariantProps<typeof surfaceVariants> & {
     /** Replace the rendered element, e.g. `render={<Link href="…" />}`. */
     render?: React.ReactElement<{ className?: string }>;

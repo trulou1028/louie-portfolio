@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Content from "@/content/work/offboard.mdx";
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
 import { CaseStudyHeader } from "@/components/portfolio/case-study-header";
+import { CreativeWorkSchema } from "@/components/system/structured-data";
 import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
 import {
   TableOfContents,
@@ -15,7 +16,14 @@ const project = workProjects.find((p) => p.slug === "offboard")!;
 
 export const metadata: Metadata = {
   title: project.name,
-  description: project.title,
+  description: project.summary ?? project.title,
+  openGraph: {
+    type: "article",
+    title: project.title,
+    description: project.summary ?? project.title,
+    url: project.href,
+  },
+  alternates: { canonical: project.href },
 };
 
 export default function OffboardCaseStudy() {
@@ -28,6 +36,7 @@ export default function OffboardCaseStudy() {
       }
     >
       <DeepLinkHighlight />
+      <CreativeWorkSchema project={project} />
       <article className="max-w-[760px]">
         <CaseStudyHeader
           project={project}

@@ -2,6 +2,7 @@
 // Plan 008 verifies this route is absent from production.
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Compass } from "lucide-react";
 
 import { Action, InlineAction } from "@/components/system/action";
@@ -79,6 +80,10 @@ function Row({ title, children }: { title: string; children: React.ReactNode }) 
 }
 
 export default function DesignSystemPage() {
+  // Internal review surface only. Absent in production rather than merely
+  // unlinked, so it cannot be found by guessing the URL (spec §35 Phase 1).
+  if (process.env.NODE_ENV === "production") notFound();
+
   return (
     <div className="mx-auto w-full max-w-[900px] px-6 py-16">
       <SystemLabel tone="accent">Internal</SystemLabel>
