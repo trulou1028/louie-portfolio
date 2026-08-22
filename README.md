@@ -99,6 +99,24 @@ Recorded per spec §39.14.
 13. **assistant-ui brings Radix with it.** The project's own components are
     Base UI (spec §3); `@assistant-ui/react` depends on Radix internally.
     The two coexist — this only affects bundle size, not our component API.
+**Phase 6 (Plan 007)**
+
+15. **The evaluator has its own endpoint as well as a chat tool.**
+    `/api/job-fit` is the primary path the paste dialog uses; routing a
+    multi-thousand-character description through the model into tool arguments
+    would be slow and truncation-prone. `compare_job_description` still exists
+    as a chat tool for a description pasted into the composer, and both call
+    the same `runJobFitComparison`.
+16. **The output schema adds `suggestedQuestions`.** Spec §22 lists
+    "Suggested questions" as an output section but spec §18's schema omits it;
+    the field was added so the documented UI could be built.
+17. **Per-message prompt limit raised to 16k, with a new 48k total.** A pasted
+    job description legitimately exceeds the old 8k message cap. The total cap
+    is what actually bounds prompt size — the per-message limit alone would
+    have permitted 32 large messages.
+
+**Phase 5 (Plan 006), continued**
+
 14. **Playwright runs with placeholder AI env vars.** They are never used to
     reach a provider: every AI test intercepts `/api/chat`. They exist so the
     AI surface mounts and can be exercised without a real key.
@@ -137,6 +155,24 @@ unaffected (spec §31).
 
 Watch for: no invented metrics, at least one evidence link per substantive
 answer, tool activity shown in plain language, and no chain-of-thought.
+
+### Job-description evaluator
+
+"Paste a job description" compares a role against the evidence index and
+returns strong matches, work to review, honest gaps, and questions to ask.
+
+It is an evidence navigator, not a score. Two mechanics enforce that:
+
+- **Every match must cite evidence that resolves.** `verifyMatches` checks each
+  cited id against the index and moves any unbacked match into the gaps
+  section, so a hallucinated citation becomes an admitted gap rather than a
+  false claim.
+- **No numbers.** Match percentages and ratings are stripped from model prose
+  before rendering (spec §18).
+
+The description is used for one model call and nothing else — never logged,
+persisted, or sent to analytics (spec §30). There is deliberately no `console`
+call anywhere on that path, including error handlers.
 
 ### Rate limiting
 

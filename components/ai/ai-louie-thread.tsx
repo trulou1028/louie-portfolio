@@ -6,6 +6,7 @@ import { useAISDKError } from "@assistant-ui/react-ai-sdk";
 
 import { AiLouieComposer } from "@/components/ai/ai-louie-composer";
 import { AiLouieRuntime } from "@/components/ai/ai-louie-runtime";
+import { JobDescriptionDialog } from "@/components/ai/job-description-dialog";
 import { Surface } from "@/components/system/surface";
 import { SystemLabel } from "@/components/system/system-label";
 import { cn } from "@/lib/utils";
@@ -22,7 +23,10 @@ import { cn } from "@/lib/utils";
  * copy and the rest of the portfolio is untouched.
  */
 
-/** Spec §11 §2 verbatim, minus the job-description chip (Plan 007). */
+/**
+ * Spec §11 §2. "Paste a job description" is not in this list because it is
+ * not a question — it opens the evaluator dialog beside the chips instead.
+ */
 const SUGGESTIONS = [
   "Show me Offboard",
   "How technical is Louie?",
@@ -143,6 +147,20 @@ function ThreadBody() {
                 </ThreadPrimitive.Suggestion>
               </li>
             ))}
+            <li>
+              {/* Spec §22's recruiter entry point. A real control now that
+                  the evaluator exists (deferred in Plan 003). */}
+              <JobDescriptionDialog
+                trigger={
+                  <button
+                    type="button"
+                    className="inline-flex min-h-11 items-center rounded-sm border border-accent bg-surface px-3.5 py-2 text-left text-body-sm font-medium text-accent focus-ring transition-colors duration-(--duration-fast) hover:bg-accent-soft"
+                  >
+                    Paste a job description
+                  </button>
+                }
+              />
+            </li>
           </ul>
         </div>
       </ThreadPrimitive.Empty>

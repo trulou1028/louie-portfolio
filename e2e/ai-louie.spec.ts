@@ -136,20 +136,47 @@ test.describe("the chat endpoint", () => {
     expect([400, 413]).toContain(notJson.status());
   });
 
-  test("enforces the message size limit", async ({ request }) => {
+  test("enforces the per-message size limit", async ({ request }) => {
     const response = await request.post("/api/chat", {
       data: {
         messages: [
           {
             id: "1",
             role: "user",
-            parts: [{ type: "text", text: "x".repeat(9_000) }],
+            parts: [{ type: "text", text: "x".repeat(17_000) }],
           },
         ],
       },
     });
     expect(response.status()).toBe(413);
     expect(await response.json()).toEqual({ error: "message_too_long" });
+  });
+
+  test("enforces a total conversation size limit", async ({ request }) => {
+    // The per-message cap alone would allow 32 large messages through.
+    const response = await request.post("/api/chat", {
+      data: {
+        messages: Array.from({ length: 10 }, (_, i) => ({
+          id: String(i),
+          role: "user",
+          parts: [{ type: "text", text: "x".repeat(15_000) }],
+        })),
+      },
+    });
+    expect(response.status()).toBe(413);
+    expect(await response.json()).toEqual({ error: "conversation_too_long" });
+  });
+
+  test("accepts a job description pasted into the composer", async ({ request }) => {
+    // 9k chars was rejected before the limit was raised for this flow.
+    const response = await request.post("/api/chat", {
+      data: {
+        messages: [
+          { id: "1", role: "user", parts: [{ type: "text", text: "x".repeat(9_000) }] },
+        ],
+      },
+    });
+    expect(response.status()).not.toBe(413);
   });
 
   test("never returns provider error text", async ({ request }) => {

@@ -7,6 +7,8 @@ import { buildSystemPrompt } from "@/lib/ai/system-prompt";
 import { searchEvidence } from "@/lib/ai/portfolio-search";
 import { searchPortfolioInputSchema } from "@/lib/ai/schemas";
 import { chatRateLimiter, clientKey } from "@/lib/ai/rate-limit";
+import { jobDescriptionInputSchema } from "@/lib/ai/job-fit";
+import { runJobFitComparison } from "@/lib/ai/job-fit-service";
 
 /**
  * AI Louie's chat endpoint (spec §17, §18, §31, §32).
@@ -25,7 +27,11 @@ import { chatRateLimiter, clientKey } from "@/lib/ai/rate-limit";
 
 /** Prompt-size limits (spec §32). */
 const MAX_MESSAGES = 32;
-const MAX_CHARS_PER_MESSAGE = 8_000;
+// Generous enough for a job description pasted straight into the composer.
+const MAX_CHARS_PER_MESSAGE = 16_000;
+// ...but the per-message cap alone would still permit 32 × 16k. A total bound
+// is what actually limits prompt size (spec §32).
+const MAX_TOTAL_CHARS = 48_000;
 
 const requestSchema = z.object({
   messages: z.array(z.custom<UIMessage>()).min(1).max(MAX_MESSAGES),
@@ -74,6 +80,11 @@ export async function POST(request: Request) {
     return Response.json({ error: "message_too_long" }, { status: 413 });
   }
 
+  const totalChars = messages.reduce((sum, m) => sum + messageLength(m), 0);
+  if (totalChars > MAX_TOTAL_CHARS) {
+    return Response.json({ error: "conversation_too_long" }, { status: 413 });
+  }
+
   // --- model ----------------------------------------------------------------
   let model;
   try {
@@ -101,6 +112,22 @@ export async function POST(request: Request) {
             "Search Louie's curated portfolio evidence. Call this before making any factual claim about his experience, and answer only from what it returns.",
           inputSchema: searchPortfolioInputSchema,
           execute: async (input) => searchEvidence(input),
+        }),
+        /**
+         * Job-description comparison (spec §18 Tool 4, §22).
+         *
+         * Runs its own structured-output call rather than trying to shape the
+         * conversational stream, then verifies every citation before the
+         * result leaves the server: a match the index cannot back becomes an
+         * admitted gap. The job description is used here and nowhere else —
+         * it is never logged or sent to analytics (spec §30).
+         */
+        compare_job_description: tool({
+          description:
+            "Compare a pasted job description against Louie's portfolio evidence. Returns strong matches, honest gaps, work to review, and questions to ask him.",
+          inputSchema: jobDescriptionInputSchema,
+          execute: async ({ jobDescription }) =>
+            runJobFitComparison(jobDescription),
         }),
         // Client-declared tools (navigate_portfolio, show_evidence,
         // set_context_panel) are executed in the browser.
