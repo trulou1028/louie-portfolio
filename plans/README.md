@@ -22,6 +22,7 @@ honor its STOP conditions, and update your row when done.
 | 007  | Job-description evaluator                  | P2 | M | 006 | TODO |
 | 008  | Experiments, polish, SEO/a11y/perf, deploy | P2 | L | 007 | TODO |
 | 009  | Voice mode (post-launch)                   | P3 | L | 008 | TODO |
+| 010  | Visual reconciliation with mockup          | P2 | M | 003 | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
@@ -68,6 +69,16 @@ the full punch list into `plans/CONTENT-TODOS.md`.
   canvas (spec §26 requires 4.5:1). Left at the spec §6 value and restricted
   to non-text use; darkening to roughly `35 6% 46%` would reach AA. Louie's
   call — flagged in `app/globals.css` and revisited in Plans 002 and 008.
+
+## Open design question
+
+- **A strategy-session mockup shows a richer 3-panel layout** than what is
+  built — right rail in use on the homepage, nav icons, a generative-UI card
+  inside the AI thread, voice controls. Captured as
+  [010-visual-reconciliation.md](010-visual-reconciliation.md), which also
+  records that the mockup **misstates what Offboard is** (it shows an IT
+  offboarding tool; Offboard is a job-search product per spec §11/§13 and the
+  live product site). The built case study is correct; the mockup is not.
 
 ## Findings considered and rejected
 
