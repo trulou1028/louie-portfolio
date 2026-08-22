@@ -36,30 +36,45 @@ function PersistentPanelGroup({
   const groupRef = useGroupRef();
   const key = `panels:${storageKey}`;
 
-  // Captured exactly once, during the first render — see note above.
-  const saved = React.useRef<Record<string, number> | null | undefined>(
-    undefined,
-  );
-  if (saved.current === undefined) {
-    if (typeof window === "undefined") {
-      saved.current = null;
-    } else {
-      try {
-        const raw = window.localStorage.getItem(key);
-        saved.current = raw
-          ? (JSON.parse(raw) as Record<string, number>)
-          : null;
-      } catch {
-        saved.current = null;
-      }
+  // Captured exactly once, during the first render, via a lazy initializer —
+  // see note above. The value never affects rendered output, so reading
+  // localStorage here cannot cause a hydration mismatch.
+  const [savedLayout] = React.useState<Record<string, number> | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem(key);
+      return raw ? (JSON.parse(raw) as Record<string, number>) : null;
+    } catch {
+      return null;
     }
-  }
+  });
 
   React.useEffect(() => {
-    if (saved.current) {
-      (groupRef.current as GroupImperativeHandle | null)?.setLayout(
-        saved.current,
-      );
+    if (!savedLayout) return;
+    try {
+      // A saved layout is only valid for the panel set that produced it. The
+      // set changes legitimately — a breakpoint crossed, a page without a
+      // rail, a refactor renaming panel ids — and the library throws on a
+      // mismatch (seen in the wild as "Invalid 2 panel layout"). A stale
+      // layout is worth nothing: drop it and let defaults stand.
+      const handle = groupRef.current as GroupImperativeHandle | null;
+      if (!handle) return;
+      const current = Object.keys(handle.getLayout());
+      const stored = Object.keys(savedLayout);
+      const compatible =
+        current.length === stored.length &&
+        current.every((id) => stored.includes(id));
+      if (compatible) {
+        handle.setLayout(savedLayout);
+      } else {
+        window.localStorage.removeItem(key);
+      }
+    } catch {
+      try {
+        window.localStorage.removeItem(key);
+      } catch {
+        /* storage unavailable — nothing to clean */
+      }
     }
     // Restore once per mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
