@@ -185,6 +185,21 @@
   }
 }
 
+/* The wash applied when a deep link lands on a section (spec §18 Tool 2).
+   Removed by DeepLinkHighlight after ~1.5s; the transition handles the fade
+   in both directions, and the global reduced-motion rule neutralizes it. */
+[data-highlight="true"] {
+  background-color: hsl(var(--accent-muted) / 0.55);
+  box-shadow: 0 0 0 12px hsl(var(--accent-muted) / 0.55);
+  border-radius: var(--radius-xs);
+}
+
+[data-highlight] {
+  transition:
+    background-color var(--duration-deliberate) ease-out,
+    box-shadow var(--duration-deliberate) ease-out;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

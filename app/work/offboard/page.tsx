@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Content from "@/content/work/offboard.mdx";
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
 import { CaseStudyHeader } from "@/components/portfolio/case-study-header";
+import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
 import {
   TableOfContents,
   TableOfContentsInline,
@@ -26,6 +27,7 @@ export default function OffboardCaseStudy() {
         </ContextualRail>
       }
     >
+      <DeepLinkHighlight />
       <article className="max-w-[760px]">
         <CaseStudyHeader
           project={project}

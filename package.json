@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "validate:evidence": "tsx scripts/validate-evidence.ts",
+    "prebuild": "tsx scripts/validate-evidence.ts",
+    "test": "vitest run"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -37,13 +40,18 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.12",
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   },
   "packageManager": "pnpm@10.4.0",
   "pnpm": {
     "ignoredBuiltDependencies": [
       "sharp",
       "unrs-resolver"
+    ],
+    "onlyBuiltDependencies": [
+      "esbuild"
     ]
   }
 }
