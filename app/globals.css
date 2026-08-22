@@ -11,39 +11,54 @@
    Color values are spec §6 verbatim (HSL triplets, consumed via hsl(var(--x))).
    Radii are spec §9. Motion durations are spec §24.
 --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   RHEA (branch restyle/rhea-dark) — Louie's shadcn preset, updated.
+   Converted from the preset's oklch to this site's HSL-triplet convention.
+
+   The preset defines BOTH halves, so both are here: light on :root, dark on
+   .dark, with <html class="dark"> making dark the default. A theme toggle is
+   therefore a later one-liner, not a rebuild.
+
+   One structural departure the preset's own numbers force: it uses a deep
+   rust for --primary (fills) and, separately, a bright amber for
+   --sidebar-primary (the active marker). That is not decoration — in dark
+   mode the rust measures 2.79:1 against the background, so it CANNOT carry
+   text, while the bright amber measures 9.25:1. This site uses its accent for
+   both roles (30 fills, 18 text uses), so the token is split:
+
+     --accent        text-safe: links, active markers, small identity marks
+     --accent-fill   the fill behind primary actions
+     --accent-on-fill  text on that fill (cream, both modes)
+
+   In light mode both accents are the same rust — it passes as text (5.03:1)
+   and as a fill with cream on it (4.85:1). Only dark needs the split.
+--------------------------------------------------------------------------- */
 :root {
-  /* -------------------------------------------------------------------------
-     RHEA DARK MOCKUP (branch restyle/rhea-dark).
-     Values derive from Louie's shadcn preset b1xAq2LoGY — style base-rhea,
-     base color stone, amber theme — converted from the preset's oklch to this
-     site's HSL-triplet convention so every component re-skins untouched.
-     The moss/light palette from spec §6 lives on main.
-  ------------------------------------------------------------------------- */
-  color-scheme: dark;
+  color-scheme: light;
 
-  --canvas: 20 14% 4%;            /* preset background (stone-950) */
-  --surface: 24 10% 10%;          /* preset card (stone-900) */
-  --surface-muted: 12 6% 15%;     /* preset secondary/muted (stone-800) */
-  --surface-raised: 24 9% 13%;
-  --foreground: 60 9% 98%;        /* preset foreground (stone-50) */
-  --foreground-muted: 24 5% 64%;  /* preset muted-foreground (stone-400) */
-  --foreground-subtle: 25 5% 45%;
+  --canvas: 0 0% 100%;
+  --surface: 0 0% 100%;
+  --surface-muted: 60 5% 96%;
+  --surface-raised: 0 0% 100%;
+  --foreground: 20 14% 4%;         /* 19.8:1 on canvas */
+  --foreground-muted: 26 6% 45%;   /* 4.79:1 — AA for body text */
+  --foreground-subtle: 24 6% 64%;  /* non-text only */
 
-  --border-subtle: 24 6% 16%;
-  --border-default: 20 6% 22%;
-  --border-strong: 24 5% 32%;
+  --border-subtle: 20 6% 92%;
+  --border-default: 20 6% 90%;
+  --border-strong: 24 6% 80%;
 
-  /* Amber, from the preset's chart ramp — used as the screenshots use it:
-     amber fills carry dark text (the bridge below does this automatically,
-     since --primary-foreground derives from --surface). */
-  --accent: 38 92% 50%;
-  --accent-hover: 43 96% 56%;     /* dark-UI convention: hover brightens */
-  --accent-muted: 38 60% 26%;
-  --accent-soft: 36 45% 12%;
-  --accent-foreground: 45 90% 65%;
+  --accent: 25 100% 37%;           /* preset --primary #bb4d00 — 5.03:1 as text */
+  --accent-hover: 24 100% 30%;
+  --accent-fill: 25 100% 37%;
+  --accent-fill-hover: 24 100% 30%;
+  --accent-on-fill: 48 100% 96%;   /* preset --primary-foreground — 4.85:1 */
+  --accent-muted: 30 70% 86%;
+  --accent-soft: 40 80% 96%;
+  --accent-foreground: 24 100% 27%;
 
-  --danger: 0 72% 60%;
-  --success: 145 45% 55%;
+  --danger: 0 72% 45%;
+  --success: 145 55% 30%;
 
   /* Geometry — spec §9 */
   --radius-xs: 6px;
@@ -73,8 +88,8 @@
   --card-foreground: hsl(var(--foreground));
   --popover: hsl(var(--surface-raised));
   --popover-foreground: hsl(var(--foreground));
-  --primary: hsl(var(--accent));
-  --primary-foreground: hsl(var(--surface));
+  --primary: hsl(var(--accent-fill));
+  --primary-foreground: hsl(var(--accent-on-fill));
   --secondary: hsl(var(--surface-muted));
   --secondary-foreground: hsl(var(--foreground));
   --muted: hsl(var(--surface-muted));
@@ -84,6 +99,58 @@
   --input: hsl(var(--border-default));
   --ring: hsl(var(--accent));
 }
+
+/* Dark half of the preset. Default via <html class="dark">. */
+.dark {
+  color-scheme: dark;
+
+  --canvas: 20 14% 4%;             /* preset background #0c0a09 */
+  --surface: 24 10% 10%;           /* preset card #1c1917 */
+  --surface-muted: 12 6% 15%;      /* preset muted #292524 */
+  --surface-raised: 24 10% 12%;
+  --foreground: 60 9% 98%;         /* 18.9:1 on canvas */
+  --foreground-muted: 27 6% 63%;   /* 7.64:1 — comfortably AA */
+  --foreground-subtle: 25 5% 45%;  /* non-text only */
+
+  --border-subtle: 12 5% 20%;
+  --border-default: 20 5% 26%;
+  --border-strong: 24 5% 36%;
+
+  /* Bright amber (preset --sidebar-primary #fe9a00) — 9.25:1, text-safe. */
+  --accent: 36 100% 50%;
+  --accent-hover: 47 100% 59%;     /* brightens on hover, the dark convention */
+  /* Deep rust (preset --primary #973c00) — 2.79:1, fills ONLY. */
+  --accent-fill: 24 100% 30%;
+  --accent-fill-hover: 24 100% 36%;
+  --accent-on-fill: 48 100% 96%;   /* cream on rust — 6.84:1 */
+  --accent-muted: 26 55% 22%;
+  --accent-soft: 24 40% 11%;
+  --accent-foreground: 36 100% 50%;
+
+  --danger: 0 72% 60%;
+  --success: 145 45% 55%;
+
+  --shadow-soft:
+    0 1px 2px hsl(0 0% 0% / 0.4), 0 8px 24px hsl(0 0% 0% / 0.4);
+
+  /* Bridge values that differ in dark. */
+  --background: hsl(var(--canvas));
+  --card: hsl(var(--surface));
+  --card-foreground: hsl(var(--foreground));
+  --popover: hsl(var(--surface-raised));
+  --popover-foreground: hsl(var(--foreground));
+  --primary: hsl(var(--accent-fill));
+  --primary-foreground: hsl(var(--accent-on-fill));
+  --secondary: hsl(var(--surface-muted));
+  --secondary-foreground: hsl(var(--foreground));
+  --muted: hsl(var(--surface-muted));
+  --muted-foreground: hsl(var(--foreground-muted));
+  --destructive: hsl(var(--danger));
+  --border: hsl(var(--border-default));
+  --input: hsl(var(--border-default));
+  --ring: hsl(var(--accent));
+}
+
 
 @theme inline {
   /* Portfolio color utilities */
@@ -102,6 +169,9 @@
 
   --color-accent: hsl(var(--accent));
   --color-accent-hover: hsl(var(--accent-hover));
+  --color-accent-fill: hsl(var(--accent-fill));
+  --color-accent-fill-hover: hsl(var(--accent-fill-hover));
+  --color-accent-on-fill: hsl(var(--accent-on-fill));
   --color-accent-muted: hsl(var(--accent-muted));
   --color-accent-soft: hsl(var(--accent-soft));
   --color-accent-foreground: hsl(var(--accent-foreground));

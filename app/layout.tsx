@@ -52,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${geistMono.variable} ${raleway.variable} h-full antialiased`}
+      className={`dark ${outfit.variable} ${geistMono.variable} ${raleway.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <PersonSchema />
