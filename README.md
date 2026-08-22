@@ -123,6 +123,21 @@ Recorded per spec §39.14, in build order.
     is what actually bounds prompt size — the per-message limit alone would
     have permitted 32 large messages.
 
+**Phase 7 — launch (Plan 008)**
+
+19. **The AI panel is no longer gated server-side on `isAIConfigured()`.** The
+    homepage is statically prerendered, so that check was evaluated at build
+    time: adding a key in Vercel without redeploying would have left the site
+    permanently showing "unavailable". The panel now always renders and the
+    endpoint's 503 drives the fallback.
+20. **The assistant runtime is a lazily-loaded chunk.** Spec §27 asks that the
+    AI runtime not load until the visitor approaches the AI surface. Because
+    Next prefetches route chunks, keeping it in the shared bundle made every
+    route — including `/about` — download ~840KB it never used.
+21. **Axe audits exclude `[data-base-ui-focus-guard]`.** Base UI's focus-trap
+    sentinels carry `role="button"` with no accessible name. They are library
+    internals and inert by design; revisit on the next upgrade.
+
 **Visual (Plan 010)**
 
 18. **Homepage layout follows the strategy mockup**, but its Offboard
@@ -145,9 +160,10 @@ OPENAI_API_KEY=sk-...
 OPENAI_MODEL=gpt-4o-mini   # any model id; never hard-coded in the app
 ```
 
-Without them the homepage renders the "temporarily unavailable" surface on the
-server and the AI runtime is never sent to the browser. The rest of the site is
-unaffected (spec §31).
+Without them the panel loads and the endpoint returns 503, so the thread shows
+the "temporarily unavailable" copy. The rest of the site is unaffected
+(spec §31). An earlier version decided this on the server, but that check froze
+at build time on a statically prerendered page — see deviation 19.
 
 **Manual smoke test** (needs a real key — the automated suites do not):
 
