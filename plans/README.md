@@ -19,7 +19,7 @@ honor its STOP conditions, and update your row when done.
 | 004  | Offboard + Flexi case studies              | P1 | L | 003 | DONE |
 | 005  | Evidence index + deterministic search      | P1 | M | 004 | DONE |
 | 006  | AI Louie text mode (chat, tools, grounding)| P1 | L | 005 | DONE (needs key for live use) |
-| 007  | Job-description evaluator                  | P2 | M | 006 | TODO |
+| 007  | Job-description evaluator                  | P2 | M | 006 | DONE |
 | 008  | Experiments, polish, SEO/a11y/perf, deploy | P2 | L | 007 | TODO |
 | 009  | Voice mode (post-launch)                   | P3 | L | 008 | TODO |
 | 010  | Visual reconciliation with mockup          | P2 | M | 003 | DONE (groups B–D deferred) |
