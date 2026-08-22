@@ -12,32 +12,38 @@
    Radii are spec §9. Motion durations are spec §24.
 --------------------------------------------------------------------------- */
 :root {
-  --canvas: 42 28% 97%;
-  --surface: 40 24% 99%;
-  --surface-muted: 42 18% 95%;
-  --surface-raised: 40 30% 100%;
-  --foreground: 35 15% 9%;        /* 16.7:1 on canvas */
-  --foreground-muted: 35 8% 40%;  /* 5.25:1 on canvas — AA for body text */
-  /* --foreground-subtle measures 2.98:1 on canvas: BELOW the WCAG AA 4.5:1
-     required for text (spec §26). Use it only for non-text UI (rules,
-     separators, icon strokes) or large display text — never for body copy,
-     labels, or metadata. Darkening it to ~35 6% 46% would reach AA if a
-     text use case proves necessary; that is a token change for Louie to
-     approve (spec §6 permits tuning). Revisited in Plans 002 and 008. */
-  --foreground-subtle: 35 6% 56%;
+  /* -------------------------------------------------------------------------
+     RHEA DARK MOCKUP (branch restyle/rhea-dark).
+     Values derive from Louie's shadcn preset b1xAq2LoGY — style base-rhea,
+     base color stone, amber theme — converted from the preset's oklch to this
+     site's HSL-triplet convention so every component re-skins untouched.
+     The moss/light palette from spec §6 lives on main.
+  ------------------------------------------------------------------------- */
+  color-scheme: dark;
 
-  --border-subtle: 35 13% 90%;
-  --border-default: 35 11% 84%;
-  --border-strong: 35 8% 72%;
+  --canvas: 20 14% 4%;            /* preset background (stone-950) */
+  --surface: 24 10% 10%;          /* preset card (stone-900) */
+  --surface-muted: 12 6% 15%;     /* preset secondary/muted (stone-800) */
+  --surface-raised: 24 9% 13%;
+  --foreground: 60 9% 98%;        /* preset foreground (stone-50) */
+  --foreground-muted: 24 5% 64%;  /* preset muted-foreground (stone-400) */
+  --foreground-subtle: 25 5% 45%;
 
-  --accent: 86 44% 31%;
-  --accent-hover: 86 47% 26%;
-  --accent-muted: 84 35% 91%;
-  --accent-soft: 84 33% 95%;
-  --accent-foreground: 85 55% 20%;
+  --border-subtle: 24 6% 16%;
+  --border-default: 20 6% 22%;
+  --border-strong: 24 5% 32%;
 
-  --danger: 0 68% 46%;
-  --success: 111 42% 35%;
+  /* Amber, from the preset's chart ramp — used as the screenshots use it:
+     amber fills carry dark text (the bridge below does this automatically,
+     since --primary-foreground derives from --surface). */
+  --accent: 38 92% 50%;
+  --accent-hover: 43 96% 56%;     /* dark-UI convention: hover brightens */
+  --accent-muted: 38 60% 26%;
+  --accent-soft: 36 45% 12%;
+  --accent-foreground: 45 90% 65%;
+
+  --danger: 0 72% 60%;
+  --success: 145 45% 55%;
 
   /* Geometry — spec §9 */
   --radius-xs: 6px;
@@ -50,7 +56,7 @@
 
   /* Elevation. Border first, background second, shadow last (spec §9). */
   --shadow-soft:
-    0 1px 2px hsl(35 15% 9% / 0.04), 0 8px 24px hsl(35 15% 9% / 0.05);
+    0 1px 2px hsl(0 0% 0% / 0.35), 0 8px 24px hsl(0 0% 0% / 0.35);
 
   /* Motion — spec §24 */
   --duration-instant: 90ms;
@@ -121,10 +127,11 @@
   --color-ring: var(--ring);
 
   /* Typography — spec §7 */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
-  --font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* The display slot: Raleway, per the preset. Structured, not editorial. */
+  --font-serif: var(--font-raleway), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-raleway), ui-sans-serif, system-ui, sans-serif;
 
   /* Type scale — spec §8. Display and heading sizes scale fluidly. */
   --text-display-xl: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
