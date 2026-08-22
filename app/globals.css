@@ -200,6 +200,35 @@
     box-shadow var(--duration-deliberate) ease-out;
 }
 
+/* ---------------------------------------------------------------------------
+   Pane-layout guards for the pre-hydration frame.
+
+   The server renders the desktop pane tree (the canonical document); the
+   right pane trees for smaller viewports are chosen client-side after mount.
+   Panels carry inline flex-basis styles, so without these overrides a phone
+   briefly paints the desktop layout squeezed into 375px before hydration.
+   These rules make the FIRST paint correct at every width; the JS swap that
+   follows only changes which tree is mounted, never what it looks like.
+--------------------------------------------------------------------------- */
+@media (max-width: 1023.98px) {
+  [data-panel][id="left-rail"],
+  [data-slot="resizable-handle"] {
+    display: none !important;
+  }
+  [data-panel][id="content"] {
+    flex: 1 1 auto !important;
+  }
+}
+
+@media (max-width: 1279.98px) {
+  [data-panel][id="canvas-rail"] {
+    display: none !important;
+  }
+  [data-panel][id="canvas-content"] {
+    flex: 1 1 auto !important;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

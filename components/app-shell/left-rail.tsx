@@ -25,7 +25,7 @@ function LeftRail() {
   const hasContact = Boolean(links.linkedin || links.email);
 
   return (
-    <div className="flex h-full flex-col gap-7 px-5 py-7">
+    <div className="flex min-h-full flex-col gap-7 px-5 py-7">
       <Link
         href="/"
         className="focus-ring rounded-sm"

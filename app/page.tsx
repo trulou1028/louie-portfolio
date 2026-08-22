@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Canvas } from "@/components/app-shell/contextual-rail";
 import { AiLouieThread } from "@/components/ai/ai-louie-thread";
 import { ExperimentTile } from "@/components/portfolio/experiment-tile";
 import { RailWorkCard } from "@/components/portfolio/rail-work-card";
@@ -31,58 +32,11 @@ export default function Home() {
   // from the spec wording.
   const lead = primary.slice(0, primary.length - primaryEmphasis.length).trimEnd();
 
-  return (
-    <div className="mx-auto w-full max-w-[1240px] px-6 py-10 sm:px-8 lg:py-14">
-      <div className="flex flex-col gap-16 xl:flex-row xl:gap-12">
-        {/* ---------------------------------------------------- main column */}
-        <div className="flex min-w-0 flex-1 flex-col gap-14">
-          <section>
-            <SectionLabel>{profile.positioning.eyebrow}</SectionLabel>
-
-            <h1 className="mt-6 max-w-[15ch] font-serif text-display-xl text-balance text-foreground">
-              {lead}{" "}
-              {/* Stylistic, not semantic emphasis — a <span>, so screen
-                  readers do not announce stress that isn't meant. */}
-              <span className="italic text-accent">{primaryEmphasis}</span>
-            </h1>
-
-            <p className="mt-6 max-w-[56ch] text-body-lg text-foreground-muted">
-              {profile.positioning.supporting}
-            </p>
-
-            {/* TODO(content): second line summarizing CK-12 and Offboard,
-                pending Louie's approved wording (spec §11 §1). */}
-            {profile.heroSecondaryLine ? (
-              <p className="mt-3 max-w-[56ch] text-body-lg text-foreground-muted">
-                {profile.heroSecondaryLine}
-              </p>
-            ) : null}
-
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Action render={<Link href="/work" />}>View selected work</Action>
-              <Action variant="secondary" render={<Link href="#ask-ai-louie" />}>
-                Ask AI Louie
-              </Action>
-            </div>
-          </section>
-
-          <section id="ask-ai-louie" className="scroll-mt-8">
-            {/* Always rendered. An earlier version gated this on
-                isAIConfigured(), but this page is statically prerendered, so
-                that check froze at build time — adding the key in Vercel
-                without redeploying would have left the site permanently
-                showing "unavailable". The runtime is lazy-loaded anyway, and
-                an unconfigured backend surfaces the spec §31 copy from the
-                endpoint's 503 (spec §31). */}
-            <AiLouieThread />
-          </section>
-        </div>
-
-        {/* ---------------------------------------------------------- rail  */}
-        <aside
-          aria-label="Featured work and profile"
-          className="flex flex-col gap-9 xl:w-[336px] xl:shrink-0"
-        >
+  const rail = (
+    <aside
+      aria-label="Featured work and profile"
+      className="flex flex-col gap-9"
+    >
           <RailSection title="Featured work" viewAllHref="/work">
             <div className="flex flex-col gap-2.5">
               {workProjects.map((project) => (
@@ -136,7 +90,53 @@ export default function Home() {
             </figcaption>
           </figure>
         </aside>
+  );
+
+  return (
+    <Canvas rail={rail} stackRail railDefaultSize={30}>
+      <div className="flex flex-col gap-14">
+
+          <section>
+            <SectionLabel>{profile.positioning.eyebrow}</SectionLabel>
+
+            <h1 className="mt-6 max-w-[15ch] font-serif text-display-xl text-balance text-foreground">
+              {lead}{" "}
+              {/* Stylistic, not semantic emphasis — a <span>, so screen
+                  readers do not announce stress that isn't meant. */}
+              <span className="italic text-accent">{primaryEmphasis}</span>
+            </h1>
+
+            <p className="mt-6 max-w-[56ch] text-body-lg text-foreground-muted">
+              {profile.positioning.supporting}
+            </p>
+
+            {/* TODO(content): second line summarizing CK-12 and Offboard,
+                pending Louie's approved wording (spec §11 §1). */}
+            {profile.heroSecondaryLine ? (
+              <p className="mt-3 max-w-[56ch] text-body-lg text-foreground-muted">
+                {profile.heroSecondaryLine}
+              </p>
+            ) : null}
+
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Action render={<Link href="/work" />}>View selected work</Action>
+              <Action variant="secondary" render={<Link href="#ask-ai-louie" />}>
+                Ask AI Louie
+              </Action>
+            </div>
+          </section>
+
+          <section id="ask-ai-louie" className="scroll-mt-8">
+            {/* Always rendered. An earlier version gated this on
+                isAIConfigured(), but this page is statically prerendered, so
+                that check froze at build time — adding the key in Vercel
+                without redeploying would have left the site permanently
+                showing "unavailable". The runtime is lazy-loaded anyway, and
+                an unconfigured backend surfaces the spec §31 copy from the
+                endpoint's 503 (spec §31). */}
+            <AiLouieThread />
+          </section>
       </div>
-    </div>
+    </Canvas>
   );
 }

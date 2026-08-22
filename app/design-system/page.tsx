@@ -85,7 +85,7 @@ export default function DesignSystemPage() {
   if (process.env.NODE_ENV === "production") notFound();
 
   return (
-    <div className="mx-auto w-full max-w-[900px] px-6 py-16">
+    <div className="h-full overflow-y-auto mx-auto w-full max-w-[900px] px-6 py-16">
       <SystemLabel tone="accent">Internal</SystemLabel>
       <h1 className="mt-4 font-serif text-display-lg">Design system</h1>
       <p className="mt-3 max-w-[65ch] text-body text-foreground-muted">

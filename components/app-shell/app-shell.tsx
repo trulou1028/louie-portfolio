@@ -1,25 +1,40 @@
+"use client";
+
 import * as React from "react";
 
 import { LeftRail } from "@/components/app-shell/left-rail";
 import { MobileNav } from "@/components/app-shell/mobile-nav";
-import { SiteFooter } from "@/components/app-shell/site-footer";
+import { PersistentPanelGroup } from "@/components/app-shell/persistent-panel-group";
+import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
+import { useMinWidth } from "@/lib/use-breakpoint";
 
 /**
- * The application shell (spec §10, §25).
+ * The application shell (spec §10, §25) — an app frame, not a document.
  *
- * One responsive shell rather than separate desktop and mobile trees, so
- * navigation state is never duplicated (and never diverges):
+ * The viewport is locked to `h-dvh` and every column owns its scroll, the way
+ * a desktop tool does: the left rail scrolls independently of the canvas, and
+ * pages with a contextual rail (see `Canvas`) add a third independent
+ * scroller. The divider is draggable — pixel-based min/max keep the rail
+ * inside spec §10's range — sizes persist per visitor, and the handle is a
+ * real separator, keyboard-resizable with arrow keys (spec §26).
  *
- *   < lg   compact header + drawer, single column
- *   ≥ lg   persistent 240px left rail beside the canvas
- *   ≥ xl   pages may additionally show a contextual right rail
+ *   < lg   compact header + drawer; the rail pane is not rendered
+ *   ≥ lg   persistent, resizable left rail beside the canvas
+ *   ≥ xl   pages may additionally show a resizable contextual right rail
  *
- * Landmarks live here: `nav` inside the rails, `main` around page content,
- * `aside` inside ContextualRail (spec §26).
+ * `useMinWidth` reports desktop on the server, so the canonical document
+ * always contains the rail exactly once; below lg it unmounts at hydration.
+ * The rail's inner `max-lg:hidden` guard keeps the pre-hydration frame on
+ * phones from flashing desktop chrome. Because `main` never scrolls, pages
+ * own their scrolling through `Canvas` — which is also where the footer
+ * lives now: in an app frame a footer belongs to the content column, not
+ * the window.
  */
 function AppShell({ children }: { children: React.ReactNode }) {
+  const isLg = useMinWidth(1024);
+
   return (
-    <div className="flex min-h-full flex-col lg:flex-row">
+    <div className="flex h-dvh flex-col">
       {/* Skip link — first tab stop on every page (spec §26). */}
       <a
         href="#main"
@@ -28,19 +43,38 @@ function AppShell({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
 
-      <div className="hidden shrink-0 border-r border-border-subtle lg:block lg:w-[228px] xl:w-[240px]">
-        <div className="sticky top-0 h-dvh">
-          <LeftRail />
-        </div>
-      </div>
+      <MobileNav />
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <MobileNav />
-        <main id="main" tabIndex={-1} className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
-      </div>
+      <PersistentPanelGroup
+        storageKey="shell"
+        orientation="horizontal"
+        className="min-h-0 flex-1"
+      >
+        {isLg ? (
+          <>
+            <ResizablePanel
+              id="left-rail"
+              defaultSize={236}
+              minSize={190}
+              maxSize={340}
+            >
+              <div className="h-full overflow-y-auto border-r border-border-subtle max-lg:hidden">
+                <LeftRail />
+              </div>
+            </ResizablePanel>
+            <ResizableHandle
+              className="after:w-2 cursor-col-resize bg-border-subtle transition-colors duration-(--duration-fast) hover:bg-accent data-[resizing]:bg-accent max-lg:hidden"
+              aria-label="Resize navigation"
+            />
+          </>
+        ) : null}
+
+        <ResizablePanel id="content">
+          <main id="main" tabIndex={-1} className="h-full overflow-hidden">
+            {children}
+          </main>
+        </ResizablePanel>
+      </PersistentPanelGroup>
     </div>
   );
 }
