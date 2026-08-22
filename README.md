@@ -44,89 +44,93 @@ Conventions for anyone (human or agent) working in here: see
 
 ## Deviations from the specification
 
-Recorded per spec §39.14.
+Recorded per spec §39.14, in build order.
 
-**Phase 0 (Plan 001)**
+**Phase 0 — scaffold (Plan 001)**
 
 1. **Next.js 16 / React 19 / Tailwind v4.** The spec names the stack but not
    versions; these are current as of scaffolding. Tailwind v4 means tokens are
    declared with `@theme` in CSS rather than in a `tailwind.config.ts`.
 2. **`pnpm-workspace.yaml` removed.** `create-next-app` emitted one containing
-   only `ignoredBuiltDependencies`, which pnpm 10.4 rejects ("packages field
-   missing or empty"). That setting now lives under `pnpm` in `package.json`.
+   only `ignoredBuiltDependencies`, which pnpm 10.4 rejects. That setting now
+   lives under `pnpm` in `package.json`.
 3. **`typecheck` runs `next typegen` first.** Next 16 generates the
    `LayoutProps`/`PageProps` global types during build; without typegen a
    standalone `tsc --noEmit` fails on route files.
-4. **shadcn "nova" preset.** The CLI required a preset; nova was chosen because
-   it pairs Lucide icons with Geist, matching spec §3 and §7. Its default
-   grayscale palette is fully overridden by the spec §6 tokens.
-5. **shadcn semantic tokens are derived, not duplicated.** Upstream components
-   reference `--background`, `--primary`, `--muted`, etc. Those are defined in
-   `:root` in terms of the spec §6 tokens so primitives inherit the portfolio
-   palette. Notably `--primary` maps to the moss accent, and `--ring` to the
-   accent for focus states.
-6. **No `.dark` palette.** The `dark` variant is still registered so upstream
+4. **shadcn "nova" preset.** The CLI required a preset; nova pairs Lucide with
+   Geist, matching spec §3 and §7. Its grayscale palette is fully overridden by
+   the spec §6 tokens.
+5. **shadcn semantic tokens are derived, not duplicated.** `--background`,
+   `--primary`, `--muted` and friends are defined in `:root` in terms of the
+   spec §6 tokens, so upstream primitives inherit the portfolio palette.
+6. **No `.dark` palette.** The `dark` variant stays registered so upstream
    components carrying `dark:` classes compile, but no dark theme is defined —
    dark mode is deferred per spec §6 and §37.
 
-**Phase 2 (Plan 003)**
+**Phase 1–2 — design system and shell (Plans 002, 003)**
 
 7. **One responsive shell, not separate desktop/mobile shells.** Spec §4
    sketches `desktop-shell.tsx` and `mobile-shell.tsx`; a single
    `app-shell.tsx` with breakpoint classes is used instead so navigation state
    cannot diverge between two trees. Spec §4 invites a structure "close to"
    its sketch.
-8. **The "Paste a job description" suggestion is deferred.** Spec §11 §2 lists
-   it among the prompt chips, but the evaluator does not exist until Plan 007
-   and it is the one suggestion with no honest destination today. Shipping it
-   now would be a dead control, which spec §11 forbids. The other five
-   suggestions are real links.
-9. **The AI composer ships visibly disabled.** Until Plan 006 there is no
-   conversation to have. Rather than a text field that silently does nothing,
-   it is `disabled`, described by adjacent text explaining why, and paired
-   with suggestions that do work.
-10. **Contact links and availability are omitted, not faked.** The left rail,
-    drawer, and footer render LinkedIn, email, and the availability indicator
-    only once real values exist in `content/profile.ts` (spec §29).
-**Phase 5 (Plan 006)**
+8. **`Action` does not route links through Base UI's Button.** Doing so applied
+   `role="button"` to `<a href>` elements, announcing navigation links as
+   buttons. Link-rendered Actions take the styling directly and keep link
+   semantics (spec §26).
+9. **Contact links and availability are omitted, not faked.** The rails and
+   footer render LinkedIn, email, and availability only once real values exist
+   in `content/profile.ts` (spec §29).
 
-12. **AI Louie reaches the OpenAI Responses API through the Vercel AI SDK.**
-    Spec §3 names the Responses API and assistant-ui; assistant-ui's supported
-    runtime is its AI SDK adapter, and `@ai-sdk/openai` targets the Responses
-    API by default. So the spec's backend is used, via the integration path
-    both libraries actually support, rather than a hand-rolled bridge. The
-    provider stays behind `lib/ai/provider.ts` as spec §3 requires.
+**Phase 3–4 — case studies and evidence (Plans 004, 005)**
+
+10. **No `rehype-slug`.** Case-study anchors are set explicitly via
+    `<Section id>` because those slugs are a public contract that the evidence
+    index and AI navigation validate against; generated ids would drift when a
+    heading is reworded.
+11. **Diagrams are semantic HTML, not images or ASCII.** That is what makes the
+    spec §34 criteria achievable — they read correctly in a screen reader,
+    carry visible text equivalents, and reflow instead of shrinking.
+
+**Phase 5 — AI Louie (Plan 006)**
+
+12. **Reaches the OpenAI Responses API through the Vercel AI SDK.** Spec §3
+    names the Responses API and assistant-ui; assistant-ui's supported runtime
+    is its AI SDK adapter, and `@ai-sdk/openai` targets the Responses API by
+    default. The spec's backend is used via the path both libraries support,
+    rather than a hand-rolled bridge. The provider stays behind
+    `lib/ai/provider.ts` as spec §3 requires.
 13. **assistant-ui brings Radix with it.** The project's own components are
-    Base UI (spec §3); `@assistant-ui/react` depends on Radix internally.
-    The two coexist — this only affects bundle size, not our component API.
-**Phase 6 (Plan 007)**
+    Base UI (spec §3); `@assistant-ui/react` depends on Radix internally. The
+    two coexist — this affects bundle size, not our component API.
+14. **Playwright runs with placeholder AI env vars.** Never used to reach a
+    provider: every AI test intercepts the endpoint. They exist so the AI
+    surface mounts and can be exercised without a real key.
+
+**Phase 6 — evaluator (Plan 007)**
 
 15. **The evaluator has its own endpoint as well as a chat tool.**
     `/api/job-fit` is the primary path the paste dialog uses; routing a
     multi-thousand-character description through the model into tool arguments
-    would be slow and truncation-prone. `compare_job_description` still exists
-    as a chat tool for a description pasted into the composer, and both call
-    the same `runJobFitComparison`.
-16. **The output schema adds `suggestedQuestions`.** Spec §22 lists
-    "Suggested questions" as an output section but spec §18's schema omits it;
-    the field was added so the documented UI could be built.
+    would be slow and truncation-prone. `compare_job_description` remains for a
+    description pasted into the composer, and both call the same
+    `runJobFitComparison`.
+16. **The output schema adds `suggestedQuestions`.** Spec §22 lists "Suggested
+    questions" as an output section but spec §18's schema omits it; the field
+    was added so the documented UI could be built.
 17. **Per-message prompt limit raised to 16k, with a new 48k total.** A pasted
     job description legitimately exceeds the old 8k message cap. The total cap
     is what actually bounds prompt size — the per-message limit alone would
     have permitted 32 large messages.
 
-**Phase 5 (Plan 006), continued**
+**Visual (Plan 010)**
 
-14. **Playwright runs with placeholder AI env vars.** They are never used to
-    reach a provider: every AI test intercepts `/api/chat`. They exist so the
-    AI surface mounts and can be exercised without a real key.
-
-**Phase 2 (Plan 003), continued**
-
-11. **`Action` does not route links through Base UI's Button.** Doing so
-    applied `role="button"` to `<a href>` elements, announcing navigation
-    links as buttons. Link-rendered Actions now take the styling directly and
-    keep link semantics (spec §26).
+18. **Homepage layout follows the strategy mockup**, but its Offboard
+    description is not adopted: the mockup calls Offboard an IT help-desk
+    offboarding tool when it is a job-search product (spec §11, §13, and the
+    live product site). A unit test asserts we never describe it that way. Its
+    microphone, attachment, and "deep research" controls are also not built —
+    voice is Plan 009 and the others are not in the spec.
 
 ## AI Louie
 
