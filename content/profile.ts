@@ -13,6 +13,12 @@ export const profile = {
   positioning: {
     /** Spec §1, §11 — primary positioning statement. */
     primary: "I design AI products and build them.",
+    /**
+     * The tail of `primary`, set in accent italic serif (per the strategy
+     * mockup). Must remain a suffix of `primary` so the rendered heading text
+     * stays spec-verbatim — asserted in `content/profile.test.ts`.
+     */
+    primaryEmphasis: "and build them.",
     /** Spec §1, §11 — supporting positioning. */
     supporting:
       "Product designer working across AI systems, complex workflows, design engineering, and product strategy.",
@@ -36,6 +42,21 @@ export const profile = {
     "Product strategy through production",
   ],
 
+  /**
+   * Pull quotes from the strategy-session mockup.
+   *
+   * These are positioning statements in Louie's own voice, not factual claims
+   * about outcomes, so they carry a different risk than an invented metric —
+   * but the wording is still unconfirmed.
+   * TODO(content): Louie to confirm or rewrite before launch.
+   */
+  quotes: {
+    approach:
+      "I partner with teams to turn complex workflows into intelligent systems people love to use.",
+    philosophy:
+      "I believe the best AI products are invisible. They just make complex work feel simple, empowering people to do more.",
+  },
+
   links: {
     // TODO(content): Louie to supply real URLs — do not guess or invent handles.
     linkedin: null as string | null,
@@ -43,11 +64,18 @@ export const profile = {
   },
 
   availability: {
-    // TODO(content): Louie to confirm availability status and label text
-    // before the left-rail indicator ships (spec §10).
+    // TODO(content): Louie to confirm both lines before this ships (spec §10).
+    // The mockup shows two: a status and a qualifier beneath it.
     status: null as "open" | "selective" | "unavailable" | null,
     label: null as string | null,
+    detail: null as string | null,
   },
+
+  // Deliberately absent: the mockup states "Based in San Francisco". That is a
+  // verifiable biographical fact, and the same mockup misdescribes Offboard —
+  // so it is not adopted on the mockup's authority alone.
+  // TODO(content): Louie to confirm location before adding it.
+  location: null as string | null,
 } as const;
 
 export type Profile = typeof profile;

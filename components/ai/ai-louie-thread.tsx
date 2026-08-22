@@ -31,26 +31,47 @@ const SUGGESTIONS = [
 function AiLouieThread() {
   return (
     <Surface variant="ai" radius="panel" className="p-6 sm:p-8">
-      <div className="flex items-center gap-2.5">
-        <Sparkles aria-hidden="true" className="size-4 text-accent" />
-        <h2 className="text-heading-md text-foreground">Ask AI Louie</h2>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2.5">
+            <Sparkles aria-hidden="true" className="size-4 text-accent" />
+            <h2 className="text-heading-md text-foreground">Ask AI Louie</h2>
+          </div>
+          <p className="mt-2 max-w-[56ch] text-body text-foreground-muted">
+            Ask about my work, process, experience, or the systems I build.
+          </p>
+        </div>
+
+        <SystemLabel
+          tone="accent"
+          className="shrink-0 gap-2 rounded-full px-2.5 py-1 normal-case"
+        >
+          <span
+            aria-hidden="true"
+            className="size-1.5 rounded-full bg-accent"
+          />
+          AI Louie
+        </SystemLabel>
       </div>
 
-      <p className="mt-2 max-w-[60ch] text-body text-foreground-muted">
-        Ask about my work, process, experience, or the systems I build.
-      </p>
-
       {/* The designed opening message (spec §11 §2, verbatim). */}
-      <Surface
-        radius="lg"
-        className="mt-6 border-accent-muted/70 bg-surface-raised p-5"
-      >
-        <SystemLabel tone="accent">AI Louie</SystemLabel>
-        <p className="mt-3 max-w-[62ch] text-body text-foreground">
-          Hi, I&rsquo;m AI Louie. I can answer questions about Louie&rsquo;s
-          work and take you directly to the evidence behind my answer.
-        </p>
-      </Surface>
+      <div className="mt-6 flex gap-3">
+        <span
+          aria-hidden="true"
+          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-surface"
+        >
+          <Sparkles className="size-4" />
+        </span>
+        <Surface
+          radius="lg"
+          className="min-w-0 flex-1 border-accent-muted/70 bg-surface-raised p-5"
+        >
+          <p className="max-w-[62ch] text-body text-foreground">
+            Hi, I&rsquo;m AI Louie. I can answer questions about Louie&rsquo;s
+            work and take you directly to the evidence behind my answer.
+          </p>
+        </Surface>
+      </div>
 
       <ul className="mt-5 flex flex-wrap gap-2.5">
         {SUGGESTIONS.map((s) => (

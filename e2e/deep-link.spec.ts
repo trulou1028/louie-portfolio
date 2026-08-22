@@ -45,10 +45,15 @@ test.describe("deep links into case studies", () => {
     // navigate_portfolio (Plan 006) routes client-side; the highlight has to
     // fire on hashchange, not only on first load.
     await page.goto("/work/offboard");
+    const section = page.locator("#architecture");
+    // Wait for the target to exist before changing the hash: under parallel
+    // load the hash can otherwise change before the section has rendered, and
+    // the listener finds nothing to highlight.
+    await expect(section).toBeAttached();
+
     await page.evaluate(() => {
       window.location.hash = "architecture";
     });
-    const section = page.locator("#architecture");
     await expect(section).toHaveAttribute("data-highlight", "true");
     await expect(section).toBeInViewport();
   });

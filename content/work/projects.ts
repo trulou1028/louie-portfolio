@@ -34,8 +34,11 @@ export const workProjects: readonly WorkProject[] = [
       "Full-stack development",
     ],
     href: "/work/offboard",
-    // TODO(content): Louie to write a one-line summary for the card.
-    summary: null,
+    // Derived from the case study, which is itself grounded in spec §13 —
+    // NOT from the strategy mockup, which misdescribes Offboard as an IT
+    // offboarding tool. TODO(content): Louie may refine the wording.
+    summary:
+      "A workspace where every opportunity keeps its own context, so a job search stops being rebuilt by hand at every step.",
     // TODO(asset): add real product imagery to public/work/offboard/.
     image: null,
   },
@@ -52,8 +55,10 @@ export const workProjects: readonly WorkProject[] = [
       "Design systems",
     ],
     href: "/work/flexi",
-    // TODO(content): Louie to write a one-line summary for the card.
-    summary: null,
+    // Derived from the case study (spec §14).
+    // TODO(content): Louie may refine the wording.
+    summary:
+      "An AI tutor built to keep the learning intact — holding a student, a teacher, and an institution's needs at once.",
     // TODO(asset): add real product imagery to public/work/flexi/.
     image: null,
   },

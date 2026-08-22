@@ -57,7 +57,9 @@ for (const study of STUDIES) {
     test("every diagram carries a text equivalent", async ({ page }) => {
       // Spec §26: system diagrams need textual equivalents.
       await page.goto(study.path);
-      const figures = page.locator("figure");
+      // Scoped to the article: the shell may legitimately contain figures of
+      // its own, and this assertion is about diagrams and artifacts.
+      const figures = page.locator("article figure");
       const count = await figures.count();
       expect(count).toBeGreaterThan(0);
 

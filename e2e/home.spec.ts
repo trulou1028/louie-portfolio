@@ -48,16 +48,46 @@ test.describe("homepage", () => {
     await expect(viewWork).not.toHaveAttribute("role", "button");
   });
 
-  test("shows both case studies with their spec titles", async ({ page }) => {
+  test("features both case studies in the contextual rail", async ({ page }) => {
+    await page.goto("/");
+    const rail = page.getByRole("complementary", {
+      name: "Featured work and profile",
+    });
+
+    await expect(rail.getByRole("link", { name: /Offboard/ })).toBeVisible();
+    await expect(rail.getByRole("link", { name: /CK-12 Flexi/ })).toBeVisible();
+  });
+
+  test("rail content is present once, at every width", async ({ page }) => {
+    // The rail repositions with CSS rather than rendering a second hidden
+    // copy — spec §28 forbids duplicate portfolio content, and a duplicate
+    // would also double every link for crawlers.
+    await page.goto("/");
+    const rail = page.getByRole("complementary", {
+      name: "Featured work and profile",
+    });
+
+    // Exactly one rail — not a desktop copy plus a hidden mobile copy.
+    await expect(rail).toHaveCount(1);
+
+    // And one card per project inside it. (Prompt chips elsewhere on the page
+    // legitimately link to the same routes, so this is scoped to the rail.)
+    for (const href of ["/work/offboard", "/work/flexi"]) {
+      await expect(rail.locator(`a[href="${href}"]`)).toHaveCount(1);
+    }
+
+    // Visible on mobile too: it stacks below the main column, it does not vanish.
+    await expect(rail).toBeVisible();
+  });
+
+  test("headline renders spec copy despite the styled tail", async ({ page }) => {
+    // "and build them." is set in accent italic via a separate span; the
+    // accessible name must still be the full spec sentence.
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
-        name: "Building an AI-native operating system for the job search",
-      }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", {
-        name: "Designing an AI tutor that helps students learn instead of simply giving them answers",
+        level: 1,
+        name: "I design AI products and build them.",
       }),
     ).toBeVisible();
   });
