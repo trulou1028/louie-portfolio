@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Outfit, Raleway } from "next/font/google";
+import { Geist_Mono, Outfit, Roboto_Slab } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
 import { AppShell } from "@/components/app-shell/app-shell";
@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const raleway = Raleway({
-  variable: "--font-raleway",
+const robotoSlab = Roboto_Slab({
+  variable: "--font-roboto-slab",
   subsets: ["latin"],
 });
 
@@ -52,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`dark ${outfit.variable} ${geistMono.variable} ${raleway.variable} h-full antialiased`}
+      className={`dark ${outfit.variable} ${geistMono.variable} ${robotoSlab.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <PersonSchema />
