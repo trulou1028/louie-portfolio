@@ -22,7 +22,7 @@ honor its STOP conditions, and update your row when done.
 | 007  | Job-description evaluator                  | P2 | M | 006 | TODO |
 | 008  | Experiments, polish, SEO/a11y/perf, deploy | P2 | L | 007 | TODO |
 | 009  | Voice mode (post-launch)                   | P3 | L | 008 | TODO |
-| 010  | Visual reconciliation with mockup          | P2 | M | 003 | TODO |
+| 010  | Visual reconciliation with mockup          | P2 | M | 003 | DONE (groups B–D deferred) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
