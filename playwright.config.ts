@@ -36,5 +36,13 @@ export default defineConfig({
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    env: {
+      // Placeholders so the AI surface mounts and can be exercised. They are
+      // never used to reach a provider: every AI test intercepts /api/chat.
+      // No real key is required to run this suite (spec §31).
+      OPENAI_API_KEY: "test-key-never-used",
+      OPENAI_MODEL: "test-model-never-used",
+      NEXT_PUBLIC_SITE_URL: baseURL,
+    },
   },
 });

@@ -92,30 +92,17 @@ test.describe("homepage", () => {
     ).toBeVisible();
   });
 
-  test("AI surface offers working suggestions and no live composer", async ({
-    page,
-  }) => {
+  // The AI surface is live as of Plan 006; its behavior — suggestions,
+  // composer, tools, and failure states — is covered in e2e/ai-louie.spec.ts.
+  test("presents the AI surface as a real product surface", async ({ page }) => {
     await page.goto("/");
-
-    // The composer must be visibly disabled rather than silently inert.
-    await expect(page.locator("#ai-composer")).toBeDisabled();
-
-    // Every suggestion goes somewhere real — no dead controls (spec §11).
-    const chips = page.locator('[data-slot="prompt-chip"]');
-    await expect(chips).toHaveCount(5);
-    for (const chip of await chips.all()) {
-      await expect(chip).toHaveAttribute("href", /^\/work\//);
-    }
+    const panel = page.locator("#ask-ai-louie");
+    await expect(panel.getByRole("heading", { name: "Ask AI Louie" })).toBeVisible();
+    await expect(
+      panel.getByRole("textbox", { name: /Ask anything about/ }),
+    ).toBeEnabled();
   });
 
-  test("suggestion chips are keyboard reachable", async ({ page }) => {
-    await page.goto("/");
-    const chip = page.locator('[data-slot="prompt-chip"]').first();
-    await chip.focus();
-    await expect(chip).toBeFocused();
-    await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\/work\/offboard/);
-  });
 });
 
 test.describe("navigation", () => {

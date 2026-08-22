@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AiLouieThread } from "@/components/ai/ai-louie-thread";
+import { AiUnavailable } from "@/components/ai/ai-unavailable";
 import { ExperimentTile } from "@/components/portfolio/experiment-tile";
 import { RailWorkCard } from "@/components/portfolio/rail-work-card";
 import { Action } from "@/components/system/action";
@@ -10,6 +11,7 @@ import { Surface } from "@/components/system/surface";
 import { experiments } from "@/content/experiments/experiments";
 import { profile } from "@/content/profile";
 import { workProjects } from "@/content/work/projects";
+import { isAIConfigured } from "@/lib/ai/provider";
 
 /**
  * Homepage (spec §11, with the three-panel layout from the strategy mockup).
@@ -67,7 +69,9 @@ export default function Home() {
           </section>
 
           <section id="ask-ai-louie" className="scroll-mt-8">
-            <AiLouieThread />
+            {/* Checked on the server: with no key the AI runtime is never
+                sent to the browser at all (spec §27, §31). */}
+            {isAIConfigured() ? <AiLouieThread /> : <AiUnavailable />}
           </section>
         </div>
 

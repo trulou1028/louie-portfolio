@@ -88,10 +88,62 @@ Recorded per spec §39.14.
 10. **Contact links and availability are omitted, not faked.** The left rail,
     drawer, and footer render LinkedIn, email, and the availability indicator
     only once real values exist in `content/profile.ts` (spec §29).
+**Phase 5 (Plan 006)**
+
+12. **AI Louie reaches the OpenAI Responses API through the Vercel AI SDK.**
+    Spec §3 names the Responses API and assistant-ui; assistant-ui's supported
+    runtime is its AI SDK adapter, and `@ai-sdk/openai` targets the Responses
+    API by default. So the spec's backend is used, via the integration path
+    both libraries actually support, rather than a hand-rolled bridge. The
+    provider stays behind `lib/ai/provider.ts` as spec §3 requires.
+13. **assistant-ui brings Radix with it.** The project's own components are
+    Base UI (spec §3); `@assistant-ui/react` depends on Radix internally.
+    The two coexist — this only affects bundle size, not our component API.
+14. **Playwright runs with placeholder AI env vars.** They are never used to
+    reach a provider: every AI test intercepts `/api/chat`. They exist so the
+    AI surface mounts and can be exercised without a real key.
+
+**Phase 2 (Plan 003), continued**
+
 11. **`Action` does not route links through Base UI's Button.** Doing so
     applied `role="button"` to `<a href>` elements, announcing navigation
     links as buttons. Link-rendered Actions now take the styling directly and
     keep link semantics (spec §26).
+
+## AI Louie
+
+The assistant is grounded in `content/evidence/evidence.ts`: the server-side
+`search_portfolio` tool is its only source of facts, and every claim is meant
+to come with a link to the section it came from.
+
+To run it locally, put real values in `.env.local`:
+
+```bash
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini   # any model id; never hard-coded in the app
+```
+
+Without them the homepage renders the "temporarily unavailable" surface on the
+server and the AI runtime is never sent to the browser. The rest of the site is
+unaffected (spec §31).
+
+**Manual smoke test** (needs a real key — the automated suites do not):
+
+1. "What is Louie's strongest AI work?" → an answer citing evidence cards.
+2. "Show me Offboard" → navigates to `/work/offboard` and highlights on arrival.
+3. "What has he shipped in Rust?" → says it lacks evidence rather than inventing.
+4. "How technical is Louie?" → cites the architecture evidence.
+5. "Show me user research" → cites the Flexi research entry.
+
+Watch for: no invented metrics, at least one evidence link per substantive
+answer, tool activity shown in plain language, and no chain-of-thought.
+
+### Rate limiting
+
+The public endpoint allows 20 requests per 5 minutes per IP, in memory. On
+serverless that is **per instance** and therefore best-effort — acceptable for a
+portfolio, and deliberately not backed by new infrastructure (spec §3). If
+abuse appears, Vercel KV or Upstash is the upgrade path.
 
 ## Testing
 

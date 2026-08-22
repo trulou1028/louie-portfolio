@@ -1,32 +1,156 @@
-import { Sparkles } from "lucide-react";
+"use client";
 
-import { PromptChip } from "@/components/ai/prompt-chip";
+import { Sparkles } from "lucide-react";
+import { MessagePrimitive, ThreadPrimitive } from "@assistant-ui/react";
+import { useAISDKError } from "@assistant-ui/react-ai-sdk";
+
+import { AiLouieComposer } from "@/components/ai/ai-louie-composer";
+import { AiLouieRuntime } from "@/components/ai/ai-louie-runtime";
 import { Surface } from "@/components/system/surface";
 import { SystemLabel } from "@/components/system/system-label";
+import { cn } from "@/lib/utils";
 
 /**
- * The AI Louie entry point (spec §11 §2) — a core product surface, not a chat
- * bubble.
+ * The AI Louie surface (spec §11 §2, §21, §31).
  *
- * STATIC PREVIEW. Plan 006 replaces these internals with the real
- * assistant-ui thread; the visual frame stays. Everything here is honest
- * about that:
+ * Interaction borrows familiarity from chat without cloning it (spec §21):
+ * user turns are a quiet inline treatment, assistant turns are open editorial
+ * text with evidence beneath, and tool activity is reported in plain language
+ * — never chain-of-thought.
  *
- * - The suggested questions are real links that open the relevant work, so no
- *   control is dead (spec §11: "do not ship fake controls").
- * - The composer is visibly and semantically disabled, with the reason stated
- *   in text rather than implied.
- * - "Paste a job description" is deliberately absent from the suggestions
- *   until the evaluator exists (Plan 007) — it is the one suggestion with no
- *   honest destination today. Recorded in README deviations.
+ * When the backend is unconfigured or failing, the thread shows the spec §31
+ * copy and the rest of the portfolio is untouched.
  */
+
+/** Spec §11 §2 verbatim, minus the job-description chip (Plan 007). */
 const SUGGESTIONS = [
-  { label: "Show me Offboard", href: "/work/offboard" },
-  { label: "How technical is Louie?", href: "/work/offboard" },
-  { label: "Tell me about Flexi", href: "/work/flexi" },
-  { label: "Show me agent workflows", href: "/work/offboard" },
-  { label: "Show me user research", href: "/work/flexi" },
+  "Show me Offboard",
+  "How technical is Louie?",
+  "Tell me about Flexi",
+  "Show me agent workflows",
+  "Show me user research",
 ] as const;
+
+function AssistantAvatar() {
+  return (
+    <span
+      aria-hidden="true"
+      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-surface"
+    >
+      <Sparkles className="size-4" />
+    </span>
+  );
+}
+
+function UserMessage() {
+  return (
+    <MessagePrimitive.Root className="flex justify-end">
+      <div className="max-w-[85%] rounded-md rounded-br-xs border border-border-default bg-surface px-4 py-2.5 text-body text-foreground">
+        <MessagePrimitive.Parts />
+      </div>
+    </MessagePrimitive.Root>
+  );
+}
+
+function AssistantMessage() {
+  return (
+    <MessagePrimitive.Root className="flex gap-3">
+      <AssistantAvatar />
+      {/* Open editorial text, not a giant bubble (spec §21). */}
+      {/* No per-message error here on purpose: a failed turn already raises
+          the thread-level notice below, and showing both means a visitor
+          reads two apologies for one failure. */}
+      <div className="flex min-w-0 flex-1 flex-col gap-3 pt-1 text-body text-foreground [&_p]:mb-3 last:[&_p]:mb-0">
+        <MessagePrimitive.Parts />
+      </div>
+    </MessagePrimitive.Root>
+  );
+}
+
+/**
+ * Runtime failures — the endpoint down, rate limited, or the provider
+ * erroring. The raw error is never shown (spec §31); the portfolio stays
+ * usable and the visitor is pointed at the work.
+ */
+function ThreadError() {
+  const error = useAISDKError();
+  if (!error) return null;
+
+  return (
+    <Surface
+      role="status"
+      className="border-danger/30 bg-surface p-4 text-body-sm text-foreground-muted"
+    >
+      AI Louie is temporarily unavailable. You can still explore all of
+      Louie&rsquo;s work below.
+    </Surface>
+  );
+}
+
+function ThreadBody() {
+  return (
+    <ThreadPrimitive.Root className="flex flex-col gap-5">
+      <ThreadPrimitive.Viewport
+        autoScroll
+        className="flex max-h-[min(60vh,540px)] flex-col gap-6 overflow-y-auto"
+      >
+        {/* Opening message, shown until the visitor says something. */}
+        <ThreadPrimitive.Empty>
+          <div className="flex gap-3">
+            <AssistantAvatar />
+            <Surface
+              radius="lg"
+              className="min-w-0 flex-1 border-accent-muted/70 bg-surface-raised p-5"
+            >
+              <p className="max-w-[62ch] text-body text-foreground">
+                Hi, I&rsquo;m AI Louie. I can answer questions about
+                Louie&rsquo;s work and take you directly to the evidence behind
+                my answer.
+              </p>
+            </Surface>
+          </div>
+        </ThreadPrimitive.Empty>
+
+        <ThreadPrimitive.Messages
+          components={{
+            UserMessage,
+            AssistantMessage,
+          }}
+        />
+      </ThreadPrimitive.Viewport>
+
+      <ThreadError />
+
+      {/* Suggestions collapse once the conversation is underway. */}
+      <ThreadPrimitive.Empty>
+        <div className="flex flex-col gap-2.5">
+          <p className="text-body-sm text-foreground-muted">Try asking about:</p>
+          <ul className="flex flex-wrap gap-2.5">
+            {SUGGESTIONS.map((prompt) => (
+              <li key={prompt}>
+                <ThreadPrimitive.Suggestion
+                  prompt={prompt}
+                  method="replace"
+                  autoSend
+                  className={cn(
+                    "inline-flex min-h-11 items-center rounded-sm border border-border-default bg-surface",
+                    "px-3.5 py-2 text-left text-body-sm text-foreground-muted focus-ring",
+                    "transition-colors duration-(--duration-fast)",
+                    "hover:border-accent-muted hover:bg-accent-soft hover:text-accent-foreground",
+                  )}
+                >
+                  {prompt}
+                </ThreadPrimitive.Suggestion>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </ThreadPrimitive.Empty>
+
+      <AiLouieComposer />
+    </ThreadPrimitive.Root>
+  );
+}
 
 function AiLouieThread() {
   return (
@@ -46,60 +170,17 @@ function AiLouieThread() {
           tone="accent"
           className="shrink-0 gap-2 rounded-full px-2.5 py-1 normal-case"
         >
-          <span
-            aria-hidden="true"
-            className="size-1.5 rounded-full bg-accent"
-          />
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
           AI Louie
         </SystemLabel>
       </div>
 
-      {/* The designed opening message (spec §11 §2, verbatim). */}
-      <div className="mt-6 flex gap-3">
-        <span
-          aria-hidden="true"
-          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-surface"
-        >
-          <Sparkles className="size-4" />
-        </span>
-        <Surface
-          radius="lg"
-          className="min-w-0 flex-1 border-accent-muted/70 bg-surface-raised p-5"
-        >
-          <p className="max-w-[62ch] text-body text-foreground">
-            Hi, I&rsquo;m AI Louie. I can answer questions about Louie&rsquo;s
-            work and take you directly to the evidence behind my answer.
-          </p>
-        </Surface>
-      </div>
-
-      <ul className="mt-5 flex flex-wrap gap-2.5">
-        {SUGGESTIONS.map((s) => (
-          <li key={s.label}>
-            <PromptChip label={s.label} href={s.href} />
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-6 flex flex-col gap-2">
-        <label htmlFor="ai-composer" className="sr-only">
-          Ask anything about Louie&rsquo;s work
-        </label>
-        <input
-          id="ai-composer"
-          type="text"
-          disabled
-          placeholder="Ask anything about Louie's work..."
-          aria-describedby="ai-composer-status"
-          className="h-12 w-full cursor-not-allowed rounded-md border border-border-default bg-surface-muted px-4 text-body text-foreground placeholder:text-foreground-muted disabled:opacity-70"
-        />
-        <p
-          id="ai-composer-status"
-          className="text-body-sm text-foreground-muted"
-        >
-          Conversation isn&rsquo;t switched on yet. The questions above open the
-          work they refer to.
-        </p>
+      {/* Announces new answers and tool activity without narrating every
+          token (spec §26). */}
+      <div className="mt-6" aria-live="polite" aria-atomic="false">
+        <AiLouieRuntime>
+          <ThreadBody />
+        </AiLouieRuntime>
       </div>
     </Surface>
   );

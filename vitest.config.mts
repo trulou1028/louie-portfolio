@@ -1,5 +1,5 @@
 import { defineConfig } from "vitest/config";
-import path from "node:path";
+
 
 /**
  * Unit tests for pure logic — retrieval, schemas, tool validation.
@@ -12,6 +12,6 @@ export default defineConfig({
     include: ["lib/**/*.test.ts", "content/**/*.test.ts", "scripts/**/*.test.ts"],
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname) },
+    alias: { "@": import.meta.dirname },
   },
 });

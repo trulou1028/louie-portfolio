@@ -14,11 +14,16 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.45",
+    "@ai-sdk/react": "^4.0.79",
+    "@assistant-ui/react": "^0.15.16",
+    "@assistant-ui/react-ai-sdk": "^1.4.7",
     "@base-ui/react": "^1.7.0",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.3.2",
     "@types/mdx": "^2.0.14",
+    "ai": "^7.0.76",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.33.0",
