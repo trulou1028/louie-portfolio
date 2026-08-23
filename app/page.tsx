@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Canvas } from "@/components/app-shell/contextual-rail";
+import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
 import { AnswerCanvas } from "@/components/ai/answer-canvas";
 import { AnswerStoreProvider } from "@/components/ai/answer-store";
 import { AskAILouieLink, AskPanel } from "@/components/ai/ask-panel";
@@ -33,7 +33,15 @@ export default function Home() {
 
   return (
     <AnswerStoreProvider>
-      <Canvas rail={<AskPanel />} stackRail railDefaultSize={360}>
+      <Canvas
+        rail={
+          <ContextualRail aria-label="Ask AI Louie">
+            <AskPanel />
+          </ContextualRail>
+        }
+        stackRail
+        railDefaultSize={360}
+      >
         <div className="flex flex-col gap-14">
 
             <section>
