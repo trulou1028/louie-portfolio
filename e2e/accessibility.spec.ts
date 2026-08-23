@@ -56,6 +56,10 @@ test("the evaluator dialog is accessible when open", async ({ page }) => {
   // Dialogs are where focus management usually breaks, so it is audited open
   // rather than only in its closed state.
   await page.goto("/");
+  // Plan 011 moved Featured work ahead of the AI panel, so it now sits below
+  // the fold — approaching it (as scrolling toward it would) is what
+  // triggers the lazy-loaded runtime that renders this button (spec §27).
+  await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: "Paste a job description" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
 

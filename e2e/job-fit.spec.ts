@@ -38,6 +38,10 @@ const JOB_DESCRIPTION = "We are looking for a senior product designer. ".repeat(
 
 async function openDialog(page: Page) {
   await page.goto("/");
+  // Plan 011 moved Featured work ahead of the AI panel, so it now sits below
+  // the fold — approaching it (as scrolling toward it would) is what
+  // triggers the lazy-loaded runtime that renders this button (spec §27).
+  await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: "Paste a job description" }).click();
   return page.getByRole("dialog");
 }

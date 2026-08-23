@@ -23,6 +23,10 @@ function text(literal: string) {
 test.describe("the AI surface", () => {
   test("renders the thread, opening message, and suggestions", async ({ page }) => {
     await page.goto("/");
+    // Plan 011 moved Featured work ahead of the AI panel, so it now sits
+    // below the fold — approaching it (as scrolling toward it would) is what
+    // triggers the lazy-loaded runtime (spec §27).
+    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
 
     await expect(
       page.getByRole("heading", { name: "Ask AI Louie" }),
@@ -71,6 +75,7 @@ test.describe("the AI surface", () => {
     });
 
     await page.goto("/");
+    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
     await page.getByText("Show me Offboard", { exact: true }).click();
 
     await expect.poll(() => body !== null, { timeout: 10_000 }).toBe(true);
@@ -95,6 +100,7 @@ test.describe("the AI surface", () => {
     );
 
     await page.goto("/");
+    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
     await page.getByText("Tell me about Flexi", { exact: true }).click();
 
     await expect(
@@ -113,6 +119,7 @@ test.describe("the AI surface", () => {
     );
 
     await page.goto("/");
+    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
     await page.getByText("Show me Offboard", { exact: true }).click();
 
     await page.getByRole("link", { name: "View selected work" }).click();
