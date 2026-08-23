@@ -110,7 +110,6 @@ function AnswerSync() {
   const answerStore = useAnswerStore();
   const messages = useAuiState((s) => s.thread.messages);
 
-  const syncedAskedId = React.useRef<string | null>(null);
   const syncedAnsweredId = React.useRef<string | null>(null);
 
   React.useEffect(() => {
@@ -119,8 +118,6 @@ function AnswerSync() {
     const last = messages[messages.length - 1];
 
     if (last.role === "user") {
-      if (syncedAskedId.current === last.id) return;
-      syncedAskedId.current = last.id;
       const question = textOf(last.content);
       if (question) answerStore.asked(question);
       return;
@@ -128,8 +125,17 @@ function AnswerSync() {
 
     if (last.role !== "assistant") return;
 
+    // A suggestion's `autoSend` can append the user turn and start the run
+    // in the same update, so the user message is not guaranteed to be
+    // observed as the last message on its own — find it by walking back
+    // instead of assuming `asked` already ran.
+    const question = textOf(
+      [...messages].reverse().find((m) => m.role === "user")?.content ?? [],
+    );
+    if (!question) return;
+
     if (last.status.type === "running" || last.status.type === "requires-action") {
-      answerStore.answering();
+      answerStore.answering(question);
       return;
     }
 
@@ -144,7 +150,7 @@ function AnswerSync() {
       return;
     }
 
-    answerStore.answered(answerText, evidenceIdsOf(last.content));
+    answerStore.answered(question, answerText, evidenceIdsOf(last.content));
   }, [messages, answerStore]);
 
   return null;

@@ -30,10 +30,15 @@ type AnswerStoreContextValue = {
   state: AnswerState;
   /** A question was submitted; the canvas should start materializing. */
   asked: (question: string) => void;
-  /** The run is actively streaming a response. */
-  answering: () => void;
+  /**
+   * The run is actively streaming a response. Takes `question` rather than
+   * reading it off existing state: a suggestion's `autoSend` can append the
+   * user turn and start the run in the same update, so `asked` is not
+   * guaranteed to have observably run first — each action is self-contained.
+   */
+  answering: (question: string) => void;
   /** The run finished. Unknown evidence ids are dropped, not stored. */
-  answered: (answerText: string, evidenceIds: string[]) => void;
+  answered: (question: string, answerText: string, evidenceIds: string[]) => void;
   /** Return the canvas to the ordinary homepage. */
   clear: () => void;
 };
@@ -53,16 +58,12 @@ export function AnswerStoreProvider({
     setState({ status: "asked", question });
   }, []);
 
-  const answering = React.useCallback(() => {
-    setState((current) =>
-      current.status === "idle"
-        ? current
-        : { status: "answering", question: current.question },
-    );
+  const answering = React.useCallback((question: string) => {
+    setState({ status: "answering", question });
   }, []);
 
   const answered = React.useCallback(
-    (answerText: string, rawEvidenceIds: string[]) => {
+    (question: string, answerText: string, rawEvidenceIds: string[]) => {
       // Model-surfaced ids are never trusted as-is (spec §32): only ids that
       // resolve to a real evidence entry survive into state. The canvas
       // re-resolves the full EvidenceItem from lib/ai/portfolio-search at
@@ -71,16 +72,7 @@ export function AnswerStoreProvider({
         (id) => validateEvidenceId({ evidenceId: id }).ok,
       );
 
-      setState((current) =>
-        current.status === "idle"
-          ? current
-          : {
-              status: "answered",
-              question: current.question,
-              answerText,
-              evidenceIds,
-            },
-      );
+      setState({ status: "answered", question, answerText, evidenceIds });
     },
     [],
   );
