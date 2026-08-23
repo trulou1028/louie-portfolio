@@ -206,6 +206,35 @@ test.describe("the app frame", () => {
   });
 });
 
+test.describe("runtime health", () => {
+  test("the homepage renders without console errors", async ({ page }) => {
+    // Regression: AnswerSync depended on the whole answer-store object, whose
+    // identity is memoized on `state`. Writing state changed that identity,
+    // re-fired the effect, and wrote again — "Maximum update depth exceeded",
+    // hundreds of times per load. Every other test still passed, because none
+    // of them watched the console. This one does.
+    const errors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") errors.push(msg.text());
+    });
+    page.on("pageerror", (err) => errors.push(err.message));
+
+    await page.goto("/");
+    // Let the lazy AI runtime mount — the loop lived in its lifecycle sync.
+    await expect(
+      page.getByRole("complementary", { name: "Ask AI Louie" }),
+    ).toBeVisible();
+    await page.waitForTimeout(2_500);
+
+    // The AI endpoint is not mocked here and has no key in CI, so a failed
+    // /api/chat request is expected and not what this guards.
+    const unexpected = errors.filter(
+      (e) => !/Failed to load resource|api\/chat|503|ai_unavailable/i.test(e),
+    );
+    expect(unexpected, unexpected.join("\n")).toEqual([]);
+  });
+});
+
 test.describe("navigation", () => {
   test("every primary destination resolves", async ({ page }) => {
     for (const item of NAV) {

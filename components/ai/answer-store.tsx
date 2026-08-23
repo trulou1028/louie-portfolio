@@ -54,12 +54,26 @@ export function AnswerStoreProvider({
 }) {
   const [state, setState] = React.useState<AnswerState>({ status: "idle" });
 
+  // Every action bails out when the state it would write is equivalent to
+  // the current one. Returning `prev` from the updater makes React skip the
+  // re-render entirely, which is what breaks the feedback loop: the context
+  // value is memoized on `state`, so any needless setState changed the store
+  // identity, re-fired the syncing effect, and set state again — forever
+  // ("Maximum update depth exceeded").
   const asked = React.useCallback((question: string) => {
-    setState({ status: "asked", question });
+    setState((prev) =>
+      prev.status === "asked" && prev.question === question
+        ? prev
+        : { status: "asked", question },
+    );
   }, []);
 
   const answering = React.useCallback((question: string) => {
-    setState({ status: "answering", question });
+    setState((prev) =>
+      prev.status === "answering" && prev.question === question
+        ? prev
+        : { status: "answering", question },
+    );
   }, []);
 
   const answered = React.useCallback(
@@ -72,12 +86,23 @@ export function AnswerStoreProvider({
         (id) => validateEvidenceId({ evidenceId: id }).ok,
       );
 
-      setState({ status: "answered", question, answerText, evidenceIds });
+      setState((prev) =>
+        prev.status === "answered" &&
+        prev.question === question &&
+        prev.answerText === answerText &&
+        prev.evidenceIds.length === evidenceIds.length &&
+        prev.evidenceIds.every((id, i) => id === evidenceIds[i])
+          ? prev
+          : { status: "answered", question, answerText, evidenceIds },
+      );
     },
     [],
   );
 
-  const clear = React.useCallback(() => setState({ status: "idle" }), []);
+  const clear = React.useCallback(
+    () => setState((prev) => (prev.status === "idle" ? prev : { status: "idle" })),
+    [],
+  );
 
   const value = React.useMemo(
     () => ({ state, asked, answering, answered, clear }),

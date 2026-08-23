@@ -78,7 +78,7 @@ function Canvas({
   children,
   rail,
   stackRail = false,
-  railDefaultSize = 340,
+  railDefaultSize = 350,
 }: {
   className?: string;
   children: React.ReactNode;
@@ -133,7 +133,7 @@ function Canvas({
 
   return (
     <PersistentPanelGroup
-      storageKey="canvas"
+      storageKey="canvas-v2"
       orientation="horizontal"
       className="h-full"
     >

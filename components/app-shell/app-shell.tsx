@@ -46,7 +46,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
       <MobileNav />
 
       <PersistentPanelGroup
-        storageKey="shell"
+        storageKey="shell-v2"
         orientation="horizontal"
         className="min-h-0 flex-1"
       >
@@ -54,7 +54,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
           <>
             <ResizablePanel
               id="left-rail"
-              defaultSize={236}
+              defaultSize={300}
               minSize={190}
               maxSize={340}
             >

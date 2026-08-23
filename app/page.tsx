@@ -40,7 +40,7 @@ export default function Home() {
           </ContextualRail>
         }
         stackRail
-        railDefaultSize={360}
+        railDefaultSize={350}
       >
         <div className="flex flex-col gap-14">
 

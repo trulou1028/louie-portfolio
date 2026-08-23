@@ -110,16 +110,26 @@ function AnswerSync() {
   const answerStore = useAnswerStore();
   const messages = useAuiState((s) => s.thread.messages);
 
+  // Depend on the ACTIONS, not the store object. The context value is
+  // memoized on `state`, so its identity changes with every update — using it
+  // as an effect dependency re-fires this effect on its own writes. The
+  // actions themselves are stable `useCallback`s.
+  const asked = answerStore?.asked;
+  const answering = answerStore?.answering;
+  const answered = answerStore?.answered;
+  const clear = answerStore?.clear;
+
   const syncedAnsweredId = React.useRef<string | null>(null);
 
   React.useEffect(() => {
-    if (!answerStore || messages.length === 0) return;
+    if (!asked || !answering || !answered || !clear) return;
+    if (messages.length === 0) return;
 
     const last = messages[messages.length - 1];
 
     if (last.role === "user") {
       const question = textOf(last.content);
-      if (question) answerStore.asked(question);
+      if (question) asked(question);
       return;
     }
 
@@ -135,7 +145,7 @@ function AnswerSync() {
     if (!question) return;
 
     if (last.status.type === "running" || last.status.type === "requires-action") {
-      answerStore.answering(question);
+      answering(question);
       return;
     }
 
@@ -146,12 +156,12 @@ function AnswerSync() {
     const answerText = textOf(last.content);
 
     if (!answerText) {
-      if (hasSuccessfulNavigation(last.content)) answerStore.clear();
+      if (hasSuccessfulNavigation(last.content)) clear();
       return;
     }
 
-    answerStore.answered(question, answerText, evidenceIdsOf(last.content));
-  }, [messages, answerStore]);
+    answered(question, answerText, evidenceIdsOf(last.content));
+  }, [messages, asked, answering, answered, clear]);
 
   return null;
 }
