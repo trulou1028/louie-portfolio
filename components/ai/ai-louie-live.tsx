@@ -273,10 +273,13 @@ function ThreadError() {
 
 function ThreadBody() {
   return (
-    <ThreadPrimitive.Root className="flex flex-col gap-4">
+    <ThreadPrimitive.Root className="flex min-h-0 flex-1 flex-col gap-4">
+      {/* The conversation takes the slack; the composer below is pinned.
+          `min-h-0` is what lets a flex child actually scroll instead of
+          growing its parent. */}
       <ThreadPrimitive.Viewport
         autoScroll
-        className="flex max-h-[min(50vh,460px)] flex-col gap-5 overflow-y-auto"
+        className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto"
       >
         {/* Opening message, shown until the visitor says something. */}
         <ThreadPrimitive.Empty>
@@ -305,13 +308,17 @@ function ThreadBody() {
 
       <ThreadError />
 
-      {/* Suggestions collapse once the conversation is underway. A vertical
-          list of quiet, full-width rows fits a 300–420px rail better than
-          wrapped chips (Plan 012). */}
+      {/* Pinned footer: suggestions (until the conversation starts) and the
+          composer sit at the bottom of the panel, the way the Ask-LUMO block
+          anchors the Offboard rail. */}
+      <div className="flex shrink-0 flex-col gap-3">
+      {/* Suggestions collapse once the conversation is underway. */}
       <ThreadPrimitive.Empty>
         <div className="flex flex-col gap-2">
           <p className="text-body-sm text-foreground-muted">Try asking about:</p>
-          <ul className="flex flex-col gap-1.5">
+          {/* Wrapping pills, not one question per line — the Ask-LUMO
+              pattern from the Offboard app uses the rail's width. */}
+          <ul className="flex flex-wrap gap-1.5">
             {SUGGESTIONS.map((prompt) => (
               <li key={prompt}>
                 <ThreadPrimitive.Suggestion
@@ -319,8 +326,11 @@ function ThreadBody() {
                   method="replace"
                   autoSend
                   className={cn(
-                    "flex min-h-11 w-full items-center rounded-sm border border-border-default bg-surface",
-                    "px-3.5 py-2 text-left text-body-sm text-foreground-muted focus-ring",
+                    // Wrapping pills, matching the Ask-LUMO pattern in the
+                    // Offboard app: quieter than bordered rows, and they use
+                    // the rail's width instead of one question per line.
+                    "inline-flex items-center rounded-full border border-transparent bg-surface-muted",
+                    "px-3 py-1.5 text-left text-body-sm text-foreground-muted focus-ring",
                     "transition-colors duration-(--duration-fast)",
                     "hover:border-accent-muted hover:bg-accent-soft hover:text-accent-foreground",
                   )}
@@ -347,6 +357,7 @@ function ThreadBody() {
       </ThreadPrimitive.Empty>
 
       <AiLouieComposer />
+      </div>
     </ThreadPrimitive.Root>
   );
 }

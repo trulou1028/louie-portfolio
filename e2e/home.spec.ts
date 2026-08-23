@@ -170,6 +170,42 @@ test.describe("homepage", () => {
 
 });
 
+test.describe("the app frame", () => {
+  test("the document never scrolls — only the panes do", async ({ page }) => {
+    // Regression: Tailwind's `sr-only` is position:absolute, so screen-reader
+    // spans deep inside a scroll container (InlineLink's "(opens in a new
+    // tab)", the AI panel's "Loading AI Louie…") resolved against the initial
+    // containing block when no ancestor was positioned. They landed at their
+    // page coordinate and extended the DOCUMENT's scroll height to 2008px on
+    // a 900px viewport — scrolling lifted the whole fixed app frame away and
+    // left a blank void. The scrollers are now `relative`.
+    await page.goto("/");
+
+    // Let the lazy AI runtime mount; its skeleton carries one of the spans.
+    await expect(
+      page.getByRole("complementary", { name: "Ask AI Louie" }),
+    ).toBeVisible();
+
+    const overflow = await page.evaluate(() => {
+      const root = document.documentElement;
+      return root.scrollHeight - root.clientHeight;
+    });
+    expect(overflow, "document must not be scrollable").toBeLessThanOrEqual(1);
+
+    // And the inner canvas must still scroll — the fix must not have simply
+    // clipped everything.
+    const canScroll = await page.evaluate(() => {
+      const sc = document.querySelector<HTMLElement>("[data-canvas-scroll]");
+      if (!sc) return false;
+      sc.scrollTop = 300;
+      const moved = sc.scrollTop > 0;
+      sc.scrollTop = 0;
+      return moved;
+    });
+    expect(canScroll, "the content pane must still scroll").toBe(true);
+  });
+});
+
 test.describe("navigation", () => {
   test("every primary destination resolves", async ({ page }) => {
     for (const item of NAV) {

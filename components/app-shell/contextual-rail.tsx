@@ -19,16 +19,33 @@ import { cn } from "@/lib/utils";
 function ContextualRail({
   className,
   children,
+  bare = false,
   "aria-label": ariaLabel = "Related",
   ...props
-}: React.ComponentPropsWithoutRef<"aside">) {
+}: React.ComponentPropsWithoutRef<"aside"> & {
+  /**
+   * Skip the rail's own padding and scrolling because the content paints the
+   * full pane itself and manages its own scroll (the Ask panel does this — it
+   * fills the rail edge to edge and pins its composer to the bottom).
+   */
+  bare?: boolean;
+}) {
   const isEmpty = React.Children.toArray(children).length === 0;
   if (isEmpty) return null;
 
   return (
     <aside
       aria-label={ariaLabel}
-      className={cn("flex flex-col gap-6", className)}
+      className={cn(
+        // `xl:h-full` + `min-h-0` is what lets a child fill the pane and
+        // scroll inside it. Below xl the rail sits in the page flow, where
+        // its natural height is correct.
+        "flex min-h-0 flex-col xl:h-full",
+        // Padded scroller by default (case-study tables of contents); bare
+        // content owns its own chrome.
+        bare ? undefined : "gap-6 px-5 py-10 lg:py-14 xl:overflow-y-auto",
+        className,
+      )}
       {...props}
     >
       {children}
@@ -88,7 +105,14 @@ function Canvas({
     <div
       ref={scrollRef}
       data-canvas-scroll
-      className="h-full min-w-0 flex-1 overflow-y-auto"
+      /* `relative` is load-bearing, not cosmetic: Tailwind's `sr-only` is
+         position:absolute, so a screen-reader-only span deep inside this
+         scroller (e.g. InlineLink's "(opens in a new tab)") resolves against
+         the initial containing block when no ancestor is positioned — landing
+         at its page coordinate and extending the DOCUMENT's scroll height.
+         That made the whole app frame scroll away, leaving a blank void
+         below. Measured: 2008px document height before, 900px after. */
+      className="relative h-full min-w-0 flex-1 overflow-y-auto"
     >
       <div
         className={cn(
@@ -128,9 +152,11 @@ function Canvas({
         minSize={260}
         maxSize={520}
       >
-        <div className="h-full overflow-y-auto px-5 py-10 max-xl:hidden lg:py-14">
-          {rail}
-        </div>
+        {/* No padding, no scroller here: the rail's content owns the full
+            pane so a panel can fill it edge to edge and pin its own footer,
+            rather than sitting as a box inside a box. Content that wants to
+            scroll manages that itself (see AskPanel). */}
+        <div className="relative h-full max-xl:hidden">{rail}</div>
       </ResizablePanel>
     </PersistentPanelGroup>
   );

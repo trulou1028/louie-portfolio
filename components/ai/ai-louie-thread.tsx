@@ -33,7 +33,7 @@ const AiLouieLive = dynamic(() => import("@/components/ai/ai-louie-live"), {
  */
 function ThreadSkeleton() {
   return (
-    <div aria-busy="true" className="flex flex-col gap-5">
+    <div aria-busy="true" className="flex min-h-0 flex-1 flex-col gap-5">
       <div className="flex gap-3">
         <span
           aria-hidden="true"
@@ -93,7 +93,12 @@ function AiLouieThread() {
   return (
     // Announces new answers and tool activity without narrating every token
     // (spec §26).
-    <div ref={panelRef} aria-live="polite" aria-atomic="false">
+    <div
+      ref={panelRef}
+      aria-live="polite"
+      aria-atomic="false"
+      className="flex min-h-0 flex-1 flex-col"
+    >
       {approached ? <AiLouieLive /> : <ThreadSkeleton />}
     </div>
   );

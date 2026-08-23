@@ -82,6 +82,14 @@ export const profile = {
 
   // Verified: the resume header states San Francisco, CA.
   location: "San Francisco, CA" as string | null,
+
+  /**
+   * Square portrait under /public. Until this is set, <Avatar/> shows
+   * initials rather than a stock silhouette.
+   * TODO(asset): drop a square image in public/images/ and set the path,
+   * e.g. "/images/louie.jpg".
+   */
+  avatar: null as string | null,
 } as const;
 
 export type Profile = typeof profile;

@@ -35,7 +35,7 @@ export default function Home() {
     <AnswerStoreProvider>
       <Canvas
         rail={
-          <ContextualRail aria-label="Ask AI Louie">
+          <ContextualRail bare aria-label="Ask AI Louie">
             <AskPanel />
           </ContextualRail>
         }

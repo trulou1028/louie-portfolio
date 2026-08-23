@@ -6,9 +6,8 @@ import { Sparkles } from "lucide-react";
 
 import { AiLouieThread } from "@/components/ai/ai-louie-thread";
 import { Action } from "@/components/system/action";
-import { SectionLabel } from "@/components/system/section-label";
-import { Surface } from "@/components/system/surface";
 import { SystemLabel } from "@/components/system/system-label";
+import { cn } from "@/lib/utils";
 
 /**
  * The Ask panel — the homepage's right rail (spec §10, §11 §2; Plan 012).
@@ -26,35 +25,50 @@ import { SystemLabel } from "@/components/system/system-label";
  */
 function AskPanel() {
   return (
-    <Surface
-      variant="ai"
-      radius="panel"
+    <div
       id="ask-ai-louie"
-      className="scroll-mt-8 flex flex-col gap-5 p-5 sm:p-6"
+      className={cn(
+        // The rail itself is the container — no box inside a box. It fills
+        // the pane, and its footer (suggestions + composer) is pinned to the
+        // bottom by ThreadBody.
+        "flex h-full min-h-0 flex-col gap-4 bg-accent-soft/40 p-5",
+        "scroll-mt-8 xl:border-l xl:border-border-subtle",
+        // Below xl there is no pane: it sits in the page flow, so it reads as
+        // a card again and takes its natural height.
+        "max-xl:h-auto max-xl:rounded-panel max-xl:border max-xl:border-accent-muted/70",
+      )}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <SectionLabel>Ask</SectionLabel>
-          <div className="mt-1.5 flex items-center gap-2">
-            <Sparkles aria-hidden="true" className="size-4 text-accent" />
-            <h2 className="text-heading-md text-foreground">AI Louie</h2>
-          </div>
-          <p className="mt-1.5 text-body-sm text-foreground-muted">
-            Ask about my work, process, or the systems I build.
-          </p>
+      {/* Header: the panel names itself once, with a live pill — the
+          Ask-LUMO header pattern from the Offboard app. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <Sparkles aria-hidden="true" className="size-4 shrink-0 text-accent" />
+          {/* Never break the title across lines — the rail is draggable down
+              to 260px and "Ask AI / Louie" reads as a mistake. The pill wraps
+              beneath instead. */}
+          <h2 className="whitespace-nowrap text-heading-md text-foreground">
+            Ask AI Louie
+          </h2>
         </div>
 
         <SystemLabel
           tone="accent"
-          className="shrink-0 gap-2 rounded-full px-2.5 py-1 normal-case"
+          className="shrink-0 gap-1.5 rounded-full px-2 py-1 normal-case"
         >
           <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
-          AI Louie
+          Live
         </SystemLabel>
       </div>
 
       <AiLouieThread />
-    </Surface>
+
+      {/* The Offboard panel closes with a line telling you what the assistant
+          can actually see. Same job here: set the expectation that answers are
+          grounded in published evidence, before anyone asks. */}
+      <p className="text-body-sm text-foreground-muted">
+        It answers from Louie&rsquo;s case studies and cites the evidence.
+      </p>
+    </div>
   );
 }
 
