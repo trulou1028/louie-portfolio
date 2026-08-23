@@ -56,10 +56,21 @@ test("the evaluator dialog is accessible when open", async ({ page }) => {
   // Dialogs are where focus management usually breaks, so it is audited open
   // rather than only in its closed state.
   await page.goto("/");
-  // Plan 011 moved Featured work ahead of the AI panel, so it now sits below
-  // the fold — approaching it (as scrolling toward it would) is what
-  // triggers the lazy-loaded runtime that renders this button (spec §27).
-  await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
+  // Plan 012: the trigger lives inside the Ask panel, now the homepage's
+  // persistent rail. On desktop it is already on screen at paint; below xl
+  // it still stacks after the rest of the homepage (spec §10), so
+  // approaching it is what triggers the lazy-loaded runtime that renders
+  // this button (spec §27).
+  //
+  // Below xl, `Canvas` renders the rail in a structurally different tree
+  // than on xl+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) —
+  // `useMinWidth` reports desktop for the first client render even on a
+  // real mobile viewport (matching SSR) and corrects one effect later,
+  // unmounting and remounting the rail's subtree. Retrying the whole action
+  // rides out a `goto` that lands mid-swap.
+  await expect(async () => {
+    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
+  }).toPass({ timeout: 5_000 });
   await page.getByRole("button", { name: "Paste a job description" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
 

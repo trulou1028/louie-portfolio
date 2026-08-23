@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 /**
  * Homepage and shell behavior (spec §10, §11, §25, §26).
@@ -7,6 +7,22 @@ import { test, expect } from "@playwright/test";
  * positioning copy, that every nav destination resolves, that the mobile
  * drawer works by keyboard, and that nothing overflows horizontally.
  */
+
+/**
+ * Below xl, `Canvas` renders the rail in a structurally different tree than
+ * on xl+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) — `useMinWidth`
+ * reports desktop for the first client render even on a real mobile viewport
+ * (matching SSR, so hydration never mismatches) and corrects one effect
+ * later, which unmounts and remounts the rail's subtree. A `goto` followed
+ * immediately by `scrollIntoViewIfNeeded` can therefore catch `#ask-ai-louie`
+ * mid-swap; retrying the whole action rides that out, the same way a real
+ * visitor's slower first interaction never would.
+ */
+async function scrollToAskPanel(page: Page) {
+  await expect(async () => {
+    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
+  }).toPass({ timeout: 5_000 });
+}
 
 // The primary nav, post-restructure (Plan 011): Writing and Experiments left
 // the primary nav but remain live, stable URLs (spec §28) — they are still
@@ -98,23 +114,49 @@ test.describe("homepage", () => {
   test("presents the AI surface as a real product surface", async ({ page }) => {
     await page.goto("/");
     const panel = page.locator("#ask-ai-louie");
-    // Plan 011 moved Featured work ahead of the AI panel, so it now sits
-    // below the fold — approaching it (as a real visitor scrolling down
-    // would) is what triggers the lazy-loaded runtime (spec §27), not just
-    // being present in the DOM. `scrollIntoViewIfNeeded` mirrors that.
-    await panel.scrollIntoViewIfNeeded();
-    await expect(panel.getByRole("heading", { name: "Ask AI Louie" })).toBeVisible();
+    // Plan 012: the AI surface is the homepage's persistent rail. On desktop
+    // it is already on screen at paint, so this is a no-op there; below xl
+    // it still stacks after the rest of the homepage (spec §10), so
+    // approaching it (as a real visitor scrolling down would) is what
+    // triggers the lazy-loaded runtime (spec §27), not just being present in
+    // the DOM. `scrollIntoViewIfNeeded` mirrors that.
+    await scrollToAskPanel(page);
+    await expect(panel.getByRole("heading", { name: "AI Louie" })).toBeVisible();
     await expect(
       panel.getByRole("textbox", { name: /Ask anything about/ }),
     ).toBeEnabled();
   });
 
-  test("work appears before the AI panel in document order", async ({ page }) => {
+  test("the Ask panel is a complementary landmark, not a main-column section", async ({
+    page,
+  }) => {
+    // Plan 012: "ask the panel; the site answers" — the AI surface moved out
+    // of the main column into its own rail (desktop: a parallel pane; below
+    // xl: stacked after the rest of the homepage, spec §10).
+    await page.goto("/");
+    const rail = page.getByRole("complementary", { name: "Ask AI Louie" });
+    await expect(rail).toHaveCount(1);
+    expect(await rail.locator("#ask-ai-louie").count()).toBe(1);
+  });
+
+  test("work appears before the AI panel in document order", async ({ page }, testInfo) => {
     // Plan 011: hiring managers should reach the work as fast as possible —
     // Featured work sits directly after the hero, ahead of the AI thread.
+    // Plan 012: on xl+ the AI panel lives in its own parallel rail pane
+    // (spec §10) — position no longer maps onto document order the way a
+    // single column does, so this only still asserts below xl, where the
+    // rail stacks after the entire main column.
+    test.skip(testInfo.project.name !== "mobile", "single-column layout only");
     await page.goto("/");
     const featuredWork = page.getByTestId("featured-work");
     const aiPanel = page.locator("#ask-ai-louie");
+
+    // Below xl, `useMinWidth` reports desktop for the first client render
+    // (matching SSR) and corrects one effect later, remounting the rail's
+    // subtree — waiting for both to be stably visible first rides out that
+    // transition instead of racing it for a bounding box.
+    await expect(featuredWork).toBeVisible();
+    await expect(aiPanel).toBeVisible();
 
     const [workBox, aiBox] = await Promise.all([
       featuredWork.boundingBox(),

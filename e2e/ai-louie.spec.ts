@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 /**
  * Matches text regardless of whether apostrophes are typographic (’) or
@@ -11,29 +11,52 @@ function text(literal: string) {
 }
 
 /**
+ * Below xl, `Canvas` renders the rail in a structurally different tree than
+ * on xl+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) — `useMinWidth`
+ * reports desktop for the first client render even on a real mobile viewport
+ * (matching SSR, so hydration never mismatches) and corrects one effect
+ * later, which unmounts and remounts the rail's subtree. A `goto` followed
+ * immediately by `scrollIntoViewIfNeeded` can therefore catch `#ask-ai-louie`
+ * mid-swap; retrying the whole action rides that out, the same way a real
+ * visitor's slower first interaction never would.
+ */
+async function scrollToAskPanel(page: Page) {
+  await expect(async () => {
+    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
+  }).toPass({ timeout: 5_000 });
+}
+
+/**
  * AI Louie's text surface (spec §11 §2, §18, §21, §31, §32).
  *
  * Every test intercepts `/api/chat`, so the suite runs without an API key and
- * never reaches a provider. The happy path — a grounded answer with evidence
- * cards — needs a real model and is covered by the manual smoke script in the
- * README instead; what is asserted here is everything that must hold
- * regardless of what the model says.
+ * never reaches a provider. Most tests here assert the failure and boundary
+ * paths — everything that must hold regardless of what the model says; the
+ * happy path with a mocked grounded answer and evidence cards is covered by
+ * `e2e/answer-canvas.spec.ts` instead, and against a real model by the manual
+ * smoke script in the README.
  */
 
 test.describe("the AI surface", () => {
   test("renders the thread, opening message, and suggestions", async ({ page }) => {
     await page.goto("/");
-    // Plan 011 moved Featured work ahead of the AI panel, so it now sits
-    // below the fold — approaching it (as scrolling toward it would) is what
-    // triggers the lazy-loaded runtime (spec §27).
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
+    // Plan 012: the Ask panel is the homepage's persistent rail. On desktop
+    // it is already on screen at paint, so this is a no-op; below xl it
+    // still stacks after the rest of the homepage (spec §10), so approaching
+    // it is what triggers the lazy-loaded runtime (spec §27).
+    await scrollToAskPanel(page);
+
+    // Plan 012: the panel is a complementary landmark, not just an id —
+    // scoping to it is what proves the suggestions live in the rail, not
+    // buried somewhere else in the main column.
+    const panel = page.getByRole("complementary", { name: "Ask AI Louie" });
 
     await expect(
-      page.getByRole("heading", { name: "Ask AI Louie" }),
+      panel.getByRole("heading", { name: "AI Louie" }),
     ).toBeVisible();
 
     await expect(
-      page.getByText(
+      panel.getByText(
         text(
           "Hi, I'm AI Louie. I can answer questions about Louie's work and take you directly to the evidence behind my answer.",
         ),
@@ -41,7 +64,7 @@ test.describe("the AI surface", () => {
     ).toBeVisible();
 
     await expect(
-      page.getByRole("textbox", { name: "Ask anything about Louie's work" }),
+      panel.getByRole("textbox", { name: "Ask anything about Louie's work" }),
     ).toBeVisible();
 
     for (const prompt of [
@@ -49,14 +72,39 @@ test.describe("the AI surface", () => {
       "How technical is Louie?",
       "Tell me about Flexi",
     ]) {
-      await expect(page.getByText(prompt, { exact: true })).toBeVisible();
+      await expect(panel.getByText(prompt, { exact: true })).toBeVisible();
     }
+  });
+
+  test("suggestions are keyboard reachable and activate on Enter", async ({ page }) => {
+    // Plan 012: the suggestions are a vertical list of real buttons, not
+    // decorative chips — this proves one can be focused and activated
+    // without a mouse.
+    await page.goto("/");
+    await scrollToAskPanel(page);
+
+    let body: { messages?: unknown[] } | null = null;
+    await page.route("**/api/chat", async (route) => {
+      body = route.request().postDataJSON();
+      await route.fulfill({ status: 503, json: { error: "ai_unavailable" } });
+    });
+
+    const panel = page.getByRole("complementary", { name: "Ask AI Louie" });
+    const suggestion = panel.getByText("How technical is Louie?", { exact: true });
+    await suggestion.focus();
+    await expect(suggestion).toBeFocused();
+    await page.keyboard.press("Enter");
+
+    await expect.poll(() => body !== null, { timeout: 10_000 }).toBe(true);
+    expect(JSON.stringify((body as unknown as { messages: unknown[] }).messages)).toContain(
+      "How technical is Louie?",
+    );
   });
 
   test("ships no voice, attachment, or research controls", async ({ page }) => {
     // Spec §11: do not ship fake controls. Voice is Plan 009.
     await page.goto("/");
-    const panel = page.locator("#ask-ai-louie");
+    const panel = page.getByRole("complementary", { name: "Ask AI Louie" });
 
     for (const name of [/microphone/i, /talk/i, /attach/i, /deep research/i]) {
       await expect(panel.getByRole("button", { name })).toHaveCount(0);
@@ -75,7 +123,7 @@ test.describe("the AI surface", () => {
     });
 
     await page.goto("/");
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
+    await scrollToAskPanel(page);
     await page.getByText("Show me Offboard", { exact: true }).click();
 
     await expect.poll(() => body !== null, { timeout: 10_000 }).toBe(true);
@@ -100,7 +148,7 @@ test.describe("the AI surface", () => {
     );
 
     await page.goto("/");
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
+    await scrollToAskPanel(page);
     await page.getByText("Tell me about Flexi", { exact: true }).click();
 
     await expect(
@@ -119,7 +167,7 @@ test.describe("the AI surface", () => {
     );
 
     await page.goto("/");
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
+    await scrollToAskPanel(page);
     await page.getByText("Show me Offboard", { exact: true }).click();
 
     await page.getByRole("link", { name: "View selected work" }).click();
