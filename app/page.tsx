@@ -1,8 +1,6 @@
 import Link from "next/link";
 
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
-import { AnswerCanvas } from "@/components/ai/answer-canvas";
-import { AnswerStoreProvider } from "@/components/ai/answer-store";
 import { AskAILouieLink, AskPanel } from "@/components/ai/ask-panel";
 import { WorkCard } from "@/components/portfolio/work-card";
 import { Action } from "@/components/system/action";
@@ -17,11 +15,13 @@ import { workProjects } from "@/content/work/projects";
  * A recruiter should understand within ten seconds that Louie designs
  * sophisticated AI products and can build them (spec §1), and should reach
  * the work as fast as possible: Featured work sits directly after the hero,
- * ahead of the AI surface. Plan 012 moves the AI thread into the rail as the
- * Ask panel — "ask the panel; the site answers" — with the Answer Canvas
- * composing substantive answers in the main column instead of piling up as
- * bubbles in the sidebar. `AnswerStoreProvider` wraps both halves: the store
- * is the seam between them.
+ * ahead of the AI surface.
+ *
+ * The AI thread lives in the rail as the Ask panel and answers stream inside
+ * it, conventionally. An earlier iteration routed answers to an "Answer
+ * Canvas" in the main column; Louie reviewed it and preferred the
+ * conversation staying in one place, so that surface was removed (owner
+ * decision, 2026-08-23).
  */
 const BRIEF_POINTS = profile.brief;
 
@@ -32,8 +32,7 @@ export default function Home() {
   const lead = primary.slice(0, primary.length - primaryEmphasis.length).trimEnd();
 
   return (
-    <AnswerStoreProvider>
-      <Canvas
+    <Canvas
         rail={
           <ContextualRail bare aria-label="Ask AI Louie">
             <AskPanel />
@@ -96,7 +95,6 @@ export default function Home() {
 
             {/* Plan 012: substantive answers compose here instead of piling
                 up as bubbles in the rail. Renders nothing while idle. */}
-            <AnswerCanvas />
 
             <section className="flex flex-col gap-6 border-t border-border-subtle pt-10">
               <SectionLabel>In brief</SectionLabel>
@@ -132,6 +130,5 @@ export default function Home() {
             </section>
         </div>
       </Canvas>
-    </AnswerStoreProvider>
   );
 }

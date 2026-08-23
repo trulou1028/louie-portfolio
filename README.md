@@ -138,6 +138,16 @@ Recorded per spec §39.14, in build order.
     sentinels carry `role="button"` with no accessible name. They are library
     internals and inert by design; revisit on the next upgrade.
 
+**Conversation surface (2026-08-23)**
+
+22. **The "Answer Canvas" was built and then removed.** An iteration routed
+    substantive answers out of the chat panel and composed them in the main
+    column ("ask the panel; the site answers"). Louie reviewed it and
+    preferred the conversation staying in one place, so answers now stream
+    conventionally inside the Ask panel with evidence cards inline. The
+    `answer-store`/`answer-canvas` modules and their spec were deleted rather
+    than left dormant.
+
 **Visual (Plan 010)**
 
 18. **Homepage layout follows the strategy mockup**, but its Offboard

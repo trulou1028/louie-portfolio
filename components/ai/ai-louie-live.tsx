@@ -6,13 +6,11 @@ import {
   MessagePrimitive,
   ThreadPrimitive,
   useAuiState,
-  type MessageState,
 } from "@assistant-ui/react";
 import { useAISDKError } from "@assistant-ui/react-ai-sdk";
 
 import { AiLouieComposer } from "@/components/ai/ai-louie-composer";
 import { AiLouieRuntime } from "@/components/ai/ai-louie-runtime";
-import { useAnswerStore } from "@/components/ai/answer-store";
 import { JobDescriptionDialog } from "@/components/ai/job-description-dialog";
 import { ToolStatus } from "@/components/ai/tool-status";
 import { Surface } from "@/components/system/surface";
@@ -49,50 +47,6 @@ const SUGGESTIONS = [
 ] as const;
 
 /** Reads the plain-text content of a message's text parts, in order. */
-function textOf(content: MessageState["content"]): string {
-  return content
-    .filter((part) => part.type === "text")
-    .map((part) => (part as { text: string }).text)
-    .join("\n\n")
-    .trim();
-}
-
-/**
- * Collects every evidence id surfaced by `search_portfolio` and
- * `show_evidence` tool calls in a completed assistant message. Mirrors the
- * extraction `evidence-result.tsx` already does to render these results —
- * this just reads the same tool-call parts instead of rendering them.
- * Ids are not validated here: the answer store does that at its boundary
- * (spec §32), so an id an unknown tool ever surfaced can never reach state.
- */
-function evidenceIdsOf(content: MessageState["content"]): string[] {
-  const ids = new Set<string>();
-
-  for (const part of content) {
-    if (part.type !== "tool-call" || !part.result) continue;
-
-    if (part.toolName === "search_portfolio") {
-      const result = part.result as { results?: { id?: string }[] };
-      for (const item of result.results ?? []) {
-        if (item?.id) ids.add(item.id);
-      }
-    } else if (part.toolName === "show_evidence") {
-      const result = part.result as { evidence?: { id?: string } };
-      if (result.evidence?.id) ids.add(result.evidence.id);
-    }
-  }
-
-  return Array.from(ids);
-}
-
-function hasSuccessfulNavigation(content: MessageState["content"]): boolean {
-  return content.some(
-    (part) =>
-      part.type === "tool-call" &&
-      part.toolName === "navigate_portfolio" &&
-      (part.result as { navigated?: boolean } | undefined)?.navigated === true,
-  );
-}
 
 /**
  * Writes the thread's lifecycle into the answer store (spec: Plan 012 step
@@ -106,65 +60,6 @@ function hasSuccessfulNavigation(content: MessageState["content"]): boolean {
  * `navigate_portfolio` takes precedence over the Answer Sheet, matching the
  * existing spec §18 Tool 2 behavior.
  */
-function AnswerSync() {
-  const answerStore = useAnswerStore();
-  const messages = useAuiState((s) => s.thread.messages);
-
-  // Depend on the ACTIONS, not the store object. The context value is
-  // memoized on `state`, so its identity changes with every update — using it
-  // as an effect dependency re-fires this effect on its own writes. The
-  // actions themselves are stable `useCallback`s.
-  const asked = answerStore?.asked;
-  const answering = answerStore?.answering;
-  const answered = answerStore?.answered;
-  const clear = answerStore?.clear;
-
-  const syncedAnsweredId = React.useRef<string | null>(null);
-
-  React.useEffect(() => {
-    if (!asked || !answering || !answered || !clear) return;
-    if (messages.length === 0) return;
-
-    const last = messages[messages.length - 1];
-
-    if (last.role === "user") {
-      const question = textOf(last.content);
-      if (question) asked(question);
-      return;
-    }
-
-    if (last.role !== "assistant") return;
-
-    // A suggestion's `autoSend` can append the user turn and start the run
-    // in the same update, so the user message is not guaranteed to be
-    // observed as the last message on its own — find it by walking back
-    // instead of assuming `asked` already ran.
-    const question = textOf(
-      [...messages].reverse().find((m) => m.role === "user")?.content ?? [],
-    );
-    if (!question) return;
-
-    if (last.status.type === "running" || last.status.type === "requires-action") {
-      answering(question);
-      return;
-    }
-
-    if (last.status.type !== "complete") return;
-    if (syncedAnsweredId.current === last.id) return;
-    syncedAnsweredId.current = last.id;
-
-    const answerText = textOf(last.content);
-
-    if (!answerText) {
-      if (hasSuccessfulNavigation(last.content)) clear();
-      return;
-    }
-
-    answered(question, answerText, evidenceIdsOf(last.content));
-  }, [messages, asked, answering, answered, clear]);
-
-  return null;
-}
 
 function AssistantAvatar() {
   return (
@@ -192,34 +87,6 @@ function UserMessage() {
   );
 }
 
-/** Scrolls the Answer Canvas into view and focuses its headline. */
-function viewOnCanvas() {
-  if (typeof document === "undefined") return;
-  const target = document.getElementById("answer");
-  if (!target) return;
-
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-
-  target.scrollIntoView({
-    behavior: prefersReducedMotion ? "auto" : "smooth",
-    block: "start",
-  });
-  target.focus({ preventScroll: true });
-}
-
-/** Clamped assistant text — the full answer lives on the Answer Canvas. */
-function CompactText({ text }: { text: string }) {
-  if (!text) return null;
-  return <p className="line-clamp-3 text-body-sm text-foreground">{text}</p>;
-}
-
-/**
- * Shown while the model has already returned at least one tool result and is
- * now streaming its final prose — the third beat of the activity sequence
- * ("Searching portfolio…" → "Found N sources" → "Composing answer…").
- */
 function ComposingIndicator() {
   const status = useAuiState((s) => s.message.status?.type);
   const partSignature = useAuiState((s) =>
@@ -239,23 +106,15 @@ function AssistantMessage() {
   return (
     <MessagePrimitive.Root className="flex gap-3">
       <AssistantAvatar />
-      {/* Compact editorial text, not a giant bubble (spec §21) — the full
-          answer composes on the Answer Canvas instead. */}
+      {/* Open editorial text that streams in place (spec §21). Answers live
+          in the conversation; evidence cards render inline beneath the text
+          through the tool UI, so the panel is self-contained. */}
       {/* No per-message error here on purpose: a failed turn already raises
           the thread-level notice below, and showing both means a visitor
           reads two apologies for one failure. */}
-      <div className="flex min-w-0 flex-1 flex-col gap-2 pt-1">
-        <MessagePrimitive.Parts
-          components={{ Text: CompactText, Reasoning: () => null }}
-        />
+      <div className="flex min-w-0 flex-1 flex-col gap-3 pt-1 text-body-sm text-foreground [&_p]:mb-2 last:[&_p]:mb-0">
+        <MessagePrimitive.Parts components={{ Reasoning: () => null }} />
         <ComposingIndicator />
-        <button
-          type="button"
-          onClick={viewOnCanvas}
-          className="focus-ring self-start rounded-xs text-body-sm font-medium text-accent hover:underline"
-        >
-          View on canvas →
-        </button>
       </div>
     </MessagePrimitive.Root>
   );
@@ -380,7 +239,6 @@ function ThreadBody() {
 function AiLouieLive() {
   return (
     <AiLouieRuntime>
-      <AnswerSync />
       <ThreadBody />
     </AiLouieRuntime>
   );

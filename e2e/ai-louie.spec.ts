@@ -33,7 +33,7 @@ async function scrollToAskPanel(page: Page) {
  * never reaches a provider. Most tests here assert the failure and boundary
  * paths — everything that must hold regardless of what the model says; the
  * happy path with a mocked grounded answer and evidence cards is covered by
- * `e2e/answer-canvas.spec.ts` instead, and against a real model by the manual
+ * this suite's mocked runs, and against a real model by the manual
  * smoke script in the README.
  */
 
