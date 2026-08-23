@@ -147,6 +147,22 @@ Recorded per spec §39.14, in build order.
     microphone, attachment, and "deep research" controls are also not built —
     voice is Plan 009 and the others are not in the spec.
 
+**Homepage restructure (Plan 011)**
+
+Owner decisions from Louie's 2026-08-23 review of the live homepage,
+superseding spec §11's original wording (spec §39.14).
+
+22. **Headline changed to "I design & ship AI products."**, replacing spec
+    §1/§11's "I design AI products and build them." verbatim.
+23. **Writing and Experiments left the primary nav.** Both remain live,
+    stable URLs in `ROUTES` and the sitemap (spec §28); `/experiments` is now
+    reached from `/work` instead.
+24. **The contextual rail is gone from the homepage.** Featured work and
+    "Louie in brief" moved into the main column — Featured work directly
+    after the hero, so the work is reached fast, with "Louie in brief"
+    after the AI thread. The AI thread itself stays in the main column for
+    now; Plan 012 relocates it into the vacated rail.
+
 ## AI Louie
 
 The assistant is grounded in `content/evidence/evidence.ts`: the server-side
