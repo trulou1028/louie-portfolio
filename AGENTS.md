@@ -47,6 +47,25 @@ styling and semantics belong in wrappers: `components/system/`,
 titles only. Geist Sans (`font-sans`) for UI and body. Geist Mono
 (`font-mono`) for short system labels only — never paragraphs (spec §7).
 
+**Card anatomy.** One padding scale, no in-between values: compact card
+`p-4`, standard card `p-5`, panel `p-6` (a panel may step up to `sm:p-8`).
+Inside a card: `gap-2.5` between rows, `gap-4` between cards, sections own
+their own outer spacing (`mt-12`+). A genuinely dense row may deviate, but
+it carries a comment saying so.
+
+**Chips and labels.** Use `Tag` for topic and project tags (`tone="mono"`
+for the uppercase technical variant on cards). Use `SystemLabel` only for
+machine-ish markers like `AI SYSTEM` or `TOOL CALL` — it means something,
+it is not just a smaller chip. Never hand-roll chip markup; it drifted into
+four different flavours before `Tag` existed.
+
+**Icons.** `size-4` inline by default. `size-3.5` only inside `text-body-sm`
+metadata rows. Decorative icons always `aria-hidden`.
+
+**Loading.** Skeletons are shaped like the content they precede (see the
+job-fit dialog, which previews its four result sections). No bare spinners
+without text, and no skeleton that misrepresents what is coming.
+
 **Dark mode.** Deferred (spec §6, §37). Do not add `dark:` variants.
 
 ## Content integrity — the rule that matters most

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { Surface } from "@/components/system/surface";
-import { SystemLabel } from "@/components/system/system-label";
+import { Tag } from "@/components/system/tag";
 import { cn } from "@/lib/utils";
 import type { WorkProject } from "@/content/work/projects";
 
@@ -49,7 +49,7 @@ function WorkCard({ project, className }: WorkCardProps) {
         )}
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-3 p-6 md:p-7">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 p-6 md:p-8">
         <span className="flex items-center gap-1.5 font-serif text-heading-md text-foreground">
           {project.name}
           <ArrowUpRight
@@ -67,7 +67,7 @@ function WorkCard({ project, className }: WorkCardProps) {
         <ul className="mt-2 flex flex-wrap gap-1.5">
           {project.tags.map((tag) => (
             <li key={tag}>
-              <SystemLabel>{tag}</SystemLabel>
+              <Tag tone="mono">{tag}</Tag>
             </li>
           ))}
         </ul>

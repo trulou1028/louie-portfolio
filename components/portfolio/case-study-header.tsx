@@ -1,5 +1,6 @@
 import { ProjectMeta } from "@/components/portfolio/project-meta";
 import { SectionLabel } from "@/components/system/section-label";
+import { Tag } from "@/components/system/tag";
 import type { WorkProject } from "@/content/work/projects";
 
 /**
@@ -38,11 +39,8 @@ function CaseStudyHeader({
 
       <ul className="mt-7 flex flex-wrap gap-x-2 gap-y-1.5">
         {project.tags.map((tag) => (
-          <li
-            key={tag}
-            className="rounded-xs border border-border-subtle bg-surface-muted px-2 py-0.5 text-body-sm text-foreground-muted"
-          >
-            {tag}
+          <li key={tag}>
+            <Tag>{tag}</Tag>
           </li>
         ))}
       </ul>

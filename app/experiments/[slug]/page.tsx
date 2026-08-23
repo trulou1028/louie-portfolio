@@ -7,6 +7,7 @@ import { PendingContent } from "@/components/portfolio/pending-content";
 import { Action } from "@/components/system/action";
 import { SectionLabel } from "@/components/system/section-label";
 import { StatusDot } from "@/components/system/status-dot";
+import { Tag } from "@/components/system/tag";
 import { experiments } from "@/content/experiments/experiments";
 
 /** Static params so each experiment gets its own stable URL (spec §28). */
@@ -58,11 +59,8 @@ export default async function ExperimentPage({
           />
           <ul className="flex flex-wrap gap-x-2 gap-y-1.5">
             {experiment.tags.map((tag) => (
-              <li
-                key={tag}
-                className="rounded-xs border border-border-subtle bg-surface-muted px-2 py-0.5 text-body-sm text-foreground-muted"
-              >
-                {tag}
+              <li key={tag}>
+                <Tag>{tag}</Tag>
               </li>
             ))}
           </ul>

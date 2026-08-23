@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Loader2 } from "lucide-react";
 
 import {
   Dialog,
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Action } from "@/components/system/action";
 import { JobFitResult } from "@/components/ai/job-fit-result";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { VerifiedJobFit } from "@/lib/ai/job-fit";
 
 /**
@@ -114,6 +114,22 @@ function JobDescriptionDialog({
           <div className="px-6 pb-6">
             <JobFitResult result={phase.result} />
           </div>
+        ) : phase.status === "loading" ? (
+          /* Shaped like the result that is coming — four sections, not a
+             lone spinner, so the wait previews its own outcome. */
+          <div className="flex flex-col gap-6 px-6 pb-6" aria-busy="true">
+            <Skeleton className="h-4 w-3/4" />
+            {["Strong evidence", "Relevant work to review", "Gaps or unclear areas", "Suggested questions"].map(
+              (section) => (
+                <div key={section} className="flex flex-col gap-2">
+                  <Skeleton className="h-3 w-32" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+              ),
+            )}
+            <span className="sr-only">Comparing this role against Louie&rsquo;s work…</span>
+          </div>
         ) : (
           <div className="flex flex-col gap-3 px-6 pb-6">
             <label htmlFor="job-description" className="sr-only">
@@ -127,7 +143,7 @@ function JobDescriptionDialog({
               maxLength={15_000}
               placeholder="Paste the full job description…"
               aria-describedby="job-description-privacy"
-              className="w-full resize-y rounded-md border border-border-default bg-surface p-3.5 text-body text-foreground outline-none placeholder:text-foreground-muted focus:border-border-strong"
+              className="w-full resize-y rounded-md border border-border-default bg-surface p-4 text-body text-foreground outline-none placeholder:text-foreground-muted focus:border-border-strong"
             />
 
             <p
@@ -145,18 +161,10 @@ function JobDescriptionDialog({
             ) : null}
 
             <div className="flex items-center gap-3">
-              <Action
-                onClick={compare}
-                disabled={tooShort || phase.status === "loading"}
-              >
-                {phase.status === "loading" ? (
-                  <>
-                    <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                    Comparing
-                  </>
-                ) : (
-                  "Compare with Louie’s work"
-                )}
+              {/* No spinner state here: while the comparison runs, the whole
+                  form is replaced by a skeleton shaped like the result. */}
+              <Action onClick={compare} disabled={tooShort}>
+                Compare with Louie&rsquo;s work
               </Action>
               {tooShort && value.length > 0 ? (
                 <span className="text-body-sm text-foreground-muted">

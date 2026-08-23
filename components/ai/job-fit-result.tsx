@@ -160,7 +160,7 @@ function JobFitResult({ result }: { result: VerifiedJobFit }) {
 
       <Surface
         variant="muted"
-        className="flex items-start gap-2.5 p-3.5 text-body-sm text-foreground-muted"
+        className="flex items-start gap-2.5 p-4 text-body-sm text-foreground-muted"
       >
         <CircleHelp aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
         <span>

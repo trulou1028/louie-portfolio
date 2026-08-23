@@ -24,7 +24,7 @@ honor its STOP conditions, and update your row when done.
 | 009  | Voice mode (post-launch)                   | P3 | L | 008 | TODO |
 | 011  | Homepage restructure (headline, nav, work-first) | P1 | M | — | DONE (reviewed, unmerged) |
 | 012  | Ask panel + Answer Canvas (AI as the rail) | P1 | L | 011 | DONE (reviewed, unmerged) |
-| 013  | Consistency pass (cards, spacing, states)  | P2 | M | 012 | TODO |
+| 013  | Consistency pass (cards, spacing, states)  | P2 | M | 012 | DONE |
 | 010  | Visual reconciliation with mockup          | P2 | M | 003 | DONE (groups B–D deferred) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
@@ -139,6 +139,17 @@ the full punch list into `plans/CONTENT-TODOS.md`.
   `Canvas`/`useMinWidth`'s two-pass render — on mobile the rail subtree
   unmounts and remounts shortly after first paint. Tests ride it out with a
   retry on the scroll setup action (assertions are NOT retried).
+
+- **013 — DONE 2026-08-23.** Run directly rather than via a dispatched
+  executor: the plan's "Current state" had gone stale (011, 012, and the
+  Answer Canvas removal all landed after it was written), so the drift was
+  re-audited against the live code first. Consolidated five hand-rolled chip
+  variants into one `Tag` component, normalised the Surface padding scale to
+  {p-4, p-5, p-6(+sm:p-8)} by removing the p-3.5 and p-7 outliers, replaced
+  the job-fit dialog's bare spinner with a skeleton shaped like its four
+  result sections, and recorded the card/chip/icon/loading recipes in
+  AGENTS.md. Not done from the original plan: the `/design-system` recipe
+  gallery, and a `pnpm check:consistency` script — both optional there.
 
 ## Findings considered and rejected
 

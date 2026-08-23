@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { Surface } from "@/components/system/surface";
+import { Tag } from "@/components/system/tag";
 import { cn } from "@/lib/utils";
 import type { WorkProject } from "@/content/work/projects";
 
@@ -23,7 +24,7 @@ function RailWorkCard({
   return (
     <Surface
       variant="interactive"
-      className={cn("group flex gap-3.5 p-3.5", className)}
+      className={cn("group flex gap-4 p-4", className)}
       render={<Link href={project.href} />}
     >
       <div className="w-[76px] shrink-0 sm:w-[88px]">
@@ -61,12 +62,9 @@ function RailWorkCard({
 
         <span className="mt-1 flex flex-wrap gap-1">
           {project.tags.slice(0, 2).map((tag) => (
-            <span
-              key={tag}
-              className="rounded-xs border border-border-subtle bg-surface-muted px-1.5 py-0.5 font-mono text-system uppercase text-foreground-muted"
-            >
+            <Tag key={tag} tone="mono">
               {tag}
-            </span>
+            </Tag>
           ))}
         </span>
       </div>
