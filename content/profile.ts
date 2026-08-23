@@ -11,14 +11,17 @@ export const profile = {
   role: "AI Product Designer & Builder",
 
   positioning: {
-    /** Spec §1, §11 — primary positioning statement. */
-    primary: "I design AI products and build them.",
+    /**
+     * Owner decision (2026-08-23) superseding spec §1, §11's original
+     * wording — see README "Deviations" ledger, Plan 011.
+     */
+    primary: "I design & ship AI products.",
     /**
      * The tail of `primary`, set in accent italic serif (per the strategy
      * mockup). Must remain a suffix of `primary` so the rendered heading text
-     * stays spec-verbatim — asserted in `content/profile.test.ts`.
+     * stays verbatim — asserted in `lib/content.test.ts`.
      */
-    primaryEmphasis: "and build them.",
+    primaryEmphasis: "ship AI products.",
     /** Spec §1, §11 — supporting positioning. */
     supporting:
       "Product designer working across AI systems, complex workflows, design engineering, and product strategy.",
