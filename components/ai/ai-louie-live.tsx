@@ -12,54 +12,40 @@ import { useAISDKError } from "@assistant-ui/react-ai-sdk";
 import { AiLouieComposer } from "@/components/ai/ai-louie-composer";
 import { AiLouieRuntime } from "@/components/ai/ai-louie-runtime";
 import { JobDescriptionDialog } from "@/components/ai/job-description-dialog";
-import { ToolStatus } from "@/components/ai/tool-status";
 import { Surface } from "@/components/system/surface";
 import { cn } from "@/lib/utils";
 
 /**
- * The AI Louie surface (spec §11 §2, §21, §31; Plan 012 "Ask the panel; the
- * site answers").
+ * The AI Louie surface — a basic question-and-answer chat (Plan 014).
  *
- * This is the panel's half of the hook: a compact transcript with a visible
- * reasoning trail, never a wall of bubbles. Substantive answers are composed
- * on the Answer Canvas in the main column instead (`answer-canvas.tsx`) —
- * `AnswerSync` below is the wiring between the two.
+ * This is the panel's whole hook: a compact transcript, never a wall of
+ * bubbles. The visitor asks, the answer streams in as plain editorial text
+ * grounded in the portfolio's evidence index. There is no generative UI, no
+ * navigation, and no side panel this assistant drives — Plan 014 is an
+ * owner decision to revert the earlier "Ask the panel; the site answers"
+ * concept (Plan 012) back to exactly this.
  *
  * Interaction still borrows familiarity from chat without cloning it
  * (spec §21): user turns are a quiet inline treatment, assistant turns are
- * clamped editorial text with a link out to the full answer, and tool
- * activity is reported in plain language — never chain-of-thought.
+ * open editorial text, and the only "tool activity" reported in-thread is a
+ * plain-language thinking state — never chain-of-thought.
  *
  * When the backend is unconfigured or failing, the panel shows the spec §31
  * copy and the rest of the portfolio is untouched.
  */
 
 /**
- * Spec §11 §2. "Paste a job description" is not in this list because it is
- * not a question — it opens the evaluator dialog beside the list instead.
+ * Three suggestions only (Plan 014, owner decision) — cut from five so every
+ * one reliably returns grounded evidence; see the retrieval assertions in
+ * `lib/ai/portfolio-search.test.ts`. "Paste a job description" is not in
+ * this list because it is not a question — it opens the evaluator dialog
+ * beside the list instead.
  */
 const SUGGESTIONS = [
   "Show me Offboard",
   "How technical is Louie?",
   "Tell me about Flexi",
-  "Show me agent workflows",
-  "Show me user research",
 ] as const;
-
-/** Reads the plain-text content of a message's text parts, in order. */
-
-/**
- * Writes the thread's lifecycle into the answer store (spec: Plan 012 step
- * 3) — no UI of its own. Watches the last message in the thread: a new user
- * turn means a question was asked, a running assistant turn means the canvas
- * should show its skeleton, and a completed assistant turn hands the canvas
- * its answer text and evidence ids.
- *
- * When the model navigates instead of answering (no text at all), the
- * canvas is cleared rather than left showing a permanent skeleton —
- * `navigate_portfolio` takes precedence over the Answer Sheet, matching the
- * existing spec §18 Tool 2 behavior.
- */
 
 function AssistantAvatar() {
   return (
@@ -87,7 +73,16 @@ function UserMessage() {
   );
 }
 
-function ComposingIndicator() {
+/**
+ * A quiet, alive "thinking" line for the gap before and between tool calls,
+ * when there is no streaming text yet to show (Plan 014). The old
+ * `ComposingIndicator` only covered the gap *between* a tool call and text;
+ * it missed the very first moment — no parts at all — which is exactly the
+ * silence that read as frozen. This covers every running state up to the
+ * point text starts streaming, at which point the streaming text itself is
+ * the only "alive" signal needed.
+ */
+function ThinkingIndicator() {
   const status = useAuiState((s) => s.message.status?.type);
   const partSignature = useAuiState((s) =>
     s.message.parts.map((part) => part.type).join(","),
@@ -95,26 +90,38 @@ function ComposingIndicator() {
 
   if (status !== "running") return null;
   const types = partSignature.split(",").filter(Boolean);
-  const hasToolCall = types.includes("tool-call");
   const lastIsText = types[types.length - 1] === "text";
-  if (!hasToolCall || !lastIsText) return null;
+  if (lastIsText) return null;
 
-  return <ToolStatus state="running" label="Composing answer" />;
+  return (
+    <p
+      role="status"
+      className="flex items-center gap-1.5 text-body-sm text-foreground-muted"
+    >
+      Thinking
+      <span aria-hidden="true" className="flex items-center gap-0.5">
+        <span className="ai-thinking-dot size-1 rounded-full bg-foreground-muted" />
+        <span className="ai-thinking-dot size-1 rounded-full bg-foreground-muted" />
+        <span className="ai-thinking-dot size-1 rounded-full bg-foreground-muted" />
+      </span>
+    </p>
+  );
 }
 
 function AssistantMessage() {
   return (
-    <MessagePrimitive.Root className="flex gap-3">
+    <MessagePrimitive.Root className="flex flex-col gap-2">
       <AssistantAvatar />
-      {/* Open editorial text that streams in place (spec §21). Answers live
-          in the conversation; evidence cards render inline beneath the text
-          through the tool UI, so the panel is self-contained. */}
+      {/* Open editorial text that streams in place (spec §21), flowing under
+          the avatar at the panel's full width rather than beside it (Plan
+          014) — there is no evidence card or tool UI competing for the row
+          anymore. */}
       {/* No per-message error here on purpose: a failed turn already raises
           the thread-level notice below, and showing both means a visitor
           reads two apologies for one failure. */}
-      <div className="flex min-w-0 flex-1 flex-col gap-3 pt-1 text-body-sm text-foreground [&_p]:mb-2 last:[&_p]:mb-0">
+      <div className="flex min-w-0 flex-col gap-3 text-body-sm text-foreground [&_p]:mb-2 last:[&_p]:mb-0">
         <MessagePrimitive.Parts components={{ Reasoning: () => null }} />
-        <ComposingIndicator />
+        <ThinkingIndicator />
       </div>
     </MessagePrimitive.Root>
   );
@@ -152,16 +159,15 @@ function ThreadBody() {
       >
         {/* Opening message, shown until the visitor says something. */}
         <ThreadPrimitive.Empty>
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-2">
             <AssistantAvatar />
             <Surface
               radius="lg"
-              className="min-w-0 flex-1 border-accent-muted/70 bg-surface-raised p-4"
+              className="min-w-0 border-accent-muted/70 bg-surface-raised p-4"
             >
               <p className="text-body-sm text-foreground">
-                Hi, I&rsquo;m AI Louie. I can answer questions about
-                Louie&rsquo;s work and take you directly to the evidence behind
-                my answer.
+                Hi — ask me anything about Louie&rsquo;s work. I answer from
+                his case studies and project evidence.
               </p>
             </Surface>
           </div>

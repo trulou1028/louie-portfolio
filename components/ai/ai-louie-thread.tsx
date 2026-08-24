@@ -34,7 +34,7 @@ const AiLouieLive = dynamic(() => import("@/components/ai/ai-louie-live"), {
 function ThreadSkeleton() {
   return (
     <div aria-busy="true" className="flex min-h-0 flex-1 flex-col gap-5">
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-2">
         <span
           aria-hidden="true"
           className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-surface"
@@ -43,11 +43,11 @@ function ThreadSkeleton() {
         </span>
         <Surface
           radius="lg"
-          className="min-w-0 flex-1 border-accent-muted/70 bg-surface-raised p-4"
+          className="min-w-0 border-accent-muted/70 bg-surface-raised p-4"
         >
           <p className="text-body-sm text-foreground">
-            Hi, I&rsquo;m AI Louie. I can answer questions about Louie&rsquo;s
-            work and take you directly to the evidence behind my answer.
+            Hi — ask me anything about Louie&rsquo;s work. I answer from his
+            case studies and project evidence.
           </p>
         </Surface>
       </div>
