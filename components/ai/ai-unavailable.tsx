@@ -17,7 +17,7 @@ function AiUnavailable() {
     <Surface variant="ai" radius="panel" className="p-6 sm:p-8">
       <div className="flex items-center gap-2.5">
         <Sparkles aria-hidden="true" className="size-4 text-accent" />
-        <h2 className="text-heading-md text-foreground">Ask AI Louie</h2>
+        <h2 className="text-heading-md text-foreground">Ask Louie</h2>
       </div>
 
       <p className="mt-3 max-w-[62ch] text-body text-foreground-muted">
