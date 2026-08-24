@@ -10,6 +10,16 @@ import { useMinWidth } from "@/lib/use-breakpoint";
 import { cn } from "@/lib/utils";
 
 /**
+ * The width at which the contextual rail becomes its own pane.
+ *
+ * This value is encoded in three places that MUST agree: this constant (the
+ * JS half), the `max-lg:hidden` guard on the rail pane, and the `lg:`/
+ * `max-lg:` variants in `ask-panel.tsx`. If they disagree, the rail renders
+ * inside a CSS-hidden container with no stacked fallback and vanishes.
+ */
+const RAIL_BREAKPOINT_PX = 1024;
+
+/**
  * The optional right rail (spec §10).
  *
  * "It should disappear when it does not add value" — so this renders nothing
@@ -90,7 +100,7 @@ function Canvas({
 }) {
   const pathname = usePathname();
   const scrollRef = React.useRef<HTMLDivElement>(null);
-  const isXl = useMinWidth(1280);
+  const hasRailPane = useMinWidth(RAIL_BREAKPOINT_PX);
 
   // An inner scroller keeps its position across route changes; a document
   // scroll would have been reset by the browser. Restore that expectation —
@@ -99,7 +109,7 @@ function Canvas({
     if (!window.location.hash) scrollRef.current?.scrollTo(0, 0);
   }, [pathname]);
 
-  const showPanes = Boolean(rail) && isXl;
+  const showPanes = Boolean(rail) && hasRailPane;
 
   const content = (
     <div
@@ -121,7 +131,7 @@ function Canvas({
         )}
       >
         {children}
-        {rail && stackRail && !isXl ? (
+        {rail && stackRail && !hasRailPane ? (
           <div className="mt-16">{rail}</div>
         ) : null}
       </div>
