@@ -1,5 +1,5 @@
 import { convertToModelMessages, streamText, tool, type UIMessage } from "ai";
-import { frontendTools, type FrontendTools } from "@assistant-ui/react-ai-sdk";
+import type { FrontendTools } from "@assistant-ui/react-ai-sdk";
 import { z } from "zod";
 
 import { AIUnavailableError, getModel } from "@/lib/ai/provider";
@@ -11,13 +11,15 @@ import { jobDescriptionInputSchema } from "@/lib/ai/job-fit";
 import { runJobFitComparison } from "@/lib/ai/job-fit-service";
 
 /**
- * AI Louie's chat endpoint (spec §17, §18, §31, §32).
+ * AI Louie's chat endpoint (spec §17, §31, §32; Plan 014).
  *
  * The retrieval flow is spec §17: the model may only answer from what
  * `search_portfolio` returns, and that tool runs here on the server against
- * the curated index. The client-side tools (navigate, show evidence, set the
- * context panel) are declared by the browser and forwarded through
- * `frontendTools` so their results come back from the UI.
+ * the curated index. Plan 014 removed the browser-executed tools (navigate,
+ * show evidence, set the context panel) that a client used to declare and
+ * this endpoint used to forward into the model call — the chat is a basic
+ * Q&A surface now, so retrieval and the job-description comparison are the
+ * only tools.
  *
  * Failure behaviour is deliberate (spec §31): every error path returns a
  * small JSON shape the client already knows how to render. Provider errors
@@ -35,9 +37,10 @@ const MAX_TOTAL_CHARS = 48_000;
 
 const requestSchema = z.object({
   messages: z.array(z.custom<UIMessage>()).min(1).max(MAX_MESSAGES),
-  // JSON Schemas for the browser-executed tools, uploaded by assistant-ui's
-  // transport. Their shape is owned by the client we ship, so it is validated
-  // as "objects" here and handed to frontendTools to interpret.
+  // Legacy field: older assistant-ui transports (pre-Plan-014) uploaded JSON
+  // Schemas for browser-executed tools here. The chat no longer has any
+  // client-side tools, so this is accepted for backward compatibility with a
+  // cached client and otherwise ignored.
   tools: z.record(z.string(), z.custom<FrontendTools[string]>()).optional(),
   system: z.string().optional(),
 });
@@ -74,7 +77,9 @@ export async function POST(request: Request) {
     return Response.json({ error: "invalid_request" }, { status: 400 });
   }
 
-  const { messages, tools: clientTools } = parsed.data;
+  // `tools`, if a client still sends it, is accepted and ignored — see the
+  // comment on `requestSchema` above.
+  const { messages } = parsed.data;
 
   if (messages.some((m) => messageLength(m) > MAX_CHARS_PER_MESSAGE)) {
     return Response.json({ error: "message_too_long" }, { status: 413 });
@@ -129,9 +134,6 @@ export async function POST(request: Request) {
           execute: async ({ jobDescription }) =>
             runJobFitComparison(jobDescription),
         }),
-        // Client-declared tools (navigate_portfolio, show_evidence,
-        // set_context_panel) are executed in the browser.
-        ...frontendTools(clientTools ?? {}),
       },
       // Let the model search, then answer with what it found.
       stopWhen: (step) => step.steps.length >= 4,
