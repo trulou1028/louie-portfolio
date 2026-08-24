@@ -47,13 +47,13 @@ function ContextualRail({
     <aside
       aria-label={ariaLabel}
       className={cn(
-        // `xl:h-full` + `min-h-0` is what lets a child fill the pane and
-        // scroll inside it. Below xl the rail sits in the page flow, where
+        // `lg:h-full` + `min-h-0` is what lets a child fill the pane and
+        // scroll inside it. Below lg the rail sits in the page flow, where
         // its natural height is correct.
-        "flex min-h-0 flex-col xl:h-full",
+        "flex min-h-0 flex-col lg:h-full",
         // Padded scroller by default (case-study tables of contents); bare
         // content owns its own chrome.
-        bare ? undefined : "gap-6 px-5 py-10 lg:py-14 xl:overflow-y-auto",
+        bare ? undefined : "gap-6 px-5 py-10 lg:py-14 lg:overflow-y-auto",
         className,
       )}
       {...props}
@@ -71,15 +71,15 @@ function ContextualRail({
  * this column, and the contextual rail each keep their own scroll position,
  * and the divider between content and rail is draggable, like a desktop tool.
  *
- * Layout by viewport:
- *   ≥ xl   nested resizable panes: [content ‖ rail], each its own scroller
- *   < xl   one scroller; `stackRail` pages append the rail after the content
+ * Layout by viewport (RAIL_BREAKPOINT_PX, currently `lg` = 1024px):
+ *   ≥ lg   nested resizable panes: [content ‖ rail], each its own scroller
+ *   < lg   one scroller; `stackRail` pages append the rail after the content
  *          (the homepage), others simply omit it (case-study TOCs)
  *
  * The desktop pane tree is the server-rendered canonical DOM — `useMinWidth`
  * reports desktop on the server and first client render, so crawlers index
- *one copy and hydration never mismatches. Below xl the layout corrects at
- * mount; the rail pane's `hidden xl:block` guard keeps that first frame
+ *one copy and hydration never mismatches. Below lg the layout corrects at
+ * mount; the rail pane's `max-lg:hidden` guard keeps that first frame
  * clean. The footer lives at the end of the content scroller: in an app
  * frame, a footer belongs to the content column, not the window.
  */
@@ -152,7 +152,7 @@ function Canvas({
       </ResizablePanel>
 
       <ResizableHandle
-        className="after:w-2 cursor-col-resize bg-border-subtle transition-colors duration-(--duration-fast) hover:bg-accent data-[resizing]:bg-accent max-xl:hidden"
+        className="after:w-2 cursor-col-resize bg-border-subtle transition-colors duration-(--duration-fast) hover:bg-accent data-[resizing]:bg-accent max-lg:hidden"
         aria-label="Resize context panel"
       />
 
@@ -166,7 +166,7 @@ function Canvas({
             pane so a panel can fill it edge to edge and pin its own footer,
             rather than sitting as a box inside a box. Content that wants to
             scroll manages that itself (see AskPanel). */}
-        <div className="relative h-full max-xl:hidden">{rail}</div>
+        <div className="relative h-full max-lg:hidden">{rail}</div>
       </ResizablePanel>
     </PersistentPanelGroup>
   );

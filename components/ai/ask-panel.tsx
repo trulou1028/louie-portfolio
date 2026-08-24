@@ -32,10 +32,10 @@ function AskPanel() {
         // the pane, and its footer (suggestions + composer) is pinned to the
         // bottom by ThreadBody.
         "flex h-full min-h-0 flex-col gap-4 bg-accent-soft/40 p-5",
-        "scroll-mt-8 xl:border-l xl:border-border-subtle",
-        // Below xl there is no pane: it sits in the page flow, so it reads as
+        "scroll-mt-8 lg:border-l lg:border-border-subtle",
+        // Below lg there is no pane: it sits in the page flow, so it reads as
         // a card again and takes its natural height.
-        "max-xl:h-auto max-xl:rounded-panel max-xl:border max-xl:border-accent-muted/70",
+        "max-lg:h-auto max-lg:rounded-panel max-lg:border max-lg:border-accent-muted/70",
       )}
     >
       {/* Header: the panel names itself once, with a live pill — the
