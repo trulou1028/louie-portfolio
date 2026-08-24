@@ -304,7 +304,7 @@
   }
 }
 
-@media (max-width: 1279.98px) {
+@media (max-width: 1023.98px) {
   [data-panel][id="canvas-rail"] {
     display: none !important;
   }

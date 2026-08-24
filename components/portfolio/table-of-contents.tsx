@@ -49,7 +49,7 @@ function TableOfContentsInline({
   return (
     <details
       className={cn(
-        "rounded-md border border-border-subtle bg-surface-muted px-4 py-3 xl:hidden",
+        "rounded-md border border-border-subtle bg-surface-muted px-4 py-3 lg:hidden",
         className,
       )}
     >
