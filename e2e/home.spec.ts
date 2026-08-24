@@ -9,14 +9,14 @@ import { test, expect, type Page } from "@playwright/test";
  */
 
 /**
- * Below xl, `Canvas` renders the rail in a structurally different tree than
- * on xl+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) — `useMinWidth`
- * reports desktop for the first client render even on a real mobile viewport
- * (matching SSR, so hydration never mismatches) and corrects one effect
- * later, which unmounts and remounts the rail's subtree. A `goto` followed
- * immediately by `scrollIntoViewIfNeeded` can therefore catch `#ask-ai-louie`
- * mid-swap; retrying the whole action rides that out, the same way a real
- * visitor's slower first interaction never would.
+ * Below lg (1024px), `Canvas` renders the rail in a structurally different
+ * tree than on lg+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) —
+ * `useMinWidth` reports desktop for the first client render even on a real
+ * mobile viewport (matching SSR, so hydration never mismatches) and corrects
+ * one effect later, which unmounts and remounts the rail's subtree. A `goto`
+ * followed immediately by `scrollIntoViewIfNeeded` can therefore catch
+ * `#ask-ai-louie` mid-swap; retrying the whole action rides that out, the
+ * same way a real visitor's slower first interaction never would.
  */
 async function scrollToAskPanel(page: Page) {
   await expect(async () => {
@@ -115,7 +115,7 @@ test.describe("homepage", () => {
     await page.goto("/");
     const panel = page.locator("#ask-ai-louie");
     // Plan 012: the AI surface is the homepage's persistent rail. On desktop
-    // it is already on screen at paint, so this is a no-op there; below xl
+    // it is already on screen at paint, so this is a no-op there; below lg
     // it still stacks after the rest of the homepage (spec §10), so
     // approaching it (as a real visitor scrolling down would) is what
     // triggers the lazy-loaded runtime (spec §27), not just being present in
@@ -142,16 +142,16 @@ test.describe("homepage", () => {
   test("work appears before the AI panel in document order", async ({ page }, testInfo) => {
     // Plan 011: hiring managers should reach the work as fast as possible —
     // Featured work sits directly after the hero, ahead of the AI thread.
-    // Plan 012: on xl+ the AI panel lives in its own parallel rail pane
+    // Plan 012: on lg+ the AI panel lives in its own parallel rail pane
     // (spec §10) — position no longer maps onto document order the way a
-    // single column does, so this only still asserts below xl, where the
-    // rail stacks after the entire main column.
+    // single column does, so this only still asserts below lg, where the
+    // rail stacks after Featured work (Plan 015).
     test.skip(testInfo.project.name !== "mobile", "single-column layout only");
     await page.goto("/");
     const featuredWork = page.getByTestId("featured-work");
     const aiPanel = page.locator("#ask-ai-louie");
 
-    // Below xl, `useMinWidth` reports desktop for the first client render
+    // Below lg, `useMinWidth` reports desktop for the first client render
     // (matching SSR) and corrects one effect later, remounting the rail's
     // subtree — waiting for both to be stably visible first rides out that
     // transition instead of racing it for a bounding box.
@@ -306,5 +306,19 @@ test.describe("responsive shell", () => {
       );
       expect(overflows, `${item.path} overflows horizontally`).toBe(false);
     }
+  });
+
+  test("the Ask panel is in view without scrolling at 1100×800", async ({
+    page,
+  }) => {
+    // Plan 015: the rail's pane breakpoint used to be xl (1280px), so a
+    // laptop-width viewport like this one fell into neither layout — it was
+    // narrower than the pane threshold but wider than the mobile stack was
+    // designed for, and the panel ended up scrolled far down the page. The
+    // breakpoint is now lg (1024px); 1100px sits just inside it, so the
+    // panel must render as its own pane and be visible at paint.
+    await page.setViewportSize({ width: 1100, height: 800 });
+    await page.goto("/");
+    await expect(page.locator("#ask-ai-louie")).toBeInViewport();
   });
 });

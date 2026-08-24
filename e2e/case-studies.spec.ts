@@ -120,6 +120,25 @@ test("no developer markers are visible to readers", async ({ page }) => {
   }
 });
 
+test("exactly one table of contents renders at the rail breakpoint", async ({
+  page,
+}) => {
+  // Plan 015: `TableOfContentsInline`'s collapsed disclosure used to hide at
+  // `xl:hidden` (1280px) while the rail pane itself switched on at the same
+  // threshold — so the two guards agreed and never doubled up. Both are now
+  // `lg` (1024px); 1100px sits just inside that breakpoint and would show
+  // both the rail and the disclosure at once if the two guards ever drift
+  // apart again.
+  await page.setViewportSize({ width: 1100, height: 800 });
+  await page.goto("/work/offboard");
+
+  const rail = page.locator('nav[aria-label="On this page"]');
+  const disclosure = page.locator("details").filter({ hasText: "On this page" });
+
+  await expect(rail).toBeVisible();
+  await expect(disclosure).toBeHidden();
+});
+
 test("the work index links to both case studies", async ({ page }) => {
   await page.goto("/work");
   for (const study of STUDIES) {

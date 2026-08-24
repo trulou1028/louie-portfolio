@@ -11,14 +11,14 @@ function text(literal: string) {
 }
 
 /**
- * Below xl, `Canvas` renders the rail in a structurally different tree than
- * on xl+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) — `useMinWidth`
- * reports desktop for the first client render even on a real mobile viewport
- * (matching SSR, so hydration never mismatches) and corrects one effect
- * later, which unmounts and remounts the rail's subtree. A `goto` followed
- * immediately by `scrollIntoViewIfNeeded` can therefore catch `#ask-ai-louie`
- * mid-swap; retrying the whole action rides that out, the same way a real
- * visitor's slower first interaction never would.
+ * Below lg (1024px), `Canvas` renders the rail in a structurally different
+ * tree than on lg+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) —
+ * `useMinWidth` reports desktop for the first client render even on a real
+ * mobile viewport (matching SSR, so hydration never mismatches) and corrects
+ * one effect later, which unmounts and remounts the rail's subtree. A `goto`
+ * followed immediately by `scrollIntoViewIfNeeded` can therefore catch
+ * `#ask-ai-louie` mid-swap; retrying the whole action rides that out, the
+ * same way a real visitor's slower first interaction never would.
  */
 async function scrollToAskPanel(page: Page) {
   await expect(async () => {
@@ -42,7 +42,7 @@ test.describe("the AI surface", () => {
   test("renders the thread, opening message, and suggestions", async ({ page }) => {
     await page.goto("/");
     // Plan 012: the Ask panel is the homepage's persistent rail. On desktop
-    // it is already on screen at paint, so this is a no-op; below xl it
+    // it is already on screen at paint, so this is a no-op; below lg it
     // still stacks after the rest of the homepage (spec §10), so approaching
     // it is what triggers the lazy-loaded runtime (spec §27).
     await scrollToAskPanel(page);
