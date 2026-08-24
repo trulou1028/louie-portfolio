@@ -147,13 +147,14 @@ test.describe("the AI surface", () => {
       tools?: Record<string, unknown>;
     };
     expect(JSON.stringify(sent.messages)).toContain("Show me Offboard");
-    expect(Object.keys(sent.tools ?? {})).not.toEqual(
-      expect.arrayContaining([
-        "navigate_portfolio",
-        "show_evidence",
-        "set_context_panel",
-      ]),
-    );
+    const toolNames = Object.keys(sent.tools ?? {});
+    for (const removed of [
+      "navigate_portfolio",
+      "show_evidence",
+      "set_context_panel",
+    ]) {
+      expect(toolNames).not.toContain(removed);
+    }
   });
 
   test("shows the spec fallback copy when the backend fails", async ({ page }) => {
