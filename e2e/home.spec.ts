@@ -121,7 +121,7 @@ test.describe("homepage", () => {
     // triggers the lazy-loaded runtime (spec §27), not just being present in
     // the DOM. `scrollIntoViewIfNeeded` mirrors that.
     await scrollToAskPanel(page);
-    await expect(panel.getByRole("heading", { name: "AI Louie" })).toBeVisible();
+    await expect(panel.getByRole("heading", { name: "Ask Louie" })).toBeVisible();
     await expect(
       panel.getByRole("textbox", { name: /Ask anything about/ }),
     ).toBeEnabled();
@@ -134,7 +134,7 @@ test.describe("homepage", () => {
     // of the main column into its own rail (desktop: a parallel pane; below
     // xl: stacked after the rest of the homepage, spec §10).
     await page.goto("/");
-    const rail = page.getByRole("complementary", { name: "Ask AI Louie" });
+    const rail = page.getByRole("complementary", { name: "Ask Louie" });
     await expect(rail).toHaveCount(1);
     expect(await rail.locator("#ask-ai-louie").count()).toBe(1);
   });
@@ -183,7 +183,7 @@ test.describe("the app frame", () => {
 
     // Let the lazy AI runtime mount; its skeleton carries one of the spans.
     await expect(
-      page.getByRole("complementary", { name: "Ask AI Louie" }),
+      page.getByRole("complementary", { name: "Ask Louie" }),
     ).toBeVisible();
 
     const overflow = await page.evaluate(() => {
@@ -222,7 +222,7 @@ test.describe("runtime health", () => {
     await page.goto("/");
     // Let the lazy AI runtime mount — the loop lived in its lifecycle sync.
     await expect(
-      page.getByRole("complementary", { name: "Ask AI Louie" }),
+      page.getByRole("complementary", { name: "Ask Louie" }),
     ).toBeVisible();
     await page.waitForTimeout(2_500);
 
