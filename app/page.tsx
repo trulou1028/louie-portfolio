@@ -1,61 +1,105 @@
 import Link from "next/link";
 
-import { Canvas } from "@/components/app-shell/contextual-rail";
-import { AiLouieThread } from "@/components/ai/ai-louie-thread";
-import { ExperimentTile } from "@/components/portfolio/experiment-tile";
-import { RailWorkCard } from "@/components/portfolio/rail-work-card";
+import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
+import { AskAILouieLink, AskPanel } from "@/components/ai/ask-panel";
+import { WorkCard } from "@/components/portfolio/work-card";
 import { Action } from "@/components/system/action";
-import { RailSection } from "@/components/system/rail-section";
 import { SectionLabel } from "@/components/system/section-label";
-import { Surface } from "@/components/system/surface";
-import { experiments } from "@/content/experiments/experiments";
 import { profile } from "@/content/profile";
 import { workProjects } from "@/content/work/projects";
 
 /**
- * Homepage (spec §11, with the three-panel layout from the strategy mockup).
+ * Homepage (spec §11, restructured by owner decision, 2026-08-23 — Plans 011
+ * and 012).
  *
  * A recruiter should understand within ten seconds that Louie designs
- * sophisticated AI products and can build them (spec §1). The main column
- * carries the hero and the AI surface; work, experiments, and the profile sit
- * in the contextual rail.
+ * sophisticated AI products and can build them (spec §1), and should reach
+ * the work as fast as possible: Featured work sits directly after the hero,
+ * ahead of the AI surface.
  *
- * The rail is the *same DOM* at every width — a flex row at `xl`, stacked
- * below it — rather than two copies gated by breakpoints. Duplicating
- * portfolio content into a hidden second copy is explicitly out (spec §28).
+ * The AI thread lives in the rail as the Ask panel and answers stream inside
+ * it, conventionally. An earlier iteration routed answers to an "Answer
+ * Canvas" in the main column; Louie reviewed it and preferred the
+ * conversation staying in one place, so that surface was removed (owner
+ * decision, 2026-08-23).
  */
 const BRIEF_POINTS = profile.brief;
 
 export default function Home() {
   const { primary, primaryEmphasis } = profile.positioning;
   // Render the tail in accent italic without letting the heading text drift
-  // from the spec wording.
+  // from the source wording.
   const lead = primary.slice(0, primary.length - primaryEmphasis.length).trimEnd();
 
-  const rail = (
-    <aside
-      aria-label="Featured work and profile"
-      className="flex flex-col gap-9"
-    >
-          <RailSection title="Featured work" viewAllHref="/work">
-            <div className="flex flex-col gap-2.5">
-              {workProjects.map((project) => (
-                <RailWorkCard key={project.slug} project={project} />
-              ))}
-            </div>
-          </RailSection>
+  return (
+    <Canvas
+        rail={
+          <ContextualRail bare aria-label="Ask AI Louie">
+            <AskPanel />
+          </ContextualRail>
+        }
+        stackRail
+        railDefaultSize={350}
+      >
+        <div className="flex flex-col gap-14">
 
-          <RailSection title="Experiments" viewAllHref="/experiments">
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 xl:grid-cols-2">
-              {experiments.map((experiment) => (
-                <ExperimentTile key={experiment.slug} experiment={experiment} />
-              ))}
-            </div>
-          </RailSection>
+            <section>
+              <SectionLabel>{profile.positioning.eyebrow}</SectionLabel>
 
-          <RailSection title="Louie in brief">
-            <Surface variant="muted" className="flex flex-col gap-4 p-4">
-              <ul className="flex flex-col gap-2.5">
+              <h1 className="mt-6 max-w-[15ch] font-serif text-display-xl text-balance text-foreground">
+                {lead}{" "}
+                {/* Stylistic, not semantic emphasis — a <span>, so screen
+                    readers do not announce stress that isn't meant. */}
+                <span className="italic text-accent">{primaryEmphasis}</span>
+              </h1>
+
+              <p className="mt-6 max-w-[56ch] text-body-lg text-foreground-muted">
+                {profile.positioning.supporting}
+              </p>
+
+              {/* TODO(content): second line summarizing CK-12 and Offboard,
+                  pending Louie's approved wording (spec §11 §1). */}
+              {profile.heroSecondaryLine ? (
+                <p className="mt-3 max-w-[56ch] text-body-lg text-foreground-muted">
+                  {profile.heroSecondaryLine}
+                </p>
+              ) : null}
+
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Action render={<Link href="/work" />}>View selected work</Action>
+                <AskAILouieLink>Ask AI Louie</AskAILouieLink>
+              </div>
+            </section>
+
+            <section
+              data-testid="featured-work"
+              aria-labelledby="featured-work-label"
+              className="flex flex-col gap-6"
+            >
+              <SectionLabel id="featured-work-label">Featured work</SectionLabel>
+
+              <div className="flex flex-col gap-5">
+                {workProjects.map((project) => (
+                  <WorkCard key={project.slug} project={project} />
+                ))}
+              </div>
+
+              <Action
+                variant="ghost"
+                render={<Link href="/work" />}
+                className="self-start"
+              >
+                All work →
+              </Action>
+            </section>
+
+            {/* Plan 012: substantive answers compose here instead of piling
+                up as bubbles in the rail. Renders nothing while idle. */}
+
+            <section className="flex flex-col gap-6 border-t border-border-subtle pt-10">
+              <SectionLabel>In brief</SectionLabel>
+
+              <ul className="grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
                 {BRIEF_POINTS.map((point) => (
                   <li
                     key={point}
@@ -69,74 +113,22 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
+
               {/* TODO(asset): portrait or illustration (spec §11 §5). */}
+              <blockquote className="font-serif text-body-lg text-balance text-foreground-muted">
+                {profile.quotes.philosophy}
+              </blockquote>
+
               <Action
                 variant="secondary"
                 size="sm"
                 render={<Link href="/about" />}
                 className="self-start"
               >
-                View full profile
+                About Louie
               </Action>
-            </Surface>
-          </RailSection>
-
-          <figure className="border-t border-border-subtle pt-6">
-            <blockquote className="font-serif text-body-lg text-balance text-foreground-muted">
-              {profile.quotes.philosophy}
-            </blockquote>
-            <figcaption className="mt-3 text-body-sm text-foreground-muted">
-              — {profile.name.split(" ")[0]}
-            </figcaption>
-          </figure>
-        </aside>
-  );
-
-  return (
-    <Canvas rail={rail} stackRail railDefaultSize={30}>
-      <div className="flex flex-col gap-14">
-
-          <section>
-            <SectionLabel>{profile.positioning.eyebrow}</SectionLabel>
-
-            <h1 className="mt-6 max-w-[15ch] font-serif text-display-xl text-balance text-foreground">
-              {lead}{" "}
-              {/* Stylistic, not semantic emphasis — a <span>, so screen
-                  readers do not announce stress that isn't meant. */}
-              <span className="italic text-accent">{primaryEmphasis}</span>
-            </h1>
-
-            <p className="mt-6 max-w-[56ch] text-body-lg text-foreground-muted">
-              {profile.positioning.supporting}
-            </p>
-
-            {/* TODO(content): second line summarizing CK-12 and Offboard,
-                pending Louie's approved wording (spec §11 §1). */}
-            {profile.heroSecondaryLine ? (
-              <p className="mt-3 max-w-[56ch] text-body-lg text-foreground-muted">
-                {profile.heroSecondaryLine}
-              </p>
-            ) : null}
-
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Action render={<Link href="/work" />}>View selected work</Action>
-              <Action variant="secondary" render={<Link href="#ask-ai-louie" />}>
-                Ask AI Louie
-              </Action>
-            </div>
-          </section>
-
-          <section id="ask-ai-louie" className="scroll-mt-8">
-            {/* Always rendered. An earlier version gated this on
-                isAIConfigured(), but this page is statically prerendered, so
-                that check froze at build time — adding the key in Vercel
-                without redeploying would have left the site permanently
-                showing "unavailable". The runtime is lazy-loaded anyway, and
-                an unconfigured backend surfaces the spec §31 copy from the
-                endpoint's 503 (spec §31). */}
-            <AiLouieThread />
-          </section>
-      </div>
-    </Canvas>
+            </section>
+        </div>
+      </Canvas>
   );
 }

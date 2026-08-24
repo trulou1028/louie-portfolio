@@ -7,6 +7,7 @@ import { PendingContent } from "@/components/portfolio/pending-content";
 import { Action } from "@/components/system/action";
 import { InlineLink } from "@/components/system/inline-link";
 import { SectionLabel } from "@/components/system/section-label";
+import { Tag } from "@/components/system/tag";
 import { profile } from "@/content/profile";
 import { resume } from "@/content/resume";
 
@@ -135,11 +136,8 @@ export default function ResumePage() {
                       </h3>
                       <ul className="mt-2 flex flex-wrap gap-x-2 gap-y-1.5">
                         {group.skills.map((skill) => (
-                          <li
-                            key={skill}
-                            className="rounded-xs border border-border-subtle bg-surface-muted px-2 py-0.5 text-body-sm text-foreground-muted"
-                          >
-                            {skill}
+                          <li key={skill}>
+                            <Tag>{skill}</Tag>
                           </li>
                         ))}
                       </ul>

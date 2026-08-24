@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Canvas } from "@/components/app-shell/contextual-rail";
 import { WorkCard } from "@/components/portfolio/work-card";
+import { InlineLink } from "@/components/system/inline-link";
 import { SectionLabel } from "@/components/system/section-label";
 import { workProjects } from "@/content/work/projects";
 
@@ -29,6 +30,13 @@ export default function WorkIndex() {
             <WorkCard key={project.slug} project={project} />
           ))}
         </div>
+
+        {/* Experiments left the primary nav (Plan 011) — this is now its
+            entry point from the work index, so /experiments is not orphaned. */}
+        <p className="mt-8 text-body-sm text-foreground-muted">
+          Smaller explorations live in the lab →{" "}
+          <InlineLink href="/experiments">/experiments</InlineLink>
+        </p>
       </div>
     </Canvas>
   );

@@ -3,6 +3,7 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 
 import { SectionLabel } from "@/components/system/section-label";
 import { cn } from "@/lib/utils";
+import { Tag } from "@/components/system/tag";
 
 /**
  * System diagrams (spec §13, §14, §34).
@@ -109,9 +110,14 @@ function FlowDiagram({
               {stage.branch ? (
                 <p className="flex items-center gap-2 text-body-sm text-foreground-muted">
                   <span className="sr-only">If </span>
-                  <span className="shrink-0 rounded-xs border border-border-default bg-surface px-1.5 py-0.5 font-mono text-system uppercase">
+                  {/* A branch condition sits on the diagram's own surface,
+                      so it keeps a stronger border than a page chip. */}
+                  <Tag
+                    tone="mono"
+                    className="shrink-0 border-border-default bg-surface"
+                  >
                     {stage.branch.condition}
-                  </span>
+                  </Tag>
                   <ArrowRight
                     aria-hidden="true"
                     className="size-3.5 shrink-0 text-foreground-subtle"

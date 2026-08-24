@@ -34,7 +34,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
   const isLg = useMinWidth(1024);
 
   return (
-    <div className="flex h-dvh flex-col">
+    <div className="flex h-dvh flex-col overflow-hidden">
       {/* Skip link — first tab stop on every page (spec §26). */}
       <a
         href="#main"
@@ -46,7 +46,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
       <MobileNav />
 
       <PersistentPanelGroup
-        storageKey="shell"
+        storageKey="shell-v2"
         orientation="horizontal"
         className="min-h-0 flex-1"
       >
@@ -54,11 +54,11 @@ function AppShell({ children }: { children: React.ReactNode }) {
           <>
             <ResizablePanel
               id="left-rail"
-              defaultSize={236}
+              defaultSize={300}
               minSize={190}
               maxSize={340}
             >
-              <div className="h-full overflow-y-auto border-r border-border-subtle max-lg:hidden">
+              <div className="relative h-full overflow-y-auto border-r border-border-subtle max-lg:hidden">
                 <LeftRail />
               </div>
             </ResizablePanel>

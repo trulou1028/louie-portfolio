@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Mail } from "lucide-react";
 
 import { LinkedInIcon } from "@/components/system/brand-icons";
+import { Avatar } from "@/components/system/avatar";
 import { InlineLink } from "@/components/system/inline-link";
 
 import { NavItem } from "@/components/app-shell/nav-item";
@@ -31,8 +32,11 @@ function LeftRail() {
         className="focus-ring rounded-sm"
         aria-label={`${profile.name} — home`}
       >
-        <span className="block font-serif text-heading-md leading-tight text-foreground">
-          {profile.name}
+        <span className="flex items-center gap-2.5">
+          <Avatar size="sm" />
+          <span className="min-w-0 font-serif text-heading-md leading-tight text-foreground">
+            {profile.name}
+          </span>
         </span>
         <span className="mt-1.5 block font-mono text-system uppercase leading-relaxed text-foreground-muted">
           {profile.role}

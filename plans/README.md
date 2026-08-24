@@ -22,10 +22,25 @@ honor its STOP conditions, and update your row when done.
 | 007  | Job-description evaluator                  | P2 | M | 006 | DONE |
 | 008  | Experiments, polish, SEO/a11y/perf, deploy | P2 | L | 007 | DONE (content + domain pending) |
 | 009  | Voice mode (post-launch)                   | P3 | L | 008 | TODO |
+| 011  | Homepage restructure (headline, nav, work-first) | P1 | M | — | DONE (reviewed, unmerged) |
+| 012  | Ask panel + Answer Canvas (AI as the rail) | P1 | L | 011 | DONE (reviewed, unmerged) |
+| 013  | Consistency pass (cards, spacing, states)  | P2 | M | 012 | DONE |
 | 010  | Visual reconciliation with mockup          | P2 | M | 003 | DONE (groups B–D deferred) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
+
+## Redesign track (added 2026-08-23, via /improve)
+
+Plans 011–013 execute on branch `restyle/rhea-dark` (the adopted dark
+Nova/Roboto Slab direction) and encode owner decisions of 2026-08-23 that
+supersede parts of spec §11: new headline ("I design & ship AI products."),
+Writing/Experiments removed from the nav (routes stay live), Featured Work
+and "Louie in brief" move into the main column, and the homepage rail
+becomes the Ask panel. Plan 012 carries the signature interaction: the chat
+panel is a control surface — answers compose the main canvas as an "Answer
+Sheet" from allowlisted components (spec §19/§21 sharpened, not abandoned).
+Merging the branch to main is an operator decision, recommended after 012.
 
 ## Dependency notes
 
@@ -38,6 +53,9 @@ REJECTED (with one-line rationale)
 - 006 reserves (but must not implement) `compare_job_description`; 007 fills it.
 - First-launch scope (spec §36) = Plans 001–008. Plan 009 is explicitly
   post-launch.
+- 011 → 012 is strict: 011 leaves the AI thread in the main column so every
+  intermediate state stays green; 012 relocates it. 013 audits what 011–012
+  produced, so it goes last.
 
 ## Accounts & infrastructure
 
@@ -79,6 +97,59 @@ the full punch list into `plans/CONTENT-TODOS.md`.
   records that the mockup **misstates what Offboard is** (it shows an IT
   offboarding tool; Offboard is a job-search product per spec §11/§13 and the
   live product site). The built case study is correct; the mockup is not.
+
+## Execution log
+
+- **011 — DONE 2026-08-23.** Executed by dispatched subagent in worktree
+  `.claude/worktrees/agent-a390babda3dc68fc1`, branch
+  `worktree-agent-a390babda3dc68fc1` (6 commits on top of `64b620e`).
+  Reviewed and approved: all five gates re-verified independently by the
+  advisor (60 unit, 152 e2e, typecheck, lint, build/18 evidence entries).
+  **Not merged — that is the operator's decision.**
+  Approved deviations: (a) three e2e files outside the listed scope gained
+  `scrollIntoViewIfNeeded()` calls — Featured work moving above the AI panel
+  pushes it below the fold, and an inner scroll container clips the
+  IntersectionObserver's `rootMargin`, so the lazy runtime no longer loads
+  without a scroll; the additions mirror real visitor behaviour and weaken no
+  assertion. (b) `components/portfolio/work-card.tsx` already existed — the
+  plan's "Current state" was stale (planner error); it was rebuilt in place.
+  Known follow-up: `app/design-system/page.tsx` hardcodes the old headline as
+  a typography sample (dev-only route, correctly left untouched).
+
+- **012 — DONE 2026-08-23.** Executed in worktree
+  `.claude/worktrees/agent-a54492fa17d3c78c4`, branch
+  `worktree-agent-a54492fa17d3c78c4` (7 commits on top of 011's tip
+  `2b25c21` — this branch therefore contains 011 as well). Reviewed and
+  approved: all gates re-verified by the advisor (60 unit, 161 e2e,
+  typecheck, lint, build/18 evidence entries), plus live inspection at
+  1440px. **Not merged — operator's decision.**
+  Notable: the executor's own new e2e caught a real defect before ship — a
+  suggestion's `autoSend` appends the user turn and starts the run in one
+  store update, so the `asked` state is never observed; idle-gated
+  `answering`/`answered` actions left the canvas permanently blank. Fixed by
+  making each action self-contained. It also wrote an adversarial §32 test
+  (a fabricated evidence id from a mocked model response must never render)
+  that the plan did not specify.
+  Accepted gaps, both documented: `tool-status.tsx` was left unmodified (the
+  existing spinner treatment was judged adequate); and the panel transcript
+  still renders the full `EvidenceCard` grid inline via the unmodified
+  `evidence-result.tsx`, so the panel is compact but not evidence-free —
+  short of the hook's "activity trail only" ideal. Both are small follow-ups.
+  Known behaviour surfaced, not fixed: adding a homepage rail exposes
+  `Canvas`/`useMinWidth`'s two-pass render — on mobile the rail subtree
+  unmounts and remounts shortly after first paint. Tests ride it out with a
+  retry on the scroll setup action (assertions are NOT retried).
+
+- **013 — DONE 2026-08-23.** Run directly rather than via a dispatched
+  executor: the plan's "Current state" had gone stale (011, 012, and the
+  Answer Canvas removal all landed after it was written), so the drift was
+  re-audited against the live code first. Consolidated five hand-rolled chip
+  variants into one `Tag` component, normalised the Surface padding scale to
+  {p-4, p-5, p-6(+sm:p-8)} by removing the p-3.5 and p-7 outliers, replaced
+  the job-fit dialog's bare spinner with a skeleton shaped like its four
+  result sections, and recorded the card/chip/icon/loading recipes in
+  AGENTS.md. Not done from the original plan: the `/design-system` recipe
+  gallery, and a `pnpm check:consistency` script — both optional there.
 
 ## Findings considered and rejected
 

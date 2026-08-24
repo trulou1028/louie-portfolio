@@ -12,7 +12,7 @@ import { ComposerPrimitive, ThreadPrimitive } from "@assistant-ui/react";
  */
 function AiLouieComposer() {
   return (
-    <ComposerPrimitive.Root className="flex items-end gap-2 rounded-md border border-border-default bg-surface p-2 focus-within:border-border-strong">
+    <ComposerPrimitive.Root className="flex items-end gap-2 rounded-panel border border-border-default bg-surface p-1.5 focus-within:border-border-strong">
       <ComposerPrimitive.Input
         rows={1}
         autoFocus={false}
@@ -24,7 +24,7 @@ function AiLouieComposer() {
       <ThreadPrimitive.If running={false}>
         <ComposerPrimitive.Send
           aria-label="Send message"
-          className="focus-ring inline-flex size-10 shrink-0 items-center justify-center rounded-sm bg-accent text-surface transition-colors duration-(--duration-fast) hover:bg-accent-hover disabled:opacity-40"
+          className="focus-ring inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-fill text-accent-on-fill transition-colors duration-(--duration-fast) hover:bg-accent-fill-hover disabled:opacity-40"
         >
           <ArrowUp aria-hidden="true" className="size-4" />
         </ComposerPrimitive.Send>
@@ -33,7 +33,7 @@ function AiLouieComposer() {
       <ThreadPrimitive.If running>
         <ComposerPrimitive.Cancel
           aria-label="Stop generating"
-          className="focus-ring inline-flex size-10 shrink-0 items-center justify-center rounded-sm border border-border-default text-foreground-muted transition-colors duration-(--duration-fast) hover:text-foreground"
+          className="focus-ring inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border-default text-foreground-muted transition-colors duration-(--duration-fast) hover:text-foreground"
         >
           <Square aria-hidden="true" className="size-3.5 fill-current" />
         </ComposerPrimitive.Cancel>

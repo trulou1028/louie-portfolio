@@ -52,3 +52,6 @@ next-env.d.ts
 
 # vercel
 .vercel
+
+# Agent worktrees (disposable, live inside the repo)
+.claude/worktrees/

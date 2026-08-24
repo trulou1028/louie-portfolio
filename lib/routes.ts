@@ -76,13 +76,16 @@ export function isAnchorOnRoute(route: string, anchor: string): boolean {
 /**
  * Primary navigation, in display order (spec §10 left rail).
  * `/work/*` detail pages are intentionally absent — they are reached from /work.
+ *
+ * Writing and Experiments left the primary nav by owner decision, 2026-08-23
+ * (Plan 011, README "Deviations" ledger). They remain live, stable URLs in
+ * `ROUTES` above and in the sitemap (spec §28) — `/experiments` is reached
+ * from `/work`, and `/writing` remains directly linkable.
  */
 export const NAV_ITEMS: ReadonlyArray<{ href: Route; label: string }> = [
   { href: "/", label: "Home" },
   { href: "/work", label: "Work" },
   { href: "/ai-systems", label: "AI Systems" },
-  { href: "/experiments", label: "Experiments" },
-  { href: "/writing", label: "Writing" },
   { href: "/about", label: "About" },
   { href: "/resume", label: "Resume" },
 ] as const;

@@ -17,9 +17,11 @@ describe("hero copy", () => {
     expect(`${lead} ${primaryEmphasis}`).toBe(primary);
   });
 
-  it("still carries the exact spec positioning statements", () => {
+  it("still carries the exact positioning statements", () => {
+    // The headline was superseded by owner decision 2026-08-23 (Plan 011,
+    // README "Deviations" ledger) — this is no longer the spec §11 wording.
     expect(profile.positioning.primary).toBe(
-      "I design AI products and build them.",
+      "I design & ship AI products.",
     );
     expect(profile.positioning.supporting).toBe(
       "Product designer working across AI systems, complex workflows, design engineering, and product strategy.",
