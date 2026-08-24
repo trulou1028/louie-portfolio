@@ -88,13 +88,23 @@ function Canvas({
   children,
   rail,
   stackRail = false,
+  stackedRailAfter = "content",
   railDefaultSize = 350,
 }: {
   className?: string;
   children: React.ReactNode;
   rail?: React.ReactNode;
-  /** Below xl, render the rail after the content instead of dropping it. */
+  /** Below the rail breakpoint, render the rail after the content instead of dropping it. */
   stackRail?: boolean;
+  /**
+   * Below the rail breakpoint the rail stacks into the content column. By
+   * default ("content") it appends after all children; "featured-work"
+   * inserts it right after the top-level child tagged
+   * `data-testid="featured-work"`, so a page can put the rail higher up
+   * without losing the "Featured work before the AI surface" owner decision
+   * (Plan 011). Falls back to "content" placement if no such child is found.
+   */
+  stackedRailAfter?: "content" | "featured-work";
   /** Initial rail width in pixels (v4 panels size in px). */
   railDefaultSize?: number;
 }) {
@@ -110,6 +120,60 @@ function Canvas({
   }, [pathname]);
 
   const showPanes = Boolean(rail) && hasRailPane;
+
+  // Below the rail breakpoint, `stackRail` pages fold the rail back into the
+  // content column instead of dropping it. By default it lands after every
+  // child; "featured-work" places it right after the top-level child tagged
+  // `data-testid="featured-work"` instead, so the homepage can keep Plan
+  // 011's "Featured work ahead of the AI surface" decision while shortening
+  // how far a visitor has to scroll to reach the Ask panel.
+  //
+  // The "content" (default) path renders the stacked rail as the last thing
+  // in the column, and that column is not guaranteed to be a `gap-*` flex
+  // column — a page could pass any `className` — so `mt-16` carries the
+  // spacing itself there. The "featured-work" path instead splices the rail
+  // in as a sibling of the page's own `flex flex-col gap-14` sections (see
+  // `app/page.tsx`), where the column's `gap` already provides that spacing;
+  // keeping `mt-16` there would stack on top of the gap and double it.
+  const stackedRail =
+    rail && stackRail && !hasRailPane ? (
+      <div className={stackedRailAfter === "featured-work" ? undefined : "mt-16"}>
+        {rail}
+      </div>
+    ) : null;
+
+  let bodyContent: React.ReactNode = (
+    <>
+      {children}
+      {stackedRail}
+    </>
+  );
+
+  if (stackedRail && stackedRailAfter === "featured-work") {
+    const childArray = React.Children.toArray(children);
+    const featuredIndex = childArray.findIndex(
+      (child) =>
+        React.isValidElement(child) &&
+        (child.props as { "data-testid"?: string })["data-testid"] ===
+          "featured-work",
+    );
+    // Falls back to appending after all children if the marker isn't found,
+    // so a missing/renamed testid degrades to the default placement rather
+    // than silently dropping the rail.
+    bodyContent =
+      featuredIndex === -1 ? (
+        <>
+          {childArray}
+          {stackedRail}
+        </>
+      ) : (
+        <>
+          {childArray.slice(0, featuredIndex + 1)}
+          {stackedRail}
+          {childArray.slice(featuredIndex + 1)}
+        </>
+      );
+  }
 
   const content = (
     <div
@@ -130,10 +194,7 @@ function Canvas({
           className,
         )}
       >
-        {children}
-        {rail && stackRail && !hasRailPane ? (
-          <div className="mt-16">{rail}</div>
-        ) : null}
+        {bodyContent}
       </div>
       <SiteFooter />
     </div>
