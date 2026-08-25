@@ -6,6 +6,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 
 import { AiLouieComposer } from "@/components/ai/ai-louie-composer";
+import { AnswerMarkdown } from "@/components/ai/answer-markdown";
 import { JobDescriptionDialog } from "@/components/ai/job-description-dialog";
 import { Surface } from "@/components/system/surface";
 import { cn } from "@/lib/utils";
@@ -81,13 +82,32 @@ function AssistantAvatar({ className }: { className?: string }) {
  * (Plan 014 owner decision), so they stay invisible too. Stating the
  * allow-list here — text only — means the guarantee is ours rather than an
  * inherited default a future part type could quietly undo.
+ *
+ * Plan 018: within that same text branch, `markdown` switches between the
+ * model's answer rendered through `AnswerMarkdown` (assistant turns — the
+ * model writes in markdown) and a plain `<p>` (the visitor's own turn —
+ * echoing a visitor's input through a markdown parser is a needless surface,
+ * not authored content). The guard itself — text only, everything else
+ * null — is unchanged either way.
  */
-function MessageParts({ parts }: { parts: UIMessage["parts"] }) {
+function MessageParts({
+  parts,
+  markdown = false,
+}: {
+  parts: UIMessage["parts"];
+  markdown?: boolean;
+}) {
   return (
     <>
       {parts.map((part, index) =>
         part.type === "text" ? (
-          <p key={index}>{part.text}</p>
+          markdown ? (
+            <div key={index}>
+              <AnswerMarkdown text={part.text} />
+            </div>
+          ) : (
+            <p key={index}>{part.text}</p>
+          )
         ) : null,
       )}
     </>
@@ -124,8 +144,8 @@ function AssistantMessage({ message }: { message: UIMessage }) {
       {/* No per-message error here on purpose: a failed turn already raises
           the thread-level notice below, and showing both means a visitor
           reads two apologies for one failure. */}
-      <MessageContent className="min-w-0 gap-3 text-body-sm text-foreground [&_p]:mb-2 last:[&_p]:mb-0">
-        <MessageParts parts={message.parts} />
+      <MessageContent className="min-w-0 gap-3 text-body-sm text-foreground">
+        <MessageParts parts={message.parts} markdown />
       </MessageContent>
     </div>
   );
