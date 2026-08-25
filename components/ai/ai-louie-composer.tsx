@@ -11,10 +11,10 @@ import { ArrowUp, Square } from "lucide-react";
  * control is what spec §11 rules out.
  *
  * Plan 017: a plain controlled form calling `useChat`'s `sendMessage` (via
- * the parent's `onSubmit`), replacing `assistant-ui`'s `ComposerPrimitive`.
- * `useChat` does not manage input state itself, so the value and its setter
- * are owned by `ai-louie-live.tsx` and passed down as props — not a global
- * store, per Plan 017 Step 3.
+ * the parent's `onSubmit`), replacing the previous chat library's
+ * `ComposerPrimitive`. `useChat` does not manage input state itself, so the
+ * value and its setter are owned by `ai-louie-live.tsx` and passed down as
+ * props — not a global store, per Plan 017 Step 3.
  */
 function AiLouieComposer({
   value,
