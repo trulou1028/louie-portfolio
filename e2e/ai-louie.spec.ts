@@ -385,6 +385,53 @@ test.describe("the AI surface", () => {
     const pwned = await page.evaluate(() => (window as { __pwned?: unknown }).__pwned);
     expect(pwned).toBeUndefined();
   });
+
+  test("centers the send button on one line, bottom-aligns it once the input wraps", async ({
+    page,
+  }) => {
+    // Plan 018 owner decision: centered for a single line, bottom-aligned
+    // once the textarea grows past one line. Before this fix the form was
+    // always `items-end`, so on a single line the button's center sat
+    // ~5.2px below the textarea's center — a 2px tolerance genuinely
+    // discriminates between the old and new behavior.
+    await page.goto("/");
+    await scrollToAskPanel(page);
+
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const textarea = panel.getByRole("textbox", {
+      name: "Ask anything about Louie's work",
+    });
+    const sendButton = panel.getByRole("button", { name: "Send message" });
+
+    await textarea.fill("hello there");
+    const singleLineTextarea = await textarea.boundingBox();
+    const singleLineButton = await sendButton.boundingBox();
+    expect(singleLineTextarea).not.toBeNull();
+    expect(singleLineButton).not.toBeNull();
+    const singleLineTextareaCenter =
+      singleLineTextarea!.y + singleLineTextarea!.height / 2;
+    const singleLineButtonCenter =
+      singleLineButton!.y + singleLineButton!.height / 2;
+    expect(
+      Math.abs(singleLineTextareaCenter - singleLineButtonCenter),
+    ).toBeLessThanOrEqual(2);
+
+    await textarea.fill(
+      "This is a much longer message that should wrap across several lines in " +
+        "the narrow composer textarea, so the send button stays bottom aligned " +
+        "instead of centered.",
+    );
+    const multiLineTextarea = await textarea.boundingBox();
+    const multiLineButton = await sendButton.boundingBox();
+    expect(multiLineTextarea).not.toBeNull();
+    expect(multiLineButton).not.toBeNull();
+    const multiLineTextareaBottom =
+      multiLineTextarea!.y + multiLineTextarea!.height;
+    const multiLineButtonBottom = multiLineButton!.y + multiLineButton!.height;
+    expect(
+      Math.abs(multiLineTextareaBottom - multiLineButtonBottom),
+    ).toBeLessThanOrEqual(2);
+  });
 });
 
 test.describe("the chat endpoint", () => {
