@@ -26,6 +26,10 @@ honor its STOP conditions, and update your row when done.
 | 012  | Ask panel + Answer Canvas (AI as the rail) | P1 | L | 011 | DONE (reviewed, unmerged) |
 | 013  | Consistency pass (cards, spacing, states)  | P2 | M | 012 | DONE |
 | 010  | Visual reconciliation with mockup          | P2 | M | 003 | DONE (groups B–D deferred) |
+| 014  | Ask panel → basic Q&A ("Ask Louie")        | P1 | M | 012, 013 | DONE (reviewed, unmerged) |
+| 015  | Make the Ask panel reachable below 1280px  | P1 | M | 014 | DONE (reviewed, unmerged) |
+| 016  | Mobile polish bundle (nav warning, tap targets, composer) | P2 | M | 015 | DONE 2 of 3 (step 1 REJECTED, reviewed, unmerged) |
+| 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
@@ -41,6 +45,17 @@ becomes the Ask panel. Plan 012 carries the signature interaction: the chat
 panel is a control surface — answers compose the main canvas as an "Answer
 Sheet" from allowlisted components (spec §19/§21 sharpened, not abandoned).
 Merging the branch to main is an operator decision, recommended after 012.
+
+## Owner reevaluation (added 2026-08-24, via /improve)
+
+Plan 014 records an owner decision that supersedes parts of Plan 012 and
+spec §18 Tools 2/3/5: the Ask panel reverts to a basic Q&A chat. Answers
+stream as text in the panel; the client tools (navigate, show evidence,
+context panel) and inline evidence cards are removed; the assistant message
+flows under the avatar; the thinking state is animated; suggestions drop to
+three; a prompt-level scope harness keeps visitors on-topic; the header
+becomes "Ask Louie"; the under-composer disclaimer is removed. Grounding via
+`search_portfolio` and the job-description evaluator are unchanged.
 
 ## Dependency notes
 
@@ -150,6 +165,111 @@ the full punch list into `plans/CONTENT-TODOS.md`.
   result sections, and recorded the card/chip/icon/loading recipes in
   AGENTS.md. Not done from the original plan: the `/design-system` recipe
   gallery, and a `pnpm check:consistency` script — both optional there.
+
+- **014 — DONE 2026-08-24.** Executed by a dispatched subagent in worktree
+  `.claude/worktrees/agent-ab66fecd4febee279`, branch
+  `worktree-agent-ab66fecd4febee279` (9 commits on top of `a74e7eb`).
+  Reviewed and approved: every gate re-verified independently by the advisor
+  (typecheck, lint, 66 unit, 159 e2e / 5 project-scoped skips / 0 failed,
+  build), plus all seven done criteria and the full diff.
+  **Not merged — that is the operator's decision.**
+  Two revision items were sent back and fixed before approval:
+  (a) the replacement "declares no client tools" e2e assertion used
+  `not.toEqual(expect.arrayContaining([...]))`, which only fails when *all
+  three* removed tools are present — it would have passed with one or two
+  reintroduced. Rewritten as a per-tool `not.toContain` loop; the executor
+  demonstrated it failing against a stub and passing after revert.
+  (b) `components/ai/ai-unavailable.tsx` had been deleted on the executor's
+  branch — out of scope, and absent from its FILES CHANGED list. The file is
+  genuinely unreferenced (verified: zero importers at `a74e7eb`), but
+  deleting a spec §31 component is an owner decision, not a side effect of
+  satisfying the rename grep. Restored with only its `<h2>` renamed; the
+  spec §31 fallback copy is untouched. **Open question for Louie: that
+  component is dead code and could be deleted deliberately later.**
+  Approved deviations, both one-line copy changes outside the plan's file
+  list: `app/design-system/page.tsx` (a demo button label) and
+  `e2e/home.spec.ts` (shared landmark/heading names) — both required by the
+  rename, neither weakens an assertion.
+  Judgment call accepted: two bullets in `buildSystemPrompt()`'s "How to
+  work" section that instructed the model to call `show_evidence` and
+  `navigate_portfolio` were removed, since those tools no longer exist.
+  `tool-status.tsx` was deleted after losing its last importer, as the plan
+  allowed.
+
+- **015 — DONE 2026-08-24.** Executed by a dispatched subagent in worktree
+  `.claude/worktrees/agent-a53990f3eebf59000`, branch `plan-015` (5 commits
+  on top of 014's tip `3e26ed8`, so that branch contains 014 as well).
+  Reviewed and approved: all gates re-verified independently by the advisor
+  (typecheck, lint, 66 unit, 163 e2e / 5 skips / 0 failed, build) plus every
+  measurement re-taken in a real browser at 375, 1100, and 1440px.
+  **Not merged — operator's decision.**
+  The rail breakpoint moved from `xl` (1280px) to `lg` (1024px), and below it
+  the panel now stacks after Featured work rather than after everything.
+  Measured: at 1100px the panel is a side pane visible at paint (was buried
+  1,656px down); at 375px it starts 1,868px down (was 2,381px) and the hero's
+  "Ask Louie" link scrolls it to 88px from the top in one activation.
+  **The executor STOPPED twice, both times correctly, and both stops were
+  planner errors:**
+  (a) The plan claimed the 1280 threshold lived in three places. It lives in
+  **five**. The two missed were `app/globals.css:307` (a numeric
+  `max-width: 1279.98px` pre-hydration `!important` guard — invisible to the
+  Tailwind-class greps, and in `app/` while the greps were scoped to
+  `components/`) and `components/portfolio/table-of-contents.tsx:52`
+  (`xl:hidden` on the collapsed inline TOC, which would have rendered
+  alongside the rail TOC between 1024 and 1279). Changing only three made the
+  panel vanish entirely in that band — worse than the original bug. The plan's
+  grep gate passed while the panel was invisible, so a **browser measurement**
+  gate replaced it.
+  (b) The plan's "under 1,800px" mobile target was an estimate, not a measured
+  threshold; the implementation lands at 1,868px and the remainder is Featured
+  work's own 1,233px, which is content this plan may not trim. Gate revised to
+  2,000px plus a verified one-tap hero jump.
+  Reviewer-directed additions beyond the original file list: `app/globals.css`,
+  `components/portfolio/table-of-contents.tsx`, and `e2e/case-studies.spec.ts`
+  (a new test asserting exactly one table of contents renders at 1100px).
+  Also caught in review: the relocated rail carried `mt-16` into a new
+  `gap-14` flex column, giving it 120px of space where every other section
+  boundary has 56px. Fixed; spacing is now uniform.
+
+- **016 — 2 of 3 DONE 2026-08-25.** Executed in worktree
+  `.claude/worktrees/agent-a13a46d1d09457f41`, branch `plan-016` (2 commits on
+  plan 015's tip `2688643`). Reviewed and approved for what landed: all gates
+  re-verified by the advisor (typecheck, lint, 66 unit, **165 e2e** / 7 skips /
+  0 failed, build). **Not merged — operator's decision.**
+  - **Step 2 DONE** — footer links now measure 30px (was 22px), clearing the
+    24px WCAG 2.2 AA (2.5.8) minimum. Padding applied at the footer's call
+    sites via a local `tapTarget` constant, deliberately NOT inside
+    `InlineLink`, which is also used inline in case-study prose.
+  - **Step 3 DONE** — `max-lg:h-auto` → `max-lg:max-h-[80svh]` in
+    `ask-panel.tsx`. No change to `ai-louie-live.tsx` was needed: its existing
+    `min-h-0`/`flex-1` viewport pins the composer and scrolls the transcript
+    once the panel has a height bound. Empty panel stays compact (285px
+    measured, bar was 600px); desktop rail unchanged (the `max-lg:` variant
+    does not apply at `lg+`).
+  - **Step 1 REJECTED — the planner was wrong.** The plan asserted that
+    `nativeButton={false}` on `SheetClose` is "purely a semantics
+    declaration". It is the opposite. Base UI's own source
+    (`internals/use-button/useButton.js:183-186`) reads
+    `isNativeButton ? { type: 'button' } : { role: 'button' }` — so the flag
+    **adds** `role="button"` to the rendered `<a href>`, exposing the mobile
+    nav items as buttons instead of links. The executor caught it with a
+    Playwright accessibility snapshot, confirmed it by isolating the two
+    pre-existing `home.spec.ts` tests that query `getByRole("link")` (passing
+    on baseline, failing consistently with the change), and reverted. The
+    advisor independently verified the Base UI source.
+    **Net: `nativeButton={false}` is worse than the warning it silences** —
+    it would misreport links as buttons to screen readers. The console
+    warning is cosmetic and the menu's behavior was verified correct
+    (navigates, closes, 44px targets). Left as is. A correct fix exists —
+    drop `SheetClose` and make the `Sheet` controlled, closing it from each
+    nav item's `onClick`, which keeps real link semantics — but that is a
+    restructure and needs its own plan.
+  - New tests audited and genuine: the footer test measures real heights and
+    guards against a vacuous pass; the composer test mocks the AI SDK's UI
+    message stream protocol, waits for the streamed text to render, then
+    asserts both that the composer is in the viewport and that the transcript
+    overflows internally. Both are mobile-project-only, which is why the skip
+    count rose from 5 to 7.
 
 ## Findings considered and rejected
 
