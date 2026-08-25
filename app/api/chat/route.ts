@@ -1,5 +1,4 @@
 import { convertToModelMessages, streamText, tool, type UIMessage } from "ai";
-import type { FrontendTools } from "@assistant-ui/react-ai-sdk";
 import { z } from "zod";
 
 import { AIUnavailableError, getModel } from "@/lib/ai/provider";
@@ -37,11 +36,11 @@ const MAX_TOTAL_CHARS = 48_000;
 
 const requestSchema = z.object({
   messages: z.array(z.custom<UIMessage>()).min(1).max(MAX_MESSAGES),
-  // Legacy field: older assistant-ui transports (pre-Plan-014) uploaded JSON
-  // Schemas for browser-executed tools here. The chat no longer has any
-  // client-side tools, so this is accepted for backward compatibility with a
-  // cached client and otherwise ignored.
-  tools: z.record(z.string(), z.custom<FrontendTools[string]>()).optional(),
+  // Legacy field: older transports (pre-Plan-014) uploaded JSON Schemas for
+  // browser-executed tools here. The chat no longer has any client-side
+  // tools, so this is accepted for backward compatibility with a cached
+  // client and otherwise ignored.
+  tools: z.record(z.string(), z.unknown()).optional(),
   system: z.string().optional(),
 });
 

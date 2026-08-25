@@ -10,10 +10,20 @@ import { Surface } from "@/components/system/surface";
  * The rail-mounted lazy wrapper (spec §11 §2, §27; Plan 012).
  *
  * `AskPanel` owns the panel's chrome; this component owns only the loading
- * concern — deferring the ~840KB assistant-ui runtime until the visitor
- * approaches the panel, which is exactly what spec §27 asks for: "avoid
- * loading the full AI runtime until the user approaches or activates the AI
- * surface".
+ * concern — deferring the ~504KB chat runtime (`useChat` from
+ * `@ai-sdk/react`, plus the shadcn chat components; Plan 017 replaced the
+ * previous chat library, which was ~840KB) until the visitor approaches the
+ * panel, which is exactly what spec §27 asks for: "avoid loading the full
+ * AI runtime until the user approaches or activates the AI surface".
+ *
+ * Plan 017 measured folding this chunk into the eager bundle and kept the
+ * lazy load deliberately: 504KB is still real weight for a portfolio site,
+ * and the reliability problems once blamed on this deferral (a stuck dev
+ * server, `IntersectionObserver` not firing under some browser automation)
+ * turn out not to affect a real visitor — production loads the runtime in
+ * about a second, and the automation issue is a testing artifact, not a
+ * user-facing one. See `pnpm test:e2e`'s use of a real production build for
+ * how this plan verified the panel is not actually stuck.
  *
  * A generous `rootMargin` means the fetch starts before the panel is on
  * screen, so the swap is not something a visitor notices. Without
