@@ -290,6 +290,101 @@ test.describe("the AI surface", () => {
     await expect(page).toHaveURL(/\/work$/);
     await expect(page.locator("h1")).toBeVisible();
   });
+
+  /**
+   * Mocks the `ai` package's UI message stream protocol (see the "keeps the
+   * composer in view" test above for the same shape) so a single text delta
+   * carries the answer under test.
+   */
+  async function mockAnswer(page: Page, answer: string) {
+    await page.route("**/api/chat", async (route) => {
+      const chunks = [
+        { type: "start" },
+        { type: "start-step" },
+        { type: "text-start", id: "t1" },
+        { type: "text-delta", id: "t1", delta: answer },
+        { type: "text-end", id: "t1" },
+        { type: "finish-step" },
+        { type: "finish" },
+      ];
+      const body =
+        chunks.map((chunk) => `data: ${JSON.stringify(chunk)}\n\n`).join("") +
+        "data: [DONE]\n\n";
+
+      await route.fulfill({
+        status: 200,
+        headers: {
+          "content-type": "text/event-stream",
+          "x-vercel-ai-ui-message-stream": "v1",
+        },
+        body,
+      });
+    });
+  }
+
+  test("renders assistant markdown as real elements, not literal syntax", async ({
+    page,
+  }) => {
+    // Plan 018: the model writes in markdown; before this, the panel printed
+    // it as plain text — literal asterisks and hyphens instead of bold text
+    // and a bullet list.
+    const markdownAnswer =
+      "This is **bold** text.\n\n- bullet one\n- bullet two\n\nInline `code` here.";
+    await mockAnswer(page, markdownAnswer);
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+
+    // Real elements, not just visually-bold-looking text.
+    await expect(
+      panel.locator("strong", { hasText: "bold" }),
+    ).toBeVisible({ timeout: 10_000 });
+    await expect(panel.locator("li", { hasText: "bullet one" })).toBeVisible();
+    await expect(panel.locator("li", { hasText: "bullet two" })).toBeVisible();
+    await expect(panel.locator("code", { hasText: "code" })).toBeVisible();
+
+    // The literal markdown syntax must not survive anywhere in the panel.
+    await expect(panel.getByText("**bold**")).toHaveCount(0);
+    await expect(panel.getByText("- bullet one")).toHaveCount(0);
+  });
+
+  test("never renders model-supplied HTML as live DOM (spec §32)", async ({
+    page,
+  }) => {
+    // The guard this plan adds: react-markdown escapes raw HTML by default,
+    // but only as long as no rehype plugin re-enables passthrough. This test
+    // is written to fail the moment that stops being true — an `img` or
+    // `script` element appearing, or `window.__pwned` getting set, means
+    // the model's answer reached the DOM instead of the page's text.
+    const htmlAnswer =
+      '<img src=x onerror="window.__pwned=1">\n\n<script>window.__pwned=1</script>';
+    await mockAnswer(page, htmlAnswer);
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+
+    // The markup shows up as visible text instead of being rendered...
+    await expect(
+      panel.getByText('<img src=x onerror="window.__pwned=1">'),
+    ).toBeVisible({ timeout: 10_000 });
+    await expect(
+      panel.getByText("<script>window.__pwned=1</script>"),
+    ).toBeVisible();
+
+    // ...which means no actual img/script element exists inside the panel...
+    await expect(page.locator("#ask-ai-louie img")).toHaveCount(0);
+    await expect(page.locator("#ask-ai-louie script")).toHaveCount(0);
+
+    // ...and neither payload ever executed.
+    const pwned = await page.evaluate(() => (window as { __pwned?: unknown }).__pwned);
+    expect(pwned).toBeUndefined();
+  });
 });
 
 test.describe("the chat endpoint", () => {
