@@ -7,15 +7,19 @@
 > in `plans/README.md` — unless a reviewer dispatched you and told you they
 > maintain the index.
 >
-> **Base commit**: this plan was written against `2688643` (plan 015's tip).
-> **Plan 016 lands after it and touches `components/ai/ask-panel.tsx`.** Before
-> executing, branch from plan 016's tip, not `2688643`, and re-read
-> `ask-panel.tsx` — 016 changes its height classes.
+> **Base commit**: plans 014–016 were merged to `main` on 2026-08-25.
+> Branch from `main` at commit `98479f3`, which contains all of them.
+>
+> Two things changed since this plan was drafted:
+> - `ask-panel.tsx` now carries `max-lg:max-h-[80svh]` (plan 016, line 42),
+>   not `max-lg:h-auto`.
+> - `components/ai/ai-unavailable.tsx` does **not** exist. It was deleted on
+>   `main` in `a9304c2` before this work began; a review error briefly
+>   restored it, and `36b386f` re-deleted it. Do not recreate it.
 >
 > **Drift check (run first)**:
-> `git diff --stat 2688643..HEAD -- components/ai lib/ai app/api/chat`
-> Expect to see plan 016's `ask-panel.tsx` change and nothing else in
-> `components/ai`. Anything more is a STOP condition.
+> `git diff --stat 98479f3..HEAD -- components/ai lib/ai app/api/chat`
+> Expect no output. Anything else is a STOP condition.
 
 ## Status
 
