@@ -140,9 +140,9 @@ function AssistantMessage({ message }: { message: UIMessage }) {
  *
  * Uses shadcn's `Marker` + the `shimmer` text utility (ships with
  * `shadcn/tailwind.css`, already imported by `app/globals.css`) rather than
- * the old three-dot `.ai-thinking-dot` markup — it is the component this
- * plan's shadcn chat set ships specifically for animated status rows, so it
- * replaces the bespoke keyframes instead of sitting beside them.
+ * the old bespoke three-dot pulse markup and keyframes — it is the
+ * component this plan's shadcn chat set ships specifically for animated
+ * status rows, so it replaces the bespoke CSS instead of sitting beside it.
  */
 function ThinkingIndicator() {
   return (
