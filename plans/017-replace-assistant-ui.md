@@ -193,9 +193,41 @@ as a control before concluding anything.
   if `Marker`/`shimmer` replaces it)
 - `e2e/ai-louie.spec.ts`, `e2e/home.spec.ts` (selector updates)
 
+**Narrowly in scope — `app/api/chat/route.ts`, two lines only.** An earlier
+revision of this plan put this file out of scope entirely, which made the plan
+impossible to satisfy: the file imports a **type** from the very package Step 4
+removes.
+
+`app/api/chat/route.ts:2`:
+```ts
+import type { FrontendTools } from "@assistant-ui/react-ai-sdk";
+```
+used once, at `route.ts:44`:
+```ts
+tools: z.record(z.string(), z.custom<FrontendTools[string]>()).optional(),
+```
+
+That `tools` field is the legacy "accepted and ignored" field plan 014 kept for
+cached clients. `z.custom<T>()` with no validator performs **no runtime
+checking**, so the type parameter is decorative — replacing it with
+`z.unknown()` is runtime-identical.
+
+Make exactly this change and nothing else in this file:
+- delete the `import type { FrontendTools }` line
+- change that one field to `tools: z.record(z.string(), z.unknown()).optional()`
+- keep the surrounding comment, updating only the wording that names
+  assistant-ui
+
+**Every other line of `route.ts` must be untouched**, and everything in
+`lib/ai/` remains fully out of scope. If you find yourself needing any further
+server change, STOP.
+
 **Out of scope**:
-- `app/api/chat/route.ts` and everything in `lib/ai/` — the server contract is
-  already correct and must not change. If you believe it must, STOP.
+- Everything in `lib/ai/` — the retrieval, prompt, rate limit, and job-fit
+  logic must not change. If you believe it must, STOP.
+- Any behavioral change to `route.ts`: the streaming, the tools passed to
+  `streamText`, `stopWhen`, the size limits, and every error path stay exactly
+  as they are.
 - `components/ai/job-description-dialog.tsx`, `job-fit-result.tsx`, and the
   job-fit flow — it does not use `assistant-ui` primitives. Its trigger must
   keep rendering as the fourth item beside the three suggestion pills.
@@ -332,9 +364,9 @@ with it unchanged, so a failure is never ambiguous.
 Add one new test: the panel renders its composer **without any scrolling** at
 a desktop viewport, proving the lazy gate is gone.
 
-**Verify**: `pnpm test:e2e` → all pass. Baseline at plan 015: **163 passed, 5
-skipped, 0 failed**, of which 22 are `ai-louie` tests across both projects.
-Report your numbers against that baseline.
+**Verify**: `pnpm test:e2e` → all pass. Baseline on merged `main`: **165
+passed, 7 skipped, 0 failed** (plan 016 added two mobile-only tests, which is
+why the skip count rose from 5). Report your numbers against that baseline.
 
 ### Step 6: Confirm behavior end to end
 
@@ -367,7 +399,9 @@ ALL must hold:
 - [ ] Total client JS is **meaningfully below 1,612 KB**; report the number and
       the largest single chunk (baseline 836 KB)
 - [ ] `pnpm test` still reports 66 passing unit tests (server logic untouched)
-- [ ] e2e count is at least the 163 baseline, with no assertion weakened
+- [ ] e2e count is at least the 165 baseline, with no assertion weakened
+- [ ] `git diff 98479f3..HEAD -- app/api/chat/route.ts` shows **only** the
+      `FrontendTools` import removal and the one `tools:` field line
 - [ ] The composer's accessible name is still "Ask anything about Louie's work"
 - [ ] Exactly three suggestion pills plus the job-description trigger
 - [ ] Assistant messages still flow under the avatar at full width
