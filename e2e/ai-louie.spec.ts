@@ -90,6 +90,27 @@ test.describe("the AI surface", () => {
     ).toHaveCount(0);
   });
 
+  test("the composer renders without any scrolling, on desktop", async (
+    { page },
+    testInfo,
+  ) => {
+    // Plan 017: the runtime behind the panel dropped from ~840KB
+    // (assistant-ui) to ~504KB (`useChat` + the shadcn chat components), but
+    // Plan 017 measured folding it into the eager bundle and chose to keep
+    // it behind the `IntersectionObserver` gate — 504KB is still real
+    // weight for a portfolio site. This proves the gate does not cost
+    // desktop visitors anything: on desktop the rail is already on screen
+    // at paint, so the observer's threshold is satisfied immediately and
+    // the composer is interactive with no scroll at all.
+    test.skip(testInfo.project.name !== "desktop", "desktop only");
+
+    await page.goto("/");
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    await expect(
+      panel.getByRole("textbox", { name: "Ask anything about Louie's work" }),
+    ).toBeEnabled();
+  });
+
   test("suggestions are keyboard reachable and activate on Enter", async ({ page }) => {
     // Plan 012: the suggestions are a vertical list of real buttons, not
     // decorative chips — this proves one can be focused and activated
