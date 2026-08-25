@@ -52,6 +52,27 @@ for (const route of ROUTES) {
   });
 }
 
+test("footer links meet the 24px minimum tap target on mobile", async (
+  { page },
+  testInfo,
+) => {
+  // WCAG 2.2 AA (2.5.8): tap targets must be at least 24px. Only meaningful
+  // at a touch viewport — Plan 016.
+  test.skip(testInfo.project.name !== "mobile", "mobile only");
+  await page.goto("/");
+
+  const heights = await page.evaluate(() =>
+    [...document.querySelectorAll("footer a")].map(
+      (a) => a.getBoundingClientRect().height,
+    ),
+  );
+
+  expect(heights.length).toBeGreaterThan(0);
+  for (const height of heights) {
+    expect(height).toBeGreaterThanOrEqual(24);
+  }
+});
+
 test("the evaluator dialog is accessible when open", async ({ page }) => {
   // Dialogs are where focus management usually breaks, so it is audited open
   // rather than only in its closed state.
