@@ -26,10 +26,11 @@ honor its STOP conditions, and update your row when done.
 | 012  | Ask panel + Answer Canvas (AI as the rail) | P1 | L | 011 | DONE (reviewed, unmerged) |
 | 013  | Consistency pass (cards, spacing, states)  | P2 | M | 012 | DONE |
 | 010  | Visual reconciliation with mockup          | P2 | M | 003 | DONE (groups B–D deferred) |
-| 014  | Ask panel → basic Q&A ("Ask Louie")        | P1 | M | 012, 013 | DONE (reviewed, unmerged) |
-| 015  | Make the Ask panel reachable below 1280px  | P1 | M | 014 | DONE (reviewed, unmerged) |
-| 016  | Mobile polish bundle (nav warning, tap targets, composer) | P2 | M | 015 | DONE 2 of 3 (step 1 REJECTED, reviewed, unmerged) |
-| 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | DONE (reviewed, unmerged) |
+| 014  | Ask panel → basic Q&A ("Ask Louie")        | P1 | M | 012, 013 | DONE (merged) |
+| 015  | Make the Ask panel reachable below 1280px  | P1 | M | 014 | DONE (merged) |
+| 016  | Mobile polish bundle (nav warning, tap targets, composer) | P2 | M | 015 | DONE 2 of 3, merged (step 1 REJECTED) |
+| 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | DONE (merged) |
+| 018  | Chat markdown rendering + composer button alignment | P2 | M | 017 | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
