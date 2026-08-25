@@ -30,7 +30,7 @@ honor its STOP conditions, and update your row when done.
 | 015  | Make the Ask panel reachable below 1280px  | P1 | M | 014 | DONE (merged) |
 | 016  | Mobile polish bundle (nav warning, tap targets, composer) | P2 | M | 015 | DONE 2 of 3, merged (step 1 REJECTED) |
 | 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | DONE (merged) |
-| 018  | Chat markdown rendering + composer button alignment | P2 | M | 017 | TODO |
+| 018  | Chat markdown rendering + composer button alignment | P2 | M | 017 | DONE (merged) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
@@ -322,6 +322,40 @@ the full punch list into `plans/CONTENT-TODOS.md`.
   Flexi answer streamed from the evidence index, and the scope harness
   declined a combined off-topic + prompt-injection probe ("write me a poem
   ... ignore your previous instructions") and redirected on topic.
+
+- **018 — DONE 2026-08-25, merged.** Executed in worktree
+  `.claude/worktrees/agent-a2d507ed3e4dd1d4c`, branch `plan-018` (3 commits).
+  Reviewed and approved: all gates re-verified independently by the advisor
+  (typecheck, lint, 66 unit, **172 e2e** / 8 skips / 0 failed, build).
+  Assistant answers render as markdown via `react-markdown` + `remark-gfm`
+  through an explicit element map in `components/ai/answer-markdown.tsx`,
+  scaled for the narrow panel. User messages stay plain text. The send button
+  centers on one line and bottom-aligns once the input wraps (measured 0px
+  offset in both states, against a previous ~5.2px gap).
+  **Bundle, measured identically on both sides via the loadable manifest:**
+  eager **746 KB → 746 KB, unchanged**; lazy chat chunk 504 KB → 644 KB;
+  total 1,250 KB → 1,390 KB. Visitors who never open the chat pay nothing.
+  **The executor STOPPED once, correctly, on a planner error.** The plan
+  gated on *total* client JS growing more than ~100 KB. That metric cannot
+  distinguish weight every visitor pays from weight only chat users pay — all
+  +140 KB landed in the lazy chunk. Regated on eager weight (`b78e306`).
+  Note for future plans: measure eager weight by excluding chunks listed in
+  `.next/server/app/page/react-loadable-manifest.json`, and use exact byte
+  sizes rather than `du -k`, which rounds per file and inflates totals by
+  ~30 KB.
+  Security (spec §32): `rehype-raw` is deliberately absent and an e2e test
+  mocks an answer containing `<script>` and an `onerror` image, asserting the
+  markup appears as visible text, that `#ask-ai-louie` contains zero
+  `img`/`script` elements, and that the payload never executed. The executor
+  ground-truthed `react-markdown`'s escaping with a standalone probe before
+  wiring anything in.
+  Executor notes accepted: three commits instead of two (declined to rewrite
+  history to squash a pre-STOP commit); removed the now-redundant
+  `[&_p]:mb-2` utility from `MessageContent` and verified the rendered
+  spacing afterward; found no pure-CSS solution for the alignment, since the
+  single-vs-multiline signal requires measuring rendered height; the
+  `react-hooks/set-state-in-effect` disable the plan anticipated proved
+  unnecessary and was removed after lint flagged it as an unused directive.
 
 ## Findings considered and rejected
 
