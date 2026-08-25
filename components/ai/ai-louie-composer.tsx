@@ -30,6 +30,18 @@ function AiLouieComposer({
   onStop: () => void;
 }) {
   const isStreaming = status === "submitted" || status === "streaming";
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  // Grows with content up to `max-h-40` (a pasted job description should not
+  // be trapped in a one-line box with an inner scrollbar); `max-h-40` in the
+  // className below still caps it, so this only ever expands the box, never
+  // fights the CSS bound.
+  React.useLayoutEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [value]);
 
   return (
     <form
@@ -37,6 +49,7 @@ function AiLouieComposer({
       className="flex items-end gap-2 rounded-panel border border-border-default bg-surface p-1.5 focus-within:border-border-strong"
     >
       <textarea
+        ref={textareaRef}
         rows={1}
         autoFocus={false}
         aria-label="Ask anything about Louie's work"
