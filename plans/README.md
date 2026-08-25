@@ -29,7 +29,7 @@ honor its STOP conditions, and update your row when done.
 | 014  | Ask panel → basic Q&A ("Ask Louie")        | P1 | M | 012, 013 | DONE (reviewed, unmerged) |
 | 015  | Make the Ask panel reachable below 1280px  | P1 | M | 014 | DONE (reviewed, unmerged) |
 | 016  | Mobile polish bundle (nav warning, tap targets, composer) | P2 | M | 015 | DONE 2 of 3 (step 1 REJECTED, reviewed, unmerged) |
-| 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | TODO |
+| 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | DONE (reviewed, unmerged) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
@@ -270,6 +270,57 @@ the full punch list into `plans/CONTENT-TODOS.md`.
     asserts both that the composer is in the viewport and that the transcript
     overflows internally. Both are mobile-project-only, which is why the skip
     count rose from 5 to 7.
+
+- **017 — DONE 2026-08-25.** Executed in worktree
+  `.claude/worktrees/agent-abb48a4704df12d92`, branch `plan-017` (on merged
+  `main`). Reviewed and approved: all gates re-verified independently by the
+  advisor (typecheck, lint, 66 unit, **166 e2e** / 8 skips / 0 failed, build),
+  plus the bundle measurements and a live model check.
+  **Not merged — operator's decision.**
+  `assistant-ui` is gone. The chat now runs on `@ai-sdk/react`'s `useChat`
+  plus four shadcn chat components copied into `components/ui/`.
+  **Total client JS 1,612 KB → 1,280 KB (−332 KB, −21%); largest chunk
+  836 KB → 504 KB.** Server logic untouched apart from two authorized lines
+  in `route.ts` (a type-only import of `FrontendTools` and the legacy
+  accepted-and-ignored `tools` field, now `z.unknown()` — runtime-identical).
+  All seven contracts verified: no chain-of-thought, three suggestions plus
+  the job-description trigger, avatar above full-width text, right-aligned
+  user bubbles, thinking state animated from the moment of submit, verbatim
+  spec §31 error copy, verbatim greeting.
+  **The executor STOPPED three times, all three correctly, and all three were
+  planner errors:**
+  (a) The plan put `app/api/chat/route.ts` fully out of scope while also
+  requiring zero `assistant-ui` references under `app/` and removal of the
+  package — impossible, because that file imports a type from it. Resolved by
+  narrowing the file into scope for exactly two lines, bounded by a new done
+  criterion.
+  (b) The executor was handed a stale plan: the advisor's rebase note was
+  committed one commit *after* the base SHA it was told to branch from.
+  (c) The plan's "fold the lazy chunk into the eager bundle if under ~400KB"
+  gate: measured 504 KB. **Decision: keep the lazy load.** The advisor
+  verified the 504 KB is not reducible (`@ai-sdk/react` hard-depends on
+  `ai@7`, which carries zod, so the transport import is not the cause) and,
+  more importantly, that the "panel gets stuck loading" hazard the plan cited
+  as justification is **not user-facing** — it occurs only on the dev server
+  and under browser automation. Removing the gate would have cost every
+  mobile visitor a 504 KB download to buy easier testing. The plan had that
+  trade backwards.
+  Executor deviation, approved: the composer gained real textarea
+  auto-resize. It was not in the plan, but the executor found the existing
+  plan-016 mobile composer test failing (composer 9.6px below the fold),
+  root-caused it empirically against the baseline in a scratch worktree
+  rather than guessing, and found the removed `ComposerPrimitive.Input` had
+  been auto-growing — its extra height was what kept the flex budget
+  working. The fix is a genuine improvement: a pasted job description now
+  grows the box instead of hiding in an inner scrollbar.
+  Also approved: assistant turns deliberately do **not** use shadcn's
+  `<Message>` wrapper, whose default is a row. `MessageAvatar` +
+  `MessageContent` are composed in a plain `flex flex-col` instead, to
+  preserve plan 014's avatar-above-text owner decision.
+  Live model check by the advisor (real key, production build): a grounded
+  Flexi answer streamed from the evidence index, and the scope harness
+  declined a combined off-topic + prompt-injection probe ("write me a poem
+  ... ignore your previous instructions") and redirected on topic.
 
 ## Findings considered and rejected
 
