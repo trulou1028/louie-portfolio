@@ -34,8 +34,12 @@ function AskPanel() {
         "flex h-full min-h-0 flex-col gap-4 bg-accent-soft/40 p-5",
         "scroll-mt-8 lg:border-l lg:border-border-subtle",
         // Below lg there is no pane: it sits in the page flow, so it reads as
-        // a card again and takes its natural height.
-        "max-lg:h-auto max-lg:rounded-panel max-lg:border max-lg:border-accent-muted/70",
+        // a card again. It still needs a bounded height, though — without one
+        // the panel grows to fit the whole conversation and pushes the
+        // composer off screen. `max-h` (not `h`) keeps an empty panel
+        // compact; `svh` (not `vh`) avoids overshooting under a mobile
+        // browser's collapsing address bar.
+        "max-lg:max-h-[80svh] max-lg:rounded-panel max-lg:border max-lg:border-accent-muted/70",
       )}
     >
       {/* Header: the panel names itself once, with a live pill — the

@@ -175,6 +175,86 @@ test.describe("the AI surface", () => {
     ).toBeVisible({ timeout: 10_000 });
   });
 
+  test("keeps the composer in view after a long answer, on mobile", async (
+    { page },
+    testInfo,
+  ) => {
+    // Plan 016: below lg the panel used to grow with the whole conversation
+    // (`max-lg:h-auto`) and push the composer off screen. This proves the
+    // bounded-height fix (`max-lg:max-h-[80svh]`) actually pins the composer
+    // and scrolls the transcript inside the panel, the way desktop already
+    // does. Desktop already has a bounded rail height, so there is nothing
+    // new to prove there.
+    test.skip(testInfo.project.name !== "mobile", "mobile only");
+
+    // Mocks the `ai` package's UI message stream protocol directly (see
+    // `toUIMessageStreamResponse()` in app/api/chat/route.ts) rather than
+    // the plain-JSON 503 shape the other tests here use, because this test
+    // needs a real streamed answer long enough to overflow the panel.
+    const paragraph =
+      "Flexi is CK-12's AI tutor, built for a platform serving over 20 million learners a year. ".repeat(
+        20,
+      );
+
+    await page.route("**/api/chat", async (route) => {
+      const chunks = [
+        { type: "start" },
+        { type: "start-step" },
+        { type: "text-start", id: "t1" },
+        { type: "text-delta", id: "t1", delta: paragraph },
+        { type: "text-end", id: "t1" },
+        { type: "finish-step" },
+        { type: "finish" },
+      ];
+      const body =
+        chunks.map((chunk) => `data: ${JSON.stringify(chunk)}\n\n`).join("") +
+        "data: [DONE]\n\n";
+
+      await route.fulfill({
+        status: 200,
+        headers: {
+          "content-type": "text/event-stream",
+          "x-vercel-ai-ui-message-stream": "v1",
+        },
+        body,
+      });
+    });
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    await expect(panel.getByText(paragraph.slice(0, 30))).toBeVisible({
+      timeout: 10_000,
+    });
+
+    // Criterion 1: the composer stays within the viewport.
+    const composerBox = await page
+      .locator('#ask-ai-louie textarea[aria-label="Ask anything about Louie\'s work"]')
+      .boundingBox();
+    expect(composerBox).not.toBeNull();
+    const viewportSize = page.viewportSize();
+    expect(viewportSize).not.toBeNull();
+    expect(composerBox!.y).toBeLessThan(viewportSize!.height);
+    expect(composerBox!.y + composerBox!.height).toBeGreaterThan(0);
+
+    // Criterion 2: the transcript scrolls inside the panel instead of
+    // growing it to fit the whole conversation.
+    const overflow = await page.evaluate(() => {
+      const viewport = document.querySelector(
+        '#ask-ai-louie [class*="overflow-y-auto"]',
+      );
+      if (!viewport) return null;
+      return {
+        scrollHeight: viewport.scrollHeight,
+        clientHeight: viewport.clientHeight,
+      };
+    });
+    expect(overflow).not.toBeNull();
+    expect(overflow!.scrollHeight).toBeGreaterThan(overflow!.clientHeight + 4);
+  });
+
   test("keeps the rest of the portfolio usable when AI fails", async ({ page }) => {
     // Spec §31: an AI outage must not take the portfolio with it.
     await page.route("**/api/chat", (route) =>
