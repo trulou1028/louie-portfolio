@@ -304,7 +304,7 @@
   }
 }
 
-@media (max-width: 1279.98px) {
+@media (max-width: 1023.98px) {
   [data-panel][id="canvas-rail"] {
     display: none !important;
   }
@@ -339,4 +339,37 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* ---------------------------------------------------------------------------
+   AI Louie's thinking indicator (Plan 014).
+   Three dots pulse in sequence while the assistant is composing but has not
+   started streaming text yet, so the wait reads as alive rather than frozen.
+   The `prefers-reduced-motion: reduce` rule above already collapses this to
+   a single 0.01ms frame — a steady, non-distracting ellipsis — so no
+   separate reduced-motion fallback is needed here.
+--------------------------------------------------------------------------- */
+@keyframes ai-thinking-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.ai-thinking-dot {
+  animation: ai-thinking-dot 1.2s ease-in-out infinite;
+}
+
+.ai-thinking-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.ai-thinking-dot:nth-child(3) {
+  animation-delay: 0.3s;
 }

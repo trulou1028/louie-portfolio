@@ -11,14 +11,14 @@ function text(literal: string) {
 }
 
 /**
- * Below xl, `Canvas` renders the rail in a structurally different tree than
- * on xl+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) — `useMinWidth`
- * reports desktop for the first client render even on a real mobile viewport
- * (matching SSR, so hydration never mismatches) and corrects one effect
- * later, which unmounts and remounts the rail's subtree. A `goto` followed
- * immediately by `scrollIntoViewIfNeeded` can therefore catch `#ask-ai-louie`
- * mid-swap; retrying the whole action rides that out, the same way a real
- * visitor's slower first interaction never would.
+ * Below lg (1024px), `Canvas` renders the rail in a structurally different
+ * tree than on lg+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) —
+ * `useMinWidth` reports desktop for the first client render even on a real
+ * mobile viewport (matching SSR, so hydration never mismatches) and corrects
+ * one effect later, which unmounts and remounts the rail's subtree. A `goto`
+ * followed immediately by `scrollIntoViewIfNeeded` can therefore catch
+ * `#ask-ai-louie` mid-swap; retrying the whole action rides that out, the
+ * same way a real visitor's slower first interaction never would.
  */
 async function scrollToAskPanel(page: Page) {
   await expect(async () => {
@@ -27,21 +27,22 @@ async function scrollToAskPanel(page: Page) {
 }
 
 /**
- * AI Louie's text surface (spec §11 §2, §18, §21, §31, §32).
+ * AI Louie's text surface — a basic Q&A chat (spec §18, §21, §31, §32;
+ * Plan 014).
  *
  * Every test intercepts `/api/chat`, so the suite runs without an API key and
  * never reaches a provider. Most tests here assert the failure and boundary
  * paths — everything that must hold regardless of what the model says; the
- * happy path with a mocked grounded answer and evidence cards is covered by
- * this suite's mocked runs, and against a real model by the manual
- * smoke script in the README.
+ * happy path with a mocked grounded answer is covered by this suite's
+ * mocked runs, and against a real model by the manual smoke script in the
+ * README.
  */
 
 test.describe("the AI surface", () => {
   test("renders the thread, opening message, and suggestions", async ({ page }) => {
     await page.goto("/");
     // Plan 012: the Ask panel is the homepage's persistent rail. On desktop
-    // it is already on screen at paint, so this is a no-op; below xl it
+    // it is already on screen at paint, so this is a no-op; below lg it
     // still stacks after the rest of the homepage (spec §10), so approaching
     // it is what triggers the lazy-loaded runtime (spec §27).
     await scrollToAskPanel(page);
@@ -49,16 +50,16 @@ test.describe("the AI surface", () => {
     // Plan 012: the panel is a complementary landmark, not just an id —
     // scoping to it is what proves the suggestions live in the rail, not
     // buried somewhere else in the main column.
-    const panel = page.getByRole("complementary", { name: "Ask AI Louie" });
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
 
     await expect(
-      panel.getByRole("heading", { name: "AI Louie" }),
+      panel.getByRole("heading", { name: "Ask Louie" }),
     ).toBeVisible();
 
     await expect(
       panel.getByText(
         text(
-          "Hi, I'm AI Louie. I can answer questions about Louie's work and take you directly to the evidence behind my answer.",
+          "Hi — ask me anything about Louie's work. I answer from his case studies and project evidence.",
         ),
       ),
     ).toBeVisible();
@@ -74,6 +75,19 @@ test.describe("the AI surface", () => {
     ]) {
       await expect(panel.getByText(prompt, { exact: true })).toBeVisible();
     }
+
+    // Plan 014: the panel ships exactly three suggestions now — the two
+    // dropped ones must not still be rendered.
+    for (const removed of ["Show me agent workflows", "Show me user research"]) {
+      await expect(panel.getByText(removed, { exact: true })).toHaveCount(0);
+    }
+
+    // Plan 014: the disclaimer line under the composer was removed.
+    await expect(
+      page.getByText(
+        "It answers from Louie's case studies and cites the evidence.",
+      ),
+    ).toHaveCount(0);
   });
 
   test("suggestions are keyboard reachable and activate on Enter", async ({ page }) => {
@@ -89,7 +103,7 @@ test.describe("the AI surface", () => {
       await route.fulfill({ status: 503, json: { error: "ai_unavailable" } });
     });
 
-    const panel = page.getByRole("complementary", { name: "Ask AI Louie" });
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
     const suggestion = panel.getByText("How technical is Louie?", { exact: true });
     await suggestion.focus();
     await expect(suggestion).toBeFocused();
@@ -104,16 +118,16 @@ test.describe("the AI surface", () => {
   test("ships no voice, attachment, or research controls", async ({ page }) => {
     // Spec §11: do not ship fake controls. Voice is Plan 009.
     await page.goto("/");
-    const panel = page.getByRole("complementary", { name: "Ask AI Louie" });
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
 
     for (const name of [/microphone/i, /talk/i, /attach/i, /deep research/i]) {
       await expect(panel.getByRole("button", { name })).toHaveCount(0);
     }
   });
 
-  test("sends the question and declares its client tools", async ({ page }) => {
-    // The three browser-executed tools must reach the server, or the model
-    // can never navigate, surface evidence, or drive the panel (spec §18).
+  test("sends the question and declares no client tools", async ({ page }) => {
+    // Plan 014: the browser-executed tools (navigate, show evidence, set the
+    // context panel) are gone — the chat only ever sends messages now.
     let body: { messages?: unknown[]; tools?: Record<string, unknown> } | null =
       null;
 
@@ -133,13 +147,14 @@ test.describe("the AI surface", () => {
       tools?: Record<string, unknown>;
     };
     expect(JSON.stringify(sent.messages)).toContain("Show me Offboard");
-    expect(Object.keys(sent.tools ?? {})).toEqual(
-      expect.arrayContaining([
-        "navigate_portfolio",
-        "show_evidence",
-        "set_context_panel",
-      ]),
-    );
+    const toolNames = Object.keys(sent.tools ?? {});
+    for (const removed of [
+      "navigate_portfolio",
+      "show_evidence",
+      "set_context_panel",
+    ]) {
+      expect(toolNames).not.toContain(removed);
+    }
   });
 
   test("shows the spec fallback copy when the backend fails", async ({ page }) => {
@@ -158,6 +173,86 @@ test.describe("the AI surface", () => {
         ),
       ).first(),
     ).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("keeps the composer in view after a long answer, on mobile", async (
+    { page },
+    testInfo,
+  ) => {
+    // Plan 016: below lg the panel used to grow with the whole conversation
+    // (`max-lg:h-auto`) and push the composer off screen. This proves the
+    // bounded-height fix (`max-lg:max-h-[80svh]`) actually pins the composer
+    // and scrolls the transcript inside the panel, the way desktop already
+    // does. Desktop already has a bounded rail height, so there is nothing
+    // new to prove there.
+    test.skip(testInfo.project.name !== "mobile", "mobile only");
+
+    // Mocks the `ai` package's UI message stream protocol directly (see
+    // `toUIMessageStreamResponse()` in app/api/chat/route.ts) rather than
+    // the plain-JSON 503 shape the other tests here use, because this test
+    // needs a real streamed answer long enough to overflow the panel.
+    const paragraph =
+      "Flexi is CK-12's AI tutor, built for a platform serving over 20 million learners a year. ".repeat(
+        20,
+      );
+
+    await page.route("**/api/chat", async (route) => {
+      const chunks = [
+        { type: "start" },
+        { type: "start-step" },
+        { type: "text-start", id: "t1" },
+        { type: "text-delta", id: "t1", delta: paragraph },
+        { type: "text-end", id: "t1" },
+        { type: "finish-step" },
+        { type: "finish" },
+      ];
+      const body =
+        chunks.map((chunk) => `data: ${JSON.stringify(chunk)}\n\n`).join("") +
+        "data: [DONE]\n\n";
+
+      await route.fulfill({
+        status: 200,
+        headers: {
+          "content-type": "text/event-stream",
+          "x-vercel-ai-ui-message-stream": "v1",
+        },
+        body,
+      });
+    });
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    await expect(panel.getByText(paragraph.slice(0, 30))).toBeVisible({
+      timeout: 10_000,
+    });
+
+    // Criterion 1: the composer stays within the viewport.
+    const composerBox = await page
+      .locator('#ask-ai-louie textarea[aria-label="Ask anything about Louie\'s work"]')
+      .boundingBox();
+    expect(composerBox).not.toBeNull();
+    const viewportSize = page.viewportSize();
+    expect(viewportSize).not.toBeNull();
+    expect(composerBox!.y).toBeLessThan(viewportSize!.height);
+    expect(composerBox!.y + composerBox!.height).toBeGreaterThan(0);
+
+    // Criterion 2: the transcript scrolls inside the panel instead of
+    // growing it to fit the whole conversation.
+    const overflow = await page.evaluate(() => {
+      const viewport = document.querySelector(
+        '#ask-ai-louie [class*="overflow-y-auto"]',
+      );
+      if (!viewport) return null;
+      return {
+        scrollHeight: viewport.scrollHeight,
+        clientHeight: viewport.clientHeight,
+      };
+    });
+    expect(overflow).not.toBeNull();
+    expect(overflow!.scrollHeight).toBeGreaterThan(overflow!.clientHeight + 4);
   });
 
   test("keeps the rest of the portfolio usable when AI fails", async ({ page }) => {

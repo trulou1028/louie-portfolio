@@ -79,6 +79,15 @@ describe("searchEvidence", () => {
     expect(ids).toEqual([...ids]);
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  // Plan 014: the panel's three suggestions must reliably return grounded
+  // evidence, or the basic Q&A chat has nothing to answer with.
+  it.each(["Offboard", "Flexi", "technical engineering skills"])(
+    "returns at least one result for the %s suggestion query",
+    (query) => {
+      expect(searchEvidence({ query }).results.length).toBeGreaterThan(0);
+    },
+  );
 });
 
 describe("getEvidenceById", () => {

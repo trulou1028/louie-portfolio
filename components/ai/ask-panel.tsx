@@ -10,18 +10,18 @@ import { SystemLabel } from "@/components/system/system-label";
 import { cn } from "@/lib/utils";
 
 /**
- * The Ask panel — the homepage's right rail (spec §10, §11 §2; Plan 012).
+ * The Ask panel — the homepage's right rail (Plan 014, "Ask Louie").
  *
- * "Ask the panel; the site answers." The panel is a control surface, not the
- * display: it carries the header, the suggested questions, a compact
- * transcript, and the composer. Substantive answers compose the Answer
- * Canvas in the main column instead of piling up as bubbles here — see
- * `answer-canvas.tsx`.
+ * A basic question-and-answer chat: the visitor asks, the answer streams as
+ * plain text in the transcript below, grounded in the portfolio's evidence
+ * index. There is no generative UI, no navigation, and no side panel this
+ * assistant drives — Plan 014 is an owner decision to revert the earlier
+ * "Ask the panel; the site answers" concept (Plan 012) to exactly this.
  *
  * The panel is a tool, so its header stays compact rather than hero-sized.
- * `id="ask-ai-louie"` keeps the hero's "Ask AI Louie" action landing
- * somewhere real; `AiLouieThread` defers the runtime until the visitor
- * approaches (spec §27).
+ * `id="ask-ai-louie"` keeps the hero's "Ask Louie" action landing somewhere
+ * real; `AiLouieThread` defers the runtime until the visitor approaches
+ * (spec §27).
  */
 function AskPanel() {
   return (
@@ -32,10 +32,14 @@ function AskPanel() {
         // the pane, and its footer (suggestions + composer) is pinned to the
         // bottom by ThreadBody.
         "flex h-full min-h-0 flex-col gap-4 bg-accent-soft/40 p-5",
-        "scroll-mt-8 xl:border-l xl:border-border-subtle",
-        // Below xl there is no pane: it sits in the page flow, so it reads as
-        // a card again and takes its natural height.
-        "max-xl:h-auto max-xl:rounded-panel max-xl:border max-xl:border-accent-muted/70",
+        "scroll-mt-8 lg:border-l lg:border-border-subtle",
+        // Below lg there is no pane: it sits in the page flow, so it reads as
+        // a card again. It still needs a bounded height, though — without one
+        // the panel grows to fit the whole conversation and pushes the
+        // composer off screen. `max-h` (not `h`) keeps an empty panel
+        // compact; `svh` (not `vh`) avoids overshooting under a mobile
+        // browser's collapsing address bar.
+        "max-lg:max-h-[80svh] max-lg:rounded-panel max-lg:border max-lg:border-accent-muted/70",
       )}
     >
       {/* Header: the panel names itself once, with a live pill — the
@@ -47,7 +51,7 @@ function AskPanel() {
               to 260px and "Ask AI / Louie" reads as a mistake. The pill wraps
               beneath instead. */}
           <h2 className="whitespace-nowrap text-heading-md text-foreground">
-            Ask AI Louie
+            Ask Louie
           </h2>
         </div>
 
@@ -61,19 +65,13 @@ function AskPanel() {
       </div>
 
       <AiLouieThread />
-
-      {/* The Offboard panel closes with a line telling you what the assistant
-          can actually see. Same job here: set the expectation that answers are
-          grounded in published evidence, before anyone asks. */}
-      <p className="text-body-sm text-foreground-muted">
-        It answers from Louie&rsquo;s case studies and cites the evidence.
-      </p>
     </div>
   );
 }
 
 /**
- * The hero's "Ask AI Louie" entry point (spec §11 §1; Plan 012).
+ * The hero's "Ask Louie" entry point (spec §11 §1; Plan 012, renamed by
+ * Plan 014).
  *
  * The href is the fallback that always works — `#ask-ai-louie` resolves to
  * the panel itself, wherever the responsive layout has placed it. On click

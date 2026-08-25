@@ -155,7 +155,7 @@ export default function DesignSystemPage() {
       <Row title="Actions">
         <div className="flex flex-wrap items-center gap-3">
           <Action variant="primary">View selected work</Action>
-          <Action variant="secondary">Ask AI Louie</Action>
+          <Action variant="secondary">Ask Louie</Action>
           <Action variant="ghost">Skip</Action>
           <Action variant="primary" disabled>
             Disabled
