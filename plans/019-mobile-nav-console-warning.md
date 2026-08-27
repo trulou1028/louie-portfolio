@@ -33,8 +33,26 @@ Every page load below `lg` logs a Base UI error to the console:
 > `<button>` in the `render` prop, or set `nativeButton` to `false`.
 
 The menu itself works correctly — it opens, navigates, closes, and its items
-measure 44px. The cost is noise: a console that always has a red error in it is
-a console nobody reads, so the next real error hides in plain sight.
+measure 44px.
+
+**This warning is development-only. Visitors never see it.** Base UI wraps the
+check in `if (process.env.NODE_ENV !== 'production')`
+(`internals/use-button/useButton.js:39`), and Next inlines `NODE_ENV` at build
+time so the minifier strips it — verified: the warning string appears in no
+client chunk of a production build. The cost is developer experience only: a
+dev console that always has a red error in it is a console nobody reads, so
+the next real error hides in plain sight. Worth fixing, but that is why it is
+a P3 rather than a user-facing defect.
+
+Two consequences for verification, both learned when a first execution attempt
+correctly STOPPED:
+
+1. **The warning is only observable under `pnpm dev`.** A production-build
+   check cannot show it before or after the fix, so such a check would "pass"
+   against completely unmodified code.
+2. **Playwright cannot guard it.** `playwright.config.ts:35` runs
+   `pnpm build && pnpm start`. A console-error e2e test would pass whether or
+   not the bug exists.
 
 **The fix the warning suggests is wrong.** Plan 016 tried
 `nativeButton={false}` and the executor caught it. Base UI's own source
@@ -146,8 +164,7 @@ anything, so you can prove it is gone afterwards rather than assuming.
 
 **In scope**:
 - `components/app-shell/mobile-nav.tsx`
-- `e2e/home.spec.ts` — **only** to add a new console-error assertion. Do not
-  touch the three existing link-role assertions listed above.
+- `e2e/home.spec.ts` — read-only. Expected to end up unmodified; see Step 4.
 
 **Out of scope**:
 - `components/ui/sheet.tsx` — the passthrough is correct, and other
@@ -166,15 +183,17 @@ anything, so you can prove it is gone afterwards rather than assuming.
 
 ### Step 1: Reproduce the warning and capture the baseline
 
-Build, serve, and load the site at a 375px viewport. Open the drawer. Record
-the exact console error text and its count.
+Run `pnpm dev --port 3106` — **not** a production build; see the browser note.
+Load at a fresh 375px viewport and open the drawer. Record the exact console
+error text.
 
-Then confirm the menu currently works, so you can tell a regression from a
-pre-existing condition: tapping a nav item navigates **and** closes the drawer.
+Separately, on a **production** build, confirm the menu currently works so you
+can tell a regression from a pre-existing condition: tapping a nav item
+navigates **and** closes the drawer.
 
-**Verify**: report the console error text verbatim, and confirm both
-behaviors. If the warning does **not** appear, STOP — something has changed
-since this plan was written.
+**Verify**: report the console error verbatim from the dev server, and confirm
+both behaviors on the production build. If the warning does not appear **in
+dev**, STOP — something has changed since this plan was written.
 
 ### Step 2: Make the sheet controlled and close it on navigation
 
@@ -199,9 +218,13 @@ Do not add `nativeButton` anywhere.
 - `pnpm typecheck` → exit 0, `pnpm lint` → exit 0
 - `grep -n "SheetClose\|nativeButton" components/app-shell/mobile-nav.tsx` →
   no matches
-- Rebuild, load at 375px, open the drawer: the console error from Step 1 is
-  **gone**, and no new error replaces it. Report the console output.
-- Tap a nav item: it navigates **and** the drawer closes. Both, not one.
+- Restart `pnpm dev`, load at 375px, open the drawer: the console error from
+  Step 1 is **gone**, and no new error replaces it. Report the console output.
+  A pre-existing unrelated 404 for `/_vercel/insights/script.js` (Vercel Web
+  Analytics, absent locally) is expected noise — ignore it, but say it is
+  there.
+- On a production build, tap a nav item: it navigates **and** the drawer
+  closes. Both, not one.
 
 ### Step 3: Confirm the semantics did not regress
 
@@ -216,28 +239,28 @@ not buttons.
 - `pnpm test:e2e` → the three existing assertions at `home.spec.ts` lines
   ~260, ~261, and ~296 pass **unmodified**. If any fails, STOP.
 
-### Step 4: Add a regression test for the console
+### Step 4: Confirm the existing tests are the regression guard
 
-Add one test to `e2e/home.spec.ts` that loads the homepage at a mobile
-viewport, opens the drawer, and asserts **no console errors** were emitted.
+**Do not add a console-error e2e test.** Playwright runs a production build
+(`playwright.config.ts:35`), where this warning does not exist, so such a test
+would pass identically with the bug present. It would create false confidence.
 
-Collect them with `page.on("console", …)` filtered to `msg.type() === "error"`,
-registered before `page.goto`. Assert the collected array is empty, and include
-the collected text in the failure message so a future breakage is diagnosable
-rather than just red.
+The real guard already exists in `e2e/home.spec.ts` and needs no new code:
 
-Guard it to the mobile project with
-`test.skip(testInfo.project.name !== "mobile", "mobile only")`, matching the
-pattern used by the existing mobile-only tests in `e2e/ai-louie.spec.ts` and
-`e2e/accessibility.spec.ts`.
+- the link-role assertions at ~260, ~261 and ~296 fail if anything reintroduces
+  button semantics on these items — exactly how the plan 016 attempt was
+  caught;
+- "mobile drawer navigates and dismisses" at ~296 fails if the controlled open
+  state stops closing the drawer, which is the specific way this change could
+  break.
 
-If unrelated console errors already exist on that page (they should not — check
-during Step 1), do **not** loosen the assertion to make it pass. Report them
-and stop; a test that ignores some errors is not a guard.
+Read both and state in your report that they cover the two regression paths.
+Leave `e2e/home.spec.ts` **unmodified**. If you believe there is a genuine gap,
+STOP and describe it rather than writing a test a production build cannot
+exercise.
 
-**Verify**: `pnpm test:e2e` → all pass, including the new test (expect
-174 passed / 8 skipped, or 173/9 depending on how the skip lands). `pnpm build`
-→ exit 0.
+**Verify**: `pnpm test:e2e` → 172 passed / 8 skipped / 0 failed, matching
+baseline exactly (no new tests). `pnpm build` → exit 0.
 
 ## Test plan
 
@@ -253,24 +276,25 @@ ALL must hold:
 - [ ] `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm test:e2e`, `pnpm build` all exit 0
 - [ ] `grep -rn "nativeButton" components app` → no matches
 - [ ] `grep -n "SheetClose" components/app-shell/mobile-nav.tsx` → no matches
-- [ ] The Base UI console error no longer appears at a mobile viewport
+- [ ] The Base UI console error no longer appears at a mobile viewport **in `pnpm dev`**
 - [ ] Mobile nav items are exposed as links, not buttons
 - [ ] Tapping a nav item navigates and closes the drawer
-- [ ] `e2e/home.spec.ts`'s three existing link-role assertions are unmodified
-      (`git diff` shows only the added test)
+- [ ] `e2e/home.spec.ts` is **unmodified** (absent from `git diff --stat`)
+- [ ] `pnpm test:e2e` reports exactly the 172/8/0 baseline — no new tests
 - [ ] No files outside the in-scope list modified (`git status`)
 
 ## STOP conditions
 
 Stop and report back (do not improvise) if:
 
-- The warning does not reproduce in Step 1.
+- The warning does not reproduce in Step 1 **under `pnpm dev`**. Its absence
+  under a production build is expected and is NOT a stop.
 - Any of the three existing link-role assertions fails.
 - The drawer stops closing on navigation, or stops opening.
 - Silencing the warning appears to require `nativeButton`, editing
   `sheet.tsx`, or changing what `NavItem` renders.
-- Unrelated console errors exist on the mobile homepage, making Step 4's
-  assertion impossible to write honestly.
+- You conclude a new test is needed after all — describe the gap and stop,
+  rather than adding one a production build cannot exercise.
 - Making `mobile-nav.tsx` a client component breaks the build or produces a
   hydration warning — report the exact message rather than patching around it.
 
