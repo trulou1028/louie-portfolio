@@ -31,6 +31,7 @@ honor its STOP conditions, and update your row when done.
 | 016  | Mobile polish bundle (nav warning, tap targets, composer) | P2 | M | 015 | DONE 2 of 3, merged (step 1 REJECTED) |
 | 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | DONE (merged) |
 | 018  | Chat markdown rendering + composer button alignment | P2 | M | 017 | DONE (merged) |
+| 019  | Mobile-nav console warning (keep link semantics)   | P3 | S | — | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
