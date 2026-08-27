@@ -1,9 +1,11 @@
+"use client";
+
+import * as React from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -22,6 +24,13 @@ import { profile } from "@/content/profile";
  * larger `sheet` size so touch targets clear 44px (spec §26).
  */
 function MobileNav() {
+  // Controlled: the drawer owns its own open state instead of relying on the
+  // Sheet's built-in close-on-click wrapper, which applies button semantics
+  // (Base UI's `useButton`) to whatever it renders via `render` — that would
+  // misreport these nav items as buttons to a screen reader. Closing on tap
+  // is done explicitly via each item's `onClick`.
+  const [open, setOpen] = React.useState(false);
+
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border-subtle bg-canvas/90 px-4 backdrop-blur-sm lg:hidden">
       <Link href="/" className="focus-ring rounded-sm">
@@ -30,9 +39,7 @@ function MobileNav() {
         </span>
       </Link>
 
-      {/* Uncontrolled: each SheetClose below dismisses the drawer on
-          navigation, so no open-state effect is needed. */}
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger
           className="focus-ring inline-flex size-11 items-center justify-center rounded-sm text-foreground-muted transition-colors duration-(--duration-fast) hover:bg-surface-muted hover:text-foreground"
           aria-label="Open navigation menu"
@@ -50,11 +57,12 @@ function MobileNav() {
 
           <nav aria-label="Primary" className="flex flex-col gap-0.5 px-3">
             {NAV_ITEMS.map((item) => (
-              <SheetClose
+              <NavItem
                 key={item.href}
-                render={
-                  <NavItem href={item.href} label={item.label} size="sheet" />
-                }
+                href={item.href}
+                label={item.label}
+                size="sheet"
+                onClick={() => setOpen(false)}
               />
             ))}
           </nav>
