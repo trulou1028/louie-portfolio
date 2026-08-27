@@ -25,6 +25,25 @@ pnpm lint        # eslint
 `pnpm typecheck` runs `next typegen` first because Next 16 generates the
 `LayoutProps` / `PageProps` global types that route files depend on.
 
+## Claude Code on the web
+
+`.claude/hooks/session-start.sh` runs at session start in remote containers
+only (it exits immediately anywhere else). It installs dependencies, and then
+reconciles Playwright's browser revisions: the image ships its own Chromium,
+but at whatever revision it was built with, and Playwright addresses browsers
+by exact revision — a mismatch reads as "Executable doesn't exist" and every
+e2e test fails at launch. The hook points the expected revision at the
+installed one.
+
+Downloading the correct revision is not an option in that sandbox: the egress
+policy blocks `cdn.playwright.dev` and
+`playwright.download.prss.microsoft.com`. **That is also why the `mobile`
+Playwright project cannot run there** — it is `devices["iPhone 13"]`, so
+WebKit, which is absent from the image and cannot be fetched. Narrow-viewport
+behaviour has to be covered by Chromium tests that resize the viewport
+instead; see the architecture-map tests in `e2e/case-studies.spec.ts`. Run the
+full `mobile` project locally before trusting it.
+
 ## Conventions
 
 **Tokens.** All color, radius, motion, and type tokens live in
