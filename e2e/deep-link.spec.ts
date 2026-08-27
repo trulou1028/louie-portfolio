@@ -58,6 +58,41 @@ test.describe("deep links into case studies", () => {
     await expect(section).toBeInViewport();
   });
 
+  test("survives a hash set before the page has hydrated", async ({
+    page,
+    browserName,
+  }) => {
+    // Regression. Two things conspire against a hash that arrives in the gap
+    // between the HTML painting and the App Router hydrating: the
+    // `hashchange` fires before any React effect is listening for it, and
+    // then the router `replaceState`s its own canonical URL over the top,
+    // erasing the fragment. The deep link then silently did nothing —
+    // `navigate_portfolio` (Plan 006) can hit exactly this window.
+    // `DeepLinkHighlight` captures the hash at module scope to survive both.
+    //
+    // Throttling the CPU is what makes the gap wide enough to land in every
+    // time. Without it this is a race the suite only loses under parallel
+    // load, which is a flaky way to learn about a reproducible bug.
+    test.skip(browserName !== "chromium", "CPU throttling is a CDP feature");
+
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 8 });
+
+    await page.goto("/work/offboard");
+    const section = page.locator("#architecture");
+    await expect(section).toBeAttached();
+
+    await page.evaluate(() => {
+      window.location.hash = "architecture";
+    });
+
+    await expect(section).toHaveAttribute("data-highlight", "true", {
+      timeout: 15_000,
+    });
+
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
+  });
+
   test("every table-of-contents link deep-links correctly", async ({ page }) => {
     await page.goto("/work/flexi");
     const links = page.locator('nav[aria-label="On this page"] a, details a');

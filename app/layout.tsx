@@ -54,6 +54,41 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`dark ${outfit.variable} ${geistMono.variable} ${robotoSlab.variable} h-full antialiased`}
     >
+      <head>
+        {/*
+          Remembers the fragment the visitor actually asked for.
+
+          A hash can arrive before the App Router hydrates — `navigate_portfolio`
+          sets one client-side, and a pasted deep link raced by a slow network
+          does the same. Two things then swallow it: the `hashchange` fires
+          before any React effect is listening, and the router `replaceState`s
+          its canonical URL over the top, erasing the fragment outright.
+
+          It has to run before the router does. A module-scope capture inside
+          a client component cannot promise that: chunk evaluation order
+          shifts whenever the client graph changes, and it did — adding the
+          diagram connectors was enough to start losing the race. An inline
+          script executes while the parser is still in `<head>`, whereas every
+          bundle chunk Next emits is `async` and cannot execute until it has
+          been fetched, so this reliably wins. `DeepLinkHighlight` reads it
+          back.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "window.__deepLinkHash=location.hash;" +
+              // Read the fragment off the event, not off `location`: the
+              // router's replaceState can land between the hash being
+              // assigned and `hashchange` being dispatched, in which case
+              // `location.hash` is already empty by the time this runs.
+              // `newURL` is what the navigation actually asked for.
+              "addEventListener('hashchange',function(e){" +
+              "var u=e.newURL||'',i=u.indexOf('#');" +
+              "window.__deepLinkHash=i<0?'':u.slice(i);" +
+              "},true);",
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <PersonSchema />
         <WebSiteSchema />

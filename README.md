@@ -213,6 +213,50 @@ Owner decisions from Louie's review of the live site.
     public shape (`config` keyed by `dataKey`, `--color-<key>` variables,
     `ChartContainer`, themed tooltip), minus the parts unused here — because
     the registry is unreachable from this environment.
+30. **Flow connectors are measured and drawn in SVG, so `FlowDiagram` is a
+    client component.** Borders can draw a sequence but not a branch, and
+    five of these flows fan one step out into three — a fan that was
+    previously drawn with nothing at all. A fan has to know where each card
+    landed, which is only knowable after layout, so
+    `components/portfolio/flow-diagram.tsx` measures with
+    `getBoundingClientRect` and re-measures under a `ResizeObserver` (spec
+    §25 reflow). The `<ol>` is unchanged and still the accessible truth: the
+    SVG is `aria-hidden` and `pointer-events-none`, and the server-rendered
+    CSS rail stays in place as the no-JS fallback, fading out only once the
+    connectors have measured. `TreeDiagram`, `ColumnsDiagram` and the frame
+    stay server components; the shared `Node`/`StepMarker` moved to
+    `diagram-primitives.tsx` so they can serve both.
+31. **The connectors animate on entry, via `motion`.** Spec §24 lists "system
+    diagram connections animating on entry" as a preferred use, and §34 asks
+    for reduced-motion support: the paths draw themselves once via
+    `pathLength`, and render statically under `prefers-reduced-motion`. This
+    is the first use of `motion` in the codebase — it was a dependency with
+    no imports.
+
+## Deep links
+
+A hash can arrive before the page hydrates — `navigate_portfolio` sets one
+client-side, and a pasted link raced by a slow network does the same. Two
+things used to swallow it: the `hashchange` fires before any React effect is
+listening, and the App Router then `replaceState`s its canonical URL over the
+top, erasing the fragment.
+
+An inline script in `app/layout.tsx` records the requested fragment on
+`window.__deepLinkHash`; `DeepLinkHighlight` falls back to it when the live
+hash has been wiped, and clears it once used. Two details are load-bearing and
+neither is obvious:
+
+- It has to be an inline `<head>` script, not a module-scope capture in the
+  component. Chunk evaluation order moves whenever the client graph changes —
+  adding the diagram connectors was enough to start losing the race.
+- The listener reads the fragment off the event's `newURL`, not off
+  `location.hash`. The `replaceState` can land between the hash being assigned
+  and `hashchange` being dispatched, so by the time a listener runs
+  `location.hash` is already empty.
+
+`e2e/deep-link.spec.ts` pins it with the CPU throttled through CDP. At full
+speed this is a race the suite only loses under parallel load, which is a
+flaky way to hold a bug that reproduces perfectly once the gap is widened.
 
 ## AI Louie
 
