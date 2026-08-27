@@ -7,10 +7,10 @@
 > in `plans/README.md` — unless a reviewer dispatched you and told you they
 > maintain the index.
 >
-> **Base**: branch from `main` at commit `8441fdc`.
+> **Base**: branch from `main` at commit `88139bc`.
 >
 > **Drift check (run first)**:
-> `git diff --stat 8441fdc..HEAD -- components/app-shell components/ui/sheet.tsx e2e/home.spec.ts`
+> `git diff --stat 88139bc..HEAD -- components/app-shell components/ui/sheet.tsx e2e/home.spec.ts`
 > Expect no output. Anything else is a STOP condition.
 
 ## Status
@@ -21,7 +21,7 @@
   mobile visitor uses, and the obvious fix is known to be wrong (see below)
 - **Depends on**: none (plans 014–018 all merged)
 - **Category**: bug / a11y
-- **Planned at**: commit `8441fdc`, 2026-08-25
+- **Planned at**: commit `88139bc`, 2026-08-25 (revised after a first attempt correctly STOPPED)
 
 ## Why this matters
 
@@ -156,9 +156,15 @@ wrong.
 | E2E       | `pnpm test:e2e`    | 172 passed / 8 skipped / 0 failed at baseline |
 | Build     | `pnpm build`       | exit 0 |
 
-**Browser note**: use a production build (`pnpm build && pnpm start --port
-3106` or higher). Reproduce the warning at a mobile viewport before changing
-anything, so you can prove it is gone afterwards rather than assuming.
+**Browser note — split by what you are checking:**
+
+- **The warning itself: use `pnpm dev`** (`pnpm dev --port 3106` or higher).
+  It is invisible in a production build. This is the one place this repo's
+  usual "never judge behavior on the dev server" rule is inverted, and only
+  for reading this console message.
+- **Everything else — navigation, drawer open/close, roles: production build**
+  (`pnpm build && pnpm start --port 3107` or higher), with `pnpm test:e2e` as
+  the source of truth for behavior.
 
 ## Scope
 
@@ -175,7 +181,7 @@ anything, so you can prove it is gone afterwards rather than assuming.
 
 ## Git workflow
 
-- Branch `plan-019`, created from `8441fdc`.
+- Branch `plan-019`, created from `88139bc`.
 - One or two commits; message style matches `git log` (short imperative).
 - Do NOT push. A push to `main` is a production deploy on this project.
 
