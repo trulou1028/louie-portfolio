@@ -229,29 +229,53 @@ abuse appears, Vercel KV or Upstash is the upgrade path.
 
 ## Deployment
 
-The project is linked to Vercel as `louie-portfolio` under `louie-5320`.
+The project is linked to Vercel as `louie-portfolio` under `louie-5320`, and
+Vercel's GitHub integration is connected to
+[`trulou1028/louie-portfolio`](https://github.com/trulou1028/louie-portfolio)
+(private).
 
-**Current state:** deployed and **protected by Vercel Authentication**, so only
-the account owner can view it. The first `vercel deploy` on a new project is
-assigned to the production target automatically, even without `--prod`.
+**Pushing to `main` is the deploy.** Every push builds and promotes a
+production deployment automatically — there is no separate deploy step. Treat a
+push as an outward-facing publish, because it is one.
 
-**Before this can go public**, in the Vercel dashboard:
+**Current state (verified 2026-08-25):**
 
-1. Add environment variables — `OPENAI_API_KEY`, `OPENAI_MODEL`, and
-   `NEXT_PUBLIC_SITE_URL`, under **Settings → Environment Variables**. These
-   are entered by the operator; nothing in this repo handles secret values.
-   **A redeploy is required afterwards** — Vercel binds environment variables
-   to a deployment, so existing deployments do not pick up new values.
-2. Attach the `louiesakoda.com` domain and update DNS.
-3. Turn off Deployment Protection when the content punch list is cleared —
-   see [`plans/CONTENT-TODOS.md`](plans/CONTENT-TODOS.md). The resume is a
-   launch blocker.
-4. Run Lighthouse against the deployed URL. Spec §27 targets 90+; local
+| | |
+|---|---|
+| Production URL | **https://louie-portfolio-six.vercel.app — publicly reachable, no login** |
+| Branch previews | `louie-portfolio-git-<branch>-…` — still behind Vercel Authentication (302 to SSO) |
+| Environment | `OPENAI_API_KEY` set; the deployed chat answers real questions |
+| Custom domain | **not attached.** `louiesakoda.com` still serves the separate Webflow portfolio |
+
+> This section previously said the project was "protected by Vercel
+> Authentication, so only the account owner can view it." That is **not** true
+> of the production domain — an unauthenticated request on 2026-08-25 returned
+> the real page. Deployment Protection still covers branch previews only.
+> Confirm this by request rather than by reading it here, and re-check after
+> any change to the protection setting.
+
+Remaining before this replaces the Webflow site:
+
+1. Attach `louiesakoda.com` under **Settings → Domains** and update DNS. It
+   currently points at Webflow, so this is a cutover, not an addition.
+2. Clear the content punch list — see
+   [`plans/CONTENT-TODOS.md`](plans/CONTENT-TODOS.md). Case-study imagery is
+   still outstanding.
+3. Run Lighthouse against the deployed URL. Spec §27 targets 90+; local
    measurements are below, but a production run over real network conditions
    is the number that counts.
+4. Decide whether production should stay open. If it should not, enable
+   Deployment Protection under **Settings → Deployment Protection** — the
+   branch-preview protection already in place does not cover the production
+   domain.
+
+Environment variables are bound at build time, so adding or changing one in the
+dashboard requires a redeploy before it takes effect.
+
+Manual deploys still work, but the git push is the normal path:
 
 ```bash
-npx vercel deploy          # preview (after the first deployment)
+npx vercel deploy          # preview
 npx vercel deploy --prod   # production
 ```
 
@@ -265,11 +289,34 @@ JavaScript delivered per route, from a production build:
 | `/work/offboard` | 1061 KB          | 232 KB |
 | `/`              | 911 KB           | 1079 KB* |
 
-\* The homepage still loads the assistant runtime because the AI panel sits
-near the fold, which is what spec §27 describes ("until the user approaches or
-activates the AI surface"). The win is that every other route no longer pays
-for a runtime it never uses — Next prefetches route chunks, so before the
-split even `/about` was downloading the assistant.
+\* Figures above are from the original route-splitting work and predate Plan
+017. The win they describe still holds: every route other than `/` avoids the
+chat runtime entirely, because Next prefetches route chunks and before the
+split even `/about` was downloading it.
+
+**Updated after Plans 017–018** (measured 2026-08-25, whole-build totals rather
+than per-route):
+
+| | Before Plan 017 | Now |
+|---|---|---|
+| Total client JS | 1,612 KB | **1,390 KB** |
+| Chat chunk (lazy) | 836 KB | 644 KB |
+| Eager — paid by every visitor | 776 KB | **746 KB** |
+
+Plan 017 replaced `assistant-ui` with `@ai-sdk/react`'s `useChat` plus shadcn's
+chat components. Plan 018 then added markdown rendering, whose ~140 KB lands
+entirely inside the lazy chat chunk — the eager figure is what a visitor pays
+when they never open the panel, and it did not move.
+
+The chat chunk stays behind an `IntersectionObserver` deliberately. Folding it
+into the eager bundle was measured and rejected in Plan 017: 644 KB is real
+weight for a portfolio, and the "panel looks stuck loading" symptom that argued
+for removing the gate turned out to occur only on the dev server and under
+browser automation, never for a real visitor.
+
+To re-measure, exclude the chunks listed in
+`.next/server/app/page/react-loadable-manifest.json` and use exact byte sizes —
+`du -k` rounds per file and inflates the total by roughly 30 KB.
 
 ## Testing
 
