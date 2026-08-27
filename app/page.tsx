@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
-import { AskAILouieLink, AskPanel } from "@/components/ai/ask-panel";
+import { AskPanel } from "@/components/ai/ask-panel";
 import { WorkCard } from "@/components/portfolio/work-card";
 import { Action } from "@/components/system/action";
 import { SectionLabel } from "@/components/system/section-label";
@@ -26,11 +26,6 @@ import { workProjects } from "@/content/work/projects";
 const BRIEF_POINTS = profile.brief;
 
 export default function Home() {
-  const { primary, primaryEmphasis } = profile.positioning;
-  // Render the tail in accent italic without letting the heading text drift
-  // from the source wording.
-  const lead = primary.slice(0, primary.length - primaryEmphasis.length).trimEnd();
-
   return (
     <Canvas
       rail={
@@ -46,11 +41,11 @@ export default function Home() {
       <section>
         <SectionLabel>{profile.positioning.eyebrow}</SectionLabel>
 
-        <h1 className="mt-6 max-w-[15ch] font-serif text-display-xl text-balance text-foreground">
-          {lead}{" "}
-          {/* Stylistic, not semantic emphasis — a <span>, so screen
-              readers do not announce stress that isn't meant. */}
-          <span className="italic text-accent">{primaryEmphasis}</span>
+        {/* Owner decision (2026-08-27): one weight, one colour, one size.
+            The accent italic tail and the step down from `display-xl` were
+            both Louie's call — see README "Deviations". */}
+        <h1 className="mt-6 max-w-[15ch] font-serif text-display-lg text-balance text-foreground">
+          {profile.positioning.primary}
         </h1>
 
         <p className="mt-6 max-w-[56ch] text-body-lg text-foreground-muted">
@@ -65,10 +60,10 @@ export default function Home() {
           </p>
         ) : null}
 
-        <div className="mt-9 flex flex-wrap gap-3">
-          <Action render={<Link href="/work" />}>View selected work</Action>
-          <AskAILouieLink>Ask Louie</AskAILouieLink>
-        </div>
+        {/* No hero CTAs (owner decision, 2026-08-27). Featured work sits
+            directly below and the Ask panel is already on screen in the
+            rail, so both buttons pointed at things a visitor can already
+            see. */}
       </section>
 
       <section

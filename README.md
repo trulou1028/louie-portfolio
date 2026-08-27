@@ -173,6 +173,32 @@ superseding spec §11's original wording (spec §39.14).
     after the AI thread. The AI thread itself stays in the main column for
     now; Plan 012 relocates it into the vacated rail.
 
+**Hero and diagrams (2026-08-27)**
+
+Owner decisions from Louie's review of the live site.
+
+25. **The headline is one plain string at `display-lg`.** The accent italic
+    tail from the strategy mockup is gone — the whole sentence is
+    `text-foreground` at one size, a step down from `display-xl`.
+    `profile.positioning.primaryEmphasis` was deleted with it, since its only
+    job was to carry that tail.
+26. **The hero carries no CTAs.** "View selected work" and "Ask Louie" were
+    removed: Featured work sits directly beneath the hero and the Ask panel
+    is already on screen in the rail, so both pointed at surfaces a visitor
+    can already see. `AskAILouieLink` went with them; `#ask-ai-louie` remains
+    a stable anchor for the suggestion chips and deep links that still use it.
+27. **System diagrams are composed from shadcn `Card` and `Badge`.** Deviation
+    11 still holds — the diagrams are semantic HTML, not images — but the
+    presentation moved onto shadcn primitives: flows are a numbered rail of
+    node cards, the containment tree is a card with a labelled header, and
+    branch conditions are badges. `card.tsx` and `badge.tsx` were written by
+    hand rather than pulled with `pnpm shadcn add`, because this environment
+    cannot reach `ui.shadcn.com`; both stay close to upstream, with the same
+    `accent`-to-`muted` hover substitution `button.tsx` already makes.
+28. **The diagram caption sits below the frame, not inside it.** A
+    `figcaption` has to be a direct child of its `figure`, so it can't live
+    inside the `Card`. It now matches `ArtifactFrame`'s treatment.
+
 ## AI Louie
 
 The assistant is grounded in `content/evidence/evidence.ts`: the server-side

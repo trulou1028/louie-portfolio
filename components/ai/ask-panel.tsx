@@ -1,11 +1,9 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { Sparkles } from "lucide-react";
 
 import { AiLouieThread } from "@/components/ai/ai-louie-thread";
-import { Action } from "@/components/system/action";
 import { SystemLabel } from "@/components/system/system-label";
 import { cn } from "@/lib/utils";
 
@@ -19,9 +17,10 @@ import { cn } from "@/lib/utils";
  * "Ask the panel; the site answers" concept (Plan 012) to exactly this.
  *
  * The panel is a tool, so its header stays compact rather than hero-sized.
- * `id="ask-ai-louie"` keeps the hero's "Ask Louie" action landing somewhere
- * real; `AiLouieThread` defers the runtime until the visitor approaches
- * (spec §27).
+ * `id="ask-ai-louie"` stays a stable in-page anchor — the hero's "Ask Louie"
+ * action was removed (owner decision, 2026-08-27) but suggestion chips and
+ * deep links still target it. `AiLouieThread` defers the runtime until the
+ * visitor approaches (spec §27).
  */
 function AskPanel() {
   return (
@@ -69,43 +68,5 @@ function AskPanel() {
   );
 }
 
-/**
- * The hero's "Ask Louie" entry point (spec §11 §1; Plan 012, renamed by
- * Plan 014).
- *
- * The href is the fallback that always works — `#ask-ai-louie` resolves to
- * the panel itself, wherever the responsive layout has placed it. On click
- * it also tries to focus the composer directly, so keyboard and
- * screen-reader users land in the input rather than merely at the top of
- * the panel. That only succeeds once the runtime has loaded (spec §27
- * defers it below `xl`), so the attempt is best-effort — the href already
- * did the part that must never fail.
- */
-function AskAILouieLink({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  function focusComposer() {
-    const input = document.querySelector<HTMLTextAreaElement>(
-      '#ask-ai-louie textarea[aria-label="Ask anything about Louie\'s work"]',
-    );
-    input?.focus();
-  }
-
-  return (
-    <Action
-      variant="secondary"
-      render={<Link href="#ask-ai-louie" />}
-      className={className}
-      onClick={focusComposer}
-    >
-      {children}
-    </Action>
-  );
-}
-
-export { AskPanel, AskAILouieLink };
+export { AskPanel };
 export default AskPanel;

@@ -4,17 +4,12 @@ import { profile } from "@/content/profile";
 import { workProjects } from "@/content/work/projects";
 
 describe("hero copy", () => {
-  it("keeps the emphasised tail a suffix of the spec headline", () => {
-    // The homepage renders the headline in two spans so the tail can be set
-    // in accent italic. If these ever drift apart, the rendered heading stops
-    // matching the spec §11 wording — silently.
-    const { primary, primaryEmphasis } = profile.positioning;
-    expect(primary.endsWith(primaryEmphasis)).toBe(true);
-
-    const lead = primary
-      .slice(0, primary.length - primaryEmphasis.length)
-      .trimEnd();
-    expect(`${lead} ${primaryEmphasis}`).toBe(primary);
+  it("renders as a single unstyled string", () => {
+    // The headline used to be split into two spans so the tail could be set
+    // in accent italic; owner decision 2026-08-27 made it one plain white
+    // string, so the split field is gone and nothing may reintroduce it
+    // without also reintroducing the suffix invariant it needed.
+    expect(profile.positioning).not.toHaveProperty("primaryEmphasis");
   });
 
   it("still carries the exact positioning statements", () => {
