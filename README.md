@@ -198,6 +198,21 @@ Owner decisions from Louie's review of the live site.
 28. **The diagram caption sits below the frame, not inside it.** A
     `figcaption` has to be a direct child of its `figure`, so it can't live
     inside the `Card`. It now matches `ArtifactFrame`'s treatment.
+29. **Recharts is installed, and used only on `/design-system`.**
+    `OutcomeChart` (`components/portfolio/outcome-chart.tsx`) plots a verified
+    outcome as a single-series horizontal bar chart. **No case study uses it**,
+    because neither Outcomes section has a verified figure yet — both are
+    still `PendingContent` (spec §13.8). Its `source` prop is required rather
+    than optional so a chart cannot be shipped without someone naming where
+    the numbers came from; a chart lends invented data more authority than
+    prose does. The only rendered instance is the gallery demo on the
+    internal, `noindex`, production-404 `/design-system` route, whose `source`
+    says in words that the numbers are invented for the gallery. Recharts is
+    therefore absent from every public route's bundle. `components/ui/chart.tsx`
+    is a reduced hand-written stand-in for shadcn's `chart` primitive — same
+    public shape (`config` keyed by `dataKey`, `--color-<key>` variables,
+    `ChartContainer`, themed tooltip), minus the parts unused here — because
+    the registry is unreachable from this environment.
 
 ## AI Louie
 
