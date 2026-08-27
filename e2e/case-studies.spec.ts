@@ -139,6 +139,98 @@ test("exactly one table of contents renders at the rail breakpoint", async ({
   await expect(disclosure).toBeHidden();
 });
 
+test.describe("the Offboard architecture map", () => {
+  // The one diagram in the portfolio rendered as a canvas. Everything below
+  // guards the trade that earns it that: it may be interactive on a wide
+  // screen only so long as the ordered list is what everything else gets,
+  // and only one of the two is ever in the document.
+  const LAYERS = 8;
+
+  test("is a canvas on a wide screen, and the list is not left behind it", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/work/offboard");
+    const section = page.locator("#architecture");
+    await section.scrollIntoViewIfNeeded();
+
+    await expect(section.locator(".react-flow__node")).toHaveCount(LAYERS);
+    // Not merely hidden: a CSS swap would leave both trees in the document
+    // and hand a screen reader the diagram twice.
+    await expect(section.locator("ol li")).toHaveCount(0);
+
+    // The plain-language equivalent survives the swap (spec §26).
+    await expect(section.locator("figcaption")).toContainText(
+      "write results back into the opportunity workspace",
+    );
+  });
+
+  test("selecting a layer names what feeds it and what it feeds", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/work/offboard");
+    const section = page.locator("#architecture");
+    await section.scrollIntoViewIfNeeded();
+
+    const detail = section.locator('[data-slot="layer-detail"]');
+    await expect(detail).toContainText("Select a layer");
+
+    // Keyboard, not a click: these are real buttons in graph order, which is
+    // the whole reason a canvas is defensible here.
+    const layer = section.getByRole("button", { name: /Server-side functions/ });
+    await layer.focus();
+    await page.keyboard.press("Enter");
+
+    await expect(layer).toHaveAttribute("aria-pressed", "true");
+    await expect(detail).toContainText("Deno edge functions");
+    // Derived from the graph's edges, not from any per-layer copy.
+    await expect(detail).toContainText("Opportunity data model");
+    await expect(detail).toContainText("Model APIs");
+
+    await page.keyboard.press("Escape");
+    await expect(detail).toContainText("Select a layer");
+  });
+
+  test("falls back to the ordered list on a narrow screen", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/work/offboard");
+    const section = page.locator("#architecture");
+    // Below `lg` the shell corrects from its server-rendered desktop tree one
+    // effect after mount, which remounts this subtree — the same race
+    // `e2e/home.spec.ts` rides out. Retrying the whole action covers it.
+    await expect(async () => {
+      await section.scrollIntoViewIfNeeded();
+    }).toPass({ timeout: 5_000 });
+
+    // A pannable viewport on a phone is the failure this guards against.
+    await expect(section.locator(".react-flow__node")).toHaveCount(0);
+    await expect(section.locator("ol li")).toHaveCount(LAYERS + 1);
+    expect(
+      await page.evaluate(
+        () =>
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
+      ),
+    ).toBe(0);
+  });
+
+  test("renders the list when scripting is unavailable", async ({ browser }) => {
+    // The canvas is an enhancement; the section has to be readable without it.
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 1440, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto("/work/offboard");
+    const section = page.locator("#architecture");
+
+    await expect(section.locator("ol li")).toHaveCount(LAYERS + 1);
+    await expect(section.locator("figcaption")).toBeVisible();
+    await context.close();
+  });
+});
+
 test("the work index links to both case studies", async ({ page }) => {
   await page.goto("/work");
   for (const study of STUDIES) {

@@ -4,8 +4,10 @@ import {
   FlowDiagram,
   TreeDiagram,
 } from "@/components/portfolio/system-diagram";
+import { ArchitectureMap } from "@/components/portfolio/architecture-map";
 import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
 import { PendingContent } from "@/components/portfolio/pending-content";
+import { ARCHITECTURE_DESCRIPTION } from "@/content/work/offboard-architecture";
 
 {/*
   Offboard case study — section anchors are fixed by spec §13 and are a
@@ -226,24 +228,12 @@ head — how data and actions actually move — rather than a wall of logos.
 
 <SystemDiagram
   title="How data and actions move"
-  description="The client application talks to a backend that owns authentication, the opportunity data model with per-user row-level security, and a set of server-side functions. Those functions call model APIs, external research sources, and document generation, then write results back into the opportunity workspace, which the client reads."
+  description={ARCHITECTURE_DESCRIPTION}
 >
-  <FlowDiagram
-    stages={[
-      { node: { label: "Client application", note: "Vite · React · TypeScript · Tailwind · shadcn/ui" } },
-      { node: { label: "Authentication and access control", note: "Row-level security per user" } },
-      { node: { label: "Opportunity data model", note: "Supabase · Postgres · RLS", tone: "accent" } },
-      { node: { label: "Server-side functions", note: "Deno edge functions" } },
-      {
-        parallel: [
-          { label: "Model APIs" },
-          { label: "External research" },
-          { label: "Document generation" },
-        ],
-      },
-      { node: { label: "Results written back to the workspace", tone: "accent" } },
-    ]}
-  />
+  {/* Wide screens get the explorable map; everything else gets the same
+      ordered list the other diagrams use. Both are built from one graph in
+      content/work/offboard-architecture.ts. */}
+  <ArchitectureMap />
 </SystemDiagram>
 
 The stack is Vite, React, TypeScript, Tailwind, and shadcn/ui on the client,

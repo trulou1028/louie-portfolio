@@ -226,7 +226,27 @@ Owner decisions from Louie's review of the live site.
     connectors have measured. `TreeDiagram`, `ColumnsDiagram` and the frame
     stay server components; the shared `Node`/`StepMarker` moved to
     `diagram-primitives.tsx` so they can serve both.
-31. **The connectors animate on entry, via `motion`.** Spec §24 lists "system
+31. **The Offboard architecture section is an interactive map (React Flow).**
+    Deviation 27 argued shadcn `Card` beats a node-graph library for these
+    diagrams, and that still holds for the other eight — a canvas pans and
+    zooms instead of reflowing, and its reading order is node order, not flow
+    order. `#architecture` is the exception: exploring the layers *is* the
+    argument the section makes, so it renders as React Flow above `lg` and as
+    the same `FlowDiagram` list everywhere else, including with no
+    JavaScript. Both are built from one graph in
+    `content/work/offboard-architecture.ts`, so the two cannot drift. The swap
+    is a client decision, not a CSS one: CSS would leave both trees in the
+    document and hand a screen reader the diagram twice.
+
+    The canvas is deliberately not a general-purpose one — pan, zoom and
+    scroll capture are all off, since a diagram that swallows the page scroll
+    is the scroll hijacking spec §24 rules out. Selection, focus and Escape
+    are handled directly (React Flow's keyboard layer is disabled), so the
+    layers are plain buttons in graph order. What the interaction reveals is
+    structure — a layer's edges, and what flows in and out — all derived from
+    the graph. No per-layer copy was written that the case study does not
+    already state; where it says nothing, this says nothing (spec §29).
+32. **The connectors animate on entry, via `motion`.** Spec §24 lists "system
     diagram connections animating on entry" as a preferred use, and §34 asks
     for reduced-motion support: the paths draw themselves once via
     `pathLength`, and render statically under `prefers-reduced-motion`. This
