@@ -16,12 +16,6 @@ export const profile = {
      * wording — see README "Deviations" ledger, Plan 011.
      */
     primary: "I design & ship AI products.",
-    /**
-     * The tail of `primary`, set in accent italic serif (per the strategy
-     * mockup). Must remain a suffix of `primary` so the rendered heading text
-     * stays verbatim — asserted in `lib/content.test.ts`.
-     */
-    primaryEmphasis: "ship AI products.",
     /** Spec §1, §11 — supporting positioning. */
     supporting:
       "Product designer working across AI systems, complex workflows, design engineering, and product strategy.",

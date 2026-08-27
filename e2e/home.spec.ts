@@ -57,12 +57,25 @@ test.describe("homepage", () => {
     ).toBeVisible();
   });
 
-  test("hero actions are links, not buttons", async ({ page }) => {
-    // A navigation control announced as a button misleads assistive tech.
+  test("the hero carries no CTAs, and work is still one click away", async ({
+    page,
+  }) => {
+    // Owner decision 2026-08-27: "View selected work" and "Ask Louie" were
+    // removed from the hero — both pointed at surfaces already on screen.
+    // The route out to /work now belongs to Featured work, and it must stay
+    // a link: a navigation control announced as a button misleads
+    // assistive tech.
     await page.goto("/");
-    const viewWork = page.getByRole("link", { name: "View selected work" });
-    await expect(viewWork).toHaveAttribute("href", "/work");
-    await expect(viewWork).not.toHaveAttribute("role", "button");
+
+    await expect(
+      page.getByRole("link", { name: "View selected work" }),
+    ).toHaveCount(0);
+
+    const allWork = page
+      .getByTestId("featured-work")
+      .getByRole("link", { name: "All work →" });
+    await expect(allWork).toHaveAttribute("href", "/work");
+    await expect(allWork).not.toHaveAttribute("role", "button");
   });
 
   test("features both case studies in the main column", async ({ page }) => {
@@ -97,9 +110,10 @@ test.describe("homepage", () => {
     await expect(featuredWork).toBeVisible();
   });
 
-  test("headline renders full copy despite the styled tail", async ({ page }) => {
-    // "ship AI products." is set in accent italic via a separate span; the
-    // accessible name must still be the full headline sentence.
+  test("headline renders as one plain sentence", async ({ page }) => {
+    // The headline was split across two spans so the tail could be set in
+    // accent italic. Owner decision 2026-08-27 collapsed it to one string —
+    // the accessible name is the whole sentence either way.
     await page.goto("/");
     await expect(
       page.getByRole("heading", {

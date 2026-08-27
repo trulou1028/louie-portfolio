@@ -14,6 +14,7 @@ import { SystemLabel } from "@/components/system/system-label";
 import { NavItem } from "@/components/app-shell/nav-item";
 import { navItemVariants } from "@/components/app-shell/nav-item-variants";
 import { Metric } from "@/components/portfolio/metric";
+import { OutcomeChart } from "@/components/portfolio/outcome-chart";
 import { PromptChip } from "@/components/ai/prompt-chip";
 
 export const metadata: Metadata = {
@@ -242,6 +243,32 @@ export default function DesignSystemPage() {
           <Metric value="—" label="Only ever real, verified numbers" note="spec §13.8" />
           <Metric value="10+" label="Years designing digital products" />
         </div>
+      </Row>
+
+      <Row title="Outcome chart">
+        <p className="mb-6 max-w-[65ch] text-body-sm text-foreground-muted">
+          Recharts, wrapped by <code className="font-mono text-system">
+          components/ui/chart.tsx</code>. One series, values written at each
+          bar tip, no legend and no value axis. It is not used in any case
+          study: both Outcomes sections are still{" "}
+          <code className="font-mono text-system">PendingContent</code>,
+          because a chart needs verified figures and there are none yet
+          (spec §13.8). The numbers below exist only to show the treatment —
+          note that <code className="font-mono text-system">source</code> is a
+          required prop, so a chart cannot be shipped without one.
+        </p>
+        <OutcomeChart
+          measure="Sample series"
+          unit=" units"
+          source="Sample data — invented for this gallery, never for a case study"
+          description="An illustration of the bar treatment at four categories. Real usage waits on figures Louie can verify."
+          data={[
+            { label: "Category one", value: 1840 },
+            { label: "Category two", value: 1210 },
+            { label: "A longer category name", value: 760 },
+            { label: "Category four", value: 305 },
+          ]}
+        />
       </Row>
 
       <Row title="Radius">

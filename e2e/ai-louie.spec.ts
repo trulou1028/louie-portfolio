@@ -286,7 +286,12 @@ test.describe("the AI surface", () => {
     await scrollToAskPanel(page);
     await page.getByText("Show me Offboard", { exact: true }).click();
 
-    await page.getByRole("link", { name: "View selected work" }).click();
+    // The hero's CTAs were removed (owner decision 2026-08-27); Featured
+    // work carries the route out to /work now.
+    await page
+      .getByTestId("featured-work")
+      .getByRole("link", { name: "All work →" })
+      .click();
     await expect(page).toHaveURL(/\/work$/);
     await expect(page.locator("h1")).toBeVisible();
   });

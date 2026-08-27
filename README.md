@@ -173,6 +173,111 @@ superseding spec §11's original wording (spec §39.14).
     after the AI thread. The AI thread itself stays in the main column for
     now; Plan 012 relocates it into the vacated rail.
 
+**Hero and diagrams (2026-08-27)**
+
+Owner decisions from Louie's review of the live site.
+
+25. **The headline is one plain string at `display-lg`.** The accent italic
+    tail from the strategy mockup is gone — the whole sentence is
+    `text-foreground` at one size, a step down from `display-xl`.
+    `profile.positioning.primaryEmphasis` was deleted with it, since its only
+    job was to carry that tail.
+26. **The hero carries no CTAs.** "View selected work" and "Ask Louie" were
+    removed: Featured work sits directly beneath the hero and the Ask panel
+    is already on screen in the rail, so both pointed at surfaces a visitor
+    can already see. `AskAILouieLink` went with them; `#ask-ai-louie` remains
+    a stable anchor for the suggestion chips and deep links that still use it.
+27. **System diagrams are composed from shadcn `Card` and `Badge`.** Deviation
+    11 still holds — the diagrams are semantic HTML, not images — but the
+    presentation moved onto shadcn primitives: flows are a numbered rail of
+    node cards, the containment tree is a card with a labelled header, and
+    branch conditions are badges. `card.tsx` and `badge.tsx` were written by
+    hand rather than pulled with `pnpm shadcn add`, because this environment
+    cannot reach `ui.shadcn.com`; both stay close to upstream, with the same
+    `accent`-to-`muted` hover substitution `button.tsx` already makes.
+28. **The diagram caption sits below the frame, not inside it.** A
+    `figcaption` has to be a direct child of its `figure`, so it can't live
+    inside the `Card`. It now matches `ArtifactFrame`'s treatment.
+29. **Recharts is installed, and used only on `/design-system`.**
+    `OutcomeChart` (`components/portfolio/outcome-chart.tsx`) plots a verified
+    outcome as a single-series horizontal bar chart. **No case study uses it**,
+    because neither Outcomes section has a verified figure yet — both are
+    still `PendingContent` (spec §13.8). Its `source` prop is required rather
+    than optional so a chart cannot be shipped without someone naming where
+    the numbers came from; a chart lends invented data more authority than
+    prose does. The only rendered instance is the gallery demo on the
+    internal, `noindex`, production-404 `/design-system` route, whose `source`
+    says in words that the numbers are invented for the gallery. Recharts is
+    therefore absent from every public route's bundle. `components/ui/chart.tsx`
+    is a reduced hand-written stand-in for shadcn's `chart` primitive — same
+    public shape (`config` keyed by `dataKey`, `--color-<key>` variables,
+    `ChartContainer`, themed tooltip), minus the parts unused here — because
+    the registry is unreachable from this environment.
+30. **Flow connectors are measured and drawn in SVG, so `FlowDiagram` is a
+    client component.** Borders can draw a sequence but not a branch, and
+    five of these flows fan one step out into three — a fan that was
+    previously drawn with nothing at all. A fan has to know where each card
+    landed, which is only knowable after layout, so
+    `components/portfolio/flow-diagram.tsx` measures with
+    `getBoundingClientRect` and re-measures under a `ResizeObserver` (spec
+    §25 reflow). The `<ol>` is unchanged and still the accessible truth: the
+    SVG is `aria-hidden` and `pointer-events-none`, and the server-rendered
+    CSS rail stays in place as the no-JS fallback, fading out only once the
+    connectors have measured. `TreeDiagram`, `ColumnsDiagram` and the frame
+    stay server components; the shared `Node`/`StepMarker` moved to
+    `diagram-primitives.tsx` so they can serve both.
+31. **The Offboard architecture section is an interactive map (React Flow).**
+    Deviation 27 argued shadcn `Card` beats a node-graph library for these
+    diagrams, and that still holds for the other eight — a canvas pans and
+    zooms instead of reflowing, and its reading order is node order, not flow
+    order. `#architecture` is the exception: exploring the layers *is* the
+    argument the section makes, so it renders as React Flow above `lg` and as
+    the same `FlowDiagram` list everywhere else, including with no
+    JavaScript. Both are built from one graph in
+    `content/work/offboard-architecture.ts`, so the two cannot drift. The swap
+    is a client decision, not a CSS one: CSS would leave both trees in the
+    document and hand a screen reader the diagram twice.
+
+    The canvas is deliberately not a general-purpose one — pan, zoom and
+    scroll capture are all off, since a diagram that swallows the page scroll
+    is the scroll hijacking spec §24 rules out. Selection, focus and Escape
+    are handled directly (React Flow's keyboard layer is disabled), so the
+    layers are plain buttons in graph order. What the interaction reveals is
+    structure — a layer's edges, and what flows in and out — all derived from
+    the graph. No per-layer copy was written that the case study does not
+    already state; where it says nothing, this says nothing (spec §29).
+32. **The connectors animate on entry, via `motion`.** Spec §24 lists "system
+    diagram connections animating on entry" as a preferred use, and §34 asks
+    for reduced-motion support: the paths draw themselves once via
+    `pathLength`, and render statically under `prefers-reduced-motion`. This
+    is the first use of `motion` in the codebase — it was a dependency with
+    no imports.
+
+## Deep links
+
+A hash can arrive before the page hydrates — `navigate_portfolio` sets one
+client-side, and a pasted link raced by a slow network does the same. Two
+things used to swallow it: the `hashchange` fires before any React effect is
+listening, and the App Router then `replaceState`s its canonical URL over the
+top, erasing the fragment.
+
+An inline script in `app/layout.tsx` records the requested fragment on
+`window.__deepLinkHash`; `DeepLinkHighlight` falls back to it when the live
+hash has been wiped, and clears it once used. Two details are load-bearing and
+neither is obvious:
+
+- It has to be an inline `<head>` script, not a module-scope capture in the
+  component. Chunk evaluation order moves whenever the client graph changes —
+  adding the diagram connectors was enough to start losing the race.
+- The listener reads the fragment off the event's `newURL`, not off
+  `location.hash`. The `replaceState` can land between the hash being assigned
+  and `hashchange` being dispatched, so by the time a listener runs
+  `location.hash` is already empty.
+
+`e2e/deep-link.spec.ts` pins it with the CPU throttled through CDP. At full
+speed this is a race the suite only loses under parallel load, which is a
+flaky way to hold a bug that reproduces perfectly once the gap is widened.
+
 ## AI Louie
 
 The assistant is grounded in `content/evidence/evidence.ts`: the server-side

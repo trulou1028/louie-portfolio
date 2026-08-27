@@ -5,6 +5,13 @@ import { usePathname } from "next/navigation";
 
 const HIGHLIGHT_MS = 1500;
 
+declare global {
+  interface Window {
+    /** Set by the inline capture script in `app/layout.tsx`. */
+    __deepLinkHash?: string;
+  }
+}
+
 /**
  * Makes a deep link land somewhere obvious (spec §18 Tool 2, §26).
  *
@@ -20,6 +27,11 @@ const HIGHLIGHT_MS = 1500;
  *
  * Motion is skipped under `prefers-reduced-motion`: the jump is instant, and
  * the highlight still appears — it just does not animate.
+ *
+ * The mount pass matters as much as the `hashchange` listener: a hash can
+ * change between the HTML painting and this component hydrating, and that
+ * event is gone by the time the listener exists. Reading
+ * `window.location.hash` once on mount covers that window.
  */
 function DeepLinkHighlight() {
   const pathname = usePathname();
@@ -28,7 +40,9 @@ function DeepLinkHighlight() {
     let timeout: ReturnType<typeof setTimeout> | undefined;
 
     const reveal = () => {
-      const id = window.location.hash.slice(1);
+      // Fall back to the pre-hydration capture only when the live hash is
+      // gone, so a later navigation always wins over a stale one.
+      const id = (window.location.hash || window.__deepLinkHash || "").slice(1);
       if (!id) return;
 
       const target = document.getElementById(id);
@@ -47,6 +61,13 @@ function DeepLinkHighlight() {
       target.focus({ preventScroll: true });
 
       target.setAttribute("data-highlight", "true");
+      // Restart the clock. Without this a second reveal inherits the first
+      // one's pending expiry, so the highlight can clear early. Two reveals
+      // in quick succession is a real sequence, not a hypothetical: setting
+      // `location.hash` updates the hash synchronously and dispatches
+      // `hashchange` after, so the mount pass below can already have
+      // revealed that same hash a beat earlier.
+      if (timeout) clearTimeout(timeout);
       timeout = setTimeout(() => {
         target.removeAttribute("data-highlight");
       }, HIGHLIGHT_MS);
