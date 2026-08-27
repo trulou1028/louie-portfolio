@@ -31,7 +31,7 @@ honor its STOP conditions, and update your row when done.
 | 016  | Mobile polish bundle (nav warning, tap targets, composer) | P2 | M | 015 | DONE 2 of 3, merged (step 1 REJECTED) |
 | 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | DONE (merged) |
 | 018  | Chat markdown rendering + composer button alignment | P2 | M | 017 | DONE (merged) |
-| 019  | Mobile-nav console warning (keep link semantics)   | P3 | S | — | TODO |
+| 019  | Mobile-nav console warning (keep link semantics)   | P3 | S | — | DONE (merged) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
@@ -357,6 +357,38 @@ the full punch list into `plans/CONTENT-TODOS.md`.
   single-vs-multiline signal requires measuring rendered height; the
   `react-hooks/set-state-in-effect` disable the plan anticipated proved
   unnecessary and was removed after lint flagged it as an unused directive.
+
+- **019 — DONE 2026-08-25, merged.** Executed in worktree
+  `.claude/worktrees/agent-afe7442f0c54a1b0d`, branch `plan-019` (1 commit,
+  one file). Reviewed and approved: all gates re-verified independently by the
+  advisor (typecheck, lint, 66 unit, 172 e2e / 8 skips / 0 failed — exactly
+  baseline, no new tests — and build).
+  The drawer now controls its own open state and each nav item closes it via
+  `onClick`, replacing the `SheetClose` wrapper. Confirmed structurally: no
+  `SheetClose`/`Dialog.Close` in app code wraps a link any more (the remaining
+  `DialogClose` at `components/ui/dialog.tsx:112` wraps a real `Button`), so
+  the warning cannot fire. `mobile-nav.tsx` became a client component, stated
+  deliberately in its doc comment.
+  **The executor STOPPED once, correctly, and its finding reframed the whole
+  plan.** The warning is **development-only**: Base UI gates it behind
+  `if (process.env.NODE_ENV !== 'production')`
+  (`internals/use-button/useButton.js:39`) and Next strips it at build time —
+  verified, the string appears in no client chunk of a production build. **No
+  visitor ever saw it.** The plan had mandated production-build verification,
+  which would therefore have "passed" against completely unmodified code.
+  Second, sharper finding the advisor had missed entirely: `playwright.config.ts:35`
+  runs `pnpm build && pnpm start`, so the console-error regression test the
+  plan asked for could never have observed the warning either — it would have
+  gone green whether or not the bug existed. That test was removed rather than
+  weakened; the existing `e2e/home.spec.ts` link-role assertions (~260/261)
+  and "mobile drawer navigates and dismisses" (~292) cover both regression
+  paths and run where they are meaningful.
+  Executor judgment call, accepted: the plan's Step 2 asked the replacement
+  comment to explain why `SheetClose` was dropped, while a Done criterion
+  grepped for the absence of that literal string in the file. The comment
+  conveys the mechanism ("the Sheet's built-in close-on-click wrapper, which
+  applies button semantics") without the identifier. The over-tight grep was
+  the planner's error, not the executor's.
 
 ## Findings considered and rejected
 
