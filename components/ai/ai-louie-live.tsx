@@ -1,13 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { Sparkles } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
+import { ThinkingOrb } from "thinking-orbs";
 
 import { AiLouieComposer } from "@/components/ai/ai-louie-composer";
+import { AssistantAvatar } from "@/components/ai/assistant-avatar";
 import { AnswerMarkdown } from "@/components/ai/answer-markdown";
 import { JobDescriptionDialog } from "@/components/ai/job-description-dialog";
+import { SectionLabel } from "@/components/system/section-label";
 import { Surface } from "@/components/system/surface";
 import { cn } from "@/lib/utils";
 import {
@@ -17,9 +19,8 @@ import {
   MessageScrollerContent,
   MessageScrollerItem,
 } from "@/components/ui/message-scroller";
-import { MessageAvatar, MessageContent } from "@/components/ui/message";
+import { MessageContent } from "@/components/ui/message";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
-import { Marker, MarkerContent } from "@/components/ui/marker";
 
 /**
  * The AI Louie surface — a basic question-and-answer chat (Plan 014).
@@ -60,16 +61,6 @@ const SUGGESTIONS = [
   "How technical is Louie?",
   "Tell me about Flexi",
 ] as const;
-
-function AssistantAvatar({ className }: { className?: string }) {
-  return (
-    <MessageAvatar
-      className={cn("size-8 self-start bg-accent text-surface", className)}
-    >
-      <Sparkles aria-hidden="true" className="size-4" />
-    </MessageAvatar>
-  );
-}
 
 /**
  * Renders only "text" parts as visible content. Every other part type —
@@ -130,7 +121,25 @@ function UserMessage({ message }: { message: UIMessage }) {
   );
 }
 
+/** True once a message carries at least one non-empty text part. */
+function hasVisibleText(message: UIMessage): boolean {
+  return message.parts.some(
+    (part) => part.type === "text" && part.text.length > 0,
+  );
+}
+
 function AssistantMessage({ message }: { message: UIMessage }) {
+  /**
+   * An assistant turn with no text yet renders nothing at all — not even the
+   * avatar. `MessageParts` is text-only by design, so such a turn has no
+   * content to show, and the `ThinkingIndicator` below is already standing in
+   * for it with an avatar of its own. Without this guard both render at once
+   * and the visitor sees two avatar circles stacked for a single reply, which
+   * is what happens whenever the model streams reasoning or tool-call parts
+   * before its first token of text.
+   */
+  if (!hasVisibleText(message)) return null;
+
   return (
     <div className="flex flex-col gap-2">
       <AssistantAvatar />
@@ -158,19 +167,32 @@ function AssistantMessage({ message }: { message: UIMessage }) {
  * message to attach it to — and disappears the instant real text starts
  * streaming, which is the only "alive" signal needed after that.
  *
- * Uses shadcn's `Marker` + the `shimmer` text utility (ships with
- * `shadcn/tailwind.css`, already imported by `app/globals.css`) rather than
- * the old bespoke three-dot pulse markup and keyframes — it is the
- * component this plan's shadcn chat set ships specifically for animated
- * status rows, so it replaces the bespoke CSS instead of sitting beside it.
+ * The motion is `thinking-orbs`' dotted orb (owner decision, 2026-08-31 —
+ * orbs.jakubantalik.com), in its `breathing` state at the 20px inline-text
+ * preset: that is the pairing the source site labels "Agent thinking". It
+ * replaces the previous `Marker` + `shimmer` text row.
+ *
+ * Two deliberate choices here:
+ * - The avatar stays Louie's face and the orb sits inline beside the label,
+ *   rather than the orb replacing the avatar. The face says who is speaking;
+ *   the orb says what is happening. Swapping the avatar out mid-turn would
+ *   also make the row jump when the answer arrives and the face returns.
+ * - The label is plain, not `shimmer`. The orb now carries the motion, and
+ *   two animations racing on one short row reads as busy rather than alive.
+ *
+ * `aria-hidden` on the orb is what keeps this to a single announcement: the
+ * canvas ships `role="img"` with its own "Breathing…" label, which would
+ * otherwise be read out alongside the visible "Thinking" inside the thread's
+ * `aria-live` region.
  */
 function ThinkingIndicator() {
   return (
     <div className="flex flex-col gap-2">
       <AssistantAvatar />
-      <Marker>
-        <MarkerContent className="shimmer text-body-sm">Thinking</MarkerContent>
-      </Marker>
+      <div className="flex items-center gap-2">
+        <ThinkingOrb state="breathing" size={20} aria-hidden="true" />
+        <span className="text-body-sm text-foreground-muted">Thinking</span>
+      </div>
     </div>
   );
 }
@@ -194,6 +216,26 @@ function ThreadError({ error }: { error: Error | undefined }) {
   );
 }
 
+/**
+ * One shared geometry for every chip in the suggestion row.
+ *
+ * Previously "Paste a job description" was a `rounded-sm`, 44px-tall
+ * rectangle sitting among three `rounded-full`, ~30px pills — two radii and
+ * two heights inside a single four-item group, which is what made the row
+ * look unfinished. Shape is now shared and colour alone carries the
+ * difference in kind.
+ *
+ * `min-h-9` (36px) is above the row's old pill height rather than below the
+ * old button's: it clears WCAG 2.2 AA's 24px target (2.5.8) with room to
+ * spare and makes the three question pills easier to hit than they were,
+ * so unifying the row costs the recruiter path nothing.
+ */
+const SUGGESTION_CHIP = cn(
+  "inline-flex min-h-9 items-center rounded-full border px-3.5 py-1.5",
+  "text-left text-body-sm focus-ring transition-colors duration-(--duration-fast)",
+  "disabled:pointer-events-none disabled:opacity-60",
+);
+
 function Suggestions({
   onSelect,
   disabled,
@@ -202,8 +244,12 @@ function Suggestions({
   disabled: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-body-sm text-foreground-muted">Try asking about:</p>
+    <div className="flex flex-col gap-2.5">
+      {/* The site labels its sections with a mono eyebrow ("FEATURED WORK",
+          the hero's positioning line). This row is the panel's one such
+          label, so it uses the same component rather than a bespoke
+          sentence-case line — the panel reads as part of the site. */}
+      <SectionLabel>Try asking</SectionLabel>
       {/* Wrapping pills, not one question per line — the Ask-LUMO pattern
           from the Offboard app uses the rail's width. */}
       <ul className="flex flex-wrap gap-1.5">
@@ -214,11 +260,9 @@ function Suggestions({
               disabled={disabled}
               onClick={() => onSelect(prompt)}
               className={cn(
-                "inline-flex items-center rounded-full border border-transparent bg-surface-muted",
-                "px-3 py-1.5 text-left text-body-sm text-foreground-muted focus-ring",
-                "transition-colors duration-(--duration-fast)",
+                SUGGESTION_CHIP,
+                "border-transparent bg-surface-muted text-foreground-muted",
                 "hover:border-accent-muted hover:bg-accent-soft hover:text-accent-foreground",
-                "disabled:pointer-events-none disabled:opacity-60",
               )}
             >
               {prompt}
@@ -226,12 +270,19 @@ function Suggestions({
           </li>
         ))}
         <li>
-          {/* Spec §22's recruiter entry point. */}
+          {/* Spec §22's recruiter entry point — the one chip that opens a
+              dialog rather than sending a question, so it carries the accent
+              tint the rest of the site reserves for AI and tool affordances
+              (the `SystemLabel` accent tone uses this same pairing). */}
           <JobDescriptionDialog
             trigger={
               <button
                 type="button"
-                className="flex min-h-11 w-full items-center rounded-sm border border-accent bg-surface px-3.5 py-2 text-left text-body-sm font-medium text-accent focus-ring transition-colors duration-(--duration-fast) hover:bg-accent-soft"
+                className={cn(
+                  SUGGESTION_CHIP,
+                  "border-accent-muted bg-accent-soft font-medium text-accent-foreground",
+                  "hover:border-accent",
+                )}
               >
                 Paste a job description
               </button>
@@ -258,11 +309,10 @@ function AiLouieLive() {
   const isBusy = status === "submitted" || status === "streaming";
 
   const lastMessage = messages[messages.length - 1];
+  // Same test `AssistantMessage` uses to decide whether it renders at all, so
+  // exactly one of the two shows an avatar at any moment.
   const lastMessageHasText =
-    lastMessage?.role === "assistant" &&
-    lastMessage.parts.some(
-      (part) => part.type === "text" && part.text.length > 0,
-    );
+    lastMessage?.role === "assistant" && hasVisibleText(lastMessage);
   const showThinking = isBusy && !lastMessageHasText;
 
   function sendText(text: string) {

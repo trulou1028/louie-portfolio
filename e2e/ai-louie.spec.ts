@@ -382,8 +382,16 @@ test.describe("the AI surface", () => {
       panel.getByText("<script>window.__pwned=1</script>"),
     ).toBeVisible();
 
-    // ...which means no actual img/script element exists inside the panel...
-    await expect(page.locator("#ask-ai-louie img")).toHaveCount(0);
+    // ...which means no actual img/script element exists inside the panel.
+    //
+    // Scoped to images *outside* an avatar rather than counting zero panel
+    // images: AI Louie's own avatar is a real `<img>` of Louie's portrait
+    // (owner decision, 2026-08-31), so a flat count of 0 would now fail on
+    // the page's own markup and say nothing about the model's. Any image the
+    // page did not put there itself still fails this.
+    await expect(
+      page.locator('#ask-ai-louie img:not([data-slot="message-avatar"] img)'),
+    ).toHaveCount(0);
     await expect(page.locator("#ask-ai-louie script")).toHaveCount(0);
 
     // ...and neither payload ever executed.

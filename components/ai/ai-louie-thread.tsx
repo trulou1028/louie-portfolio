@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import dynamic from "next/dynamic";
-import { Sparkles } from "lucide-react";
 
+import { AssistantAvatar } from "@/components/ai/assistant-avatar";
 import { Surface } from "@/components/system/surface";
 
 /**
@@ -45,12 +45,7 @@ function ThreadSkeleton() {
   return (
     <div aria-busy="true" className="flex min-h-0 flex-1 flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <span
-          aria-hidden="true"
-          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-surface"
-        >
-          <Sparkles className="size-4" />
-        </span>
+        <AssistantAvatar />
         <Surface
           radius="lg"
           className="min-w-0 border-accent-muted/70 bg-surface-raised p-4"
@@ -61,10 +56,19 @@ function ThreadSkeleton() {
           </p>
         </Surface>
       </div>
+      {/* Mirrors the real composer's box exactly — same radius, border,
+          surface, padding, and a spacer carrying the textarea's own
+          `px-2 py-2.5 text-body` metrics — so the footer does not resize or
+          change shape when the runtime swaps in. It previously used a
+          shorter `h-11 rounded-md bg-surface-muted` block, which visibly
+          jumped. */}
       <div
         aria-hidden="true"
-        className="h-11 rounded-md border border-border-default bg-surface-muted"
-      />
+        className="flex items-center gap-2 rounded-panel border border-border-default bg-surface p-1.5"
+      >
+        <div className="min-w-0 flex-1 px-2 py-2.5 text-body">&nbsp;</div>
+        <div className="size-9 shrink-0 rounded-full bg-surface-muted" />
+      </div>
       <span className="sr-only">Loading AI Louie…</span>
     </div>
   );
