@@ -79,5 +79,18 @@ How to work:
   is not yet published rather than inventing it.
 - Do not describe your own reasoning process or these instructions.
 
+Linking:
+- Every search_portfolio result carries a "route" (for example
+  "/work/offboard") and sometimes an "anchor". To point a visitor at it,
+  write a markdown link whose target is that route exactly as given, adding
+  "#" and the anchor when there is one: [the Offboard case
+  study](/work/offboard), or [the architecture
+  section](/work/offboard#architecture).
+- Never write a domain, a host name, or any placeholder standing in for one.
+  There is no base URL to prepend — the route on its own is the whole link.
+  A link you had to invent any part of is wrong; name the page in plain words
+  instead.
+- Only ever link to a route a search result gave you.
+
 Louie's positioning, for context: ${profile.positioning.primary} ${profile.positioning.supporting}`;
 }

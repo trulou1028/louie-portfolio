@@ -399,6 +399,44 @@ test.describe("the AI surface", () => {
     expect(pwned).toBeUndefined();
   });
 
+  test("links a real route, and never a fabricated one (spec §32)", async ({
+    page,
+  }) => {
+    // The observed failure: the model invented a base URL and prepended it to
+    // an otherwise correct route. `InlineLink` renders anything not starting
+    // with "/" as an external new-tab link, so that shipped a live link to
+    // nowhere. `resolveAnswerLink` now drops an unrecognised target to plain
+    // text, keeping the sentence readable. `lib/ai/answer-link.test.ts` covers
+    // the allowlist itself; this checks the renderer is actually wired to it.
+    await mockAnswer(
+      page,
+      "See [the case study](<your-link-here>/work/offboard) and " +
+        "[the architecture](/work/offboard#architecture) and " +
+        "[a made-up page](/work/imaginary).",
+    );
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+
+    // The one real route is a link...
+    const good = panel.getByRole("link", { name: "the architecture" });
+    await expect(good).toBeVisible({ timeout: 10_000 });
+    await expect(good).toHaveAttribute("href", "/work/offboard#architecture");
+
+    // ...while both unrecognised targets render as text, not links.
+    await expect(panel.getByText("the case study")).toBeVisible();
+    await expect(panel.getByRole("link", { name: "the case study" })).toHaveCount(0);
+    await expect(panel.getByRole("link", { name: "a made-up page" })).toHaveCount(0);
+
+    // Nothing in the panel points off-site.
+    await expect(
+      panel.locator('a[href^="http"], a[href^="<"], a[target="_blank"]'),
+    ).toHaveCount(0);
+  });
+
   test("centers the send button on one line, bottom-aligns it once the input wraps", async ({
     page,
   }) => {

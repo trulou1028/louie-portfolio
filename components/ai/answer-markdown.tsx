@@ -3,6 +3,7 @@ import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
 
 import { InlineLink } from "@/components/system/inline-link";
+import { resolveAnswerLink } from "@/lib/ai/answer-link";
 
 /**
  * Renders one assistant answer's markdown (Plan 018).
@@ -75,9 +76,22 @@ const components: Components = {
       {children}
     </pre>
   ),
-  a: ({ href, children }) => (
-    <InlineLink href={href ?? "#"}>{children}</InlineLink>
-  ),
+  /**
+   * A link only survives if `resolveAnswerLink` recognises where it points
+   * (spec §32 — model output is never trusted as routing data). Anything else
+   * renders as the link's own text: the sentence still reads, but a
+   * fabricated destination never becomes clickable.
+   *
+   * This is what catches an invented base URL. `InlineLink` treats any href
+   * that does not start with `/` or `#` as external, so the observed
+   * `<your-link-here>/work/offboard` used to render as a live new-tab link to
+   * nowhere.
+   */
+  a: ({ href, children }) => {
+    const link = resolveAnswerLink(href);
+    if (link.kind === "invalid") return <>{children}</>;
+    return <InlineLink href={link.href}>{children}</InlineLink>;
+  },
 };
 
 function AnswerMarkdown({ text }: { text: string }) {
