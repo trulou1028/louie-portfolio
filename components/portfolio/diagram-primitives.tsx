@@ -14,10 +14,12 @@ import { cn } from "@/lib/utils";
 
 const nodeToneClasses = {
   default: "border-border-default bg-surface text-foreground",
-  // The accent node is where a reader's eye should land first: an accent
-  // left edge does that without the fill fighting the text on it.
-  accent:
-    "border-accent-muted border-l-2 border-l-accent bg-accent-soft text-foreground",
+  // The accent node is where a reader's eye should land first. It carries
+  // that with a full accent ring over the soft fill, not the accent bar down
+  // one rounded edge it used to use (owner decision, 2026-08-31 — that
+  // treatment had become a visual cliché, and the site had drifted into
+  // using it in four unrelated places).
+  accent: "border-accent bg-accent-soft text-foreground",
   muted: "border-border-subtle bg-surface-muted text-foreground-muted",
 } as const;
 

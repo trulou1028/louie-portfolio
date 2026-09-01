@@ -103,8 +103,14 @@ function LayerNode({ data }: NodeProps<LayerNode>) {
           // button has to opt back in or every click lands on the pane
           // behind it.
           "pointer-events-auto block rounded-md border px-4 py-3 text-left transition-[opacity,border-color,background-color] duration-standard focus-ring",
+          // Emphasis and selection are now one scale rather than two
+          // different devices: a muted accent ring marks an important node,
+          // and selecting it brightens that same ring to full accent. The
+          // emphasised node used to carry an accent bar down its left edge
+          // instead (owner decision, 2026-08-31 — that treatment had become
+          // a visual cliché). `isSelected` still wins by ordering.
           data.emphasis
-            ? "border-accent-muted border-l-2 border-l-accent bg-accent-soft"
+            ? "border-accent-muted bg-accent-soft"
             : "border-border-default bg-surface",
           isSelected && "border-accent bg-accent-soft",
           isDimmed && "opacity-40",

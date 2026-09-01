@@ -39,14 +39,20 @@ function NavItem({ className, href, label, icon, size, ...props }: NavItemProps)
       className={cn(navItemVariants({ size, active: isActive }), className)}
       {...props}
     >
-      {isActive ? (
+      {/* The active item used to add an accent bar pinned to its left edge.
+          That treatment is gone (owner decision, 2026-08-31 — it had become
+          a visual cliché, and the site was using a version of it in four
+          unrelated places). The accent now tints the item's own icon
+          instead, which marks the row without adding a shape to it.
+
+          This does not reduce the state to colour alone (spec §26): the
+          active row still carries a stronger surface, medium weight, full
+          `text-foreground`, and `aria-current="page"`. */}
+      {icon ? (
         <span
           aria-hidden="true"
-          className="absolute left-0 h-4 w-0.5 rounded-full bg-accent"
-        />
-      ) : null}
-      {icon ? (
-        <span aria-hidden="true" className="[&_svg]:size-4">
+          className={cn("[&_svg]:size-4", isActive && "text-accent")}
+        >
           {icon}
         </span>
       ) : null}

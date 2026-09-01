@@ -6,8 +6,9 @@ import { cva } from "class-variance-authority";
  * called from the server).
  *
  * The rail is meant to be quiet and not compete with the content, so the
- * active state is carried by weight, a slightly stronger surface, and a small
- * accent marker — never by color alone (spec §10, §26).
+ * active state is carried by weight, a slightly stronger surface, and an
+ * accent-tinted icon (see `nav-item.tsx`) — never by color alone (spec §10,
+ * §26), since weight and surface both carry it too.
  */
 export const navItemVariants = cva(
   [
