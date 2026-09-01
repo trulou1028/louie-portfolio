@@ -31,7 +31,11 @@ function AskPanel() {
         // the pane, and its footer (suggestions + composer) is pinned to the
         // bottom by ThreadBody.
         "flex h-full min-h-0 flex-col gap-4 bg-accent-soft/40 p-5",
-        "scroll-mt-8 lg:border-l lg:border-border-subtle",
+        // No `lg:border-l`: at lg+ the pane's `ResizableHandle` already draws
+        // a 1px `border-subtle` line on this edge, and a border here sat
+        // beside it as a second one — the pair read as a 2px rule, heavier
+        // than every other border on the site.
+        "scroll-mt-8",
         // Below lg there is no pane: it sits in the page flow, so it reads as
         // a card again. It still needs a bounded height, though — without one
         // the panel grows to fit the whole conversation and pushes the

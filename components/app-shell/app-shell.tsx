@@ -58,7 +58,13 @@ function AppShell({ children }: { children: React.ReactNode }) {
               minSize={190}
               maxSize={340}
             >
-              <div className="relative h-full overflow-y-auto border-r border-border-subtle max-lg:hidden">
+              {/* No `border-r` here: the `ResizableHandle` below is itself a
+                  1px `bg-border-subtle` line, so a border on the pane sat
+                  directly beside it and the pair read as a 2px rule — visibly
+                  heavier than every other border on the site. The handle is
+                  the separator (it highlights on hover and drag); the pane
+                  does not draw one of its own. */}
+              <div className="relative h-full overflow-y-auto max-lg:hidden">
                 <LeftRail />
               </div>
             </ResizablePanel>
