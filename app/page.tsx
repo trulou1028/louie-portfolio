@@ -42,9 +42,10 @@ export default function Home() {
         <SectionLabel>{profile.positioning.eyebrow}</SectionLabel>
 
         {/* Owner decision (2026-08-27): one weight, one colour, one size.
-            The accent italic tail and the step down from `display-xl` were
-            both Louie's call — see README "Deviations". */}
-        <h1 className="mt-6 max-w-[15ch] font-serif text-display-lg text-balance text-foreground">
+            The accent italic tail was Louie's call — see README
+            "Deviations". Owner decision (2026-08-31): back up to
+            `display-xl`; at `display-lg` the headline read too small. */}
+        <h1 className="mt-6 max-w-[17ch] font-serif text-display-xl text-balance text-foreground">
           {profile.positioning.primary}
         </h1>
 
@@ -73,10 +74,17 @@ export default function Home() {
       >
         <SectionLabel id="featured-work-label">Featured work</SectionLabel>
 
-        <div className="flex flex-col gap-5">
-          {workProjects.map((project) => (
-            <WorkCard key={project.slug} project={project} />
-          ))}
+        {/* Two per row with the image stacked above the text (owner
+            decision, 2026-08-31). One column below `sm`, and again while the
+            content column is narrow — the homepage gives up width to the Ask
+            rail, so `@container` sizing off the column itself is what decides
+            this, not the viewport. */}
+        <div className="@container">
+          <div className="grid gap-5 @lg:grid-cols-2">
+            {workProjects.map((project) => (
+              <WorkCard key={project.slug} project={project} layout="stacked" />
+            ))}
+          </div>
         </div>
 
         <Action

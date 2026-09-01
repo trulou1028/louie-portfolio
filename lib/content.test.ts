@@ -16,7 +16,7 @@ describe("hero copy", () => {
     // The headline was superseded by owner decision 2026-08-23 (Plan 011,
     // README "Deviations" ledger) — this is no longer the spec §11 wording.
     expect(profile.positioning.primary).toBe(
-      "I design & ship AI products.",
+      "I plan, design & ship AI products.",
     );
     expect(profile.positioning.supporting).toBe(
       "Product designer working across AI systems, complex workflows, design engineering, and product strategy.",

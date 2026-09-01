@@ -14,8 +14,10 @@ export const profile = {
     /**
      * Owner decision (2026-08-23) superseding spec §1, §11's original
      * wording — see README "Deviations" ledger, Plan 011.
+     * Owner decision (2026-08-31): "plan" added to name the strategy work
+     * that "design & ship" left implicit.
      */
-    primary: "I design & ship AI products.",
+    primary: "I plan, design & ship AI products.",
     /** Spec §1, §11 — supporting positioning. */
     supporting:
       "Product designer working across AI systems, complex workflows, design engineering, and product strategy.",
@@ -78,12 +80,12 @@ export const profile = {
   location: "San Francisco, CA" as string | null,
 
   /**
-   * Square portrait under /public. Until this is set, <Avatar/> shows
-   * initials rather than a stock silhouette.
-   * TODO(asset): drop a square image in public/images/ and set the path,
-   * e.g. "/images/louie.jpg".
+   * Square portrait under /public, supplied by Louie 2026-08-31 and cropped
+   * square around the face from `louie-natural-headshot.jpeg` (640×640 — 2x
+   * the largest place it renders, the 56px `lg` avatar). Drives both the left
+   * rail's logo and AI Louie's chat avatar.
    */
-  avatar: null as string | null,
+  avatar: "/images/louie.jpg" as string | null,
 } as const;
 
 export type Profile = typeof profile;

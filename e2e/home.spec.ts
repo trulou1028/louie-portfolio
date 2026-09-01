@@ -42,7 +42,7 @@ test.describe("homepage", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: "I design & ship AI products.",
+        name: "I plan, design & ship AI products.",
       }),
     ).toBeVisible();
 
@@ -118,7 +118,7 @@ test.describe("homepage", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: "I design & ship AI products.",
+        name: "I plan, design & ship AI products.",
       }),
     ).toBeVisible();
   });
