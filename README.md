@@ -253,6 +253,58 @@ Owner decisions from Louie's review of the live site.
     is the first use of `motion` in the codebase — it was a dependency with
     no imports.
 
+**Phase 5 — owner passes (2026-08-31)**
+
+33. **Louie's portrait is the avatar, in the rail and in AI Louie.**
+    `profile.avatar` now points at `public/images/louie.jpg`, cropped square
+    around the face from the supplied portrait and stored at 640×640 (2× the
+    largest place it renders). It drives both the rail's logo and the
+    assistant's chat avatar, which share one `AssistantAvatar` so they cannot
+    drift and so the lazy skeleton does not flash a different mark before the
+    runtime arrives. The `Sparkles` mark survives only as the fallback when
+    no photo is set: an "LS" monogram on an assistant turn would read as
+    Louie himself typing.
+
+    Two consequences worth recording. The assistant turn with no text yet now
+    renders nothing at all rather than an empty shell, because that shell and
+    the thinking row were each drawing an avatar and stacking two circles for
+    one reply. And `e2e/ai-louie.spec.ts`'s HTML-injection guard no longer
+    asserts zero images inside the panel — the avatar is a legitimate one —
+    but zero images *outside* an avatar, which is the invariant it was always
+    testing.
+
+34. **The thinking state uses `thinking-orbs`.** The dotted orb replaces the
+    `Marker` + `shimmer` text row, in its `breathing` state at the 20px
+    inline-text preset — the pairing orbs.jakubantalik.com labels "Agent
+    thinking". MIT, no dependencies, ~55KB, and it ships its own
+    reduced-motion and page-visibility handling. It sits beside the label
+    rather than replacing the avatar: the face says who is speaking, the orb
+    says what is happening, and swapping the avatar mid-turn would make the
+    row jump when the answer arrives. It is `aria-hidden`, because the canvas
+    carries its own `role="img"` label that would otherwise be announced
+    alongside the visible "Thinking" inside the thread's live region.
+
+35. **No accent border on a rounded edge, anywhere (owner decision).** The
+    accent-bar-down-the-left-edge treatment had spread to four unrelated
+    places — the diagram accent node, the architecture map's emphasised node,
+    the nav's active marker — and reads as a visual cliché. Replacements, in
+    order: a full accent ring on the node; one emphasis scale where a muted
+    accent ring marks an important node and selection brightens it to full
+    accent; and an accent-tinted icon for the active nav row. The nav state
+    is still not carried by colour alone (spec §26) — surface, weight and
+    `aria-current` all remain.
+
+    Pull quotes keep their left rule: they have no border radius, and a rule
+    beside a quotation is a typographic convention rather than this pattern.
+
+36. **Featured work is a two-column grid of stacked cards (owner decision).**
+    `WorkCard` gained a `layout` prop; `/work` keeps the full-width `split`
+    layout and the homepage uses `stacked`. The homepage grid breaks on
+    `@container`, not the viewport, because that column gives up width to the
+    Ask rail — a viewport breakpoint would go two-up while the column was
+    still too narrow for the text. Padding steps from `p-6`/`md:p-8` down to
+    the standard card's `p-5` in the stacked layout.
+
 ## Deep links
 
 A hash can arrive before the page hydrates — `navigate_portfolio` sets one
