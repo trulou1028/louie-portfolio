@@ -38,7 +38,6 @@ export const metadata: Metadata = {
     description: profile.positioning.supporting,
     url: siteUrl,
     locale: "en_US",
-    // TODO(asset): a real 1200×630 share image (spec §28).
   },
   twitter: {
     card: "summary_large_image",
