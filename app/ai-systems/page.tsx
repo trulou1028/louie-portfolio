@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "AI Systems",
   description:
     "The AI design decisions behind Offboard and CK-12 Flexi — human-in-the-loop control, grounding, scaffolding, uncertainty, and multi-sided systems.",
+  alternates: { canonical: "/ai-systems" },
 };
 
 /**

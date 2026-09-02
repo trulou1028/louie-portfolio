@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Work",
   description:
     "Selected product design work across AI systems, complex workflows, and design engineering.",
+  alternates: { canonical: "/work" },
 };
 
 export default function WorkIndex() {

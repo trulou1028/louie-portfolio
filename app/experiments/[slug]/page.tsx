@@ -27,6 +27,7 @@ export async function generateMetadata({
     description:
       experiment.summary ??
       `An in-progress exploration of ${experiment.title.toLowerCase()}.`,
+    alternates: { canonical: `/experiments/${experiment.slug}` },
   };
 }
 

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Experiments",
   description:
     "Small, opinionated prototypes exploring AI interaction patterns — voice and tool calling, human-in-the-loop confirmation, agent interfaces, and design engineering.",
+  alternates: { canonical: "/experiments" },
 };
 
 /**

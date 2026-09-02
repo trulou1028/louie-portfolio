@@ -8,6 +8,7 @@ import { SectionLabel } from "@/components/system/section-label";
 export const metadata: Metadata = {
   title: "Writing",
   description: "Notes on AI product design, systems, and design engineering.",
+  alternates: { canonical: "/writing" },
 };
 
 /**

@@ -45,7 +45,6 @@ export const metadata: Metadata = {
     title: `${profile.name} · ${profile.role}`,
     description: profile.positioning.supporting,
   },
-  alternates: { canonical: "/" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

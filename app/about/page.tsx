@@ -11,6 +11,7 @@ import { profile } from "@/content/profile";
 export const metadata: Metadata = {
   title: "About",
   description: profile.positioning.supporting,
+  alternates: { canonical: "/about" },
 };
 
 /**

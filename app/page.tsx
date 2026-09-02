@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
@@ -7,6 +8,10 @@ import { Action } from "@/components/system/action";
 import { SectionLabel } from "@/components/system/section-label";
 import { profile } from "@/content/profile";
 import { workProjects } from "@/content/work/projects";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 /**
  * Homepage (spec §11, restructured by owner decision, 2026-08-23 — Plans 011
