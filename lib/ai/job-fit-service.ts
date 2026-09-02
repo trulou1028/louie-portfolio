@@ -42,6 +42,10 @@ export async function runJobFitComparison(
       "Job description to compare against:",
       jobDescription,
     ].join("\n"),
+    // The result object is four bounded arrays (see `jobFitResultSchema`);
+    // this sits comfortably above its observed size and bounds the cost of
+    // a single comparison.
+    maxOutputTokens: 2_000,
   });
 
   return verifyMatches(object);

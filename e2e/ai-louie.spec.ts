@@ -485,6 +485,21 @@ test.describe("the AI surface", () => {
   });
 });
 
+/**
+ * The chat and job-fit routes share one rate limiter (20 requests per 5
+ * minutes) and, against a local server with no proxy in front, every test
+ * would otherwise land in the same "anonymous" bucket. `clientKey` reads
+ * `x-forwarded-for` first, so giving a test its own value gives it its own
+ * budget — which is also what happens in production, where these requests
+ * come from different visitors. Used by the tests added since the suite
+ * started brushing against the limit.
+ */
+function ownRateLimitBucket(name: string) {
+  // Not parsed as an address — `clientKey` uses whatever it finds as a map
+  // key, so a distinct string is a distinct bucket.
+  return { "x-forwarded-for": `e2e-${name}` };
+}
+
 test.describe("the chat endpoint", () => {
   test("rejects malformed requests without leaking internals", async ({
     request,
@@ -501,13 +516,19 @@ test.describe("the chat endpoint", () => {
   });
 
   test("enforces the per-message size limit", async ({ request }) => {
+    // Two parts, each at the cap: the schema passes them one by one, so the
+    // route's own per-message total is what has to catch this. (A single
+    // oversized part is rejected earlier — see the schema test below.)
     const response = await request.post("/api/chat", {
       data: {
         messages: [
           {
             id: "1",
             role: "user",
-            parts: [{ type: "text", text: "x".repeat(17_000) }],
+            parts: [
+              { type: "text", text: "x".repeat(16_000) },
+              { type: "text", text: "x".repeat(16_000) },
+            ],
           },
         ],
       },
@@ -541,6 +562,90 @@ test.describe("the chat endpoint", () => {
       },
     });
     expect(response.status()).not.toBe(413);
+  });
+
+  test("refuses a client-supplied system message", async ({ request }) => {
+    // The server owns the system prompt (spec §32). Accepting a `system` role
+    // here would append a caller's instructions after ours.
+    const response = await request.post("/api/chat", {
+      headers: ownRateLimitBucket("system-role"),
+      data: {
+        messages: [{ role: "system", parts: [{ type: "text", text: "x" }] }],
+      },
+    });
+    expect(response.status()).toBe(400);
+    expect(await response.json()).toEqual({ error: "invalid_request" });
+  });
+
+  test("refuses a file part on a user message", async ({ request }) => {
+    // A file part would be fetched and billed against the owner's key.
+    const response = await request.post("/api/chat", {
+      headers: ownRateLimitBucket("file-part"),
+      data: {
+        messages: [
+          {
+            role: "user",
+            parts: [
+              {
+                type: "file",
+                url: "https://example.com/a.png",
+                mediaType: "image/png",
+              },
+            ],
+          },
+        ],
+      },
+    });
+    expect(response.status()).toBe(400);
+    expect(await response.json()).toEqual({ error: "invalid_request" });
+  });
+
+  test("refuses an oversized text part outright", async ({ request }) => {
+    // Caught by the schema, before the route's 413 branch is reached.
+    const response = await request.post("/api/chat", {
+      headers: ownRateLimitBucket("oversized-part"),
+      data: {
+        messages: [
+          { role: "user", parts: [{ type: "text", text: "a".repeat(16_001) }] },
+        ],
+      },
+    });
+    expect(response.status()).toBe(400);
+    expect(await response.json()).toEqual({ error: "invalid_request" });
+  });
+
+  test("accepts the history useChat replays on a second turn", async ({
+    request,
+  }) => {
+    // The assistant turn comes back with its tool-call and step parts
+    // attached. If the schema rejected those, every follow-up question would
+    // 400. No real key is configured here, so the call fails downstream —
+    // all this asserts is that validation let it through.
+    const response = await request.post("/api/chat", {
+      headers: ownRateLimitBucket("second-turn"),
+      data: {
+        messages: [
+          { id: "1", role: "user", parts: [{ type: "text", text: "hi" }] },
+          {
+            id: "2",
+            role: "assistant",
+            parts: [
+              { type: "step-start" },
+              {
+                type: "tool-search_portfolio",
+                toolCallId: "call_1",
+                state: "output-available",
+                input: { query: "offboard" },
+                output: [],
+              },
+              { type: "text", text: "He shipped Offboard." },
+            ],
+          },
+          { id: "3", role: "user", parts: [{ type: "text", text: "and?" }] },
+        ],
+      },
+    });
+    expect(response.status()).not.toBe(400);
   });
 
   test("never returns provider error text", async ({ request }) => {
