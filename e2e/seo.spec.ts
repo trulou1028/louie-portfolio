@@ -143,3 +143,12 @@ test("a share image is declared and actually serves", async ({ page, request }) 
   expect(response.status()).toBe(200);
   expect(response.headers()["content-type"]).toContain("image/png");
 });
+
+test("security headers are present", async ({ request }) => {
+  const response = await request.get("/");
+  const headers = response.headers();
+  expect(headers["x-content-type-options"]).toBe("nosniff");
+  expect(headers["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+  expect(headers["x-frame-options"]).toBe("DENY");
+  expect(headers["content-security-policy-report-only"]).toContain("frame-ancestors 'none'");
+});
