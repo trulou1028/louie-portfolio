@@ -107,8 +107,3 @@ export function searchEvidence(input: SearchPortfolioInput): SearchResult {
 
   return { results: scored.slice(0, limit).map(({ item }) => item) };
 }
-
-/** Direct lookup for the `show_evidence` tool (spec §18 Tool 3). */
-export function getEvidenceById(id: string): EvidenceItem | undefined {
-  return evidence.find((item) => item.id === id);
-}

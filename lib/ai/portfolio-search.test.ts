@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import { evidence } from "@/content/evidence/evidence";
 import { evidenceItemSchema } from "@/lib/ai/schemas";
 import {
-  getEvidenceById,
   searchEvidence,
   tokenize,
 } from "@/lib/ai/portfolio-search";
@@ -88,13 +87,6 @@ describe("searchEvidence", () => {
       expect(searchEvidence({ query }).results.length).toBeGreaterThan(0);
     },
   );
-});
-
-describe("getEvidenceById", () => {
-  it("finds a known entry and returns undefined for an unknown one", () => {
-    expect(getEvidenceById("offboard-hitl-actions")?.project).toBe("offboard");
-    expect(getEvidenceById("not-a-real-id")).toBeUndefined();
-  });
 });
 
 describe("the evidence index itself", () => {

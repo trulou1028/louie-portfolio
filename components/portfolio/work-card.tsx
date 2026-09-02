@@ -24,8 +24,7 @@ import type { WorkProject } from "@/content/work/projects";
  *
  * When a project has no image yet, a neutral dashed frame renders in its
  * place — never a stand-in screenshot that could read as real product work
- * (spec §38: "no fake data represented as real"). Same `data-pending-asset`
- * pattern as `rail-work-card.tsx`.
+ * (spec §38: "no fake data represented as real").
  */
 type WorkCardProps = {
   project: WorkProject;
