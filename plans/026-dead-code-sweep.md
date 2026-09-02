@@ -19,7 +19,12 @@
 - **Risk**: LOW
 - **Depends on**: none
 - **Category**: tech-debt
-- **Planned at**: commit `50e98a4`, 2026-08-31
+- **Planned at**: commit `50e98a4`, 2026-08-31. **Re-verified 2026-09-02** at
+  `7699b63`, after 020, 021, 022, 023 and 025 merged: all nine target files
+  still exist and still have **zero** importers. The check was widened beyond
+  the original grep to cover relative imports (`./x`, `../x`), `e2e/`, and
+  `scripts/` — still zero. `getEvidenceById`'s only non-test consumer remains
+  `lib/ai/tools.ts`, which this plan deletes.
 - **Recommended executor model**: **Haiku 4.5.** Pure deletion with grep-checkable done criteria; the only judgment is "does the grep say zero", and the STOP conditions cover the rest.
 
 ## Why this matters
@@ -64,6 +69,16 @@ Keep (one real importer each): `components/ui/skeleton.tsx` (job-description-dia
 - the nine files in the table above, plus `lib/ai/tools.test.ts`
 - `lib/ai/portfolio-search.ts` — remove `getEvidenceById` **only if** Step 3's grep shows no consumer left
 - `lib/ai/portfolio-search.test.ts` — remove tests of `getEvidenceById` only if the function is removed
+
+**In scope (one-line comment fix, added 2026-09-02):**
+- `components/portfolio/work-card.tsx:27-28` — its docblock ends
+  "Same `data-pending-asset` pattern as `rail-work-card.tsx`." That sentence
+  points at a file this plan deletes. Change it to stop naming the deleted
+  file — e.g. end the sentence at "...represented as real")." and drop the
+  trailing clause. **Touch nothing else in that file**; `work-card.tsx` is
+  live and its `data-pending-asset` markup at `:62` stays exactly as is.
+  Leaving the reference would create precisely the doc drift Plan 027 exists
+  to clean up, so it is fixed here at source rather than deferred.
 
 **Out of scope**:
 - `lib/analytics.ts`, `lib/analytics.test.ts` — decision pending (see above).
@@ -113,6 +128,7 @@ No new tests: the deletions are verified by the compiler, the linter, and the fu
 ## Done criteria
 
 - [ ] All nine table files and `lib/ai/tools.test.ts` are gone (`ls` each → "No such file")
+- [ ] `grep -rn "rail-work-card\|experiment-tile\|rail-section\|ai/tools\"" app components lib content e2e scripts mdx-components.tsx` → **no output** (no surviving reference, in code or comment, to anything deleted)
 - [ ] `pnpm typecheck && pnpm lint && pnpm test && pnpm build` exit 0
 - [ ] `pnpm test:e2e` → `0 failed`
 - [ ] `git status` shows only deletions plus, at most, `lib/ai/portfolio-search.ts` and its test
