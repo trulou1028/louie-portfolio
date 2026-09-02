@@ -37,7 +37,7 @@ honor its STOP conditions, and update your row when done.
 | 022  | Chat endpoint: strict message schema, output/duration caps, real error path | P1 | S | (020) | DONE (merged) |
 | 023  | Answer renderer drops images; composer `maxLength`; 413/429 copy | P1 | S | 022 | DONE (merged) |
 | 024  | Security headers + report-only CSP (hashed inline script) | P2 | S–M | 023 | TODO — Opus 5 |
-| 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | TODO — Sonnet 5 |
+| 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | DONE (merged) |
 | 026  | Delete 10 zero-importer files (`tools.ts`, 3 portfolio/system, 5 `ui/`) | P2 | S | — | TODO — Haiku 4.5 |
 | 027  | Fix doc/comment drift (dark mode, fonts, scripts, lazy-load comments) | P2 | S | (025) | TODO — Haiku 4.5 |
 | 028  | Wire the 9 live analytics events (owner deferred the call, 2026-08-31) | P2 | M | (020) | TODO — Sonnet 5 |
@@ -230,6 +230,33 @@ them is code:
   read `next/font`, so a custom face has to be fetched and passed as a font
   buffer. The card reads well as-is; worth a small follow-up if Louie wants
   brand-exact type in share previews.
+
+- **025 — DONE 2026-09-02, merged.** Executed by a dispatched Sonnet 5
+  subagent in worktree `.claude/worktrees/agent-abbf8d160edb63093`, branch
+  `plan-025` (4 commits, one per step, on `main`@`766e7bd`; fast-forwarded
+  into `main`). Reviewed and approved: scope matched the in-scope list
+  one-for-one, full diff read, and every gate independently re-run:
+  typecheck, lint, 87 unit, build, **206 e2e / 10 skipped / 0 failed**
+  (201 → 206 = 3 new tests, one of them desktop-only).
+  **Two vacuity checks, both run by the executor and the second
+  independently reproduced by the advisor:**
+  (a) reverting the deep-link fix makes the new two-reveal test fail with
+  `Expected: 0, Received: 1` — the stranded `#context` highlight never
+  clears. Exactly the bug the plan describes.
+  (b) forcing a JS/CSS disagreement (`RAIL_BREAKPOINT_PX = 1280` while the
+  CSS stays at 1024) makes the new boundary test fail on
+  `expect(handle).toBeVisible()` at 1025px. **The advisor reproduced this
+  independently**, then restored and re-verified a clean tree. This is the
+  Plan 015 failure mode — the Ask panel silently vanishing at one viewport
+  band — now caught automatically for the first time.
+  The docstring now carries the full twelve-site inventory (it claimed
+  three), including the two separate `1023.98px` media blocks in
+  `globals.css` that earlier passes had missed.
+  Executor notes, both good calls: its worktree again started at the stale
+  `50e98a4`, so it branched fresh off `main` rather than resetting in place;
+  and it reworded one docstring bullet because writing the literal
+  `useMinWidth(1024)` in a comment created a false positive for Step 3's
+  "no output" grep — keeping that check honest rather than defeating it.
 
 ### Findings considered and rejected (this audit)
 
