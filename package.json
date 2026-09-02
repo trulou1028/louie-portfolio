@@ -47,7 +47,7 @@
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
@@ -58,6 +58,7 @@
     "vitest": "^4.1.11"
   },
   "packageManager": "pnpm@10.4.0",
+  "engines": { "node": ">=22" },
   "pnpm": {
     "ignoredBuiltDependencies": [
       "sharp",
