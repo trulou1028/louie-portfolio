@@ -38,7 +38,7 @@ honor its STOP conditions, and update your row when done.
 | 023  | Answer renderer drops images; composer `maxLength`; 413/429 copy | P1 | S | 022 | DONE (merged) |
 | 024  | Security headers + report-only CSP (hashed inline script) | P2 | S–M | 023 | TODO — Opus 5 |
 | 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | DONE (merged) |
-| 026  | Delete 10 zero-importer files (`tools.ts`, 3 portfolio/system, 5 `ui/`) | P2 | S | — | TODO — Haiku 4.5 |
+| 026  | Delete 10 zero-importer files (`tools.ts`, 3 portfolio/system, 5 `ui/`) | P2 | S | — | DONE (merged) |
 | 027  | Fix doc/comment drift (dark mode, fonts, scripts, lazy-load comments) | P2 | S | (025) | TODO — Haiku 4.5 |
 | 028  | Wire the 9 live analytics events (owner deferred the call, 2026-08-31) | P2 | M | (020) | TODO — Sonnet 5 |
 
@@ -257,6 +257,30 @@ them is code:
   and it reworded one docstring bullet because writing the literal
   `useMinWidth(1024)` in a comment created a false positive for Step 3's
   "no output" grep — keeping that check honest rather than defeating it.
+
+- **026 — DONE 2026-09-02, merged.** Executed by a dispatched Haiku 4.5
+  subagent in worktree `.claude/worktrees/agent-a13361efc08cdcda9`, branch
+  `plan-026` (2 commits, split app-code / `ui/` as the plan asked, on
+  `main`@`567397e`; fast-forwarded into `main`). **709 lines removed, 1
+  added.**
+  Reviewed and approved: the diff is exactly 10 deletions plus 3 minimal
+  modifications (`work-card.tsx`'s stale comment, and removing
+  `getEvidenceById` from `portfolio-search.ts` and its test) — nothing else.
+  Every gate independently re-run by the advisor: typecheck, lint, **69**
+  unit (87 → 69: −17 from `tools.test.ts`, −1 from the `getEvidenceById`
+  test), build, and **206 e2e / 10 skipped / 0 failed — identical to before
+  the deletions**, which is the evidence nothing user-facing was touched.
+  Advisor also verified directly that all ten files are gone, that zero
+  references to any of them survive anywhere in `app/ components/ lib/
+  content/ e2e/ scripts/ mdx-components.tsx`, and that every file marked
+  "keep" (`ui/skeleton`, `ui/message`, `ui/chart`, `metric`,
+  `outcome-chart`, `prompt-chip`) is still present.
+  Pre-dispatch, the advisor widened the plan's importer check to cover
+  relative imports, `e2e/` and `scripts/` — which surfaced the one thing the
+  sweep would otherwise have left behind: `work-card.tsx`'s docblock named
+  `rail-work-card.tsx`. Folded into this plan's scope rather than deferred
+  to 027. Two stale numbers in the plan were also corrected first (the unit
+  baseline said 75; it was 87 after 022/023).
 
 ### Findings considered and rejected (this audit)
 
