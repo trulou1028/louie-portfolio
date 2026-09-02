@@ -312,6 +312,37 @@ Owner decisions from Louie's review of the live site.
     still too narrow for the text. Padding steps from `p-6`/`md:p-8` down to
     the standard card's `p-5` in the stacked layout.
 
+**Security headers (2026-09-02)**
+
+37. **The CSP ships report-only, and `script-src` is `'unsafe-inline'` rather
+    than hashed.** `next.config.ts` now sends four plain headers —
+    `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`,
+    `Permissions-Policy` — plus a `Content-Security-Policy-Report-Only`. Before
+    this, Vercel's default HSTS was the only security header the site sent.
+
+    Hashing the inline scripts was the original plan and it is not reachable on
+    this stack. Next inlines a flight-data script whose body — and therefore
+    whose hash — differs on every page and every build: measured on one build
+    at 22,387 B for `/` and 17,870 B for `/about`. A `headers()` entry emits one
+    static header per `source`, so it cannot enumerate a hash that changes with
+    the page. The other route to a strict `script-src` is a per-request nonce,
+    which needs `middleware.ts` and would disable static prerendering on every
+    page — a real cost to buy a directive this site gets little from, since it
+    loads no third-party scripts at all. `'unsafe-inline'` still bars *external*
+    script origins, and every script in the served HTML is same-origin.
+
+    So the real protection here is `img-src`, `frame-ancestors`, `object-src`,
+    `connect-src`, `base-uri` and `form-action`, not `script-src`. `img-src`
+    matters most: deviation 23 stopped the markdown renderer emitting a
+    model-authored `<img>`, and this stops the browser fetching one if that path
+    ever reopens — the same hole closed at two layers.
+
+    Report-only means it observes and never blocks. Promoting it to
+    `Content-Security-Policy` waits on a week of clean production console
+    checks, and gets its own plan row rather than a silent one-word edit.
+    `'unsafe-eval'` is appended in development only, for Turbopack's HMR
+    runtime; production never carries it.
+
 ## Deep links
 
 A hash can arrive before the page hydrates — `navigate_portfolio` sets one
