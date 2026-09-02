@@ -22,12 +22,19 @@ Open http://localhost:3000.
 
 ## Scripts
 
-| Command          | What it does                              |
-|------------------|-------------------------------------------|
-| `pnpm dev`       | Dev server                                |
-| `pnpm build`     | Production build                          |
-| `pnpm typecheck` | `next typegen` + `tsc --noEmit`           |
-| `pnpm lint`      | ESLint                                    |
+| Command                  | What it does                                        |
+|--------------------------|-----------------------------------------------------|
+| `pnpm dev`               | Dev server                                          |
+| `pnpm build`             | Production build (runs `validate:evidence` first)   |
+| `pnpm typecheck`         | `next typegen` + `tsc --noEmit`                     |
+| `pnpm lint`              | ESLint                                              |
+| `pnpm test`              | Unit tests (vitest, `lib/**/*.test.ts`)             |
+| `pnpm test:e2e`          | Playwright against a production build on port 3100 |
+| `pnpm validate:evidence` | Checks every evidence entry's route and anchor      |
+
+CI (`.github/workflows/ci.yml`) runs typecheck, lint, unit tests, build, and
+the Playwright suite on every push and pull request. Node is pinned in
+`.nvmrc`; pnpm in `package.json`'s `packageManager`.
 
 ## Project structure
 
@@ -478,7 +485,8 @@ To re-measure, exclude the chunks listed in
 ## Testing
 
 ```bash
-pnpm test:e2e
+pnpm test        # unit, ~1s
+pnpm test:e2e    # Playwright, ~1 min
 ```
 
 Playwright runs against a production build on port 3100, so a running

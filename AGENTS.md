@@ -16,10 +16,13 @@ description of *that product's* architecture.
 ## Commands
 
 ```bash
-pnpm dev         # dev server
-pnpm build       # production build
-pnpm typecheck   # next typegen && tsc --noEmit
-pnpm lint        # eslint
+pnpm dev               # dev server
+pnpm build             # production build (runs validate:evidence first)
+pnpm typecheck         # next typegen && tsc --noEmit
+pnpm lint              # eslint
+pnpm test              # unit tests (vitest, lib/**/*.test.ts)
+pnpm test:e2e          # Playwright against a production build on port 3100
+pnpm validate:evidence # checks every evidence entry's route and anchor
 ```
 
 `pnpm typecheck` runs `next typegen` first because Next 16 generates the
@@ -97,7 +100,7 @@ factual claim must be grounded in the curated evidence index.
 
 ## Before finishing any milestone
 
-Run `pnpm typecheck && pnpm lint && pnpm build`, check responsive behavior,
+Run `pnpm typecheck && pnpm lint && pnpm test && pnpm build`, check responsive behavior,
 and record any deviation from the spec in `README.md` (spec §39.13–14).
 
 <!-- BEGIN:nextjs-agent-rules -->
