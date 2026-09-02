@@ -198,20 +198,34 @@ function ThinkingIndicator() {
 }
 
 /**
- * Runtime failures — the endpoint down, rate limited, or the provider
- * erroring. The raw error is never shown (spec §31); the portfolio stays
- * usable and the visitor is pointed at the work.
+ * Runtime failures. The server's error code is read from `useChat`'s error
+ * message (the response body for non-2xx responses) only to choose between
+ * three fixed strings — the raw text is never shown (spec §31). The generic
+ * copy is the spec §31 line verbatim; the other two mirror the
+ * job-description dialog's treatment of the same conditions.
  */
 function ThreadError({ error }: { error: Error | undefined }) {
   if (!error) return null;
+
+  const code = error.message.includes("rate_limited")
+    ? "rate_limited"
+    : error.message.includes("too_long")
+      ? "too_long"
+      : "generic";
+
+  const copy =
+    code === "rate_limited"
+      ? "A lot of questions just now — please try again in a few minutes."
+      : code === "too_long"
+        ? "That message is too long for the chat. For a job description, use “Paste a job description” below."
+        : "AI Louie is temporarily unavailable. You can still explore all of Louie’s work below.";
 
   return (
     <Surface
       role="status"
       className="border-danger/30 bg-surface p-4 text-body-sm text-foreground-muted"
     >
-      AI Louie is temporarily unavailable. You can still explore all of
-      Louie&rsquo;s work below.
+      {copy}
     </Surface>
   );
 }
