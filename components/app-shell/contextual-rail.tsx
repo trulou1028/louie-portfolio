@@ -12,12 +12,32 @@ import { cn } from "@/lib/utils";
 /**
  * The width at which the contextual rail becomes its own pane.
  *
- * This value is encoded in three places that MUST agree: this constant (the
- * JS half), the `max-lg:hidden` guard on the rail pane, and the `lg:`/
- * `max-lg:` variants in `ask-panel.tsx`. If they disagree, the rail renders
- * inside a CSS-hidden container with no stacked fallback and vanishes.
+ * This value MUST equal Tailwind's `lg` breakpoint (1024px), and every site
+ * below MUST agree with it. If any of them drift apart, the rail can render
+ * inside a CSS-hidden container with no stacked fallback and silently vanish
+ * at one viewport band (this happened once — see Plan 015).
+ *
+ * - This constant (the JS half), imported by `app-shell.tsx` in place of a
+ *   hardcoded `useMinWidth` literal.
+ * - `app-shell.tsx:67` — `max-lg:hidden` on the left-rail pane.
+ * - `app-shell.tsx:72` — `max-lg:hidden` on the rail's resize handle.
+ * - `contextual-rail.tsx:56` — `lg:overflow-y-auto` on the padded rail
+ *   scroller.
+ * - `contextual-rail.tsx:216` — `max-lg:hidden` on the canvas resize handle.
+ * - `contextual-rail.tsx:230` — `max-lg:hidden` on the canvas rail pane.
+ * - `ask-panel.tsx:45` — `max-lg:max-h-[80svh]` + `max-lg:rounded-panel` +
+ *   `max-lg:border`, the stacked-card treatment.
+ * - `mobile-nav.tsx:35` — `lg:hidden` on the mobile header.
+ * - `table-of-contents.tsx:52` — `lg:hidden` on the collapsed inline TOC.
+ * - `app/globals.css:297` — `@media (max-width: 1023.98px)` hiding the
+ *   `left-rail` pane + `resizable-handle` pre-hydration.
+ * - `app/globals.css:307` — a second, separate `@media (max-width:
+ *   1023.98px)` block hiding the `canvas-rail` pane pre-hydration.
+ *
+ * That is twelve sites, not three. `e2e/home.spec.ts`'s 1023/1025 boundary
+ * test is what catches a miss.
  */
-const RAIL_BREAKPOINT_PX = 1024;
+export const RAIL_BREAKPOINT_PX = 1024;
 
 /**
  * The optional right rail (spec §10).

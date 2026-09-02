@@ -5,6 +5,7 @@ import * as React from "react";
 import { LeftRail } from "@/components/app-shell/left-rail";
 import { MobileNav } from "@/components/app-shell/mobile-nav";
 import { PersistentPanelGroup } from "@/components/app-shell/persistent-panel-group";
+import { RAIL_BREAKPOINT_PX } from "@/components/app-shell/contextual-rail";
 import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
 import { useMinWidth } from "@/lib/use-breakpoint";
 
@@ -31,7 +32,7 @@ import { useMinWidth } from "@/lib/use-breakpoint";
  * the window.
  */
 function AppShell({ children }: { children: React.ReactNode }) {
-  const isLg = useMinWidth(1024);
+  const isLg = useMinWidth(RAIL_BREAKPOINT_PX);
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
