@@ -66,7 +66,7 @@ Separately, `app/layout.tsx:44` declares `twitter: { card: "summary_large_image"
 | Typecheck | `pnpm typecheck`         | exit 0              |
 | Lint      | `pnpm lint`              | exit 0              |
 | Build     | `pnpm build`             | exit 0              |
-| E2E (this suite only) | `pnpm test:e2e -- e2e/seo.spec.ts` | `0 failed` |
+| E2E (this suite only) | `npx playwright test e2e/seo.spec.ts` | `0 failed` |
 | E2E (all) | `pnpm test:e2e`          | `0 failed`          |
 
 ## Scope
@@ -210,7 +210,7 @@ test("a share image is declared and actually serves", async ({ page, request }) 
 
 Note: the home canonical comparison — Next serialises `"/"` against `metadataBase` as the bare origin (no trailing slash) in this project's current output (`https://louiesakoda.com`, observed in production). If the assertion fails only on `/` because of a trailing slash, accept either form with a regex rather than changing app code.
 
-**Verify**: `pnpm test:e2e -- e2e/seo.spec.ts` → `0 failed`, 2 new tests listed.
+**Verify**: `npx playwright test e2e/seo.spec.ts` → `0 failed`, 2 new tests listed.
 
 ### Step 4: Full gate
 
@@ -225,7 +225,7 @@ Note: the home canonical comparison — Next serialises `"/"` against `metadataB
 ## Test plan
 
 - Two new e2e tests in `e2e/seo.spec.ts` (Step 3): per-page canonical; share image declared and fetchable. Model after the existing `"OpenGraph metadata is present"` test in the same file.
-- Verification: `pnpm test:e2e -- e2e/seo.spec.ts` → all pass including the 2 new.
+- Verification: `npx playwright test e2e/seo.spec.ts` → all pass including the 2 new.
 
 ## Done criteria
 

@@ -88,7 +88,7 @@ Separately, the composer's target user — a recruiter pasting a long job descri
 | Typecheck | `pnpm typecheck`         | exit 0              |
 | Lint      | `pnpm lint`              | exit 0              |
 | Unit      | `pnpm test`              | all pass            |
-| E2E (this suite) | `pnpm test:e2e -- e2e/ai-louie.spec.ts` | `0 failed` |
+| E2E (this suite) | `npx playwright test e2e/ai-louie.spec.ts` | `0 failed` |
 | E2E (all) | `pnpm test:e2e`          | `0 failed`          |
 
 ## Scope
@@ -136,7 +136,7 @@ In `e2e/ai-louie.spec.ts`, next to the raw-HTML injection test (~`:363`), add a 
 - `panel.getByText("tracker")` is visible (the alt text survived).
 - No request to `example.invalid` was made: register `page.on("request", …)` before sending and assert none matched `/example\.invalid/`.
 
-**Verify**: `pnpm test:e2e -- e2e/ai-louie.spec.ts` → `0 failed`, new test present. Temporarily comment out the `img:` line from Step 1 and re-run: the test must **fail** (proves it is not vacuous). Restore the line.
+**Verify**: `npx playwright test e2e/ai-louie.spec.ts` → `0 failed`, new test present. Temporarily comment out the `img:` line from Step 1 and re-run: the test must **fail** (proves it is not vacuous). Restore the line.
 
 ### Step 3: Cap the composer at the server's limit
 
@@ -186,7 +186,7 @@ function ThreadError({ error }: { error: Error | undefined }) {
 
 In `e2e/ai-louie.spec.ts`, add two tests using `page.route("**/api/chat", …)` to fulfil with `{ status: 429, body: JSON.stringify({ error: "rate_limited" }) }` and `{ status: 413, body: JSON.stringify({ error: "conversation_too_long" }) }`; send a message; assert the `role="status"` surface contains "try again in a few minutes" and "too long for the chat" respectively. Also keep (or add) a case where the route fulfils `500` with an empty body and assert the verbatim spec §31 copy still shows.
 
-**Verify**: `pnpm test:e2e -- e2e/ai-louie.spec.ts` → `0 failed`, 3 new tests.
+**Verify**: `npx playwright test e2e/ai-louie.spec.ts` → `0 failed`, 3 new tests.
 
 ### Step 6: Full gate
 

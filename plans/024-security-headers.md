@@ -46,7 +46,7 @@ Verified on production 2026-08-31: the only security header is Vercel's default 
 | Lint      | `pnpm lint`              | exit 0              |
 | Build + serve | `pnpm build && pnpm start --port 3123` | serves            |
 | Header check | `curl -sI http://localhost:3123/ \| grep -i "content-security\|x-content-type\|referrer-policy\|x-frame"` | 4 lines |
-| E2E (this suite) | `pnpm test:e2e -- e2e/seo.spec.ts` | `0 failed` |
+| E2E (this suite) | `npx playwright test e2e/seo.spec.ts` | `0 failed` |
 | E2E (all) | `pnpm test:e2e`          | `0 failed`          |
 
 ## Scope
@@ -157,7 +157,7 @@ test("security headers are present", async ({ request }) => {
 });
 ```
 
-**Verify**: `pnpm test:e2e -- e2e/seo.spec.ts` → `0 failed`.
+**Verify**: `npx playwright test e2e/seo.spec.ts` → `0 failed`.
 
 ### Step 5: Record the decision
 

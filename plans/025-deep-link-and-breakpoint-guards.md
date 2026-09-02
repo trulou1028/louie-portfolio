@@ -68,7 +68,7 @@
 |-----------|--------------------------|---------------------|
 | Typecheck | `pnpm typecheck`         | exit 0              |
 | Lint      | `pnpm lint`              | exit 0              |
-| E2E (these suites) | `pnpm test:e2e -- e2e/deep-link.spec.ts e2e/home.spec.ts` | `0 failed` |
+| E2E (these suites) | `npx playwright test e2e/deep-link.spec.ts e2e/home.spec.ts` | `0 failed` |
 | E2E (all) | `pnpm test:e2e`          | `0 failed`          |
 
 ## Scope
@@ -109,7 +109,7 @@ In `e2e/deep-link.spec.ts` add:
 - Go to `/work/offboard#context`; wait for `#context[data-highlight="true"]`; within 500ms run `page.evaluate(() => { location.hash = "#system"; })`; wait 1,700ms; assert `page.locator('[data-highlight="true"]')` count is **0** (both expired) — then repeat the sequence and assert at ~800ms after the second hash that the count is exactly **1** and it is `#system`.
 - Go to `/work/offboard#context`, immediately click the nav link to `/about` (or `page.goto("/about")`), then `page.goBack()`, wait 1,700ms, assert `[data-highlight="true"]` count is 0.
 
-**Verify**: `pnpm test:e2e -- e2e/deep-link.spec.ts` → `0 failed`. Then `git stash` the Step 1 change and re-run only the first new test: it must **fail** (count 1 or 2 instead of 0 / wrong element). `git stash pop`.
+**Verify**: `npx playwright test e2e/deep-link.spec.ts` → `0 failed`. Then `git stash` the Step 1 change and re-run only the first new test: it must **fail** (count 1 or 2 instead of 0 / wrong element). `git stash pop`.
 
 ### Step 3: One constant for the rail breakpoint
 
@@ -124,7 +124,7 @@ In `e2e/home.spec.ts` (desktop project only — mirror how existing tests in tha
 - `const panel = page.locator("#ask-ai-louie")`; `await expect(panel).toHaveCount(1)`; `await panel.scrollIntoViewIfNeeded()`; `await expect(panel).toBeVisible()`
 - at 1025 additionally assert `page.locator('[data-slot="resizable-handle"][aria-label="Resize context panel"]')` is visible (the pane exists); at 1023 assert it has count 0 (stacked).
 
-**Verify**: `pnpm test:e2e -- e2e/home.spec.ts` → `0 failed`.
+**Verify**: `npx playwright test e2e/home.spec.ts` → `0 failed`.
 
 ### Step 5: Full gate
 

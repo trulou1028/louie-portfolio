@@ -68,7 +68,7 @@ After this plan, the three comments in `route.ts` are true.
 | Lint      | `pnpm lint`              | exit 0              |
 | Unit      | `pnpm test`              | all pass            |
 | Build     | `pnpm build`             | exit 0              |
-| E2E (this suite) | `pnpm test:e2e -- e2e/ai-louie.spec.ts` | `0 failed` |
+| E2E (this suite) | `npx playwright test e2e/ai-louie.spec.ts` | `0 failed` |
 | Live check (needs a real key in `.env.local`) | `pnpm dev` then the manual smoke test in README "AI Louie" | a two-turn conversation works |
 
 ## Scope
@@ -202,7 +202,7 @@ In `e2e/ai-louie.spec.ts` inside `test.describe("the chat endpoint", …)`, add 
 - POST `{ messages: [{ role: "user", parts: [{ type: "text", text: "a".repeat(16_001) }] }] }` → `400` (now caught by the schema before the 413 branch — if the existing 413 test expected 413 for this exact shape, update that test to send 16,000 chars across two messages so it still exercises `conversation_too_long`)
 - POST a two-message history: a user text message followed by an assistant message with a `step-start` and a `tool-search_portfolio` part, then a user text message → **not** 400 (expect 503 in the test environment, since `OPENAI_API_KEY` is a placeholder and `getModel()`… — check `lib/ai/provider.ts` for what the placeholder key actually does; if it constructs a model, the request will hit the network. In that case assert only `status !== 400`).
 
-**Verify**: `pnpm test:e2e -- e2e/ai-louie.spec.ts` → `0 failed`.
+**Verify**: `npx playwright test e2e/ai-louie.spec.ts` → `0 failed`.
 
 ### Step 6: Live two-turn check (only if a real key is available locally)
 

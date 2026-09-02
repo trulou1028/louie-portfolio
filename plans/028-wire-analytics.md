@@ -249,7 +249,7 @@ Concretely, make these two assertions:
 
 Check how `@vercel/analytics`'s `track` dispatches in the installed version (`node_modules/@vercel/analytics/dist/index.mjs` — look for `window.va`) and stub whatever it actually calls. If it queues to `window.vaq` instead, stub that.
 
-**Verify**: `pnpm test` → new `sanitizeProperties` cases pass. `pnpm test:e2e -- e2e/analytics.spec.ts` → `0 failed`, and the leak assertion fails if you temporarily change Step 3 to send `{ text: trimmed }` (do that once to prove the test is not vacuous, then revert).
+**Verify**: `pnpm test` → new `sanitizeProperties` cases pass. `npx playwright test e2e/analytics.spec.ts` → `0 failed`, and the leak assertion fails if you temporarily change Step 3 to send `{ text: trimmed }` (do that once to prove the test is not vacuous, then revert).
 
 ### Step 7: Full gate
 

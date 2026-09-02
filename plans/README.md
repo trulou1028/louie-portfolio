@@ -35,7 +35,7 @@ honor its STOP conditions, and update your row when done.
 | 020  | CI on every push + Node pin + `shadcn` to devDeps + script docs | P1 | S | — | DONE (merged) |
 | 021  | Per-page canonicals + generated share image (+ operator env var) | P1 | S–M | (020) | TODO — Sonnet 5 |
 | 022  | Chat endpoint: strict message schema, output/duration caps, real error path | P1 | S | (020) | DONE (merged) |
-| 023  | Answer renderer drops images; composer `maxLength`; 413/429 copy | P1 | S | 022 | TODO — Sonnet 5 |
+| 023  | Answer renderer drops images; composer `maxLength`; 413/429 copy | P1 | S | 022 | DONE (reviewed, unmerged) |
 | 024  | Security headers + report-only CSP (hashed inline script) | P2 | S–M | 023 | TODO — Opus 5 |
 | 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | TODO — Sonnet 5 |
 | 026  | Delete 10 zero-importer files (`tools.ts`, 3 portfolio/system, 5 `ui/`) | P2 | S | — | TODO — Haiku 4.5 |
@@ -172,6 +172,36 @@ them is code:
   so its own done criterion (`grep -c "catch"` → 2) can never pass once
   that comment exists — a planner error, not an executor one. Actual count
   is 3 (2 real catch blocks + 1 comment line); no code issue.
+
+- **023 — DONE 2026-09-02.** Executed by a dispatched Sonnet 5 subagent in
+  worktree `.claude/worktrees/agent-a3ec85c637bccd5ea`, branch `plan-023`
+  (5 commits on `main`@`33a8ace`). Reviewed and approved: scope matched
+  exactly (`answer-markdown.tsx`, `ai-louie-composer.tsx`,
+  `ai-louie-live.tsx`, `e2e/ai-louie.spec.ts`), full diff read, and every
+  gate independently re-run by the advisor: typecheck, lint, 87 unit,
+  build, 197 e2e / 9 skipped / 0 failed (191 → 197 = 3 new tests × 2
+  projects). **Not merged — operator's decision.**
+  The advisor independently proved the security test non-vacuous: removing
+  the `img:` handler makes it fail (`Expected: 0, Received: 1` — a live
+  `<img>` appears), restoring it makes it pass.
+  Three executor judgment calls, all correct and all documented:
+  (a) its worktree branch started from the stale `50e98a4` rather than
+  `main`'s tip; it noticed, reset onto `33a8ace` before making any edit,
+  and re-ran `pnpm install` for the 020 dependency bumps. Verified:
+  `git merge-base --is-ancestor 33a8ace HEAD` passes.
+  (b) it flagged this plan's done criterion "4 more tests than at
+  `50e98a4`" as a stale literal — that baseline predates 022's additions.
+  It added 3 tests and reused the existing generic-failure test for the
+  third case rather than duplicating it. Correct call; the criterion was
+  the planner's arithmetic, not a contract.
+  (c) **planner error it caught, now fixed repo-wide:** the command
+  `pnpm test:e2e -- e2e/<file>.spec.ts`, which appeared in six plans'
+  command tables, does **not** filter — pnpm's `--` plus the script's own
+  argument handling makes Playwright run the entire suite while appearing
+  to scope. Verified by the advisor: that form ran all 197 tests, while
+  `npx playwright test e2e/ai-louie.spec.ts --list` correctly reported
+  "Total: 48 tests in 1 file". All six plans (021–025, 028) were corrected
+  to the `npx playwright test <file>` form.
 
 ### Findings considered and rejected (this audit)
 
