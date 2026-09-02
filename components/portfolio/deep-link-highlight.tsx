@@ -38,6 +38,16 @@ function DeepLinkHighlight() {
 
   React.useEffect(() => {
     let timeout: ReturnType<typeof setTimeout> | undefined;
+    let highlighted: HTMLElement | null = null;
+
+    // Clears whatever is currently highlighted (timer and attribute both),
+    // so a new reveal or a route change never leaves a stale glow behind.
+    const clear = () => {
+      if (timeout) clearTimeout(timeout);
+      timeout = undefined;
+      highlighted?.removeAttribute("data-highlight");
+      highlighted = null;
+    };
 
     const reveal = () => {
       // Fall back to the pre-hydration capture only when the live hash is
@@ -60,17 +70,16 @@ function DeepLinkHighlight() {
       // preventScroll: the scrollIntoView above already positioned the page.
       target.focus({ preventScroll: true });
 
+      // Clear the previous target's highlight immediately rather than
+      // letting two sections glow at once. Two reveals in quick succession
+      // is a real sequence, not a hypothetical: setting `location.hash`
+      // updates the hash synchronously and dispatches `hashchange` after, so
+      // the mount pass below can already have revealed a different hash a
+      // beat earlier. Route changes clear it too, via the effect cleanup.
+      clear();
       target.setAttribute("data-highlight", "true");
-      // Restart the clock. Without this a second reveal inherits the first
-      // one's pending expiry, so the highlight can clear early. Two reveals
-      // in quick succession is a real sequence, not a hypothetical: setting
-      // `location.hash` updates the hash synchronously and dispatches
-      // `hashchange` after, so the mount pass below can already have
-      // revealed that same hash a beat earlier.
-      if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        target.removeAttribute("data-highlight");
-      }, HIGHLIGHT_MS);
+      highlighted = target;
+      timeout = setTimeout(clear, HIGHLIGHT_MS);
     };
 
     // Defer one frame so the section exists before we look for it.
@@ -80,7 +89,7 @@ function DeepLinkHighlight() {
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("hashchange", reveal);
-      if (timeout) clearTimeout(timeout);
+      clear();
     };
   }, [pathname]);
 
