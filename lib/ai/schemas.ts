@@ -61,3 +61,46 @@ export const searchPortfolioInputSchema = z.object({
 });
 
 export type SearchPortfolioInput = z.infer<typeof searchPortfolioInputSchema>;
+
+/**
+ * Per-message character cap (spec §32). It lives here rather than in the
+ * chat route so the schema and every caller that needs the same number read
+ * one definition and cannot drift apart.
+ */
+export const MAX_CHARS_PER_MESSAGE = 16_000;
+
+const textPart = z.object({
+  type: z.literal("text"),
+  text: z.string().max(MAX_CHARS_PER_MESSAGE),
+});
+
+/**
+ * What a visitor may send: text only. `system` is not a role a client may
+ * use — the server owns the system prompt (spec §32). File parts are refused
+ * for the same reason: the SDK would fetch the URL and bill the owner's key.
+ */
+const userMessage = z.object({
+  id: z.string().optional(),
+  role: z.literal("user"),
+  parts: z.array(textPart).min(1).max(8),
+});
+
+/**
+ * What comes back on later turns: the assistant messages `useChat` replays,
+ * which carry tool-call and step parts alongside text. Those parts are
+ * accepted structurally and then dropped before the model call (see the chat
+ * route), so the model sees prior answers as text and nothing a client
+ * crafted can masquerade as a tool result.
+ */
+const assistantMessage = z.object({
+  id: z.string().optional(),
+  role: z.literal("assistant"),
+  parts: z.array(z.looseObject({ type: z.string() })).max(64),
+});
+
+export const uiMessageSchema = z.discriminatedUnion("role", [
+  userMessage,
+  assistantMessage,
+]);
+
+export type ValidatedUIMessage = z.infer<typeof uiMessageSchema>;
