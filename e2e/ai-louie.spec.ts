@@ -196,6 +196,41 @@ test.describe("the AI surface", () => {
     ).toBeVisible({ timeout: 10_000 });
   });
 
+  test("tells a rate-limited visitor to try again, not that the service is down", async ({
+    page,
+  }) => {
+    await page.route("**/api/chat", (route) =>
+      route.fulfill({ status: 429, json: { error: "rate_limited" } }),
+    );
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    await expect(
+      page.getByText(text("try again in a few minutes")).first(),
+    ).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("tells a visitor whose message was too long to use the job-description dialog instead", async ({
+    page,
+  }) => {
+    await page.route("**/api/chat", (route) =>
+      route.fulfill({
+        status: 413,
+        json: { error: "conversation_too_long" },
+      }),
+    );
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    await expect(
+      page.getByText(text("too long for the chat")).first(),
+    ).toBeVisible({ timeout: 10_000 });
+  });
+
   test("keeps the composer in view after a long answer, on mobile", async (
     { page },
     testInfo,
