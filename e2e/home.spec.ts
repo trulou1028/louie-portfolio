@@ -335,4 +335,40 @@ test.describe("responsive shell", () => {
     await page.goto("/");
     await expect(page.locator("#ask-ai-louie")).toBeInViewport();
   });
+
+  test("the Ask panel exists exactly once on both sides of the rail breakpoint", async ({
+    page,
+  }, testInfo) => {
+    // Plan 025: RAIL_BREAKPOINT_PX (the JS half) and the `lg`/`max-lg`
+    // Tailwind classes plus the two `1023.98px` media blocks in globals.css
+    // (the CSS half) must agree on exactly 1024px. If they ever drift apart,
+    // the panel can render inside a CSS-hidden container with no stacked
+    // fallback and silently disappear at one viewport band (this happened
+    // once — see Plan 015). This test is desktop-only: mobile emulation
+    // forces its own narrower viewport, which would make setViewportSize
+    // here meaningless.
+    test.skip(testInfo.project.name !== "desktop", "desktop only");
+
+    const handle = page.locator(
+      '[data-slot="resizable-handle"][aria-label="Resize context panel"]',
+    );
+
+    // Just below the breakpoint: stacked layout, no separate pane.
+    await page.setViewportSize({ width: 1023, height: 900 });
+    await page.goto("/");
+    const panelBelow = page.locator("#ask-ai-louie");
+    await expect(panelBelow).toHaveCount(1);
+    await panelBelow.scrollIntoViewIfNeeded();
+    await expect(panelBelow).toBeVisible();
+    await expect(handle).toHaveCount(0);
+
+    // Just at/above the breakpoint: its own resizable pane.
+    await page.setViewportSize({ width: 1025, height: 900 });
+    await page.goto("/");
+    const panelAbove = page.locator("#ask-ai-louie");
+    await expect(panelAbove).toHaveCount(1);
+    await panelAbove.scrollIntoViewIfNeeded();
+    await expect(panelAbove).toBeVisible();
+    await expect(handle).toBeVisible();
+  });
 });
