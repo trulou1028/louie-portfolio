@@ -15,6 +15,13 @@ import { chatRateLimiter, clientKey } from "@/lib/ai/rate-limit";
  * Shares the chat rate limiter, so a visitor cannot bypass one budget by
  * using the other endpoint.
  */
+
+/**
+ * Vercel's function ceiling for this route. One structured-output call takes
+ * seconds; this bounds a stuck provider call.
+ */
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   const limit = chatRateLimiter.check(clientKey(request));
   if (!limit.allowed) {
