@@ -4,6 +4,7 @@ import * as React from "react";
 import { ArrowUp, Square } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { MAX_CHARS_PER_MESSAGE } from "@/lib/ai/schemas";
 
 /**
  * The composer (spec §11 §2, §21, §26).
@@ -48,7 +49,9 @@ function AiLouieComposer({
   // Grows with content up to `max-h-40` (a pasted job description should not
   // be trapped in a one-line box with an inner scrollbar); `max-h-40` in the
   // className below still caps it, so this only ever expands the box, never
-  // fights the CSS bound.
+  // fights the CSS bound. `maxLength` below matches the server's per-message
+  // cap, so a paste is truncated visibly at the edge rather than accepted
+  // here and rejected after send.
   React.useLayoutEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -86,6 +89,7 @@ function AiLouieComposer({
         aria-label="Ask anything about Louie's work"
         placeholder="Ask anything about Louie's work..."
         value={value}
+        maxLength={MAX_CHARS_PER_MESSAGE}
         onChange={(event) => onChange(event.target.value)}
         onKeyDown={(event) => {
           // Enter sends, Shift+Enter inserts a newline — the composer is a

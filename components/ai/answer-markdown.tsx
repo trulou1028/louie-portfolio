@@ -92,6 +92,13 @@ const components: Components = {
     if (link.kind === "invalid") return <>{children}</>;
     return <InlineLink href={link.href}>{children}</InlineLink>;
   },
+  /**
+   * An image is never legitimate in an answer — the evidence index carries no
+   * imagery and the prompt never asks for any. Rendering one would fetch an
+   * attacker-chosen URL without a click (spec §32). The alt text survives as
+   * plain text so the sentence still reads.
+   */
+  img: ({ alt }) => (alt ? <>{alt}</> : null),
 };
 
 function AnswerMarkdown({ text }: { text: string }) {

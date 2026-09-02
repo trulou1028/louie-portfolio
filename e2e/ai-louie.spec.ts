@@ -196,6 +196,41 @@ test.describe("the AI surface", () => {
     ).toBeVisible({ timeout: 10_000 });
   });
 
+  test("tells a rate-limited visitor to try again, not that the service is down", async ({
+    page,
+  }) => {
+    await page.route("**/api/chat", (route) =>
+      route.fulfill({ status: 429, json: { error: "rate_limited" } }),
+    );
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    await expect(
+      page.getByText(text("try again in a few minutes")).first(),
+    ).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("tells a visitor whose message was too long to use the job-description dialog instead", async ({
+    page,
+  }) => {
+    await page.route("**/api/chat", (route) =>
+      route.fulfill({
+        status: 413,
+        json: { error: "conversation_too_long" },
+      }),
+    );
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    await expect(
+      page.getByText(text("too long for the chat")).first(),
+    ).toBeVisible({ timeout: 10_000 });
+  });
+
   test("keeps the composer in view after a long answer, on mobile", async (
     { page },
     testInfo,
@@ -397,6 +432,44 @@ test.describe("the AI surface", () => {
     // ...and neither payload ever executed.
     const pwned = await page.evaluate(() => (window as { __pwned?: unknown }).__pwned);
     expect(pwned).toBeUndefined();
+  });
+
+  test("never renders a model-supplied markdown image (spec §32)", async ({
+    page,
+  }) => {
+    // The gap the raw-HTML test above does not cover: `![](url)` markdown
+    // image syntax, which `react-markdown`'s default renderer turns into a
+    // live `<img src>` even though raw HTML stays escaped. That would fetch
+    // an attacker-chosen URL with no click required. The alt text ("tracker")
+    // must still show as plain text so the sentence reads.
+    const requestedUrls: string[] = [];
+    page.on("request", (request) => requestedUrls.push(request.url()));
+
+    await mockAnswer(
+      page,
+      "Look: ![tracker](https://example.invalid/x.png) done",
+    );
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+
+    await expect(panel.getByText("done")).toBeVisible({ timeout: 10_000 });
+
+    // No live img element outside AI Louie's own avatar image.
+    await expect(
+      page.locator('#ask-ai-louie img:not([data-slot="message-avatar"] img)'),
+    ).toHaveCount(0);
+
+    // The alt text survived as plain text.
+    await expect(panel.getByText("tracker")).toBeVisible();
+
+    // The browser never fetched the attacker-chosen URL.
+    expect(requestedUrls.some((url) => /example\.invalid/.test(url))).toBe(
+      false,
+    );
   });
 
   test("links a real route, and never a fabricated one (spec §32)", async ({
