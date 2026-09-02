@@ -79,7 +79,7 @@ The alternatives and why they are rejected: a per-request nonce needs `middlewar
 
 **Out of scope**:
 - `app/layout.tsx` — do **not** move the inline script to a file; README "Deep links" explains why it must be inline. It is covered by `'unsafe-inline'`, not by a hash (see the measurement above).
-- `middleware.ts` — not needed; a nonce-per-request would require middleware and would also disable static prerendering for every page. Use a hash.
+- `middleware.ts` — deliberately not used. A per-request nonce is the only way to a strict `script-src` here, and it would disable static prerendering on every page. That trade is not worth it for a site that loads no third-party scripts; see the measurement above.
 - Enforcing CSP (non-report-only) — a follow-up after a week of clean reports; see Maintenance notes.
 
 ## Git workflow
@@ -118,21 +118,9 @@ async headers() {
 
 The advisor already measured this — see "Current state". You are re-confirming it on your own build, **not** discovering it, and you are **not** computing hashes. Build, serve, and print the inline-script sizes for two different pages:
 
-```bash
-pnpm start --port 3123 &
-curl -s http://localhost:3123/ > /tmp/home.html
-# Print each inline <script> body's sha256 (base64), one per line:
-python3 - <<'PY'
-import re,hashlib,base64
-html=open('/tmp/home.html').read()
-for m in re.finditer(r'<script(?![^>]*\bsrc=)(?![^>]*type="application/ld\+json")[^>]*>(.*?)</script>', html, re.S):
-    body=m.group(1)
-    print(base64.b64encode(hashlib.sha256(body.encode()).digest()).decode(), '|', body[:60].replace('\n',' '))
-PY
-kill %1
-```
+Write a short Python script to a file (do **not** nest a heredoc inside another heredoc — it breaks the shell) that, for each of `/` and `/about`, fetches the page and prints the **byte length** of every inline `<script>` body that is not `application/ld+json`. Regex that works: `r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>'` with `re.S`, skipping any match whose opening tag contains `ld+json`.
 
-Adapt that snippet to print, for each of `/` and `/about`, the **byte length** of every inline non-JSON-LD `<script>` body (do not hash them). Capture the server PID explicitly (`& SERVER_PID=$!` … `kill $SERVER_PID`) rather than relying on `%1` job control, and make sure no server is left running.
+Start the server capturing its PID explicitly — `pnpm start --port 3123 & SERVER_PID=$!`, `sleep 6`, then `kill $SERVER_PID` — rather than relying on `%1` job control, and make sure no server is left running when you finish.
 
 **Verify**: both paths print three sizes — roughly `162`, `43`, and one large value in the tens of thousands that **differs between `/` and `/about`**. That differing value is Next's flight payload, and it is why Step 3 uses `'unsafe-inline'` instead of hashes. If the large value turns out to be *identical* across both pages, STOP and report — the situation would have changed and a hashed policy might be reachable after all.
 
@@ -195,7 +183,7 @@ test("security headers are present", async ({ request }) => {
 
 ### Step 5: Record the decision
 
-Add a numbered entry to README's deviations ledger (next number after the last one there) stating: headers added in `next.config.ts`; CSP is report-only pending a week of clean production console checks; the inline deep-link script is allowed by hash and the hash must be recomputed when that script changes (link the Step 2 command).
+Add entry **37** to README's deviations ledger, under a `**Security headers (2026-09-02)**` heading. It should state: the four plain headers plus a report-only CSP now ship from `next.config.ts`; the CSP stays report-only pending a week of clean production console checks; and — the part worth recording for whoever reads this next — `script-src` uses `'unsafe-inline'` rather than hashes **because Next inlines a flight-data script whose hash differs per page and per build**, so a static header cannot enumerate it, and a nonce would require middleware and cost static prerendering. Note that the real protection therefore comes from `img-src`, `frame-ancestors`, `object-src`, `connect-src`, `base-uri` and `form-action`.
 
 ### Step 6: Full gate
 
@@ -220,7 +208,6 @@ Add a numbered entry to README's deviations ledger (next number after the last o
 - Step 2's large inline script is **identical** across `/` and `/about` — that contradicts the advisor's measurement and would mean a hashed policy is reachable; report rather than proceeding with `'unsafe-inline'`.
 - A CSP-report-only violation appears on `/` or `/work/offboard` that you cannot resolve by adding a directive already discussed here (e.g. an unexpected third-party host) — report the exact violation text; do not add `'unsafe-eval'` to production or widen `default-src` to silence it.
 - The deep link `/work/offboard#architecture` stops highlighting — report-only mode never blocks, so this should be impossible; if it happens, something other than the CSP changed.
-- The deep link stops highlighting after the CSP header is added even in report-only mode (it should not — report-only never blocks; if it does, something else changed).
 - `pnpm test:e2e` shows failures outside `seo.spec.ts`.
 
 ## Maintenance notes
