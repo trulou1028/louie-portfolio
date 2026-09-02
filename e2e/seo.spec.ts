@@ -118,3 +118,28 @@ test("OpenGraph metadata is present", async ({ page }) => {
     ).toHaveCount(1);
   }
 });
+
+const PUBLIC_PATHS = [
+  "/", "/work", "/work/offboard", "/work/flexi", "/ai-systems",
+  "/experiments", "/writing", "/about", "/resume",
+];
+
+test("every page's canonical is its own URL", async ({ page, baseURL }) => {
+  for (const path of PUBLIC_PATHS) {
+    await page.goto(path);
+    const href = await page.locator('link[rel="canonical"]').getAttribute("href");
+    // Playwright sets NEXT_PUBLIC_SITE_URL to baseURL, so this is exact.
+    expect(href, `${path} canonical`).toBe(`${baseURL}${path === "/" ? "" : path}`);
+  }
+});
+
+test("a share image is declared and actually serves", async ({ page, request }) => {
+  await page.goto("/");
+  const image = page.locator('meta[property="og:image"]');
+  await expect(image).toHaveCount(1);
+  const src = await image.getAttribute("content");
+  expect(src).toBeTruthy();
+  const response = await request.get(src!);
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toContain("image/png");
+});
