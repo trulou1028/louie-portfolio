@@ -399,6 +399,44 @@ test.describe("the AI surface", () => {
     expect(pwned).toBeUndefined();
   });
 
+  test("never renders a model-supplied markdown image (spec §32)", async ({
+    page,
+  }) => {
+    // The gap the raw-HTML test above does not cover: `![](url)` markdown
+    // image syntax, which `react-markdown`'s default renderer turns into a
+    // live `<img src>` even though raw HTML stays escaped. That would fetch
+    // an attacker-chosen URL with no click required. The alt text ("tracker")
+    // must still show as plain text so the sentence reads.
+    const requestedUrls: string[] = [];
+    page.on("request", (request) => requestedUrls.push(request.url()));
+
+    await mockAnswer(
+      page,
+      "Look: ![tracker](https://example.invalid/x.png) done",
+    );
+
+    await page.goto("/");
+    await scrollToAskPanel(page);
+    await page.getByText("Tell me about Flexi", { exact: true }).click();
+
+    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+
+    await expect(panel.getByText("done")).toBeVisible({ timeout: 10_000 });
+
+    // No live img element outside AI Louie's own avatar image.
+    await expect(
+      page.locator('#ask-ai-louie img:not([data-slot="message-avatar"] img)'),
+    ).toHaveCount(0);
+
+    // The alt text survived as plain text.
+    await expect(panel.getByText("tracker")).toBeVisible();
+
+    // The browser never fetched the attacker-chosen URL.
+    expect(requestedUrls.some((url) => /example\.invalid/.test(url))).toBe(
+      false,
+    );
+  });
+
   test("links a real route, and never a fabricated one (spec §32)", async ({
     page,
   }) => {
