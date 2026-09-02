@@ -106,4 +106,71 @@ test.describe("deep links into case studies", () => {
       await expect(page.locator(href)).toBeInViewport();
     }
   });
+
+  test("a second reveal clears the first target's highlight instead of stacking", async ({
+    page,
+  }) => {
+    // Regression: each reveal used to close over its own `target` in one
+    // shared `timeout`, so a second reveal within HIGHLIGHT_MS canceled the
+    // first target's *timer* without removing its *attribute* — the first
+    // section stayed highlighted forever while only the second one's removal
+    // was scheduled. Two reveals in quick succession is a real sequence (the
+    // mount pass racing a `hashchange`), not a hypothetical.
+    const highlighted = page.locator('[data-highlight="true"]');
+
+    // First pass: prove both timers eventually clear (no permanent glow).
+    await page.goto("/work/offboard#context");
+    await expect(page.locator("#context")).toHaveAttribute(
+      "data-highlight",
+      "true",
+    );
+    await page.waitForTimeout(300); // well within the 500ms budget
+    await page.evaluate(() => {
+      window.location.hash = "system";
+    });
+    await page.waitForTimeout(1_700); // > HIGHLIGHT_MS past the second reveal
+    await expect(highlighted).toHaveCount(0);
+
+    // Second pass: prove only one section glows at a time, not two. If the
+    // old bug were back, both #context and #system would carry the
+    // attribute at this midpoint.
+    await page.goto("/work/offboard#context");
+    await expect(page.locator("#context")).toHaveAttribute(
+      "data-highlight",
+      "true",
+    );
+    await page.waitForTimeout(300);
+    await page.evaluate(() => {
+      window.location.hash = "system";
+    });
+    await page.waitForTimeout(800); // < HIGHLIGHT_MS: still mid-flight
+    await expect(highlighted).toHaveCount(1);
+    await expect(page.locator("#system")).toHaveAttribute(
+      "data-highlight",
+      "true",
+    );
+    await expect(page.locator("#context")).not.toHaveAttribute(
+      "data-highlight",
+      "true",
+    );
+  });
+
+  test("navigating away and back leaves no stranded highlight", async ({
+    page,
+  }) => {
+    // Regression: the effect cleanup on route change canceled the pending
+    // timer but never removed the attribute, so a section could stay
+    // accent-washed after navigating away and back.
+    await page.goto("/work/offboard#context");
+    await expect(page.locator("#context")).toHaveAttribute(
+      "data-highlight",
+      "true",
+    );
+
+    await page.goto("/about");
+    await page.goBack();
+
+    await page.waitForTimeout(1_700); // > HIGHLIGHT_MS, well past any expiry
+    await expect(page.locator('[data-highlight="true"]')).toHaveCount(0);
+  });
 });
