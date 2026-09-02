@@ -17,9 +17,15 @@
 - **Priority**: P1
 - **Effort**: S
 - **Risk**: LOW
-- **Depends on**: 022 (imports `MAX_CHARS_PER_MESSAGE` from `lib/ai/schemas.ts`; if 022 has not landed, define the constant locally with a comment and STOP-note it)
+- **Depends on**: 022 — **SATISFIED.** 022 merged 2026-09-02 and
+  `lib/ai/schemas.ts:70` now exports `MAX_CHARS_PER_MESSAGE = 16_000`.
+  Step 3 imports it directly; the local-constant fallback in the STOP
+  conditions is no longer needed.
 - **Category**: security + bug
-- **Planned at**: commit `50e98a4`, 2026-08-31
+- **Planned at**: commit `50e98a4`, 2026-08-31. **Refreshed 2026-09-02** at
+  `46c93b9` after 020 and 022 merged: the three component files in scope are
+  byte-identical to when this was written, and the `e2e/ai-louie.spec.ts`
+  anchors below were re-verified against the current file.
 - **Recommended executor model**: **Sonnet 5.** Three small, fully specified edits with e2e coverage patterns already in the file.
 
 ## Why this matters
@@ -61,8 +67,19 @@ Separately, the composer's target user — a recruiter pasting a long job descri
       : "That comparison couldn’t be completed. You can still explore the work directly." });
   ```
   and its textarea at `:143` has `maxLength={15_000}`.
-- `e2e/ai-louie.spec.ts:304` — `async function mockAnswer(page, answer)` intercepts `/api/chat` and streams `answer` as the assistant text; `:363-385` is the raw-HTML injection test that asserts the markup shows as visible text and `#ask-ai-louie` contains zero `img`/`script` outside an avatar. Model the new test on it.
+- `e2e/ai-louie.spec.ts:304` — `async function mockAnswer(page, answer)` intercepts `/api/chat` and streams `answer` as the assistant text (line number re-verified 2026-09-02). `:359-396` is the raw-HTML injection test `"never renders model-supplied HTML as live DOM (spec §32)"`. Model the new test on it. **The avatar-exclusion selector to reuse verbatim** (Step 2 needs it) is:
+  ```ts
+  page.locator('#ask-ai-louie img:not([data-slot="message-avatar"] img)')
+  ```
+  and the test drives the panel with `await scrollToAskPanel(page)` then `await page.getByText("Tell me about Flexi", { exact: true }).click()`.
 - Spec §31 fixed copy for the unavailable state stays verbatim for the generic case.
+- **Rate-limit hazard discovered while executing 022 — read before adding tests.** `/api/chat` and `/api/job-fit` share one in-memory limiter (20 requests / 5 minutes) and, with no proxy in front of a local server, every test that makes a *real* request lands in the same `"anonymous"` bucket. The suite already sits at **18 of 20** in that bucket. 022 added a helper for this at the top of the `"the chat endpoint"` describe block:
+  ```ts
+  function ownRateLimitBucket(name: string) {
+    return { "x-forwarded-for": `e2e-${name}` };
+  }
+  ```
+  Every test this plan adds intercepts `/api/chat` client-side (via `mockAnswer` or `page.route`) and therefore makes **no** real request, so none of them should consume that budget. If you find yourself writing a test that does `request.post("/api/chat", …)`, it must pass `headers: ownRateLimitBucket("<name>")` or it will tip the suite into 429s.
 
 ## Commands you will need
 
@@ -193,7 +210,8 @@ In `e2e/ai-louie.spec.ts`, add two tests using `page.route("**/api/chat", …)` 
 
 ## STOP conditions
 
-- `lib/ai/schemas.ts` does not export `MAX_CHARS_PER_MESSAGE` (Plan 022 not landed): define `const MAX_CHARS_PER_MESSAGE = 16_000;` locally in the composer with a `// Mirrors app/api/chat/route.ts; Plan 022 centralises this.` comment, and say so in your report. Do not skip the cap.
+- `lib/ai/schemas.ts` does not export `MAX_CHARS_PER_MESSAGE` — it does as of 022 (verified at `lib/ai/schemas.ts:70`), so if the import fails something else is wrong: report rather than defining a local copy.
+- Adding the `img` override breaks the existing injection test at `e2e/ai-louie.spec.ts:359` (it asserts the raw-HTML markup renders as visible *text*, which the `img:` handler must not change — that test feeds HTML, not markdown image syntax, so it should be unaffected). If it does break, report; do not edit that test to make it pass.
 - `useChat`'s `error.message` does not contain the response body (check by logging it once in the 429 e2e) — report the actual shape rather than parsing something else.
 - The avatar-exclusion selector in the existing injection test is not reusable for the new test — report, do not weaken to "any img count".
 
