@@ -103,7 +103,7 @@ Run, for each path `P` in the table: `grep -rl "components/P\"" app components l
 
 `git rm components/portfolio/rail-work-card.tsx components/portfolio/experiment-tile.tsx components/system/rail-section.tsx lib/ai/tools.ts lib/ai/tools.test.ts`
 
-**Verify**: `pnpm typecheck && pnpm lint && pnpm test` → exit 0 (unit count drops from 75 by the number of tests that were in `tools.test.ts`; record the new count).
+**Verify**: `pnpm typecheck && pnpm lint && pnpm test` → exit 0. The unit count is **87** at `7699b63` (not the 75 an earlier draft of this plan assumed — plans 022 and 023 added tests since). It will drop by however many lived in `tools.test.ts`; record the exact new number rather than predicting it.
 
 ### Step 3: `getEvidenceById`
 
@@ -131,7 +131,7 @@ No new tests: the deletions are verified by the compiler, the linter, and the fu
 - [ ] `grep -rn "rail-work-card\|experiment-tile\|rail-section\|ai/tools\"" app components lib content e2e scripts mdx-components.tsx` → **no output** (no surviving reference, in code or comment, to anything deleted)
 - [ ] `pnpm typecheck && pnpm lint && pnpm test && pnpm build` exit 0
 - [ ] `pnpm test:e2e` → `0 failed`
-- [ ] `git status` shows only deletions plus, at most, `lib/ai/portfolio-search.ts` and its test
+- [ ] `git diff --name-only <base>..HEAD` shows only: the ten deletions, the `work-card.tsx` comment fix, and at most `lib/ai/portfolio-search.ts` + `lib/ai/portfolio-search.test.ts`. Nothing else.
 - [ ] `plans/README.md` status row updated, with the new unit-test count
 
 ## STOP conditions
