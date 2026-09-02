@@ -19,7 +19,17 @@
 - **Risk**: LOW
 - **Depends on**: none (020 for CI)
 - **Category**: bug + tech-debt
-- **Planned at**: commit `50e98a4`, 2026-08-31
+- **Planned at**: commit `50e98a4`, 2026-08-31. **Drift-checked 2026-09-02**
+  at `5ac4f28`, after 020, 021, 022 and 023 merged: `git diff 50e98a4..HEAD`
+  over every in-scope file is **empty**. Each anchor below was re-verified
+  individually — `RAIL_BREAKPOINT_PX = 1024` at `contextual-rail.tsx:20`
+  (still not exported; `:236` exports only `ContextualRail, Canvas`),
+  `useMinWidth(1024)` at `app-shell.tsx:34`, the "three places" docstring at
+  `contextual-rail.tsx:15`, and the `let timeout` / `setAttribute` /
+  `clearTimeout` / `removeAttribute` shape at
+  `deep-link-highlight.tsx:40,63,70,72,83`.
+  Current test counts, for confirming your additions: `e2e/deep-link.spec.ts`
+  has **6** tests (109 lines), `e2e/home.spec.ts` has **17**.
 - **Recommended executor model**: **Sonnet 5.** Two small, well-bounded changes; the e2e additions follow existing files closely.
 
 ## Why this matters
@@ -57,7 +67,21 @@
   ```
 - `components/app-shell/contextual-rail.tsx:20` — `const RAIL_BREAKPOINT_PX = 1024;` (not exported; `:236` exports only `ContextualRail, Canvas`). Docstring `:12-19` says the value is "encoded in three places that MUST agree".
 - `components/app-shell/app-shell.tsx:34` — `const isLg = useMinWidth(1024);` (literal).
-- CSS half (all must equal Tailwind's `lg` = 1024px): `app-shell.tsx:67,72` (`max-lg:hidden`), `contextual-rail.tsx:57` (`lg:overflow-y-auto`), `:216,230` (`max-lg:hidden`), `components/ai/ask-panel.tsx:45` (`max-lg:…`), `components/app-shell/mobile-nav.tsx` (`lg:hidden`), `components/portfolio/table-of-contents.tsx:52` (`lg:hidden`), `app/globals.css` (a numeric pre-hydration guard near line 290-310 — grep `1023.98`).
+- CSS half — **the complete, re-verified inventory (2026-09-02)**. All must equal Tailwind's `lg` = 1024px. This is the list Step 3's docstring must carry:
+  | Site | What it guards |
+  |---|---|
+  | `components/app-shell/app-shell.tsx:67` | `max-lg:hidden` on the left-rail pane |
+  | `components/app-shell/app-shell.tsx:72` | `max-lg:hidden` on the rail's resize handle |
+  | `components/app-shell/contextual-rail.tsx:56` | `lg:overflow-y-auto` on the padded rail scroller |
+  | `components/app-shell/contextual-rail.tsx:216` | `max-lg:hidden` on the canvas resize handle |
+  | `components/app-shell/contextual-rail.tsx:230` | `max-lg:hidden` on the canvas rail pane |
+  | `components/ai/ask-panel.tsx:45` | `max-lg:max-h-[80svh]` + `max-lg:rounded-panel` + `max-lg:border` — the stacked-card treatment |
+  | `components/app-shell/mobile-nav.tsx:35` | `lg:hidden` on the mobile header |
+  | `components/portfolio/table-of-contents.tsx:52` | `lg:hidden` on the collapsed inline TOC |
+  | `app/globals.css:297` | `@media (max-width: 1023.98px)` — hides `left-rail` pane + `resizable-handle` pre-hydration |
+  | `app/globals.css:307` | `@media (max-width: 1023.98px)` — hides `canvas-rail` pane pre-hydration |
+
+  Note there are **two** separate `1023.98px` media blocks in `globals.css`, not one. Together with the JS constant and `useMinWidth(1024)`, that is **twelve** sites, not the three the docstring claims.
 - `lib/use-breakpoint.ts` — `useMinWidth(px)`; SSR returns `true`.
 - `e2e/deep-link.spec.ts` (109 lines) — throttles CPU via CDP and asserts `[data-highlight="true"]` appears on the targeted section; reuse its setup.
 - `e2e/case-studies.spec.ts:129` region — existing tests that resize the viewport to 1100 to exercise the rail; reuse the resize pattern.
