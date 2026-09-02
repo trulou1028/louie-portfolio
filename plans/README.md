@@ -32,9 +32,142 @@ honor its STOP conditions, and update your row when done.
 | 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | DONE (merged) |
 | 018  | Chat markdown rendering + composer button alignment | P2 | M | 017 | DONE (merged) |
 | 019  | Mobile-nav console warning (keep link semantics)   | P3 | S | — | DONE (merged) |
+| 020  | CI on every push + Node pin + `shadcn` to devDeps + script docs | P1 | S | — | DONE (reviewed, unmerged) |
+| 021  | Per-page canonicals + generated share image (+ operator env var) | P1 | S–M | (020) | TODO — Sonnet 5 |
+| 022  | Chat endpoint: strict message schema, output/duration caps, real error path | P1 | S | (020) | DONE (reviewed, unmerged) |
+| 023  | Answer renderer drops images; composer `maxLength`; 413/429 copy | P1 | S | 022 | TODO — Sonnet 5 |
+| 024  | Security headers + report-only CSP (hashed inline script) | P2 | S–M | 023 | TODO — Opus 5 |
+| 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | TODO — Sonnet 5 |
+| 026  | Delete 10 zero-importer files (`tools.ts`, 3 portfolio/system, 5 `ui/`) | P2 | S | — | TODO — Haiku 4.5 |
+| 027  | Fix doc/comment drift (dark mode, fonts, scripts, lazy-load comments) | P2 | S | (025) | TODO — Haiku 4.5 |
+| 028  | Wire the 9 live analytics events (owner deferred the call, 2026-08-31) | P2 | M | (020) | TODO — Sonnet 5 |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
+
+## Audit track (added 2026-08-31, via /improve — full-site review)
+
+A code, design, UI/UX, and portfolio-effectiveness audit at `50e98a4`. Plans
+020–027 are the executor-ready outcomes. Each plan's Status block names a
+**recommended executor model**, by this rubric:
+
+- **Haiku 4.5** — deletions and prose edits whose done criteria are greps.
+- **Sonnet 5** — fully specified code changes with an existing test pattern.
+- **Opus 5** — changes that depend on how an installed library actually
+  behaves (the AI SDK's message shapes and error surfacing; a CSP for this
+  exact stack).
+- **Fable 5.1** — not needed for any of these. Reserve it for the content
+  and design work with Louie listed under "Louie-only items".
+
+Dependency notes for this track: 020 first (so later plans run through CI);
+022 before 023 (023 imports `MAX_CHARS_PER_MESSAGE` from the schema module
+022 creates; 023 has a fallback if not); 023 before 024 (close the image
+hole at the renderer before relying on policy). 025, 026, 027 are
+independent of everything.
+
+### Louie-only items (not executor work)
+
+These are the largest levers on the portfolio's effectiveness and none of
+them is code:
+
+1. **Case-study substance.** Measured on the live pages: 24% of the Flexi
+   article's height and 15% of Offboard's is "Content pending" boxes or
+   empty screenshot frames; **zero** product images exist anywhere on the
+   site (6 empty frames, 2 imageless work cards). Outcomes, research
+   findings, and learnings are empty on both studies. The site's argument
+   is "I build real AI products" and a recruiter sees no product. The
+   punch list is `plans/CONTENT-TODOS.md` §2 — screenshots first, then
+   Flexi research findings, then outcomes.
+2. **Domain cutover.** `louiesakoda.com` still serves the Webflow site.
+   ✅ Interim fix DONE 2026-08-31: Louie set `NEXT_PUBLIC_SITE_URL` to the
+   Vercel URL and redeployed — verified in production, the sitemap,
+   `robots.txt`, `og:url`, and the JSON-LD `Person`/`WebSite` URLs all now
+   point at the live site. The per-page canonical bug is separate and is
+   code, not config — Plan 021 fixes it. **At cutover: delete that variable**
+   so the code default (`https://louiesakoda.com`) takes over, and redeploy.
+3. **Production Lighthouse run** on the deployed URL (spec §27 targets 90+).
+   Not audited here — no production profiling was possible from this
+   session; treat as unknown, not as passing.
+4. **`--foreground-subtle` contrast** (open since Plan 002): still
+   non-text-only by convention; a decision is still pending.
+5. ~~**`lib/analytics.ts`**~~ ✅ **Decided 2026-08-31** (Louie deferred the
+   call): **wire it.** Nine of spec §30's thirteen events map to real
+   interactions and become Plan 028; four describe features that do not
+   exist (two removed by Plan 014, two awaiting Plan 009's voice mode) and
+   stay listed but unwired. The privacy guard already exists and is tested —
+   deleting the module would have thrown away the hard part and left the
+   site with page views only.
+
+### Candidates considered, not planned (say the word)
+
+- **Unify the suggestion chips on `PromptChip`** and extract the duplicated
+  greeting into one component (`ai-louie-live.tsx:233-295` vs
+  `prompt-chip.tsx`; `ai-louie-thread.tsx:53-56` vs `ai-louie-live.tsx:345`).
+  Real drift, MED risk (touches e2e), owner should pick the chip geometry.
+- **Unit-test extraction** for the three untestable-by-e2e pieces:
+  `persistent-panel-group.tsx` layout compatibility, the composer's
+  multiline threshold, `use-breakpoint`'s SSR contract.
+- **Prettier + `.editorconfig`**: one repo-wide reformat commit; useful,
+  noisy, Louie's call.
+- **`recharts` / `OutcomeChart` / `Metric`** are reachable only from
+  `/design-system`. Keep as "ready for verified outcomes" (current stance)
+  or drop ~200KB of dependency — decide when the outcomes content arrives.
+- **Per-route share images** for the two case studies, once screenshots exist.
+
+## Execution log
+
+- **020 — DONE 2026-08-31.** Executed by dispatched subagent in worktree
+  `.claude/worktrees/agent-afa0b0096a27ae092`, branch `plan-020` (4 commits
+  on top of `50e98a4`, one per step). Reviewed and approved: scope matched
+  the plan's file list exactly (`.github/workflows/ci.yml`, `.nvmrc`,
+  `package.json`, `pnpm-lock.yaml`, `README.md`, `AGENTS.md`), the diff was
+  read in full and matches the plan verbatim, and every gate was
+  independently re-run by the advisor in the worktree: typecheck, lint,
+  75 unit tests, build (21 routes). **Not merged — that is the operator's
+  decision.**
+  One expected variance: `shadcn` landed at `4.19.1` rather than the
+  pinned `4.19.0` — `pnpm add -D shadcn` resolves latest within `^4`, not a
+  deviation the executor introduced by hand.
+
+- **022 — DONE 2026-09-02.** Executed by a dispatched Opus 5 subagent (per
+  the plan's own recommendation) in worktree
+  `.claude/worktrees/agent-a5d9091667ab5a690`, branch `plan-022` (4 commits
+  on top of `50e98a4`). Reviewed and approved: scope matched exactly
+  (`lib/ai/schemas.ts`, `lib/ai/schemas.test.ts`, `app/api/chat/route.ts`,
+  `app/api/job-fit/route.ts`, `lib/ai/job-fit-service.ts`,
+  `e2e/ai-louie.spec.ts`), full diff read, and every gate independently
+  re-run by the advisor: typecheck, lint, 87 unit tests (12 new,
+  non-vacuous — each pins a distinct schema boundary), build, and the full
+  e2e suite (191 passed, 9 skipped, 0 failed). **Not merged — operator's
+  decision.**
+  Step 6 (live two-turn check) could not run — no `.env.local` exists in a
+  fresh worktree. **Louie: run this once before merging** — `pnpm dev`, ask
+  "How technical is Louie?", then ask a follow-up. Confirms assistant
+  tool-call parts survive the new schema on a real second turn.
+  Three documented deviations, all judged on merit:
+  (a) the four new e2e tests were tipping the shared rate-limit bucket into
+  429s (18 pre-existing API POSTs already sat at 18/20 in one window) — the
+  executor added a per-test `x-forwarded-for` helper (`ownRateLimitBucket`)
+  so each lands in its own bucket, verified by the advisor re-running the
+  full suite green. The shared bucket is otherwise back at its pre-existing
+  18/20 — still fragile; any future un-isolated API test anywhere in this
+  file can tip it again.
+  (b) the plan's suggested 413 test reshape (two full messages) would have
+  duplicated the existing conversation-size test; the executor used two
+  16,000-char text parts in one message instead, which still isolates
+  `message_too_long` from `conversation_too_long` — correct and verified.
+  (c) the plan's own Step 4 comment text contains the literal word "catch",
+  so its own done criterion (`grep -c "catch"` → 2) can never pass once
+  that comment exists — a planner error, not an executor one. Actual count
+  is 3 (2 real catch blocks + 1 comment line); no code issue.
+
+### Findings considered and rejected (this audit)
+
+- **`x-forwarded-for` spoofing of the rate-limit key** (`lib/ai/rate-limit.ts:84-88`): Vercel overwrites the header with the client IP, so it is not caller-controlled on the deployed platform. Not a finding; the per-instance limiter remains the documented tradeoff.
+- **`ai-louie-live.tsx` as a god file** (401 lines): it is seven small named components in one file, not one large one. No change.
+- **Missing component unit tests in general**: e2e against a production build is the deliberate layer; only the three specific pieces above are worth extracting.
+- **Dependency migrations**: nothing load-bearing is behind a major; `eslint` 10 waits on `eslint-config-next`.
+- **`@types/node` bump as its own plan**: folded into 020.
 
 ## Redesign track (added 2026-08-23, via /improve)
 

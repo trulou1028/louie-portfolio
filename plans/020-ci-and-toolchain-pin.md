@@ -1,0 +1,243 @@
+# Plan 020: Run the quality gate on every push, and pin the toolchain it runs on
+
+> **Executor instructions**: Follow this plan step by step. Run every
+> verification command and confirm the expected result before moving to the
+> next step. If anything in the "STOP conditions" section occurs, stop and
+> report — do not improvise. When done, update the status row for this plan
+> in `plans/README.md` — unless a reviewer dispatched you and told you they
+> maintain the index.
+>
+> **Drift check (run first)**: `git diff --stat 50e98a4..HEAD -- package.json pnpm-lock.yaml README.md AGENTS.md .github .nvmrc`
+> If any in-scope file changed since this plan was written, compare the
+> "Current state" excerpts against the live code before proceeding; on a
+> mismatch, treat it as a STOP condition.
+
+## Status
+
+- **Priority**: P1
+- **Effort**: S
+- **Risk**: LOW
+- **Depends on**: none — and every later plan in this track benefits from it landing first
+- **Category**: dx
+- **Planned at**: commit `50e98a4`, 2026-08-31
+- **Recommended executor model**: **Sonnet 5.** The work is mechanical and fully specified; every step has a command-checkable gate. No judgment calls beyond reading a type error if the `@types/node` bump surfaces one.
+
+## Why this matters
+
+Pushing to `main` deploys to a public production URL (`README.md:394`: "Pushing to `main` is the deploy"). Nothing between the push and the promotion runs `typecheck`, `lint`, `test`, or `test:e2e` — the 75 unit tests and 183 e2e tests only protect a release if a person remembers to run them. `playwright.config.ts:17-19` already branches on `process.env.CI` (`forbidOnly`, `retries: 2`, `reporter: "github"`) for a GitHub Actions run that does not exist. At the same time the runtime is unpinned: `package.json` pins pnpm (`packageManager: "pnpm@10.4.0"`) but has no `engines` field and there is no `.nvmrc`, while `@types/node` is `^20` and the local runtime is Node 22. Two small things also ride along: the `shadcn` CLI sits in production `dependencies` with no runtime import, and the README/AGENTS script tables omit `pnpm test`, so the unit suite is invisible to anyone reading the docs.
+
+After this plan: a push or PR runs install → typecheck → lint → unit tests → build, and a second job runs the Playwright suite; Node is pinned once and read by CI; the unit suite is documented.
+
+## Current state
+
+- `package.json:5-14` — scripts:
+  ```json
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "eslint",
+  "typecheck": "next typegen && tsc --noEmit",
+  "test:e2e": "playwright test",
+  "validate:evidence": "tsx scripts/validate-evidence.ts",
+  "prebuild": "tsx scripts/validate-evidence.ts",
+  "test": "vitest run"
+  ```
+- `package.json:40` — `"shadcn": "^4.19.0",` inside `dependencies`. Nothing under `app/`, `components/`, `lib/`, or `content/` imports `shadcn` (the imported package `@shadcn/react` at `components/ui/message-scroller.tsx` is a different package and stays where it is).
+- `package.json:50` — `"@types/node": "^20",` (devDependencies). `package.json:60` — `"packageManager": "pnpm@10.4.0"`. No `engines` field.
+- Repo root has no `.github/`, no `.nvmrc`, no `vercel.json`.
+- `playwright.config.ts:34-48` — the e2e web server is `pnpm build && pnpm start --port 3100` with placeholder env vars (`OPENAI_API_KEY: "test-key-never-used"`, `OPENAI_MODEL: "test-model-never-used"`, `NEXT_PUBLIC_SITE_URL: baseURL`). The suite needs **no real key** and two browsers: Chromium (`desktop` project) and WebKit (`mobile` project, `devices["iPhone 13"]`).
+- `README.md:23-30` — Scripts table lists only `dev`, `build`, `typecheck`, `lint`.
+- `AGENTS.md:16-23` — Commands block lists the same four. `AGENTS.md:98-101`:
+  ```
+  ## Before finishing any milestone
+
+  Run `pnpm typecheck && pnpm lint && pnpm build`, check responsive behavior,
+  and record any deviation from the spec in `README.md` (spec §39.13–14).
+  ```
+- `.claude/hooks/session-start.sh` — installs deps for remote Claude sessions only; not a CI substitute and not touched here.
+- Commit message style (from `git log`): one imperative sentence, no prefix, e.g. `Stop AI Louie inventing link targets`.
+
+## Commands you will need
+
+| Purpose   | Command                  | Expected on success |
+|-----------|--------------------------|---------------------|
+| Install   | `pnpm install`           | exit 0              |
+| Typecheck | `pnpm typecheck`         | exit 0, no errors   |
+| Lint      | `pnpm lint`              | exit 0              |
+| Unit      | `pnpm test`              | `75 passed`         |
+| Build     | `pnpm build`             | exit 0              |
+| E2E       | `pnpm test:e2e`          | `0 failed` (some skipped) |
+
+## Scope
+
+**In scope** (the only files you should modify or create):
+- `.github/workflows/ci.yml` (create)
+- `.nvmrc` (create)
+- `package.json` (add `engines`, move `shadcn`, bump `@types/node`)
+- `pnpm-lock.yaml` (regenerated by `pnpm install` only)
+- `README.md` (Scripts table + Testing section)
+- `AGENTS.md` (Commands block + milestone gate line)
+
+**Out of scope** (do NOT touch):
+- `playwright.config.ts`, `vitest.config.mts`, `eslint.config.mjs` — the configs are correct; CI must run them as-is.
+- `.claude/hooks/session-start.sh` — remote-session bootstrap, unrelated.
+- Any source under `app/`, `components/`, `lib/`, `content/`.
+- Adding Prettier or any formatter — that is a separate decision (see `plans/README.md` "candidates").
+
+## Git workflow
+
+- Branch: `plan-020`
+- One commit per step, imperative sentence, no prefix.
+- Do NOT push or open a PR unless the operator instructed it.
+
+## Steps
+
+### Step 1: Pin Node
+
+Create `.nvmrc` containing exactly:
+```
+22
+```
+In `package.json`, add directly after the `"packageManager"` line:
+```json
+"engines": { "node": ">=22" },
+```
+Bump `"@types/node": "^20"` → `"@types/node": "^22"` and run `pnpm install`.
+
+**Verify**: `pnpm typecheck` → exit 0. If it reports errors that were not there before the bump, see STOP conditions.
+
+### Step 2: Move the `shadcn` CLI out of production dependencies
+
+Run `pnpm remove shadcn && pnpm add -D shadcn`.
+
+**Verify**: `grep -n '"shadcn"' package.json` → exactly one line, inside `devDependencies`. `grep -rn 'from "shadcn' app components lib content` → no output. `pnpm build` → exit 0.
+
+### Step 3: Add the workflow
+
+Create `.github/workflows/ci.yml`:
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck, lint, unit tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4        # reads packageManager from package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+
+  e2e:
+    name: Playwright
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium webkit
+      - run: pnpm test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+```
+
+Notes for the executor: `pnpm/action-setup@v4` with no `version` input reads `packageManager` from `package.json` — do not hard-code the pnpm version twice. The e2e job builds the app itself (`playwright.config.ts:35`), so it does not need the build from the first job. No secrets are required; do not add any `env:` with API keys.
+
+**Verify**: `node -e "require('js-yaml')" 2>/dev/null || true` is not needed — instead run `pnpm exec playwright test --list | head -3` → prints test names (proves the config loads). Then validate YAML shape with `python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/ci.yml'))"` → exit 0.
+
+### Step 4: Document the full gate
+
+In `README.md`, replace the Scripts table (lines 23-30) with:
+
+```markdown
+## Scripts
+
+| Command                  | What it does                                        |
+|--------------------------|-----------------------------------------------------|
+| `pnpm dev`               | Dev server                                          |
+| `pnpm build`             | Production build (runs `validate:evidence` first)   |
+| `pnpm typecheck`         | `next typegen` + `tsc --noEmit`                     |
+| `pnpm lint`              | ESLint                                              |
+| `pnpm test`              | Unit tests (vitest, `lib/**/*.test.ts`)             |
+| `pnpm test:e2e`          | Playwright against a production build on port 3100 |
+| `pnpm validate:evidence` | Checks every evidence entry's route and anchor      |
+
+CI (`.github/workflows/ci.yml`) runs typecheck, lint, unit tests, build, and
+the Playwright suite on every push and pull request. Node is pinned in
+`.nvmrc`; pnpm in `package.json`'s `packageManager`.
+```
+
+In `README.md` "## Testing" (line ~478), add before the existing paragraph:
+```markdown
+```bash
+pnpm test        # unit, ~1s
+pnpm test:e2e    # Playwright, ~1 min
+```
+```
+(and remove the older single-command block it replaces).
+
+In `AGENTS.md`, replace the Commands block (lines 16-23) with the same seven commands, and change line 100 to:
+```
+Run `pnpm typecheck && pnpm lint && pnpm test && pnpm build`, check responsive behavior,
+```
+
+**Verify**: `grep -c "pnpm test" README.md AGENTS.md` → both ≥ 2. `grep -n "pnpm typecheck && pnpm lint && pnpm test && pnpm build" AGENTS.md` → one match.
+
+### Step 5: Full gate
+
+**Verify**: `pnpm typecheck && pnpm lint && pnpm test && pnpm build` → all exit 0; `pnpm test:e2e` → `0 failed`.
+
+## Test plan
+
+No new tests: this plan makes the existing suites run automatically. The workflow's own first run on the branch is the test — if the operator pushes the branch, both jobs must go green.
+
+## Done criteria
+
+- [ ] `.github/workflows/ci.yml` and `.nvmrc` exist; `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))"` exits 0
+- [ ] `grep -n '"engines"' package.json` → one match; `grep -n '"@types/node": "\^22"' package.json` → one match
+- [ ] `grep -n '"shadcn"' package.json` → one match, under `devDependencies`
+- [ ] `pnpm typecheck && pnpm lint && pnpm test && pnpm build` exit 0
+- [ ] `pnpm test:e2e` → `0 failed`
+- [ ] README Scripts table lists all seven scripts; AGENTS.md gate line includes `pnpm test`
+- [ ] `git status` shows no modified files outside the in-scope list (besides `pnpm-lock.yaml`)
+- [ ] `plans/README.md` status row updated
+
+## STOP conditions
+
+Stop and report back (do not improvise) if:
+
+- The `@types/node` bump produces more than three new type errors, or any error outside `scripts/`, `app/api/`, or `lib/ai/` — report them rather than editing source.
+- `pnpm build` fails after moving `shadcn` — some script may invoke it; report which.
+- `pnpm test:e2e` fails on a test unrelated to this change (this plan touches no app code, so any failure is pre-existing — report it, do not fix it).
+
+## Maintenance notes
+
+- When the Node major changes, edit `.nvmrc` and `engines` together; CI reads `.nvmrc`.
+- The e2e job installs both Chromium and WebKit. If it becomes the slow job, cache the Playwright browsers keyed on the `@playwright/test` version — deferred here to keep the first workflow simple.
+- Deferred, deliberately: branch protection requiring CI before merge is a GitHub setting the operator sets by hand (Settings → Branches → require status checks). Recommend it once the workflow has run green twice.
