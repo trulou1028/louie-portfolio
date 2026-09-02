@@ -32,9 +32,9 @@ honor its STOP conditions, and update your row when done.
 | 017  | Replace assistant-ui with useChat + shadcn chat components | P2 | L | 016 | DONE (merged) |
 | 018  | Chat markdown rendering + composer button alignment | P2 | M | 017 | DONE (merged) |
 | 019  | Mobile-nav console warning (keep link semantics)   | P3 | S | — | DONE (merged) |
-| 020  | CI on every push + Node pin + `shadcn` to devDeps + script docs | P1 | S | — | DONE (reviewed, unmerged) |
+| 020  | CI on every push + Node pin + `shadcn` to devDeps + script docs | P1 | S | — | DONE (merged) |
 | 021  | Per-page canonicals + generated share image (+ operator env var) | P1 | S–M | (020) | TODO — Sonnet 5 |
-| 022  | Chat endpoint: strict message schema, output/duration caps, real error path | P1 | S | (020) | DONE (reviewed, unmerged) |
+| 022  | Chat endpoint: strict message schema, output/duration caps, real error path | P1 | S | (020) | DONE (merged) |
 | 023  | Answer renderer drops images; composer `maxLength`; 413/429 copy | P1 | S | 022 | TODO — Sonnet 5 |
 | 024  | Security headers + report-only CSP (hashed inline script) | P2 | S–M | 023 | TODO — Opus 5 |
 | 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | TODO — Sonnet 5 |
@@ -140,10 +140,22 @@ them is code:
   non-vacuous — each pins a distinct schema boundary), build, and the full
   e2e suite (191 passed, 9 skipped, 0 failed). **Not merged — operator's
   decision.**
-  Step 6 (live two-turn check) could not run — no `.env.local` exists in a
-  fresh worktree. **Louie: run this once before merging** — `pnpm dev`, ask
-  "How technical is Louie?", then ask a follow-up. Confirms assistant
-  tool-call parts survive the new schema on a real second turn.
+  **Merged 2026-09-02**, together with 020; the two touch disjoint files and
+  merged clean. The combined tree was re-verified after merging: typecheck,
+  lint, 87 unit, build, 191 e2e / 9 skipped / 0 failed.
+  Step 6 (live two-turn check) could not run in the worktree — no
+  `.env.local` there — so the **advisor ran it against the merged tree with
+  the real key**: a replayed history (user → assistant carrying `step-start`
+  + `tool-search_portfolio` + text → user) returned HTTP 200 and a grounded
+  473-character answer linking `/work/offboard`, with no error parts. That
+  is the whole chain the plan was worried about — schema accepts →
+  `convertToModelMessages` succeeds → provider answers on turn 2.
+  The four new rejections were also confirmed live (all 400): client-supplied
+  `system` role, a `file` part, an oversized text part, and a null message.
+  Note the browser route for this check is unreliable under automation — the
+  panel's `IntersectionObserver` does not fire there (a known testing
+  artifact, documented in `ai-louie-thread.tsx`), so the API-level check is
+  the dependable one.
   Three documented deviations, all judged on merit:
   (a) the four new e2e tests were tipping the shared rate-limit bucket into
   429s (18 pre-existing API POSTs already sat at 18/20 in one window) — the
