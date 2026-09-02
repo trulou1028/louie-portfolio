@@ -17,9 +17,17 @@
 - **Priority**: P1
 - **Effort**: S–M
 - **Risk**: LOW
-- **Depends on**: none (020 recommended first so CI catches regressions)
+- **Depends on**: none (020 recommended first so CI catches regressions — it merged 2026-09-02)
 - **Category**: bug (SEO) + direction (portfolio effectiveness)
-- **Planned at**: commit `50e98a4`, 2026-08-31
+- **Planned at**: commit `50e98a4`, 2026-08-31. **Drift-checked 2026-09-02**
+  at `22c03f0`, after 020, 022 and 023 merged: `git diff 50e98a4..HEAD` over
+  every in-scope file is **empty**, so all "Current state" excerpts below are
+  still exact — including `alternates: { canonical: "/" }` at
+  `app/layout.tsx:48`, the `TODO(asset)` at `app/layout.tsx:41`, and
+  `e2e/seo.spec.ts` holding exactly 6 tests. Note the canonical **host** is
+  now the Vercel URL rather than `louiesakoda.com` (Louie set
+  `NEXT_PUBLIC_SITE_URL` in production on 2026-08-31); the per-page bug this
+  plan fixes is unchanged by that.
 - **Recommended executor model**: **Sonnet 5.** Metadata edits are mechanical; the share image needs a small amount of layout taste inside a fixed 1200×630 frame, which Sonnet handles well when the palette and copy are given (they are, below).
 
 ## Why this matters
@@ -218,7 +226,7 @@ Note: the home canonical comparison — Next serialises `"/"` against `metadataB
 
 ## Operator steps (Louie, not the executor)
 
-1. In Vercel → Project → Settings → Environment Variables, set `NEXT_PUBLIC_SITE_URL` = `https://louie-portfolio-six.vercel.app` for **Production**, then redeploy. This makes canonicals, the sitemap, `og:url`, and the JSON-LD `Person`/`WebSite` URLs point at the site that is actually live.
+1. ~~Set `NEXT_PUBLIC_SITE_URL`~~ ✅ **DONE 2026-08-31.** Louie set it to `https://louie-portfolio-six.vercel.app` for Production and redeployed. Verified in production: the sitemap, `robots.txt` sitemap line, `og:url`, and the JSON-LD `Person`/`WebSite` URLs all resolve to the live Vercel host. What that change could **not** fix is the per-page canonical bug this plan addresses — six pages still emit the homepage URL, because that is code, not configuration.
 2. At the domain cutover (README "Deployment" step 1), delete that variable so the code's default `https://louiesakoda.com` takes over, and redeploy.
 3. After deploy, check one share preview (LinkedIn Post Inspector or opengraph.xyz) shows the image.
 
