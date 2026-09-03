@@ -40,7 +40,7 @@ honor its STOP conditions, and update your row when done.
 | 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | DONE (merged) |
 | 026  | Delete 10 zero-importer files (`tools.ts`, 3 portfolio/system, 5 `ui/`) | P2 | S | — | DONE (merged) |
 | 027  | Fix doc/comment drift (dark mode, fonts, scripts, lazy-load comments) | P2 | S | (025) | DONE (merged) |
-| 028  | Wire the 9 live analytics events (owner deferred the call, 2026-08-31) | P2 | M | (020) | TODO — Sonnet 5 |
+| 028  | Wire the 8 live analytics events (owner deferred the call, 2026-08-31) | P2 | M | (020) | DONE (merged) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale)
@@ -355,6 +355,33 @@ them is code:
   `.dark` plus `<html class="dark">` both exist.
   Net effect: `AGENTS.md` no longer tells an agent the site has no dark mode
   and no longer names two typefaces the project does not load.
+
+- **028 — DONE 2026-09-02, merged.** Executed by a dispatched Sonnet 5
+  subagent in worktree `.claude/worktrees/agent-a775d8cd7b56108e3`, branch
+  `plan-028` (6 commits, one per step, on `main`@`2aed1e3`). Reviewed and
+  approved: scope exactly the 12 planned files; gates independently re-run by
+  the advisor: typecheck, lint, **76** unit (69 → 76, +7 `sanitizeProperties`
+  cases), build, **212 e2e / 10 skipped / 0 failed**.
+  **The privacy rule was verified, not assumed.** The advisor read every one
+  of the 8 `track()` call sites: every property is a literal
+  (`{ trigger: "approach" }`, `{ source: "chip" }`, `{ project: "offboard" }`),
+  a slug from a fixed map (`SUGGESTION_SLUGS`, so not even the authored prompt
+  text is sent raw), or a count (`{ turn: messages.length }`,
+  `{ matches, weakerAreas, demoted }`). The contact listener reads only the
+  href's *shape* — `mailto:`/`linkedin.com`/`calendly.com` → a one-word
+  method — never its value. **Zero visitor-authored strings anywhere.**
+  The advisor then reproduced the executor's non-vacuity proof independently:
+  adding `text: trimmed` to `ai_question_submitted` makes the leak e2e fail on
+  `expect(serialized).not.toContain("ZZQQ")`; restoring is byte-identical and
+  it passes. The test also polls until events *have* fired before checking, so
+  it cannot pass by nothing happening.
+  **Executor caught a planner error**: this plan claimed nine events; eight
+  actually fire (13 total − 4 dead − 1 deliberately deferred). It flagged the
+  arithmetic rather than bending code or checklist to match. Plan title and
+  done criteria corrected.
+  `demotedCount` is now tracked — it counts job-fit matches whose citations
+  the evidence index could not back, i.e. how often the model cites
+  unverifiable evidence. A genuine quality signal, and a number.
 
 ### Systemic finding: dispatched worktrees start on a stale commit
 

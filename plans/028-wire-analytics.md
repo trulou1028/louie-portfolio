@@ -1,4 +1,4 @@
-# Plan 028: Wire the nine analytics events that map to real interactions
+# Plan 028: Wire the eight analytics events that map to real interactions
 
 > **Executor instructions**: Follow this plan step by step. Run every
 > verification command and confirm the expected result before moving to the
@@ -19,6 +19,7 @@
 - **Risk**: LOW — additive; no existing behaviour changes. The privacy guard already exists and is tested.
 - **Depends on**: none (020 recommended first so CI runs the new tests)
 - **Category**: direction
+- **CORRECTION (2026-09-02, found by the executor): eight events fire, not nine.** This plan's arithmetic was off by one and the title said nine. Counting it out: 13 in `ANALYTICS_EVENTS`, minus 4 that describe features which do not exist (`ai_evidence_opened` and `ai_navigation_triggered`, removed by Plan 014; `voice_started` and `voice_question_completed`, awaiting Plan 009) = 9 wireable, minus `portfolio_case_section_viewed` which this plan's own "Deferred, deliberately" section defers = **8 wired**. The executor flagged the discrepancy rather than silently overriding either the code or the checklist, which was the right call. `grep -rn "track(" app components | grep -v "\.test\." | wc -l` → **8**, matching Steps 2–5's own per-file numbers (2+2+2+1+1).
 - **Planned at**: commit `50e98a4`, 2026-08-31. **Re-verified 2026-09-02** at `972704c`, after 020–027. `lib/analytics.ts` is unchanged and still has **zero** `track(` call sites outside its own test; `lib/analytics.test.ts` has 5 tests. Anchors re-confirmed: `setApproached(true)` at `ai-louie-thread.tsx:89` (fallback) and `:96` (observer); `sendText` at `ai-louie-live.tsx:332`; the suggestion `onClick` at `:275`; `setPhase({ status: "done" … })` at `job-description-dialog.tsx:71`.
   **Two corrections to this plan, made before dispatch:**
   - **The job-fit field names in Step 4 were wrong.** There is no `strongMatches` or `gaps`. The real schema (`lib/ai/job-fit.ts:21-45`) is `summary`, `strongestMatches[]`, `weakerAreas[]`, `suggestedProjectsToReview[]`, `suggestedQuestions[]`, plus `demotedCount` from `VerifiedJobFit`. Step 4 now names the real ones.
@@ -277,7 +278,7 @@ Check how `@vercel/analytics`'s `track` dispatches in the installed version (`no
 
 ## Done criteria
 
-- [ ] `grep -rn "track(" app components | grep -v "\.test\." | wc -l` → 9
+- [ ] `grep -rn "track(" app components | grep -v "\.test\." | wc -l` → **8** (see the correction at the top: nine was an off-by-one)
 - [ ] `components/system/track-view.tsx` and `components/system/track-contact-clicks.tsx` exist
 - [ ] `pnpm test` passes, including the new `sanitizeProperties` cases
 - [ ] `pnpm test:e2e` → `0 failed`, `e2e/analytics.spec.ts` present
