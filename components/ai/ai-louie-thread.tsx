@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 
 import { AssistantAvatar } from "@/components/ai/assistant-avatar";
 import { Surface } from "@/components/system/surface";
+import { track } from "@/lib/analytics";
 
 /**
  * The rail-mounted lazy wrapper (spec §11 §2, §27; Plan 012).
@@ -86,7 +87,10 @@ function AiLouieThread() {
       // Very old browsers only. Scheduled rather than set synchronously so
       // this stays one render pass, and so it cannot desync from SSR (where
       // IntersectionObserver is always absent).
-      const id = window.setTimeout(() => setApproached(true), 0);
+      const id = window.setTimeout(() => {
+        setApproached(true);
+        track("ai_louie_started", { trigger: "fallback" });
+      }, 0);
       return () => window.clearTimeout(id);
     }
 
@@ -94,6 +98,7 @@ function AiLouieThread() {
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
           setApproached(true);
+          track("ai_louie_started", { trigger: "approach" });
           observer.disconnect();
         }
       },

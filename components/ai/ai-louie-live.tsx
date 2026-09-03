@@ -11,6 +11,7 @@ import { AnswerMarkdown } from "@/components/ai/answer-markdown";
 import { JobDescriptionDialog } from "@/components/ai/job-description-dialog";
 import { SectionLabel } from "@/components/system/section-label";
 import { Surface } from "@/components/system/surface";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import {
   MessageScrollerProvider,
@@ -60,6 +61,17 @@ const SUGGESTIONS = [
   "How technical is Louie?",
   "Tell me about Flexi",
 ] as const;
+
+/**
+ * A short kebab slug per suggestion, sent to analytics instead of the prompt
+ * text — keeps the property stable if the copy is reworded, and keeps every
+ * message-shaped string out of `track` on principle.
+ */
+const SUGGESTION_SLUGS: Record<string, string> = {
+  "Show me Offboard": "show-offboard",
+  "How technical is Louie?": "how-technical",
+  "Tell me about Flexi": "show-flexi",
+};
 
 /**
  * Renders only "text" parts as visible content. Every other part type —
@@ -271,7 +283,10 @@ function Suggestions({
             <button
               type="button"
               disabled={disabled}
-              onClick={() => onSelect(prompt)}
+              onClick={() => {
+                track("ai_prompt_chip_clicked", { chip: SUGGESTION_SLUGS[prompt] });
+                onSelect(prompt);
+              }}
               className={cn(
                 SUGGESTION_CHIP,
                 "border-transparent bg-surface-muted text-foreground-muted",
@@ -329,6 +344,7 @@ function AiLouieLive() {
   function sendText(text: string) {
     const trimmed = text.trim();
     if (!trimmed || isBusy) return;
+    track("ai_question_submitted", { turn: messages.length });
     sendMessage({ text: trimmed });
   }
 
