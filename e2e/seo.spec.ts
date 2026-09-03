@@ -150,5 +150,8 @@ test("security headers are present", async ({ request }) => {
   expect(headers["x-content-type-options"]).toBe("nosniff");
   expect(headers["referrer-policy"]).toBe("strict-origin-when-cross-origin");
   expect(headers["x-frame-options"]).toBe("DENY");
-  expect(headers["content-security-policy-report-only"]).toContain("frame-ancestors 'none'");
+  expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
+  expect(headers["content-security-policy"]).toContain("img-src 'self' data:");
+  // Enforcing, not report-only: WebKit ignores report-only without report-to.
+  expect(headers["content-security-policy-report-only"]).toBeUndefined();
 });
