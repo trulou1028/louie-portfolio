@@ -14,6 +14,7 @@ import { Action } from "@/components/system/action";
 import { JobFitResult } from "@/components/ai/job-fit-result";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { VerifiedJobFit } from "@/lib/ai/job-fit";
+import { track } from "@/lib/analytics";
 
 /**
  * The recruiter entry point (spec §22).
@@ -69,6 +70,11 @@ function JobDescriptionDialog({
 
       const body = (await response.json()) as { result: VerifiedJobFit };
       setPhase({ status: "done", result: body.result });
+      track("job_description_compared", {
+        matches: body.result.strongestMatches.length,
+        weakerAreas: body.result.weakerAreas.length,
+        demoted: body.result.demotedCount,
+      });
     } catch {
       setPhase({
         status: "error",
@@ -79,12 +85,14 @@ function JobDescriptionDialog({
   }
 
   function handleOpenChange(open: boolean) {
-    if (!open) {
-      // Drop the description as soon as the dialog closes — there is no
-      // reason to keep it in memory once it has been used.
-      setValue("");
-      setPhase({ status: "idle" });
+    if (open) {
+      track("job_description_started", { source: "chip" });
+      return;
     }
+    // Drop the description as soon as the dialog closes — there is no
+    // reason to keep it in memory once it has been used.
+    setValue("");
+    setPhase({ status: "idle" });
   }
 
   return (
