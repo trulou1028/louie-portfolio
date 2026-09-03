@@ -19,7 +19,10 @@
 - **Risk**: LOW — additive; no existing behaviour changes. The privacy guard already exists and is tested.
 - **Depends on**: none (020 recommended first so CI runs the new tests)
 - **Category**: direction
-- **Planned at**: commit `50e98a4`, 2026-08-31
+- **Planned at**: commit `50e98a4`, 2026-08-31. **Re-verified 2026-09-02** at `972704c`, after 020–027. `lib/analytics.ts` is unchanged and still has **zero** `track(` call sites outside its own test; `lib/analytics.test.ts` has 5 tests. Anchors re-confirmed: `setApproached(true)` at `ai-louie-thread.tsx:89` (fallback) and `:96` (observer); `sendText` at `ai-louie-live.tsx:332`; the suggestion `onClick` at `:275`; `setPhase({ status: "done" … })` at `job-description-dialog.tsx:71`.
+  **Two corrections to this plan, made before dispatch:**
+  - **The job-fit field names in Step 4 were wrong.** There is no `strongMatches` or `gaps`. The real schema (`lib/ai/job-fit.ts:21-45`) is `summary`, `strongestMatches[]`, `weakerAreas[]`, `suggestedProjectsToReview[]`, `suggestedQuestions[]`, plus `demotedCount` from `VerifiedJobFit`. Step 4 now names the real ones.
+  - **The dialog is already controlled.** `job-description-dialog.tsx:91` already passes `onOpenChange={handleOpenChange}`, and `handleOpenChange` at `:81-88` currently handles only the `!open` (close) case. You are adding an `open === true` branch to an existing handler, not introducing one — which also removes the STOP condition about being unable to observe the open transition.
 - **Recommended executor model**: **Sonnet 5.** The call sites are mechanical, but two need judgment about the client/server boundary (Steps 2 and 5) and the plan gives the pattern for both.
 
 ## Why this matters
@@ -177,8 +180,16 @@ Mount it in the three server pages:
 ### Step 4: The job-description evaluator
 
 In `components/ai/job-description-dialog.tsx`:
-- `job_description_started` when the dialog opens. Find how the dialog's open state is controlled (Base UI `Dialog` with a `trigger` prop); if there is an `onOpenChange`, fire on the `true` transition; if the dialog is uncontrolled, add `onOpenChange` for this purpose only and keep the existing behaviour identical. Property: `{ source: "chip" }`.
-- `job_description_compared` in `compare()` on the success path only (right after `setPhase({ status: "done", result: body.result })`). Properties: `{ matches: body.result.strongMatches.length, gaps: body.result.gaps.length }` — read the real field names off `VerifiedJobFit` in `lib/ai/job-fit.ts` and use those. **Never** send the description, its length, or any string from it.
+- `job_description_started` when the dialog opens. `handleOpenChange` already exists at `job-description-dialog.tsx:81-88` and is already wired at `:91`; it currently only handles the close case (`if (!open) { … }`). Add an `open === true` branch that fires `track("job_description_started", { source: "chip" })`. **Leave the existing close behaviour byte-identical** — it clears the pasted description from memory, which is a privacy behaviour, not incidental.
+- `job_description_compared` in `compare()` on the success path only (right after `setPhase({ status: "done", result: body.result })`). Properties, using the **verified** field names from `lib/ai/job-fit.ts`:
+  ```ts
+  track("job_description_compared", {
+    matches: body.result.strongestMatches.length,
+    weakerAreas: body.result.weakerAreas.length,
+    demoted: body.result.demotedCount,
+  });
+  ```
+  `demotedCount` is worth sending: it counts matches whose citations failed verification, so it measures how often the model cites evidence the index cannot back — a genuine quality signal, and a number, not text. **Never** send the description, its length, or any string from it.
 
 **Verify**: `grep -c "track(" components/ai/job-description-dialog.tsx` → 2. `pnpm typecheck && pnpm lint` → exit 0.
 
@@ -244,7 +255,7 @@ Create `e2e/analytics.spec.ts`. Vercel Analytics does not send events in a local
 
 Concretely, make these two assertions:
 
-1. **A unit-level guarantee** (add to `lib/analytics.test.ts`, not e2e): for every property object this plan introduces, `sanitizeProperties` returns it unchanged — i.e. `{ project: "offboard" }`, `{ trigger: "approach" }`, `{ turn: 3 }`, `{ chip: "show-offboard" }`, `{ source: "chip" }`, `{ matches: 2, gaps: 1 }`, `{ method: "email" }` all survive. This proves the properties are the right shape.
+1. **A unit-level guarantee** (add to `lib/analytics.test.ts`, not e2e): for every property object this plan introduces, `sanitizeProperties` returns it unchanged — `{ project: "offboard" }`, `{ source: "page" }`, `{ trigger: "approach" }`, `{ trigger: "fallback" }`, `{ turn: 3 }`, `{ chip: "show-offboard" }`, `{ source: "chip" }`, `{ matches: 2, weakerAreas: 1, demoted: 0 }`, `{ method: "email" }` all survive unchanged. That file currently has 5 tests; model the new ones on them.
 2. **An e2e guard against text leaking** (`e2e/analytics.spec.ts`): stub `window.va` (the Vercel Analytics queue function) via `addInitScript` before navigation, recording every call into `window.__vaCalls`. Then: open the site, click a suggestion chip, type a distinctive string like `"ZZQQ-secret-question"` into the composer and submit (with `/api/chat` mocked as the existing suite does), then read `window.__vaCalls` and assert (a) it is non-empty, and (b) `JSON.stringify(window.__vaCalls)` does **not** contain `"ZZQQ"`.
 
 Check how `@vercel/analytics`'s `track` dispatches in the installed version (`node_modules/@vercel/analytics/dist/index.mjs` — look for `window.va`) and stub whatever it actually calls. If it queues to `window.vaq` instead, stub that.
@@ -279,7 +290,7 @@ Check how `@vercel/analytics`'s `track` dispatches in the installed version (`no
 ## STOP conditions
 
 - `lib/analytics.test.ts` asserts a property of `ANALYTICS_EVENTS` that Step 1's comment change would break — report; do not edit the test.
-- The Base UI `Dialog` in `job-description-dialog.tsx` cannot report its open transition without changing existing behaviour — report; ship the other eight events.
+- Adding the `open === true` branch would require changing the existing close behaviour — report; ship the other eight events. (It should not: the handler already receives `open`.)
 - `@vercel/analytics` dispatches through something the e2e cannot stub — report what you found; keep the unit-level assertion (6.1) and drop only the e2e half.
 - Any step would require sending a string that originated from the visitor.
 
