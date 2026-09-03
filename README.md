@@ -314,10 +314,10 @@ Owner decisions from Louie's review of the live site.
 
 **Security headers (2026-09-02)**
 
-37. **The CSP ships report-only, and `script-src` is `'unsafe-inline'` rather
+37. **The CSP ships enforcing, and `script-src` is `'unsafe-inline'` rather
     than hashed.** `next.config.ts` now sends four plain headers —
     `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`,
-    `Permissions-Policy` — plus a `Content-Security-Policy-Report-Only`. Before
+    `Permissions-Policy` — plus an enforcing `Content-Security-Policy`. Before
     this, Vercel's default HSTS was the only security header the site sent.
 
     Hashing the inline scripts was the original plan and it is not reachable on
@@ -331,17 +331,34 @@ Owner decisions from Louie's review of the live site.
     loads no third-party scripts at all. `'unsafe-inline'` still bars *external*
     script origins, and every script in the served HTML is same-origin.
 
+    **It enforces rather than reporting, and that reverses the first draft.**
+    The plan was to ship `Content-Security-Policy-Report-Only`, watch the
+    console for a week, then promote it. Execution surfaced the flaw: WebKit
+    ignores a report-only policy that carries no `report-to` endpoint — its
+    console says the policy "will have no effect", meaning it neither blocks
+    nor reports. A `report-to` endpoint would be new infrastructure (spec §3).
+    So report-only would have protected no Safari or iPhone visitor at all,
+    while the observe-then-enforce plan quietly watched Chromium only — on a
+    site whose own suite runs WebKit precisely because portfolios get opened on
+    Macs and iPhones. Enforcing was measured before it was chosen: the full e2e
+    suite passed across both engines under the enforcing header, and the WebKit
+    warning disappears. Reverting is a one-word change, but reverting to
+    report-only restores protection for nobody on WebKit — fix the directive
+    instead.
+
     So the real protection here is `img-src`, `frame-ancestors`, `object-src`,
     `connect-src`, `base-uri` and `form-action`, not `script-src`. `img-src`
     matters most: deviation 23 stopped the markdown renderer emitting a
     model-authored `<img>`, and this stops the browser fetching one if that path
     ever reopens — the same hole closed at two layers.
 
-    Report-only means it observes and never blocks. Promoting it to
-    `Content-Security-Policy` waits on a week of clean production console
-    checks, and gets its own plan row rather than a silent one-word edit.
-    `'unsafe-eval'` is appended in development only, for Turbopack's HMR
-    runtime; production never carries it.
+    One accepted risk: `connect-src` cannot be exercised locally, because
+    `@vercel/analytics` only runs on Vercel. If its reporting host is not
+    covered, analytics could silently stop. `vitals.vercel-insights.com` is
+    allowed for that reason, and production must be checked right after the
+    first deploy — if analytics breaks, widen `connect-src` rather than
+    dropping it. `'unsafe-eval'` is appended in development only, for
+    Turbopack's HMR runtime; production never carries it.
 
 ## Deep links
 
