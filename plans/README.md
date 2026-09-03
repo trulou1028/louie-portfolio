@@ -36,7 +36,7 @@ honor its STOP conditions, and update your row when done.
 | 021  | Per-page canonicals + generated share image (+ operator env var) | P1 | S–M | (020) | DONE (merged) |
 | 022  | Chat endpoint: strict message schema, output/duration caps, real error path | P1 | S | (020) | DONE (merged) |
 | 023  | Answer renderer drops images; composer `maxLength`; 413/429 copy | P1 | S | 022 | DONE (merged) |
-| 024  | Security headers + report-only CSP (hashed inline script) | P2 | S–M | 023 | TODO — Opus 5 |
+| 024  | Security headers + **enforcing** CSP (owner decision; not report-only, not hashed) | P2 | S–M | 023 | DONE (merged) |
 | 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | DONE (merged) |
 | 026  | Delete 10 zero-importer files (`tools.ts`, 3 portfolio/system, 5 `ui/`) | P2 | S | — | DONE (merged) |
 | 027  | Fix doc/comment drift (dark mode, fonts, scripts, lazy-load comments) | P2 | S | (025) | TODO — Haiku 4.5 |
@@ -281,6 +281,53 @@ them is code:
   `rail-work-card.tsx`. Folded into this plan's scope rather than deferred
   to 027. Two stale numbers in the plan were also corrected first (the unit
   baseline said 75; it was 87 after 022/023).
+
+- **024 — DONE 2026-09-02, merged.** Executed by a dispatched Opus 5 subagent
+  in worktree `.claude/worktrees/agent-ad6e6d8c46ffe8132`, branch `plan-024`.
+  **STOPPED once, correctly**, then completed after one revision round.
+  Reviewed and approved: scope exactly `next.config.ts`, `e2e/seo.spec.ts`,
+  `e2e/home.spec.ts`, `README.md`; every gate independently re-run by the
+  advisor: typecheck, lint, 69 unit, build, **208 e2e / 10 skipped / 0
+  failed**. `e2e/home.spec.ts` holds **18 tests before and after** — a filter
+  was widened, no coverage removed.
+
+  **The plan was wrong twice, and both corrections came from measurement.**
+  (a) *Before dispatch*, the advisor measured that its hash-based `script-src`
+  was unreachable: Next inlines a flight-data script whose hash differs per
+  page (22,387 B on `/` vs 17,870 B on `/about`) and per build. Steps 2–3 were
+  rewritten to `'unsafe-inline'` before any executor ran.
+  (b) *After the STOP*, the executor found that **WebKit ignores a report-only
+  CSP with no `report-to`** — "the policy will have no effect", neither
+  blocking nor reporting. Report-only would therefore have protected **zero**
+  Safari and iPhone visitors while the observe-then-enforce plan watched
+  Chromium only. The advisor measured enforcing first (full suite green across
+  both engines), put the trade to Louie, and **Louie chose to ship enforcing**.
+  Switching also removed the WebKit warning entirely.
+
+  **Proof the policy is live, not merely present** — the advisor reproduced
+  the executor's positive control independently: registering a
+  `securitypolicyviolation` listener and loading
+  `https://example.com/advisor-probe.png` produced
+  `{directive: "img-src", disposition: "enforce"}`, i.e. blocked. That
+  deliberately-injected violation is the only CSP violation on the page; there
+  are **zero organic ones** on `/`, `/work/offboard` or `/about`. With Plan
+  023's renderer fix, the markdown exfiltration channel is now closed at two
+  independent layers. The deep link `#architecture` still highlights and takes
+  focus under enforcement.
+
+  The one console noise that remains is a **local-only artifact**, not a
+  defect: `@vercel/analytics` requests `/_vercel/insights/script.js`, which
+  exists only on Vercel; elsewhere it 404s as `text/plain` and `nosniff`
+  correctly refuses it — the header working. `e2e/home.spec.ts`'s filter now
+  ignores it, with the reasoning recorded inline so nobody mistakes it for a
+  bug later.
+
+  **Outstanding, and it needs the deploy to test:** `connect-src` cannot be
+  exercised locally because Vercel Analytics only runs on Vercel. After the
+  first push, check the live site's console in **both Chrome and Safari** and
+  confirm analytics still reports. If it does not, **widen `connect-src`
+  rather than dropping it**. Reverting the whole policy to report-only is not
+  the fallback — that protects nobody on WebKit.
 
 ### Findings considered and rejected (this audit)
 
