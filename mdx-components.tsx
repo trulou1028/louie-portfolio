@@ -6,9 +6,9 @@ import { InlineLink } from "@/components/system/inline-link";
  * Prose styling for MDX case studies (spec §8: 65–75 characters per line).
  *
  * Only the plain-prose elements are mapped here. Structural pieces —
- * `Section`, `SystemDiagram`, `ArtifactFrame`, `Metric` — are imported
- * directly inside each `.mdx` file so the content stays explicit about what
- * it is rendering.
+ * `CaseStudySection`, `SystemDiagram`, `ArtifactFrame`, `PendingContent` —
+ * are imported directly inside each `.mdx` file so the content stays
+ * explicit about what it is rendering.
  */
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {

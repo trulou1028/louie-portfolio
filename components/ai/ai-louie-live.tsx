@@ -41,12 +41,11 @@ import { Bubble, BubbleContent } from "@/components/ui/bubble";
  * copy and the rest of the portfolio is untouched.
  *
  * Plan 017: rebuilt on the AI SDK's `useChat` plus shadcn's chat components
- * (`MessageScroller`, `Message`, `Bubble`, `Marker`), replacing the previous
- * chat library — an 836KB client chunk that no longer earned its weight once
- * Plan 014 cut the generative UI and browser-executed tools it existed to
- * run. `useChat` needs no provider, so the panel renders directly; the
- * lazy-load apparatus that used to hide the runtime's size
- * (`ai-louie-thread.tsx`, `IntersectionObserver`) is gone with it.
+ * (`MessageScroller`, `Message`, `Bubble`), replacing the previous chat
+ * library. The deferral is unchanged: `ai-louie-thread.tsx` still
+ * `dynamic()`-imports this file behind an `IntersectionObserver` — Plan 017
+ * measured folding the chunk into the eager bundle and kept the lazy load.
+ * That file owns the bundle-size figures; do not duplicate them here.
  */
 
 /**
@@ -309,10 +308,8 @@ function Suggestions({
 }
 
 /**
- * The live assistant. Rendered directly — `useChat` needs no provider, and
- * without the previous chat library's ~840KB the chat is small enough to
- * skip the lazy load that used to hide it (spec §27 is satisfied by the
- * swap itself now, not by deferring the runtime).
+ * The live assistant. `useChat` needs no provider, so this renders directly
+ * once `ai-louie-thread.tsx` has loaded the chunk (spec §27).
  */
 function AiLouieLive() {
   const { messages, sendMessage, status, stop, error } = useChat({
