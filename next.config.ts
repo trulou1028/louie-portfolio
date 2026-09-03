@@ -1,8 +1,15 @@
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
-// Report-only to begin with: this observes and reports, it never blocks.
-// See plans/024 for the measurement behind `script-src`.
+// This enforces. It blocks, it does not merely warn.
+//
+// Report-only was the original plan and was abandoned: WebKit ignores a
+// report-only policy that carries no `report-to` endpoint — "the policy will
+// have no effect", neither blocking nor reporting — so report-only would have
+// protected no Safari or iPhone visitor at all, while appearing to work in
+// Chromium. A `report-to` endpoint would be new infrastructure (spec §3), and
+// enforcing needs none. See plans/024 for that decision and for the
+// measurement behind `script-src`.
 const csp = [
   "default-src 'self'",
   // `unsafe-inline`, not hashes, and deliberately so: Next inlines a
@@ -13,8 +20,10 @@ const csp = [
   // origins, and this site loads none: every script in the served HTML is
   // same-origin.
   //
-  // Dev appends 'unsafe-eval': Turbopack's HMR runtime needs it. The header
-  // still ships in dev so violations surface while developing; production
+  // Dev appends 'unsafe-eval': Turbopack's HMR runtime needs it, and the
+  // policy enforces in dev too, so without it HMR would be blocked outright.
+  // The header ships in dev deliberately, so the policy is exercised while
+  // developing rather than first meeting reality in production. Production
   // never carries 'unsafe-eval'.
   process.env.NODE_ENV === "production"
     ? "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com"
@@ -57,7 +66,7 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
-          { key: "Content-Security-Policy-Report-Only", value: csp },
+          { key: "Content-Security-Policy", value: csp },
         ],
       },
     ];
