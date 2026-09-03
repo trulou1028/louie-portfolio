@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 
 import { AppShell } from "@/components/app-shell/app-shell";
 import { PersonSchema, WebSiteSchema } from "@/components/system/structured-data";
+import { TrackContactClicks } from "@/components/system/track-contact-clicks";
 import { profile } from "@/content/profile";
 import "./globals.css";
 
@@ -91,9 +92,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <PersonSchema />
         <WebSiteSchema />
         <AppShell>{children}</AppShell>
-        {/* Privacy-conscious, no cookies (spec §30). Event properties are
-            guarded in lib/analytics.ts so free text can never be sent. */}
+        {/* Privacy-conscious, no cookies (spec §30). Custom events are a
+            closed list with guarded properties — see lib/analytics.ts. */}
         <Analytics />
+        <TrackContactClicks />
       </body>
     </html>
   );
