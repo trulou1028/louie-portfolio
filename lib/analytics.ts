@@ -15,7 +15,15 @@ import { track as vercelTrack } from "@vercel/analytics";
  * truncated job description is still a job description.
  */
 
-/** Spec §30's event list, verbatim. */
+/**
+ * Spec §30's event list, verbatim.
+ *
+ * Nine of these fire (Plan 028). Four do not, and the list keeps them so it
+ * still matches the spec:
+ * - `ai_evidence_opened`, `ai_navigation_triggered` — the browser-executed
+ *   tools they described were removed by Plan 014.
+ * - `voice_started`, `voice_question_completed` — Plan 009, post-launch.
+ */
 export const ANALYTICS_EVENTS = [
   "portfolio_project_opened",
   "portfolio_case_section_viewed",
