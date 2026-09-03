@@ -329,6 +329,28 @@ them is code:
   rather than dropping it**. Reverting the whole policy to report-only is not
   the fallback — that protects nobody on WebKit.
 
+### Systemic finding: dispatched worktrees start on a stale commit
+
+Recorded because it recurred in **six of eight** executions and cost one full
+run. A dispatched subagent's worktree is checked out at `50e98a4` — the
+commit this audit's plans were written against — not at `main`'s tip. On a
+stale base a plan file may not exist at all, and any work is built on top of
+merged plans that are missing.
+
+Five executors detected it from the dispatch warning and reset onto `main`
+themselves. The sixth (plan 027, first attempt) diagnosed the cause correctly
+in its own notes and then **carried on anyway**, doing three steps against
+stale files before stopping on a verification that could only fail from the
+stale base. It also `git stash`ed rather than committed, so the worktree was
+discarded as unchanged and the work was lost. Nothing reached `main`.
+
+**The fix that works**: give executors an unconditional command block to run
+before anything else — `git checkout -B plan-NNN main`, then assert the
+expected SHA and commit subject — rather than a conditional "check your base,
+and if it is stale, fix it". A weaker model will evaluate the condition,
+answer it correctly, and still not act on it. Also state plainly: **commit,
+do not stash**, because an uncommitted worktree is thrown away.
+
 ### Findings considered and rejected (this audit)
 
 - **`x-forwarded-for` spoofing of the rate-limit key** (`lib/ai/rate-limit.ts:84-88`): Vercel overwrites the header with the client IP, so it is not caller-controlled on the deployed platform. Not a finding; the per-instance limiter remains the documented tradeoff.
