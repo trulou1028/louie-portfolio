@@ -2,8 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Kept so upstream shadcn components carrying `dark:` classes still compile.
-   No `.dark` palette is defined — dark mode is deferred (spec §6, §37). */
+/* Registers the `dark` variant for upstream shadcn components. Both palettes
+   are defined below — light on :root, dark on .dark — and <html class="dark">
+   makes dark the default. */
 @custom-variant dark (&:is(.dark *));
 
 /* ---------------------------------------------------------------------------

@@ -65,14 +65,19 @@ Recorded per spec §39.14, in build order.
    `LayoutProps`/`PageProps` global types during build; without typegen a
    standalone `tsc --noEmit` fails on route files.
 4. **shadcn "nova" preset.** The CLI required a preset; nova pairs Lucide with
-   Geist, matching spec §3 and §7. Its grayscale palette is fully overridden by
-   the spec §6 tokens.
+   Geist; the Geist Sans half was later replaced by Outfit and the display face
+   by Roboto Slab (see the RHEA preset note in `app/globals.css`). Its
+   grayscale palette is fully overridden by the spec §6 tokens.
 5. **shadcn semantic tokens are derived, not duplicated.** `--background`,
    `--primary`, `--muted` and friends are defined in `:root` in terms of the
    spec §6 tokens, so upstream primitives inherit the portfolio palette.
-6. **No `.dark` palette.** The `dark` variant stays registered so upstream
-   components carrying `dark:` classes compile, but no dark theme is defined —
-   dark mode is deferred per spec §6 and §37.
+6. **Both palettes ship; dark is the default.** `:root` carries the light
+   palette and `.dark` the dark one, with `<html class="dark">` in
+   `app/layout.tsx` making dark the default (the RHEA preset,
+   `restyle/rhea-dark`). The `dark` variant is registered for upstream
+   components. A theme toggle is a later one-liner. Supersedes the original
+   'dark mode is deferred' decision; spec §6's ordering (light first) was
+   honoured, then dark was adopted as the primary look.
 
 **Phase 1–2 — design system and shell (Plans 002, 003)**
 

@@ -65,9 +65,10 @@ styling and semantics belong in wrappers: `components/system/`,
 `components/portfolio/`, `components/app-shell/`, `components/ai/`
 (spec §33). Do not scatter raw `Button`/`Card`/`Badge` through pages.
 
-**Fonts.** Instrument Serif (`font-serif`) for display statements and project
-titles only. Geist Sans (`font-sans`) for UI and body. Geist Mono
-(`font-mono`) for short system labels only — never paragraphs (spec §7).
+**Fonts.** Roboto Slab (`font-serif`, also `--font-heading`) for display
+statements and project titles only. Outfit (`font-sans`) for UI and body.
+Geist Mono (`font-mono`) for short system labels only — never paragraphs
+(spec §7). All three load through `next/font/google` in `app/layout.tsx`.
 
 **Card anatomy.** One padding scale, no in-between values: compact card
 `p-4`, standard card `p-5`, panel `p-6` (a panel may step up to `sm:p-8`).
@@ -88,7 +89,12 @@ metadata rows. Decorative icons always `aria-hidden`.
 job-fit dialog, which previews its four result sections). No bare spinners
 without text, and no skeleton that misrepresents what is coming.
 
-**Dark mode.** Deferred (spec §6, §37). Do not add `dark:` variants.
+**Dark mode.** Dark is the default (`<html class="dark">`); both palettes
+live in `app/globals.css`. Do not add `dark:` variants in portfolio
+components — write against the tokens, which already resolve per theme.
+Respect the split accent: `text-accent` for text and markers, `bg-accent-fill`
+(+ `text-accent-on-fill`) for filled controls; see the note above `:root` in
+`globals.css`.
 
 ## Content integrity — the rule that matters most
 
