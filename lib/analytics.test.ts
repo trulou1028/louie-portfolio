@@ -34,3 +34,47 @@ describe("property sanitizing", () => {
     expect(Object.values(sanitizeProperties({ jd }))).toHaveLength(0);
   });
 });
+
+describe("Plan 028 call-site properties survive sanitizing unchanged", () => {
+  it("portfolio_project_opened / resume_opened", () => {
+    expect(sanitizeProperties({ project: "offboard" })).toEqual({
+      project: "offboard",
+    });
+    expect(sanitizeProperties({ source: "page" })).toEqual({ source: "page" });
+  });
+
+  it("ai_louie_started", () => {
+    expect(sanitizeProperties({ trigger: "approach" })).toEqual({
+      trigger: "approach",
+    });
+    expect(sanitizeProperties({ trigger: "fallback" })).toEqual({
+      trigger: "fallback",
+    });
+  });
+
+  it("ai_question_submitted", () => {
+    expect(sanitizeProperties({ turn: 3 })).toEqual({ turn: 3 });
+  });
+
+  it("ai_prompt_chip_clicked", () => {
+    expect(sanitizeProperties({ chip: "show-offboard" })).toEqual({
+      chip: "show-offboard",
+    });
+  });
+
+  it("job_description_started", () => {
+    expect(sanitizeProperties({ source: "chip" })).toEqual({ source: "chip" });
+  });
+
+  it("job_description_compared", () => {
+    expect(
+      sanitizeProperties({ matches: 2, weakerAreas: 1, demoted: 0 }),
+    ).toEqual({ matches: 2, weakerAreas: 1, demoted: 0 });
+  });
+
+  it("contact_clicked", () => {
+    expect(sanitizeProperties({ method: "email" })).toEqual({
+      method: "email",
+    });
+  });
+});
