@@ -242,8 +242,19 @@ test.describe("runtime health", () => {
 
     // The AI endpoint is not mocked here and has no key in CI, so a failed
     // /api/chat request is expected and not what this guards.
+    //
+    // `_vercel/insights` is the same kind of artifact. `@vercel/analytics`
+    // requests /_vercel/insights/script.js, a path that exists only on Vercel;
+    // anywhere else it 404s as text/plain and `X-Content-Type-Options: nosniff`
+    // correctly refuses to execute it. That is the header working, not a bug —
+    // on Vercel the script serves real JS with a correct MIME type. The same
+    // 404 already reached this filter as "Failed to load resource"; nosniff
+    // only changes the wording.
     const unexpected = errors.filter(
-      (e) => !/Failed to load resource|api\/chat|503|ai_unavailable/i.test(e),
+      (e) =>
+        !/Failed to load resource|api\/chat|503|ai_unavailable|_vercel\/insights/i.test(
+          e,
+        ),
     );
     expect(unexpected, unexpected.join("\n")).toEqual([]);
   });
