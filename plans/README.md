@@ -39,7 +39,7 @@ honor its STOP conditions, and update your row when done.
 | 024  | Security headers + **enforcing** CSP (owner decision; not report-only, not hashed) | P2 | S–M | 023 | DONE (merged) |
 | 025  | Deep-link highlight strand fix + one breakpoint constant + boundary e2e | P2 | S | — | DONE (merged) |
 | 026  | Delete 10 zero-importer files (`tools.ts`, 3 portfolio/system, 5 `ui/`) | P2 | S | — | DONE (merged) |
-| 027  | Fix doc/comment drift (dark mode, fonts, scripts, lazy-load comments) | P2 | S | (025) | TODO — Haiku 4.5 |
+| 027  | Fix doc/comment drift (dark mode, fonts, scripts, lazy-load comments) | P2 | S | (025) | DONE (merged) |
 | 028  | Wire the 9 live analytics events (owner deferred the call, 2026-08-31) | P2 | M | (020) | TODO — Sonnet 5 |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
@@ -328,6 +328,33 @@ them is code:
   confirm analytics still reports. If it does not, **widen `connect-src`
   rather than dropping it**. Reverting the whole policy to report-only is not
   the fallback — that protects nobody on WebKit.
+
+- **027 — DONE 2026-09-02, merged.** Took **two dispatches**. The first
+  (Haiku 4.5) hit the stale-worktree problem, diagnosed it correctly in its
+  own notes, proceeded anyway, then stopped on a verification that could only
+  fail from the stale base — and `git stash`ed rather than committed, so the
+  worktree was discarded as unchanged and the work was lost. Nothing reached
+  `main`. See the systemic finding below; the retry used an unconditional
+  `git checkout -B plan-027 main` plus an asserted SHA, and a "commit, do not
+  stash" instruction.
+  The retry (Sonnet 5, worktree `.claude/worktrees/agent-a7f267b983cf1b2df`,
+  branch `plan-027`, one commit on `main`@`4bcd2d7`) succeeded.
+  Reviewed and approved: scope exactly `README.md`, `AGENTS.md`,
+  `app/globals.css`, `components/ai/ai-louie-live.tsx`, `mdx-components.tsx`
+  — with `app/layout.tsx` and `contextual-rail.tsx` correctly **absent**.
+  Gates re-run by the advisor: typecheck, lint, 69 unit, build, 208 e2e / 0
+  failed.
+  **The quality bar this plan lives or dies by was met**: the advisor read
+  every changed line in the three code files and confirmed **zero executable
+  lines changed** — the diff is comments and markdown only. The advisor also
+  verified each new comment is *factually true* rather than merely different:
+  no `.mdx` file imports `Metric` (the new list names what they actually
+  import); `Marker` is genuinely no longer imported by `ai-louie-live.tsx`;
+  `ai-louie-thread.tsx:35` still `dynamic()`-imports behind an
+  `IntersectionObserver`, so the "deferral is unchanged" claim holds; and
+  `.dark` plus `<html class="dark">` both exist.
+  Net effect: `AGENTS.md` no longer tells an agent the site has no dark mode
+  and no longer names two typefaces the project does not load.
 
 ### Systemic finding: dispatched worktrees start on a stale commit
 
