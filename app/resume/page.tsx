@@ -8,6 +8,7 @@ import { Action } from "@/components/system/action";
 import { InlineLink } from "@/components/system/inline-link";
 import { SectionLabel } from "@/components/system/section-label";
 import { Tag } from "@/components/system/tag";
+import { TrackView } from "@/components/system/track-view";
 import { profile } from "@/content/profile";
 import { resume } from "@/content/resume";
 
@@ -29,6 +30,7 @@ export default function ResumePage() {
 
   return (
     <Canvas>
+      <TrackView event="resume_opened" properties={{ source: "page" }} />
       <div className="max-w-[760px]">
         <SectionLabel>Resume</SectionLabel>
 

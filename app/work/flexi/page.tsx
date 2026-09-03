@@ -9,6 +9,7 @@ import {
   TableOfContents,
   TableOfContentsInline,
 } from "@/components/portfolio/table-of-contents";
+import { TrackView } from "@/components/system/track-view";
 import { workProjects } from "@/content/work/projects";
 import { FLEXI_ANCHORS } from "@/lib/routes";
 
@@ -36,6 +37,7 @@ export default function FlexiCaseStudy() {
       }
     >
       <DeepLinkHighlight />
+      <TrackView event="portfolio_project_opened" properties={{ project: "flexi" }} />
       <CreativeWorkSchema project={project} />
       <article className="max-w-[760px]">
         <CaseStudyHeader
