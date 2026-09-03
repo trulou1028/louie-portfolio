@@ -19,7 +19,9 @@
 - **Risk**: LOW (prose only; no code paths change)
 - **Depends on**: none. If Plan 025 has landed, item 6 is already done — skip it.
 - **Category**: docs
-- **Planned at**: commit `50e98a4`, 2026-08-31
+- **Planned at**: commit `50e98a4`, 2026-08-31. **Re-verified item by item 2026-09-02** at `2b63a5e`, after 020–026 merged. Seven of the nine items still apply; line numbers below were refreshed against the live files. **Two changed:**
+  - **Item 6 (`contextual-rail.tsx` "three places") is already DONE** — Plan 025 rewrote that docstring with the full twelve-site inventory. `grep "three places"` returns nothing. Skip Step 4 entirely.
+  - **Item 9 (`app/layout.tsx`'s analytics comment) has been handed to Plan 028.** Louie decided to wire analytics, so the truthful comment is the one 028 writes when the events actually fire. Writing "unused pending a decision" here would be stale within a day, and both plans editing the same line invites a conflict. **Do not touch `app/layout.tsx`.**
 - **Recommended executor model**: **Haiku 4.5.** Every edit is a quoted before/after with a grep to confirm; no design judgment.
 
 ## Why this matters
@@ -33,26 +35,26 @@ This repo is worked on mostly by agents, and its three load-bearing documents co
 
 ## Current state (exact text to change)
 
-1. `README.md:60-62`:
+1. `README.md:67-69` (line numbers refreshed 2026-09-02):
    ```
    4. **shadcn "nova" preset.** The CLI required a preset; nova pairs Lucide with
       Geist, matching spec §3 and §7. Its grayscale palette is fully overridden by
       the spec §6 tokens.
    ```
-2. `README.md:66-68`:
+2. `README.md:73-75`:
    ```
    6. **No `.dark` palette.** The `dark` variant stays registered so upstream
       components carrying `dark:` classes compile, but no dark theme is defined —
       dark mode is deferred per spec §6 and §37.
    ```
-3. `AGENTS.md:65-67`:
+3. `AGENTS.md:68-70`:
    ```
    **Fonts.** Instrument Serif (`font-serif`) for display statements and project
    titles only. Geist Sans (`font-sans`) for UI and body. Geist Mono
    (`font-mono`) for short system labels only — never paragraphs (spec §7).
    ```
    Truth: `app/layout.tsx:10-23` loads `Outfit` (`--font-outfit`), `Geist_Mono` (`--font-geist-mono`), `Roboto_Slab` (`--font-roboto-slab`); `app/globals.css` maps `--font-sans` → Outfit and both `--font-serif` and `--font-heading` → Roboto Slab (grep `--font-serif` there to cite the line).
-4. `AGENTS.md:88`: `**Dark mode.** Deferred (spec §6, §37). Do not add `dark:` variants.`
+4. `AGENTS.md:91`: `**Dark mode.** Deferred (spec §6, §37). Do not add `dark:` variants.`
    Truth: `app/layout.tsx:55` — `className={\`dark ${outfit.variable} …\`}`; `app/globals.css:104` — `.dark {` with a full palette; `app/globals.css:14-35` explains the split `--accent` (text-safe) vs `--accent-fill` rule.
 5. `app/globals.css:5-7`:
    ```
@@ -61,7 +63,7 @@ This repo is worked on mostly by agents, and its three load-bearing documents co
    @custom-variant dark (&:is(.dark *));
    ```
 6. `components/app-shell/contextual-rail.tsx:15-18` — "encoded in three places that MUST agree: this constant (the JS half), the `max-lg:hidden` guard on the rail pane, and the `lg:`/`max-lg:` variants in `ask-panel.tsx`." (Plan 025 rewrites this; skip if done.)
-7. `components/ai/ai-louie-live.tsx:43-49`:
+7. `components/ai/ai-louie-live.tsx:43-49` (the "is gone with it" claim is at `:49`; the "skip the lazy load" one at `:314`):
    ```
     * Plan 017: rebuilt on the AI SDK's `useChat` plus shadcn's chat components
     * (`MessageScroller`, `Message`, `Bubble`, `Marker`), replacing the previous
@@ -94,7 +96,9 @@ This repo is worked on mostly by agents, and its three load-bearing documents co
 
 ## Scope
 
-**In scope** (prose and comments only): `README.md`, `AGENTS.md`, `app/globals.css` (lines 5-7 only), `components/app-shell/contextual-rail.tsx` (docstring only), `components/ai/ai-louie-live.tsx` (the two comment blocks only), `mdx-components.tsx` (docblock only), `app/layout.tsx` (the one JSX comment only).
+**In scope** (prose and comments only): `README.md`, `AGENTS.md`, `app/globals.css` (the header comment only), `components/ai/ai-louie-live.tsx` (the two comment blocks only), `mdx-components.tsx` (docblock only).
+
+**Explicitly NOT in scope now:** `app/layout.tsx` (handed to Plan 028) and `components/app-shell/contextual-rail.tsx` (Plan 025 already fixed it).
 
 **Out of scope**: any non-comment line in any file; the README "Deviations" numbering (append, never renumber); `plans/*` except the index row.
 
@@ -126,11 +130,11 @@ Replace lines 5-6 with: `/* Registers the \`dark\` variant for upstream shadcn c
 
 **Verify**: `grep -n "No \`.dark\` palette is defined" app/globals.css` → no output.
 
-### Step 4: contextual-rail docstring (skip if Plan 025 landed)
+### Step 4: contextual-rail docstring — **SKIP, already done**
 
-Replace "three places" with the real inventory: this constant; `useMinWidth(1024)` in `app-shell.tsx`; `max-lg:hidden` in `app-shell.tsx` and `contextual-rail.tsx`; `lg:overflow-y-auto` in `contextual-rail.tsx`; `max-lg:*` in `ask-panel.tsx`; `lg:hidden` in `mobile-nav.tsx` and `table-of-contents.tsx`; the numeric pre-hydration guard in `app/globals.css` (cite its line after grepping `1023`).
+Plan 025 already did this — it replaced the "three places" claim with the full twelve-site inventory, including the two separate `1023.98px` media blocks in `globals.css`.
 
-**Verify**: `grep -n "three places" components/app-shell/contextual-rail.tsx` → no output.
+**Verify only**: `grep -n "three places" components/app-shell/contextual-rail.tsx` → no output. It should already be clean. If it is not, something reverted 025 — STOP and report rather than redoing the work.
 
 ### Step 5: ai-louie-live.tsx comments
 
@@ -140,13 +144,13 @@ Rewrite `:297-302` to: "The live assistant. `useChat` needs no provider, so this
 
 **Verify**: `grep -n "is gone with it\|skip the lazy load" components/ai/ai-louie-live.tsx` → no output. `pnpm lint` → exit 0.
 
-### Step 6: mdx-components.tsx and layout.tsx comments
+### Step 6: mdx-components.tsx docblock
 
 `mdx-components.tsx:8-11` → "Structural pieces — `CaseStudySection`, `SystemDiagram`, `ArtifactFrame`, `PendingContent` — are imported directly inside each `.mdx` file so the content stays explicit about what it is rendering."
 
-`app/layout.tsx:96-97` → `{/* Privacy-conscious, no cookies (spec §30). Page views only: no custom events are sent yet (lib/analytics.ts is unused pending a decision). */}`
+**Do NOT touch `app/layout.tsx`** — its analytics comment now belongs to Plan 028, which will make it true by wiring the events. See the Status note.
 
-**Verify**: `grep -n "Metric" mdx-components.tsx` → no output; `grep -n "unused pending" app/layout.tsx` → 1.
+**Verify**: `grep -n "Metric" mdx-components.tsx` → no output; `git diff --name-only` does **not** list `app/layout.tsx`.
 
 ### Step 7: Gate
 
@@ -158,8 +162,8 @@ None — prose only. The greps in each step are the checks.
 
 ## Done criteria
 
-- [ ] All seven step greps pass as stated
-- [ ] `git diff --stat` touches only the seven in-scope files
+- [ ] Every step's grep passes as stated
+- [ ] `git diff --name-only` lists **at most** `README.md`, `AGENTS.md`, `app/globals.css`, `components/ai/ai-louie-live.tsx`, `mdx-components.tsx` — and **neither** `app/layout.tsx` nor `components/app-shell/contextual-rail.tsx`
 - [ ] `git diff` shows no non-comment code line changed (reviewer: read the diff)
 - [ ] `pnpm typecheck && pnpm lint && pnpm test` exit 0
 - [ ] `plans/README.md` status row updated
