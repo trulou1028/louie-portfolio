@@ -73,6 +73,16 @@
   --duration-stagger: 100ms;
   --motion-reveal-ease: 0.22, 1, 0.36, 1;
 
+  /* Plan 036: the homepage product sculpture. These values bridge the DOM
+     poster and WebGL scene so the fallback and live model stay in one palette. */
+  --hero-system-layer: 24 8% 84%;
+  --hero-system-layer-highlight: 24 10% 96%;
+  --hero-system-edge: 24 6% 58%;
+  --hero-system-mark: 24 8% 34%;
+  --hero-system-accent: var(--accent);
+  --hero-system-shadow: 20 14% 4%;
+  --hero-system-label-duration: 380ms;
+
   /* ---- shadcn/Base UI semantic bridge -------------------------------------
      Upstream components reference these names; they are derived from the
      tokens above so primitives inherit the portfolio palette automatically.
@@ -119,6 +129,13 @@
   --accent-muted: 257.209302 40% 32%;
   --accent-soft: 257.209302 30% 15%;
   --accent-foreground: 257.209302 100.000000% 74.705882%;
+
+  --hero-system-layer: 20 7% 12%;
+  --hero-system-layer-highlight: 24 7% 22%;
+  --hero-system-edge: 24 5% 48%;
+  --hero-system-mark: 27 6% 68%;
+  --hero-system-accent: var(--accent);
+  --hero-system-shadow: 0 0% 0%;
 
   --danger: 0 72% 60%;
   --success: 145 45% 55%;

@@ -7,15 +7,29 @@ const NAV = [
   { label: "Resume", path: "/resume" },
 ];
 
-test("homepage leads with Offboard then analytics, with real images", async ({ page }) => {
+test("homepage leads with Offboard then analytics in the responsive selected-work grid", async ({ page }, testInfo) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "Complex workflows. Clear decisions." })).toBeVisible();
+  await expect(page.locator("main canvas")).toHaveCount(0);
   const featured = page.getByTestId("featured-work");
   await expect(featured).toHaveCount(1);
-  const destinations = await featured.locator('a[href^="/work/"]').evaluateAll((els) => els.map((el) => el.getAttribute("href")));
+  const projectLinks = featured.locator('a[href^="/work/"]');
+  const destinations = await projectLinks.evaluateAll((els) => els.map((el) => el.getAttribute("href")));
   expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics"]);
-  await expect(featured.locator("img")).toHaveCount(2);
+  await expect(featured.locator("img")).toHaveCount(4);
   await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
+  await expect(projectLinks.first()).toBeVisible();
+  await page.waitForTimeout(1_000);
+  const [firstCard, secondCard] = await Promise.all([projectLinks.nth(0).boundingBox(), projectLinks.nth(1).boundingBox()]);
+  expect(firstCard).not.toBeNull();
+  expect(secondCard).not.toBeNull();
+  if (testInfo.project.name === "mobile") {
+    expect(Math.abs(secondCard!.x - firstCard!.x)).toBeLessThan(2);
+    expect(secondCard!.y).toBeGreaterThan(firstCard!.y + firstCard!.height);
+  } else {
+    expect(Math.abs(secondCard!.y - firstCard!.y)).toBeLessThan(2);
+    expect(secondCard!.x).toBeGreaterThan(firstCard!.x + firstCard!.width);
+  }
   const allWork = featured.getByRole("link", { name: "All work →" });
   await expect(allWork).toHaveAttribute("href", "/work");
   await expect(allWork).not.toHaveAttribute("role", "button");

@@ -6,7 +6,6 @@ import { Canvas } from "@/components/app-shell/contextual-rail";
 import { WorkCard } from "@/components/portfolio/work-card";
 import { ExperimentCard } from "@/components/portfolio/experiment-card";
 import { Action } from "@/components/system/action";
-import { SectionLabel } from "@/components/system/section-label";
 import { InlineLink } from "@/components/system/inline-link";
 import { profile } from "@/content/profile";
 import { workProjects, featuredWork } from "@/content/work/projects";
@@ -17,13 +16,16 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
 export default function Home() {
   return <Canvas className="flex flex-col gap-14">
     <MotionReveal stagger><section>
-      <SectionLabel>{profile.positioning.eyebrow}</SectionLabel>
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <p className="text-heading-md font-medium text-foreground">{profile.name}</p>
+        <p className="text-body-sm text-foreground-muted">{profile.role}</p>
+      </div>
       <RevealHeading as="h1" className="mt-6 max-w-[18ch] font-serif text-display-xl text-balance text-foreground">{profile.positioning.primary}</RevealHeading>
       <p className="mt-6 max-w-[56ch] text-body-lg text-foreground-muted">{profile.positioning.supporting}</p>
     </section></MotionReveal>
-    <section data-testid="featured-work" aria-labelledby="featured-work-label" className="flex flex-col gap-6">
+    <section data-testid="featured-work" aria-labelledby="featured-work-label" className="@container flex flex-col gap-6">
       <MotionReveal><RevealHeading id="featured-work-label" className="text-heading-md text-foreground">Selected work</RevealHeading></MotionReveal>
-      <div className="flex flex-col gap-4">{featuredWork.map((project) => <WorkCard key={project.slug} project={project} />)}</div>
+      <div className="grid gap-4 @2xl:grid-cols-2">{featuredWork.map((project, index) => <WorkCard key={project.slug} project={project} layout="stacked" eager={index === 0} />)}</div>
       <Action variant="ghost" render={<Link href="/work" />} className="self-start">All work →</Action>
     </section>
     <section className="flex flex-col gap-6" aria-labelledby="more-work-label">

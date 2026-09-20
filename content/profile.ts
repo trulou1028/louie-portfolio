@@ -68,7 +68,7 @@ export const profile = {
     // is the strategy mockup's two lines.
     status: "open" as "open" | "selective" | "unavailable" | null,
     label: "Available for new projects" as string | null,
-    detail: "Open to full-time roles" as string | null,
+    detail: "Open to full-time and part-time roles" as string | null,
   },
 
   // Verified: the resume header states San Francisco, CA.
