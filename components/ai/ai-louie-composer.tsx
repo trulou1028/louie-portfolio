@@ -87,7 +87,7 @@ function AiLouieComposer({
         rows={1}
         autoFocus={false}
         aria-label="Ask anything about Louie's work"
-        placeholder="Ask anything about Louie's work..."
+        placeholder="Ask me about my work..."
         value={value}
         maxLength={MAX_CHARS_PER_MESSAGE}
         onChange={(event) => onChange(event.target.value)}

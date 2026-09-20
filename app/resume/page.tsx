@@ -14,15 +14,15 @@ import { resume } from "@/content/resume";
 
 export const metadata: Metadata = {
   title: "Resume",
-  description: `${profile.name} — ${resume.headline}. 10+ years designing and shipping AI-powered learning, workflow, and decision-support products.`,
+  description: `${profile.name} — ${resume.headline}. 14+ years designing digital products, including learning, workflow, and decision-support experiences.`,
   alternates: { canonical: "/resume" },
 };
 
 /**
  * Resume, rendered as HTML in addition to the PDF (spec §28).
  *
- * Content comes verbatim from `content/resume.ts`, which mirrors the PDF
- * Louie supplied. The phone number on the PDF is deliberately not rendered
+ * Content comes from `content/resume.ts`, adapted from Louie’s supplied resumes
+ * for a general portfolio audience. The downloadable PDF uses the same data. The phone number on the PDF is deliberately not rendered
  * here — a public, crawlable page is not the place for it.
  */
 export default function ResumePage() {

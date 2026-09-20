@@ -1,14 +1,11 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { SectionLabel } from "@/components/system/section-label";
 import type { Anchor } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
-/**
- * Case-study navigation (spec §10: "table of contents during a case study").
- *
- * Plain anchor links — no scroll-spy. Highlighting the current section needs
- * client JS and an IntersectionObserver for a decorative gain; the links work
- * without hydration, which matters when JavaScript is unavailable (spec §31).
- */
+/** Native anchors with a scroll-driven current-section indicator. */
 function TableOfContents({
   anchors,
   className,
@@ -16,6 +13,34 @@ function TableOfContents({
   anchors: readonly Anchor[];
   className?: string;
 }) {
+  const [active, setActive] = useState<string | null>(null);
+  useEffect(() => {
+    const canvas = document.querySelector<HTMLElement>("[data-canvas-scroll]");
+    if (!canvas) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const readingLine = canvas.getBoundingClientRect().top + canvas.clientHeight * 0.3;
+      let current: string | null = null;
+      for (const anchor of anchors) {
+        const section = document.getElementById(anchor.id);
+        if (section && section.getBoundingClientRect().top <= readingLine) current = anchor.id;
+      }
+      setActive(current);
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    canvas.addEventListener("scroll", schedule, { passive: true });
+    const resize = new ResizeObserver(schedule);
+    resize.observe(canvas);
+    const article = canvas.querySelector("article");
+    if (article) resize.observe(article);
+    schedule();
+    return () => {
+      cancelAnimationFrame(frame);
+      canvas.removeEventListener("scroll", schedule);
+      resize.disconnect();
+    };
+  }, [anchors]);
   return (
     <nav aria-label="On this page" className={className}>
       <SectionLabel className="mb-3">On this page</SectionLabel>
@@ -24,7 +49,8 @@ function TableOfContents({
           <li key={anchor.id}>
             <a
               href={`#${anchor.id}`}
-              className="focus-ring block rounded-sm px-2 py-1.5 text-body-sm text-foreground-muted transition-colors duration-(--duration-fast) hover:bg-surface-muted hover:text-foreground"
+              aria-current={active === anchor.id ? "location" : undefined}
+              className={cn("focus-ring block rounded-sm px-2 py-1.5 text-body-sm transition-colors duration-(--duration-fast)", active === anchor.id ? "bg-accent-soft text-accent" : "text-foreground-muted hover:bg-surface-muted hover:text-foreground")}
             >
               {anchor.label}
             </a>

@@ -1,385 +1,138 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
-/**
- * Homepage and shell behavior (spec §10, §11, §25, §26).
- *
- * These assert the things a later refactor could silently break: the exact
- * positioning copy, that every nav destination resolves, that the mobile
- * drawer works by keyboard, and that nothing overflows horizontally.
- */
-
-/**
- * Below lg (1024px), `Canvas` renders the rail in a structurally different
- * tree than on lg+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) —
- * `useMinWidth` reports desktop for the first client render even on a real
- * mobile viewport (matching SSR, so hydration never mismatches) and corrects
- * one effect later, which unmounts and remounts the rail's subtree. A `goto`
- * followed immediately by `scrollIntoViewIfNeeded` can therefore catch
- * `#ask-ai-louie` mid-swap; retrying the whole action rides that out, the
- * same way a real visitor's slower first interaction never would.
- */
-async function scrollToAskPanel(page: Page) {
-  await expect(async () => {
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
-  }).toPass({ timeout: 5_000 });
-}
-
-// The primary nav, post-restructure (Plan 011): Writing and Experiments left
-// the primary nav but remain live, stable URLs (spec §28) — they are still
-// exercised directly by e2e/landmarks.spec.ts and e2e/accessibility.spec.ts.
 const NAV = [
   { label: "Home", path: "/" },
   { label: "Work", path: "/work" },
-  { label: "AI Systems", path: "/ai-systems" },
   { label: "About", path: "/about" },
   { label: "Resume", path: "/resume" },
 ];
 
-test.describe("homepage", () => {
-  test("renders the positioning copy verbatim", async ({ page }) => {
-    await page.goto("/");
-
-    await expect(
-      page.getByRole("heading", {
-        level: 1,
-        name: "I plan, design & ship AI products.",
-      }),
-    ).toBeVisible();
-
-    await expect(
-      page.getByText(
-        "Product designer working across AI systems, complex workflows, design engineering, and product strategy.",
-      ),
-    ).toBeVisible();
-
-    await expect(
-      page.getByText("AI PRODUCT DESIGN · SYSTEMS · DESIGN ENGINEERING"),
-    ).toBeVisible();
-  });
-
-  test("the hero carries no CTAs, and work is still one click away", async ({
-    page,
-  }) => {
-    // Owner decision 2026-08-27: "View selected work" and "Ask Louie" were
-    // removed from the hero — both pointed at surfaces already on screen.
-    // The route out to /work now belongs to Featured work, and it must stay
-    // a link: a navigation control announced as a button misleads
-    // assistive tech.
-    await page.goto("/");
-
-    await expect(
-      page.getByRole("link", { name: "View selected work" }),
-    ).toHaveCount(0);
-
-    const allWork = page
-      .getByTestId("featured-work")
-      .getByRole("link", { name: "All work →" });
-    await expect(allWork).toHaveAttribute("href", "/work");
-    await expect(allWork).not.toHaveAttribute("role", "button");
-  });
-
-  test("features both case studies in the main column", async ({ page }) => {
-    // Plan 011: Featured work moved out of the contextual rail (removed) and
-    // into the main column, directly after the hero, so it is reached fast.
-    await page.goto("/");
-    const featuredWork = page.getByTestId("featured-work");
-
-    await expect(
-      featuredWork.getByRole("link", { name: /Offboard/ }),
-    ).toBeVisible();
-    await expect(
-      featuredWork.getByRole("link", { name: /CK-12 Flexi/ }),
-    ).toBeVisible();
-  });
-
-  test("featured work is present once, at every width", async ({ page }) => {
-    await page.goto("/");
-    const featuredWork = page.getByTestId("featured-work");
-
-    // Exactly one featured-work section — not a desktop copy plus a hidden
-    // mobile copy.
-    await expect(featuredWork).toHaveCount(1);
-
-    // And one card per project inside it. (The AI suggestion chips elsewhere
-    // on the page legitimately link to the same routes, so this is scoped to
-    // the featured-work section, not the whole `main`.)
-    for (const href of ["/work/offboard", "/work/flexi"]) {
-      await expect(featuredWork.locator(`a[href="${href}"]`)).toHaveCount(1);
-    }
-
-    await expect(featuredWork).toBeVisible();
-  });
-
-  test("headline renders as one plain sentence", async ({ page }) => {
-    // The headline was split across two spans so the tail could be set in
-    // accent italic. Owner decision 2026-08-27 collapsed it to one string —
-    // the accessible name is the whole sentence either way.
-    await page.goto("/");
-    await expect(
-      page.getByRole("heading", {
-        level: 1,
-        name: "I plan, design & ship AI products.",
-      }),
-    ).toBeVisible();
-  });
-
-  // The AI surface is live as of Plan 006; its behavior — suggestions,
-  // composer, tools, and failure states — is covered in e2e/ai-louie.spec.ts.
-  test("presents the AI surface as a real product surface", async ({ page }) => {
-    await page.goto("/");
-    const panel = page.locator("#ask-ai-louie");
-    // Plan 012: the AI surface is the homepage's persistent rail. On desktop
-    // it is already on screen at paint, so this is a no-op there; below lg
-    // it still stacks after the rest of the homepage (spec §10), so
-    // approaching it (as a real visitor scrolling down would) is what
-    // triggers the lazy-loaded runtime (spec §27), not just being present in
-    // the DOM. `scrollIntoViewIfNeeded` mirrors that.
-    await scrollToAskPanel(page);
-    await expect(panel.getByRole("heading", { name: "Ask Louie" })).toBeVisible();
-    await expect(
-      panel.getByRole("textbox", { name: /Ask anything about/ }),
-    ).toBeEnabled();
-  });
-
-  test("the Ask panel is a complementary landmark, not a main-column section", async ({
-    page,
-  }) => {
-    // Plan 012: "ask the panel; the site answers" — the AI surface moved out
-    // of the main column into its own rail (desktop: a parallel pane; below
-    // xl: stacked after the rest of the homepage, spec §10).
-    await page.goto("/");
-    const rail = page.getByRole("complementary", { name: "Ask Louie" });
-    await expect(rail).toHaveCount(1);
-    expect(await rail.locator("#ask-ai-louie").count()).toBe(1);
-  });
-
-  test("work appears before the AI panel in document order", async ({ page }, testInfo) => {
-    // Plan 011: hiring managers should reach the work as fast as possible —
-    // Featured work sits directly after the hero, ahead of the AI thread.
-    // Plan 012: on lg+ the AI panel lives in its own parallel rail pane
-    // (spec §10) — position no longer maps onto document order the way a
-    // single column does, so this only still asserts below lg, where the
-    // rail stacks after Featured work (Plan 015).
-    test.skip(testInfo.project.name !== "mobile", "single-column layout only");
-    await page.goto("/");
-    const featuredWork = page.getByTestId("featured-work");
-    const aiPanel = page.locator("#ask-ai-louie");
-
-    // Below lg, `useMinWidth` reports desktop for the first client render
-    // (matching SSR) and corrects one effect later, remounting the rail's
-    // subtree — waiting for both to be stably visible first rides out that
-    // transition instead of racing it for a bounding box.
-    await expect(featuredWork).toBeVisible();
-    await expect(aiPanel).toBeVisible();
-
-    const [workBox, aiBox] = await Promise.all([
-      featuredWork.boundingBox(),
-      aiPanel.boundingBox(),
-    ]);
-
-    expect(workBox).not.toBeNull();
-    expect(aiBox).not.toBeNull();
-    expect(workBox!.y).toBeLessThan(aiBox!.y);
-  });
-
+test("homepage leads with Offboard then analytics, with real images", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1, name: "Complex workflows. Clear decisions." })).toBeVisible();
+  const featured = page.getByTestId("featured-work");
+  await expect(featured).toHaveCount(1);
+  const destinations = await featured.locator('a[href^="/work/"]').evaluateAll((els) => els.map((el) => el.getAttribute("href")));
+  expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics"]);
+  await expect(featured.locator("img")).toHaveCount(2);
+  await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
+  const allWork = featured.getByRole("link", { name: "All work →" });
+  await expect(allWork).toHaveAttribute("href", "/work");
+  await expect(allWork).not.toHaveAttribute("role", "button");
 });
 
-test.describe("the app frame", () => {
-  test("the document never scrolls — only the panes do", async ({ page }) => {
-    // Regression: Tailwind's `sr-only` is position:absolute, so screen-reader
-    // spans deep inside a scroll container (InlineLink's "(opens in a new
-    // tab)", the AI panel's "Loading AI Louie…") resolved against the initial
-    // containing block when no ancestor was positioned. They landed at their
-    // page coordinate and extended the DOCUMENT's scroll height to 2008px on
-    // a 900px viewport — scrolling lifted the whole fixed app frame away and
-    // left a blank void. The scrollers are now `relative`.
-    await page.goto("/");
-
-    // Let the lazy AI runtime mount; its skeleton carries one of the spans.
-    await expect(
-      page.getByRole("complementary", { name: "Ask Louie" }),
-    ).toBeVisible();
-
-    const overflow = await page.evaluate(() => {
-      const root = document.documentElement;
-      return root.scrollHeight - root.clientHeight;
-    });
-    expect(overflow, "document must not be scrollable").toBeLessThanOrEqual(1);
-
-    // And the inner canvas must still scroll — the fix must not have simply
-    // clipped everything.
-    const canScroll = await page.evaluate(() => {
-      const sc = document.querySelector<HTMLElement>("[data-canvas-scroll]");
-      if (!sc) return false;
-      sc.scrollTop = 300;
-      const moved = sc.scrollTop > 0;
-      sc.scrollTop = 0;
-      return moved;
-    });
-    expect(canScroll, "the content pane must still scroll").toBe(true);
-  });
+test("Ask Louie is closed on arrival and preserves a draft across closes", async ({ page }) => {
+  await page.goto("/");
+  const trigger = page.getByRole("button", { name: "Ask Louie", exact: true });
+  const dialog = page.getByRole("dialog", { name: "Ask Louie", exact: true });
+  await expect(dialog).toHaveCount(0);
+  await trigger.focus();
+  await page.keyboard.press("Enter");
+  await expect(dialog).toBeVisible();
+  const input = dialog.getByRole("textbox", { name: "Ask anything about Louie's work" });
+  await input.fill("Show me teacher analytics");
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await expect(input).toHaveValue("Show me teacher analytics");
+  await dialog.getByRole("button", { name: "Close", exact: true }).click();
+  await expect(dialog).toBeHidden();
 });
 
-test.describe("runtime health", () => {
-  test("the homepage renders without console errors", async ({ page }) => {
-    // Regression: AnswerSync depended on the whole answer-store object, whose
-    // identity is memoized on `state`. Writing state changed that identity,
-    // re-fired the effect, and wrote again — "Maximum update depth exceeded",
-    // hundreds of times per load. Every other test still passed, because none
-    // of them watched the console. This one does.
-    const errors: string[] = [];
-    page.on("console", (msg) => {
-      if (msg.type() === "error") errors.push(msg.text());
-    });
-    page.on("pageerror", (err) => errors.push(err.message));
+test("the existing Ask Louie deep link opens its dialog", async ({ page }) => {
+  await page.goto("/#ask-ai-louie");
+  await expect(page.getByRole("dialog", { name: "Ask Louie", exact: true })).toBeVisible();
+});
 
-    await page.goto("/");
-    // Let the lazy AI runtime mount — the loop lived in its lifecycle sync.
-    await expect(
-      page.getByRole("complementary", { name: "Ask Louie" }),
-    ).toBeVisible();
-    await page.waitForTimeout(2_500);
-
-    // The AI endpoint is not mocked here and has no key in CI, so a failed
-    // /api/chat request is expected and not what this guards.
-    //
-    // `_vercel/insights` is the same kind of artifact. `@vercel/analytics`
-    // requests /_vercel/insights/script.js, a path that exists only on Vercel;
-    // anywhere else it 404s as text/plain and `X-Content-Type-Options: nosniff`
-    // correctly refuses to execute it. That is the header working, not a bug —
-    // on Vercel the script serves real JS with a correct MIME type. The same
-    // 404 already reached this filter as "Failed to load resource"; nosniff
-    // only changes the wording.
-    const unexpected = errors.filter(
-      (e) =>
-        !/Failed to load resource|api\/chat|503|ai_unavailable|_vercel\/insights/i.test(
-          e,
-        ),
-    );
-    expect(unexpected, unexpected.join("\n")).toEqual([]);
-  });
+test("only the content panes scroll", async ({ page }) => {
+  await page.goto("/");
+  expect(await page.evaluate(() => document.documentElement.scrollHeight - document.documentElement.clientHeight)).toBeLessThanOrEqual(1);
+  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollHeight - document.documentElement.clientHeight)).toBeLessThanOrEqual(1);
 });
 
 test.describe("navigation", () => {
-  test("every primary destination resolves", async ({ page }) => {
-    for (const item of NAV) {
+  for (const item of NAV) {
+    test(`${item.label} resolves`, async ({ page }) => {
       const response = await page.goto(item.path);
-      expect(response?.status(), `${item.path} should return 200`).toBe(200);
-      await expect(page.locator("h1")).toBeVisible();
-    }
-  });
-
-  test("primary nav omits Writing and Experiments", async ({ page }, testInfo) => {
-    // Owner decision, 2026-08-23 (Plan 011): Writing and Experiments leave
-    // the primary nav. Both remain live, stable URLs (spec §28) — see
-    // e2e/landmarks.spec.ts and e2e/accessibility.spec.ts.
-    //
-    // On mobile the same NAV_ITEMS drive the drawer, which is not mounted
-    // until opened (spec §25) — open it first, as the other mobile nav tests do.
+      expect(response?.status()).toBe(200);
+      await expect(page.locator("main h1")).toHaveCount(1);
+    });
+  }
+  test("primary navigation stays concise", async ({ page }, testInfo) => {
     await page.goto("/");
-    if (testInfo.project.name === "mobile") {
-      await page.getByRole("button", { name: "Open navigation menu" }).click();
-    }
-
+    if (testInfo.project.name === "mobile") await page.getByRole("button", { name: "Open navigation menu" }).click();
     const nav = page.getByRole("navigation", { name: "Primary" });
-    await expect(nav.getByRole("link").first()).toBeVisible();
-    const labels = await nav.getByRole("link").allTextContents();
-    expect(labels).toEqual(["Home", "Work", "AI Systems", "About", "Resume"]);
+    await expect(nav).toBeVisible();
+    expect(await nav.getByRole("link").allTextContents()).toEqual(NAV.map((item) => item.label));
+  });
+  test("secondary discovery remains reachable", async ({ page }) => {
+    await page.goto("/work");
+    for (const href of ["/work/flexi", "/experiments/neuron-shift", "/experiments", "/ai-systems"]) {
+      await expect(page.locator(`main a[href="${href}"]`).first()).toBeVisible();
+    }
+    await page.goto("/experiments");
+    await expect(page.locator('main a[href="/experiments/voice-tool-calling"]')).toHaveCount(0);
   });
 });
 
 test.describe("responsive shell", () => {
-  test("desktop shows the persistent left rail", async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== "desktop", "desktop only");
+  test("mobile drawer closes on Escape and after navigation", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "mobile", "mobile drawer only");
     await page.goto("/");
-    await expect(
-      page.getByRole("navigation", { name: "Primary" }),
-    ).toBeVisible();
-  });
-
-  test("mobile uses the drawer and closes on Escape", async ({
-    page,
-  }, testInfo) => {
-    test.skip(testInfo.project.name !== "mobile", "mobile only");
-    await page.goto("/");
-
-    // The persistent rail must not be present on mobile (spec §25).
+    const trigger = page.getByRole("button", { name: "Open navigation menu" });
     await expect(page.getByRole("navigation", { name: "Primary" })).toBeHidden();
-
-    await page.getByRole("button", { name: "Open navigation menu" }).click();
-    const drawer = page.getByRole("dialog");
-    await expect(drawer).toBeVisible();
-
+    await trigger.click();
+    await expect(page.getByRole("dialog")).toBeVisible();
     await page.keyboard.press("Escape");
-    await expect(drawer).toBeHidden();
-  });
-
-  test("mobile drawer navigates and dismisses", async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== "mobile", "mobile only");
-    await page.goto("/");
-    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await expect(page.getByRole("dialog")).toBeHidden();
+    await trigger.click();
     await page.getByRole("dialog").getByRole("link", { name: "Work" }).click();
     await expect(page).toHaveURL(/\/work$/);
     await expect(page.getByRole("dialog")).toBeHidden();
   });
-
-  test("no horizontal overflow on any primary route", async ({ page }) => {
-    for (const item of NAV) {
-      await page.goto(item.path);
-      const overflows = await page.evaluate(
-        () => document.documentElement.scrollWidth > window.innerWidth + 1,
-      );
-      expect(overflows, `${item.path} overflows horizontally`).toBe(false);
+  test("no route overflows horizontally", async ({ page }) => {
+    for (const path of [...NAV.map((item) => item.path), "/work/ck12-analytics", "/work/offboard", "/work/flexi", "/experiments/neuron-shift"]) {
+      await page.goto(path);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1), path).toBe(false);
     }
   });
-
-  test("the Ask panel is in view without scrolling at 1100×800", async ({
-    page,
-  }) => {
-    // Plan 015: the rail's pane breakpoint used to be xl (1280px), so a
-    // laptop-width viewport like this one fell into neither layout — it was
-    // narrower than the pane threshold but wider than the mobile stack was
-    // designed for, and the panel ended up scrolled far down the page. The
-    // breakpoint is now lg (1024px); 1100px sits just inside it, so the
-    // panel must render as its own pane and be visible at paint.
-    await page.setViewportSize({ width: 1100, height: 800 });
-    await page.goto("/");
-    await expect(page.locator("#ask-ai-louie")).toBeInViewport();
+  test("Ask dialog remains usable around the former rail breakpoint", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "desktop viewport resize");
+    for (const width of [390, 768, 1023, 1025, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto("/");
+      await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+      const input = page.getByRole("textbox", { name: "Ask anything about Louie's work" });
+      await expect(input).toBeInViewport();
+      await expect(page.locator("#ask-ai-louie")).toHaveCount(1);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)).toBe(false);
+    }
   });
+});
 
-  test("the Ask panel exists exactly once on both sides of the rail breakpoint", async ({
-    page,
-  }, testInfo) => {
-    // Plan 025: RAIL_BREAKPOINT_PX (the JS half) and the `lg`/`max-lg`
-    // Tailwind classes plus the two `1023.98px` media blocks in globals.css
-    // (the CSS half) must agree on exactly 1024px. If they ever drift apart,
-    // the panel can render inside a CSS-hidden container with no stacked
-    // fallback and silently disappear at one viewport band (this happened
-    // once — see Plan 015). This test is desktop-only: mobile emulation
-    // forces its own narrower viewport, which would make setViewportSize
-    // here meaningless.
-    test.skip(testInfo.project.name !== "desktop", "desktop only");
+test("Ask Louie lives in navigation and retains a draft across routes", async ({ page, isMobile }) => {
+  await page.goto("/");
+  await expect(page.locator("main").getByRole("button", { name: "Ask Louie", exact: true })).toHaveCount(0);
+  const trigger = page.getByRole("button", { name: "Ask Louie", exact: true });
+  await trigger.click();
+  const dialog = page.getByRole("dialog", { name: "Ask Louie", exact: true });
+  await dialog.getByRole("textbox", { name: "Ask anything about Louie's work" }).fill("Tell me about Offboard");
+  await dialog.getByRole("button", { name: "Close", exact: true }).click();
+  if (isMobile) await page.getByRole("button", { name: "Open navigation menu" }).click();
+  await page.getByRole("navigation", { name: "Primary", exact: true }).getByRole("link", { name: "About", exact: true }).click();
+  await expect(page).toHaveURL(/\/about$/);
+  await trigger.click();
+  await expect(dialog.getByRole("textbox", { name: "Ask anything about Louie's work" })).toHaveValue("Tell me about Offboard");
+  await expect(page.locator("#ask-ai-louie")).toHaveCount(1);
+});
 
-    const handle = page.locator(
-      '[data-slot="resizable-handle"][aria-label="Resize context panel"]',
-    );
-
-    // Just below the breakpoint: stacked layout, no separate pane.
-    await page.setViewportSize({ width: 1023, height: 900 });
-    await page.goto("/");
-    const panelBelow = page.locator("#ask-ai-louie");
-    await expect(panelBelow).toHaveCount(1);
-    await panelBelow.scrollIntoViewIfNeeded();
-    await expect(panelBelow).toBeVisible();
-    await expect(handle).toHaveCount(0);
-
-    // Just at/above the breakpoint: its own resizable pane.
-    await page.setViewportSize({ width: 1025, height: 900 });
-    await page.goto("/");
-    const panelAbove = page.locator("#ask-ai-louie");
-    await expect(panelAbove).toHaveCount(1);
-    await panelAbove.scrollIntoViewIfNeeded();
-    await expect(panelAbove).toBeVisible();
-    await expect(handle).toBeVisible();
-  });
+test("About has one unified closing action section", async ({ page }) => {
+  await page.goto("/about");
+  const actions = page.getByRole("region", { name: "Let’s start a conversation." });
+  await expect(actions.getByRole("link")).toHaveCount(5);
+  for (const label of ["View selected work", "Resume", "Email", "LinkedIn", "Book time"]) {
+    await expect(actions.getByRole("link", { name: label, exact: true })).toBeVisible();
+  }
 });

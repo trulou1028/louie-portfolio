@@ -43,7 +43,6 @@ export default function FlexiCaseStudy() {
         <CaseStudyHeader
           project={project}
           lede="An AI tutor has to satisfy a student who wants the answer, a teacher who needs the learning to survive, and an institution that needs to trust both."
-          // TODO(content): Louie to supply role, timeframe, and team.
         />
 
         <TableOfContentsInline anchors={FLEXI_ANCHORS} className="mb-10" />

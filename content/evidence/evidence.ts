@@ -4,8 +4,8 @@
  *
  * Rules this file lives by:
  *
- * - **Human-written and human-reviewed.** Never scraped from the live site at
- *   runtime (spec §16.3).
+ * - Curated from supplied work and attributed sources. Never scraped at runtime.
+ *   Editorial review status is tracked in plans/portfolio-strategy/claim-ledger.md.
  * - **Nothing here may outrun the case studies.** Each `summary` and `detail`
  *   restates something the linked section actually argues. Where a section is
  *   still awaiting Louie's content, the entry says so in `detail` rather than
@@ -14,14 +14,13 @@
  * - **Every route/anchor pair must resolve.** `scripts/validate-evidence.ts`
  *   runs on `prebuild` and fails the build otherwise.
  *
- * Deliberately absent: outcome-type entries (no verified metrics exist yet),
- * career entries (/about and /resume have no content until Plan 008), and
- * experiment entries (the experiments are explorations, not shipped work).
  */
+
+import { profile } from "@/content/profile";
 
 export type EvidenceItem = {
   id: string;
-  project: "offboard" | "flexi" | "career" | "experiment";
+  project: "ck12-analytics" | "offboard" | "flexi" | "career" | "experiment";
   title: string;
   summary: string;
   detail: string;
@@ -40,6 +39,292 @@ export type EvidenceItem = {
 };
 
 export const evidence: EvidenceItem[] = [
+{
+  "id": "analytics-context",
+  "project": "ck12-analytics",
+  "title": "A prediction still requires a teacher decision",
+  "summary": "Teachers need to anticipate support before work and investigate evidence afterward.",
+  "detail": "Scores alone do not answer when or how to intervene. Foresights and Insights connect planning with investigation.",
+  "route": "/work/ck12-analytics",
+  "anchor": "context",
+  "tags": [
+    "teacher analytics",
+    "problem"
+  ],
+  "skills": [
+    "Product Strategy"
+  ],
+  "evidenceType": "strategy"
+},
+{
+  "id": "analytics-system",
+  "project": "ck12-analytics",
+  "title": "Concept-level evidence makes the result more interpretable",
+  "summary": "Assignment and content structure constrain what the chart can explain.",
+  "detail": "An assignment spanning several concepts makes a single result harder to interpret. This describes a dependency, not a claim that Louie caused a platform-wide curriculum change.",
+  "route": "/work/ck12-analytics",
+  "anchor": "system",
+  "tags": [
+    "teacher analytics",
+    "concept",
+    "system"
+  ],
+  "skills": [
+    "Systems Design"
+  ],
+  "evidenceType": "strategy"
+},
+{
+  "id": "neuron-shift-premise",
+  "project": "experiment",
+  "title": "An incoming operator inherits reasoning",
+  "summary": "Neuron Shift explores what an alarm history leaves out of a handoff.",
+  "detail": "The incoming operator needs to understand what was decided, why, and when to revisit it. This is an unvalidated user hypothesis with simulated records, not findings from operator interviews.",
+  "route": "/experiments/neuron-shift",
+  "anchor": "premise",
+  "tags": [
+    "neuron",
+    "shift",
+    "handoff"
+  ],
+  "skills": [
+    "Product Strategy"
+  ],
+  "evidenceType": "strategy"
+},
+{
+  "id": "neuron-shift-technical",
+  "project": "experiment",
+  "title": "Browser-local decisions and a computed impact path",
+  "summary": "Graph reachability supports the prototype impact view.",
+  "detail": "The graph is simplified and does not model generators. Decisions persist in the browser; there is no backend, authentication, live telemetry, or live model. This demonstrates interaction consistency, not engineering-grade analysis.",
+  "route": "/experiments/neuron-shift",
+  "anchor": "technical",
+  "tags": [
+    "neuron",
+    "shift",
+    "graph",
+    "reachability",
+    "engineering"
+  ],
+  "skills": [
+    "Design Engineering"
+  ],
+  "evidenceType": "technical"
+},
+{
+  "id": "analytics-ownership",
+  "project": "ck12-analytics",
+  "title": "Experience ownership for Foresights and Insights",
+  "summary": "Louie owned experience architecture, interaction design, prototypes, and visual language.",
+  "detail": "Role: Lead Product Designer. Collaborated with educators, Product, Data Science, and Engineering. Published evaluations are CK-12 research, not evidence that Louie authored those studies. No specific management, mentoring, or conflict-resolution episode is established.",
+  "route": "/work/ck12-analytics",
+  "anchor": "role",
+  "tags": [
+    "teacher analytics",
+    "foresights",
+    "insights",
+    "ownership",
+    "role"
+  ],
+  "skills": [
+    "Product Design",
+    "Systems Design"
+  ],
+  "evidenceType": "product"
+},
+{
+  "id": "analytics-prediction-diagnosis",
+  "project": "ck12-analytics",
+  "title": "Separate prediction from diagnosis",
+  "summary": "Foresights supports planning before work; Insights supports investigation afterward.",
+  "detail": "The experience separates anticipating support from interpreting the evidence after practice. A prediction is not an explanation of a student behavior.",
+  "route": "/work/ck12-analytics",
+  "anchor": "decision-prediction",
+  "tags": [
+    "teacher analytics",
+    "foresights",
+    "insights",
+    "prediction",
+    "diagnosis"
+  ],
+  "skills": [
+    "Product Strategy",
+    "Systems Design"
+  ],
+  "evidenceType": "strategy"
+},
+{
+  "id": "analytics-uncertainty",
+  "project": "ck12-analytics",
+  "title": "Make uncertainty interpretable",
+  "summary": "The Foresights range view makes uncertainty visible instead of implying a precise single value.",
+  "detail": "The supplied demo-class interface uses ranges. Visibility alone did not solve interpretation: published evaluation found graph difficulty for half the teachers.",
+  "route": "/work/ck12-analytics",
+  "anchor": "decision-uncertainty",
+  "tags": [
+    "teacher analytics",
+    "uncertainty",
+    "range",
+    "foresights"
+  ],
+  "skills": [
+    "Interaction Design",
+    "Data Visualization"
+  ],
+  "evidenceType": "product"
+},
+{
+  "id": "analytics-investigation",
+  "project": "ck12-analytics",
+  "title": "Separate skill and engagement",
+  "summary": "Insights supports class-pattern scanning and student-level investigation.",
+  "detail": "Skill and engagement remain separate signals. The supplied scatterplot and detail view demonstrate the interaction, with demo records rather than measured classroom outcomes.",
+  "route": "/work/ck12-analytics",
+  "anchor": "decision-investigation",
+  "tags": [
+    "teacher analytics",
+    "insights",
+    "skill",
+    "engagement"
+  ],
+  "skills": [
+    "Interaction Design",
+    "Data Visualization"
+  ],
+  "evidenceType": "product"
+},
+{
+  "id": "analytics-evaluation",
+  "project": "ck12-analytics",
+  "title": "Perceived value exceeded comprehension",
+  "summary": "Two published evaluations, ten teachers each using a demo class, found graph difficulty for half of participants.",
+  "detail": "Foresights: 70% meaningful, 90% anticipated time savings, 75% mean comprehension. Insights: 90% meaningful, 100% anticipated time savings, 73% mean comprehension. Both: 50% difficulty with the key graph. Expected savings are not measured savings. No causal learning effect or broad adoption is established. Sources are linked in the case study; these are CK-12 evaluations, not claimed personal research ownership.",
+  "route": "/work/ck12-analytics",
+  "anchor": "evaluation",
+  "tags": [
+    "teacher analytics",
+    "evaluation",
+    "research",
+    "results",
+    "outcomes",
+    "metrics"
+  ],
+  "skills": [
+    "User Research",
+    "Product Judgment"
+  ],
+  "evidenceType": "research"
+},
+{
+  "id": "offboard-entry-point",
+  "project": "offboard",
+  "title": "From packet-first to plan-first",
+  "summary": "Louie moved the product direction toward a first useful plan action, with Job Packets later in the journey.",
+  "detail": "A packet assumes the person already has an opportunity to pursue. The supplied founder narrative identifies that as too much to ask at the start of a fresh transition. No measured activation or conversion lift is established for the correction.",
+  "route": "/work/offboard",
+  "anchor": "decision-entry-point",
+  "tags": [
+    "activation",
+    "conversion",
+    "plan",
+    "packet",
+    "strategy",
+    "outcomes"
+  ],
+  "skills": [
+    "Product Strategy",
+    "Product Design"
+  ],
+  "evidenceType": "strategy"
+},
+{
+  "id": "offboard-outcome-limits",
+  "project": "offboard",
+  "title": "A built product, without an attributed conversion lift",
+  "summary": "Offboard moved into live beta workflows through Louie’s end-to-end design and implementation.",
+  "detail": "The case study establishes built capabilities and product direction. It does not establish adoption counts, repeat usage, revenue, or a conversion improvement. Do not invent metrics or imply that packet-to-plan sequencing has a measured effect.",
+  "route": "/work/offboard",
+  "anchor": "outcomes",
+  "tags": [
+    "results",
+    "outcomes",
+    "metrics",
+    "revenue",
+    "conversion"
+  ],
+  "skills": [
+    "Design Engineering"
+  ],
+  "evidenceType": "outcome"
+},
+{
+  "id": "flexi-evaluation-limits",
+  "project": "flexi",
+  "title": "Conversation activity is not proof of learning",
+  "summary": "CK-12 dialogue research examined 5,000 students and selected 15 cases for qualitative analysis.",
+  "detail": "The published research distinguishes deeper learning-oriented exchanges from superficial use. It does not isolate the effect of Louie’s interface work or establish that his design caused academic gains. Sources are linked in the case study.",
+  "route": "/work/flexi",
+  "anchor": "outcomes",
+  "tags": [
+    "results",
+    "outcomes",
+    "metrics",
+    "learning",
+    "research"
+  ],
+  "skills": [
+    "User Research",
+    "AI Product Design"
+  ],
+  "evidenceType": "research"
+},
+{
+  "id": "neuron-shift-prototype",
+  "project": "experiment",
+  "title": "Neuron Shift is an independent simulation",
+  "summary": "A prototype exploring how an incoming operator inherits decision reasoning.",
+  "detail": "Built for interview preparation, not for a customer. Not affiliated with or endorsed by Teserac. Fictional operational data, no operator interviews, no live model or telemetry, no backend or authentication. It is not a production operational deployment and has no established adoption or safety outcome.",
+  "route": "/experiments/neuron-shift",
+  "anchor": "limits",
+  "tags": [
+    "neuron",
+    "shift",
+    "teserac",
+    "prototype",
+    "simulation",
+    "customer",
+    "production",
+    "results"
+  ],
+  "skills": [
+    "Interaction Design",
+    "Design Engineering"
+  ],
+  "evidenceType": "product"
+},
+{
+  "id": "neuron-shift-decisions",
+  "project": "experiment",
+  "title": "Preserve the reasons behind an operator decision",
+  "summary": "Attach recommendations to assets, scale friction to reversibility, and retain defer or override reasoning.",
+  "detail": "The prototype preserves the asset situation, recommendation, human decision, reason, revisit condition, and author/time. These are fictional records. Local browser persistence and graph reachability support the simulated interaction, not an engineering-grade model.",
+  "route": "/experiments/neuron-shift",
+  "anchor": "decisions",
+  "tags": [
+    "neuron",
+    "shift",
+    "handoff",
+    "reversibility",
+    "judgment",
+    "human-in-the-loop"
+  ],
+  "skills": [
+    "Interaction Design",
+    "Systems Design"
+  ],
+  "evidenceType": "technical"
+},
   // ---------------------------------------------------------------- Offboard
   {
     id: "offboard-fragmentation-problem",
@@ -86,11 +371,9 @@ export const evidence: EvidenceItem[] = [
   {
     id: "offboard-risk-gate",
     project: "offboard",
-    title: "A risk gate that protects the user's effort",
-    summary:
-      "The system evaluates whether an opportunity is worth pursuing before it spends the user's attention generating tailored material.",
-    detail:
-      "A submitted role is enriched with role intelligence and then risk-assessed. If the opportunity looks like a ghost listing or otherwise low value, the product warns the user or pauses the workflow before any tailored material is produced. It is a gate rather than a banner — a product willing to talk a user out of work, which a tool measured on output volume would not do.",
+    title: "A risk assessment before tailored generation",
+    summary: "Job Packets can pause on a flagged opportunity before tailored materials are generated.",
+    detail: "Role intelligence and risk assessment precede tailored generation. A flag asks the person whether to continue. It is an assessment, not proof of fraud or a guarantee that an opportunity is worthwhile.",
     route: "/work/offboard",
     anchor: "decision-risk",
     tags: ["ghost jobs", "risk", "guardrails", "ai ux", "workflow"],
@@ -100,11 +383,9 @@ export const evidence: EvidenceItem[] = [
   {
     id: "offboard-hitl-actions",
     project: "offboard",
-    title: "Human-in-the-loop AI actions",
-    summary:
-      "Consequential AI actions use visible approval checkpoints.",
-    detail:
-      "The assistant proposes an action, a specific tool is selected, a preview is generated, and the user confirms before anything runs. In the shipped product this is a family of patterns: visible agent progress, editable outputs, approval checkpoints, and confirmation-first actions — trust-building safeguards designed for emotionally high-stakes career decisions (resume-verified).",
+    title: "Editable drafts and meaningful control",
+    summary: "Packet outputs remain editable and nothing sends itself to an employer.",
+    detail: "Offboard automates preparation and can file results into the tracker automatically. People review drafts and decide what to use. A missing resume can yield a partial packet rather than invented experience. Do not claim every internal action requires preview and confirmation.",
     route: "/work/offboard",
     anchor: "decision-control",
     tags: ["agents", "human-in-the-loop", "ai ux", "tool calling", "confirmation"],
@@ -132,7 +413,7 @@ export const evidence: EvidenceItem[] = [
     summary:
       "How data and actions move through the product Louie both designed and built.",
     detail:
-      "A Vite + React + TypeScript client with Tailwind and shadcn/ui talks to Supabase: Postgres under per-user row-level security, with Deno edge functions calling model APIs, external research, and document generation before writing results back into the workspace. Operational surfaces include authentication, user data, AI credits, assistant experiences, employer workspaces, and paid plans. Built solo, with AI development tools as part of the workflow (resume-verified).",
+      "A Vite + React + TypeScript client with Tailwind and shadcn/ui talks to Supabase: Postgres under per-user row-level security, with Deno edge functions calling model APIs, external research, and document generation before writing results back into the workspace. Operational surfaces include authentication, user data, AI credits, assistant experiences, employer workspaces, and paid plans. Designed and built by Louie, with AI development tools as part of the workflow. This establishes implementation ownership, not the size of the company or direct reports.",
     route: "/work/offboard",
     anchor: "architecture",
     tags: ["architecture", "full-stack", "design engineering", "technical"],
@@ -183,11 +464,9 @@ export const evidence: EvidenceItem[] = [
   {
     id: "flexi-scaffolding-loop",
     project: "flexi",
-    title: "The answer is not the end of the interaction",
-    summary:
-      "The tutoring loop continues past the response — check understanding, adapt support, stretch thinking, then continue or hand off.",
-    detail:
-      "Answering is where a search engine stops; a tutor has to find out whether anything was understood. Flexi treats a response as the middle of an interaction, adapting the level of support based on what the student says next rather than closing the exchange.",
+    title: "Visible choices after the first explanation",
+    summary: "Follow-up actions offer simpler explanations, analogies, translation, detail, rephrasing, and challenges.",
+    detail: "The supplied Flexi interface shows follow-up controls alongside the answer. They give students a concrete way to request a different kind of support. These controls do not prove an automatic adaptive tutoring loop or a causal learning improvement.",
     route: "/work/flexi",
     anchor: "decision-scaffolding",
     tags: ["conversational ux", "scaffolding", "learning", "ai ux"],
@@ -197,11 +476,9 @@ export const evidence: EvidenceItem[] = [
   {
     id: "flexi-expose-uncertainty",
     project: "flexi",
-    title: "Exposing model uncertainty rather than hiding it",
-    summary:
-      "A tutor that is confidently wrong is worse than one that is visibly unsure, especially for a student with no way to tell the difference.",
-    detail:
-      "Students cannot calibrate trust against a system that sounds identical whether it is right or guessing — and in a subject they are still learning, they have no independent check. The design surfaces the model's limits instead of smoothing them over, and treats recovery as a designed path rather than an error state. TODO(content): Louie to add the specific interface treatment.",
+    title: "Source labels and paths to a different explanation",
+    summary: "The shown interface distinguishes AI-generated explanations from CK-12 Library content.",
+    detail: "Source labels and follow-up actions help students orient and recover. The available artifacts do not substantiate a calibrated confidence indicator, automatic refusal threshold, or guaranteed error correction. Do not describe those as shipped features.",
     route: "/work/flexi",
     anchor: "decision-uncertainty",
     tags: ["uncertainty", "trust", "ai ux", "confidence", "failure modes"],
@@ -211,11 +488,9 @@ export const evidence: EvidenceItem[] = [
   {
     id: "flexi-teacher-first-class",
     project: "flexi",
-    title: "The teacher as a first-class user",
-    summary:
-      "Treating teacher visibility as a designed surface turned a private chatbot into a multi-sided learning system.",
-    detail:
-      "Once the teacher is a user rather than an administrator, what happens in a tutoring session informs what the teacher does next with that student. That decision changed the product's shape more than any other. TODO(content): Louie to add what teachers can actually see, and where the line was drawn against surveillance.",
+    title: "Teacher trust and the limits of the evidence",
+    summary: "Teacher trust matters, but this case study does not demonstrate teacher monitoring controls.",
+    detail: "Do not claim Flexi provides teacher pause controls, monitoring of private tutoring exchanges, or a teacher visibility dashboard on this evidence. Foresights and Insights are a separate teacher analytics project, not a Flexi conversation-monitoring surface.",
     route: "/work/flexi",
     anchor: "decision-teacher",
     tags: ["multi-sided", "teachers", "visibility", "education", "trust"],
@@ -225,11 +500,9 @@ export const evidence: EvidenceItem[] = [
   {
     id: "flexi-research",
     project: "flexi",
-    title: "Student and teacher research behind Flexi",
-    summary:
-      "Research is the backbone of this project — what students do when a tutor will not simply comply, and what teachers need in order to trust it.",
-    detail:
-      "Research and usability testing ran directly with students and teachers, and behavioural insights were translated into product improvements that reduced cognitive load and made complex workflows easier to navigate (resume-verified). Areas studied included reading level and age-appropriate tone, accessibility, academic integrity and over-reliance, points of confusion, teacher visibility, and the tutor's failure modes. Detailed findings are not yet published — spec §14 forbids inventing research statistics.",
+    title: "Published classroom research on Flexi",
+    summary: "CK-12 published a six-week Spring 2025 study with ten teachers.",
+    detail: "The published study used surveys, diaries, focus groups, and interviews. It described engagement and confidence alongside prompting, comprehension, tone, and over-reliance challenges. Louie cites this research as evaluation context, not as a claim that he authored the study or that it caused each interface decision. The article links the original study.",
     route: "/work/flexi",
     anchor: "research",
     tags: ["user research", "education", "students", "teachers", "over-reliance"],
@@ -239,11 +512,9 @@ export const evidence: EvidenceItem[] = [
   {
     id: "flexi-multi-sided-system",
     project: "flexi",
-    title: "Holding student, teacher, and institutional needs together",
-    summary:
-      "The scaffolding rules, the uncertainty behaviour, and teacher visibility are the three mechanisms that keep the three needs from trading off.",
-    detail:
-      "Balancing immediate help, learning integrity, and institutional trust is a system problem rather than a prompt problem. A student request enters the tutoring loop, bounded by scaffolding rules and by the uncertainty behaviour that governs what the tutor will claim, and what happens in the session surfaces to the teacher inside institutional safety and privacy constraints.",
+    title: "Connect the explanation with its next learning action",
+    summary: "The interaction model connects content, source labels, and follow-up actions.",
+    detail: "These affordances help a student request another explanation or a challenge. They do not prove the system can infer understanding from engagement or establish teacher monitoring capabilities.",
     route: "/work/flexi",
     anchor: "system",
     tags: ["systems design", "multi-sided", "education", "safety", "privacy"],
@@ -252,9 +523,31 @@ export const evidence: EvidenceItem[] = [
   },
   // ------------------------------------------------------------------ Career
   {
+    id: "career-user-research",
+    project: "career",
+    title: "Research and usability testing with students and educators",
+    summary: "At CK-12, Louie led research and usability testing with students and educators, translating behavioral insights into product and architectural changes.",
+    detail: "This is the research practice documented on the general resume. It does not establish authorship of the separately cited published Flexi studies, nor provide participant counts, recruitment responsibilities, or detailed methods for a particular study.",
+    route: "/resume",
+    tags: ["user research", "usability", "testing", "students", "educators"],
+    skills: ["User Research", "Usability Testing"],
+    evidenceType: "career",
+  },
+  {
+    id: "career-contact-availability",
+    project: "career",
+    title: "Location, availability, and getting in touch",
+    summary: `Based in ${profile.location}. ${profile.availability.label}. ${profile.availability.detail}.`,
+    detail: "The portfolio provides email, LinkedIn, and a booking link in its navigation. It does not publish salary expectations, work authorization, relocation preferences, or a specific start date. Current availability should be confirmed directly with Louie; the portfolio status is not a calendar commitment.",
+    route: "/about",
+    tags: ["location", "based", "availability", "available", "contact", "hire", "salary", "start", "remote"],
+    skills: ["Product Design"],
+    evidenceType: "career",
+  },
+  {
     id: "career-experience-arc",
     project: "career",
-    title: "10+ years across AI, education, and workflow products",
+    title: "14+ years across AI, education, and workflow products",
     summary:
       "Lead UX at CK-12 for nine years (2016\u20132025), now founding product designer and AI systems lead at Offboard \u2014 with earlier product leadership at OdysseyDAO and ecommerce design at Lowe's.",
     detail:
@@ -269,7 +562,7 @@ export const evidence: EvidenceItem[] = [
     project: "career",
     title: "Technical depth: a designer who ships full-stack",
     summary:
-      "Builds production software solo \u2014 Vite, React, TypeScript, Tailwind, shadcn/ui, Supabase, Postgres/RLS, Deno edge functions, Stripe, and Resend \u2014 using AI development tools as a core part of the workflow.",
+      "Builds production software \u2014 Vite, React, TypeScript, Tailwind, shadcn/ui, Supabase, Postgres/RLS, Deno edge functions, Stripe, and Resend \u2014 using AI development tools as a core part of the workflow.",
     detail:
       "At Offboard, Louie designed and built the full product: client application, authentication, data model with row-level security, server-side AI workflows, document generation, payments, and email. His stated fluency spans React, TypeScript, JavaScript, Vite, Tailwind CSS, shadcn/ui, Supabase, Postgres/RLS, Deno edge functions, API integrations, Stripe, and Resend. He works with Claude Code, Codex, Lovable, and other AI development tools daily \u2014 the source of his intuition for where automation should defer to humans and how model output becomes usable product.",
     route: "/resume",

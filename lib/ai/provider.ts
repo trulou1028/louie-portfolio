@@ -60,3 +60,14 @@ export function getModel(): LanguageModel {
   const openai = createOpenAI({ apiKey });
   return openai(model);
 }
+
+/** Disable response storage and keep reasoning bounded for interactive answers. */
+export function getProviderOptions() {
+  const model = process.env.OPENAI_MODEL ?? "";
+  return {
+    openai: {
+      store: false,
+      ...(model.startsWith("gpt-5") ? { reasoningEffort: "low" as const } : {}),
+    },
+  };
+}

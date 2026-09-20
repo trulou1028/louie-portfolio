@@ -20,19 +20,8 @@
    .dark, with <html class="dark"> making dark the default. A theme toggle is
    therefore a later one-liner, not a rebuild.
 
-   One structural departure the preset's own numbers force: it uses a deep
-   rust for --primary (fills) and, separately, a bright amber for
-   --sidebar-primary (the active marker). That is not decoration — in dark
-   mode the rust measures 2.79:1 against the background, so it CANNOT carry
-   text, while the bright amber measures 9.25:1. This site uses its accent for
-   both roles (30 fills, 18 text uses), so the token is split:
-
-     --accent        text-safe: links, active markers, small identity marks
-     --accent-fill   the fill behind primary actions
-     --accent-on-fill  text on that fill (cream, both modes)
-
-   In light mode both accents are the same rust — it passes as text (5.03:1)
-   and as a fill with cream on it (4.85:1). Only dark needs the split.
+   Owner-selected violet accent. Dark uses the supplied color for text and
+   fills with dark button text. Light uses a deeper violet for readable links.
 --------------------------------------------------------------------------- */
 :root {
   color-scheme: light;
@@ -49,14 +38,14 @@
   --border-default: 20 6% 90%;
   --border-strong: 24 6% 80%;
 
-  --accent: 25 100% 37%;           /* preset --primary #bb4d00 — 5.03:1 as text */
-  --accent-hover: 24 100% 30%;
-  --accent-fill: 25 100% 37%;
-  --accent-fill-hover: 24 100% 30%;
-  --accent-on-fill: 48 100% 96%;   /* preset --primary-foreground — 4.85:1 */
-  --accent-muted: 30 70% 86%;
-  --accent-soft: 40 80% 96%;
-  --accent-foreground: 24 100% 27%;
+  --accent: 257.209302 65% 43%;
+  --accent-hover: 257.209302 65% 35%;
+  --accent-fill: 257.209302 100.000000% 74.705882%;
+  --accent-fill-hover: 257.209302 100% 80%;
+  --accent-on-fill: 20 14% 4%;
+  --accent-muted: 257.209302 55% 85%;
+  --accent-soft: 257.209302 80% 96%;
+  --accent-foreground: 257.209302 65% 35%;
 
   --danger: 0 72% 45%;
   --success: 145 55% 30%;
@@ -79,6 +68,10 @@
   --duration-fast: 160ms;
   --duration-standard: 240ms;
   --duration-deliberate: 380ms;
+  --motion-enter-distance: 0.75rem;
+  --duration-reveal: 700ms;
+  --duration-stagger: 100ms;
+  --motion-reveal-ease: 0.22, 1, 0.36, 1;
 
   /* ---- shadcn/Base UI semantic bridge -------------------------------------
      Upstream components reference these names; they are derived from the
@@ -117,16 +110,15 @@
   --border-default: 20 5% 26%;
   --border-strong: 24 5% 36%;
 
-  /* Bright amber (preset --sidebar-primary #fe9a00) — 9.25:1, text-safe. */
-  --accent: 36 100% 50%;
-  --accent-hover: 47 100% 59%;     /* brightens on hover, the dark convention */
-  /* Deep rust (preset --primary #973c00) — 2.79:1, fills ONLY. */
-  --accent-fill: 24 100% 30%;
-  --accent-fill-hover: 24 100% 36%;
-  --accent-on-fill: 48 100% 96%;   /* cream on rust — 6.84:1 */
-  --accent-muted: 26 55% 22%;
-  --accent-soft: 24 40% 11%;
-  --accent-foreground: 36 100% 50%;
+  /* Owner-supplied #a37eff, represented as the shared HSL token. */
+  --accent: 257.209302 100.000000% 74.705882%;
+  --accent-hover: 257.209302 100% 84%;
+  --accent-fill: 257.209302 100.000000% 74.705882%;
+  --accent-fill-hover: 257.209302 100% 80%;
+  --accent-on-fill: 20 14% 4%;
+  --accent-muted: 257.209302 40% 32%;
+  --accent-soft: 257.209302 30% 15%;
+  --accent-foreground: 257.209302 100.000000% 74.705882%;
 
   --danger: 0 72% 60%;
   --success: 145 45% 55%;
@@ -340,4 +332,18 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* Editorial word masks preserve wrapping and leave room for descenders. */
+.motion-word-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: bottom;
+  padding-block: 0.08em;
+  margin-block: -0.08em;
+}
+
+/* Native fragment navigation must animate before hashchange listeners run. */
+@media (prefers-reduced-motion: no-preference) {
+  html, [data-canvas-scroll] { scroll-behavior: smooth; }
 }

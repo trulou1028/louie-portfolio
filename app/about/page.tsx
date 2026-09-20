@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AboutActions } from "@/components/portfolio/about-actions";
 
 import { Canvas } from "@/components/app-shell/contextual-rail";
-import { Action } from "@/components/system/action";
 import { InlineLink } from "@/components/system/inline-link";
 import { SectionLabel } from "@/components/system/section-label";
-import { Surface } from "@/components/system/surface";
 import { profile } from "@/content/profile";
 
 export const metadata: Metadata = {
@@ -21,7 +19,7 @@ export const metadata: Metadata = {
  * has not supplied — the biography proper is his to write.
  */
 export default function AboutPage() {
-  const { links, quotes } = profile;
+  const { quotes } = profile;
 
   return (
     <Canvas>
@@ -76,58 +74,7 @@ export default function AboutPage() {
           </p>
         </section>
 
-        {links.email || links.linkedin ? (
-          <Surface variant="muted" className="mt-12 flex flex-col gap-4 p-6">
-            <p className="text-body text-foreground">Get in touch</p>
-            <div className="flex flex-wrap gap-3">
-              {links.email ? (
-                <Action
-                  variant="secondary"
-                  size="sm"
-                  render={<a href={`mailto:${links.email}`} />}
-                >
-                  Email
-                </Action>
-              ) : null}
-              {links.linkedin ? (
-                <Action
-                  variant="secondary"
-                  size="sm"
-                  render={
-                    <a
-                      href={links.linkedin}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    />
-                  }
-                >
-                  LinkedIn
-                </Action>
-              ) : null}
-              {links.calendly ? (
-                <Action
-                  size="sm"
-                  render={
-                    <a
-                      href={links.calendly}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    />
-                  }
-                >
-                  Book time
-                </Action>
-              ) : null}
-            </div>
-          </Surface>
-        ) : null}
-
-        <div className="mt-12 flex flex-wrap gap-3">
-          <Action render={<Link href="/work" />}>View selected work</Action>
-          <Action variant="secondary" render={<Link href="/resume" />}>
-            Resume
-          </Action>
-        </div>
+        <AboutActions />
       </div>
     </Canvas>
   );

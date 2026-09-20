@@ -27,7 +27,7 @@ describe("searchEvidence", () => {
   it("ranks an exact tag match above a prose-only match", () => {
     const { results } = searchEvidence({ query: "human-in-the-loop" });
     expect(results.length).toBeGreaterThan(0);
-    expect(results[0].id).toBe("offboard-hitl-actions");
+    expect(results.slice(0, 2).map((r) => r.id)).toEqual(expect.arrayContaining(["offboard-hitl-actions", "neuron-shift-decisions"]));
   });
 
   it("finds the research evidence for a research question", () => {
@@ -118,7 +118,7 @@ describe("the evidence index itself", () => {
     }
   });
 
-  it("covers every decision section of both case studies", () => {
+  it("covers every argued section across case studies and prototypes", () => {
     // Each argued section should be reachable by citation; otherwise AI Louie
     // cannot point at part of the work.
     const cited = new Set(evidence.map((e) => `${e.route}#${e.anchor}`));
@@ -133,5 +133,33 @@ describe("the evidence index itself", () => {
         ).toBe(true);
       }
     }
+  });
+});
+
+
+describe("narrative integrity retrieval", () => {
+  it("separates teacher analytics from the student tutor", () => {
+    const { results } = searchEvidence({ query: "teacher analytics", project: "ck12-analytics" });
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((r) => r.route === "/work/ck12-analytics")).toBe(true);
+  });
+  it.each([
+    ["Did Offboard improve conversion?", "offboard-outcome-limits"],
+    ["Was Neuron built for a real customer?", "neuron-shift-prototype"],
+    ["What are Flexi measured results?", "flexi-evaluation-limits"],
+    ["What did Louie own in teacher analytics?", "analytics-ownership"],
+  ])("retrieves boundaries for %s", (query, id) => {
+    expect(searchEvidence({ query }).results.map((r) => r.id)).toContain(id);
+  });
+});
+
+describe("basic recruiter questions", () => {
+  it.each([
+    ["How technical are you?", "career-technical-fluency"],
+    ["Where are you based?", "career-contact-availability"],
+    ["Are you available for full-time roles?", "career-contact-availability"],
+    ["What is your career background?", "career-experience-arc"],
+  ])("retrieves published evidence for %s", (query, id) => {
+    expect(searchEvidence({ query }).results.map(item => item.id)).toContain(id);
   });
 });

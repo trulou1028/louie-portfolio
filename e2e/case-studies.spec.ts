@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-import { OFFBOARD_ANCHORS, FLEXI_ANCHORS } from "../lib/routes";
+import { OFFBOARD_ANCHORS, FLEXI_ANCHORS, ANALYTICS_ANCHORS, NEURON_ANCHORS } from "../lib/routes";
 
 /**
  * Case studies (spec §13, §14, §25, §26, §34).
@@ -11,24 +11,26 @@ import { OFFBOARD_ANCHORS, FLEXI_ANCHORS } from "../lib/routes";
  * break links that were already published.
  */
 const STUDIES = [
+  { name: "CK-12 Analytics", path: "/work/ck12-analytics", anchors: ANALYTICS_ANCHORS, title: "Turning learning predictions into teacher decisions" },
+  { name: "Neuron Shift", path: "/experiments/neuron-shift", anchors: NEURON_ANCHORS, title: "Preserving operator judgment across shift changes" },
   {
     name: "Offboard",
     path: "/work/offboard",
     anchors: OFFBOARD_ANCHORS,
-    title: "Building an AI-native operating system for the job search",
+    title: "Building a career-transition product around the next useful step",
   },
   {
     name: "CK-12 Flexi",
     path: "/work/flexi",
     anchors: FLEXI_ANCHORS,
     title:
-      "Designing an AI tutor that helps students learn instead of simply giving them answers",
+      "Helping students get unstuck without doing the learning for them",
   },
 ];
 
 for (const study of STUDIES) {
   test.describe(study.name, () => {
-    test("renders with its spec title", async ({ page }) => {
+    test("renders with its adopted title", async ({ page }) => {
       const response = await page.goto(study.path);
       expect(response?.status()).toBe(200);
       await expect(

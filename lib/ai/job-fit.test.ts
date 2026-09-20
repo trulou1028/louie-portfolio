@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  evidenceForComparison,
   jobDescriptionInputSchema,
   jobFitResultSchema,
   resolveEvidence,
@@ -173,5 +174,12 @@ describe("resolveEvidence", () => {
     const items = resolveEvidence(["offboard-risk-gate", "not-real"]);
     expect(items).toHaveLength(1);
     expect(items[0].id).toBe("offboard-risk-gate");
+  });
+});
+
+describe("comparison grounding context", () => {
+  it("preserves the research attribution limit passed to the model", () => {
+    const research = evidenceForComparison().find(item => item.id === "flexi-research");
+    expect(research?.detail).toContain("not as a claim that he authored the study");
   });
 });

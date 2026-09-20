@@ -16,7 +16,7 @@ const badgeVariants = cva(
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90",
         outline:
           // base-nova hovers to `muted` rather than upstream's `accent` —
-          // this repo's `--accent` is the portfolio's orange, not shadcn's
+          // this repo's `--accent` is the portfolio's brand color, not shadcn's
           // neutral hover fill. `components/ui/button.tsx` does the same.
           "text-foreground [a&]:hover:bg-muted [a&]:hover:text-foreground",
       },

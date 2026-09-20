@@ -28,9 +28,8 @@ async function stubAnalytics(page: Page) {
 }
 
 async function scrollToAskPanel(page: Page) {
-  await expect(async () => {
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
-  }).toPass({ timeout: 5_000 });
+  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  await expect(page.locator("#ask-ai-louie")).toBeVisible();
 }
 
 /** Same UI message stream shape the ai-louie suite mocks `/api/chat` with. */
@@ -106,7 +105,7 @@ test.describe("analytics", () => {
     await page.goto("/");
     await scrollToAskPanel(page);
 
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const panel = page.locator("#ask-ai-louie");
     await panel
       .getByRole("textbox", { name: "Ask anything about Louie's work" })
       .fill(secret);

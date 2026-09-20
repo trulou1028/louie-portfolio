@@ -7,7 +7,7 @@ import {
 } from "ai";
 import { z } from "zod";
 
-import { AIUnavailableError, getModel } from "@/lib/ai/provider";
+import { AIUnavailableError, getModel, getProviderOptions } from "@/lib/ai/provider";
 import { buildSystemPrompt } from "@/lib/ai/system-prompt";
 import { searchEvidence } from "@/lib/ai/portfolio-search";
 import {
@@ -17,7 +17,7 @@ import {
   type ValidatedUIMessage,
 } from "@/lib/ai/schemas";
 import { chatRateLimiter, clientKey } from "@/lib/ai/rate-limit";
-import { jobDescriptionInputSchema } from "@/lib/ai/job-fit";
+import { jobDescriptionInputSchema, resolveEvidence } from "@/lib/ai/job-fit";
 import { runJobFitComparison } from "@/lib/ai/job-fit-service";
 
 /**
@@ -145,7 +145,12 @@ export async function POST(request: Request) {
 
   const result = streamText({
     model,
+    // Override the SDK default, which logs the complete provider error.
+    onError: ({ error }) => {
+      console.error("[api/chat] provider error", error instanceof Error ? error.name : "unknown");
+    },
     system: buildSystemPrompt(),
+    providerOptions: getProviderOptions(),
     messages: modelMessages,
     tools: {
       /**
@@ -171,8 +176,19 @@ export async function POST(request: Request) {
         description:
           "Compare a pasted job description against Louie's portfolio evidence. Returns strong matches, honest gaps, work to review, and questions to ask him.",
         inputSchema: jobDescriptionInputSchema,
-        execute: async ({ jobDescription }) =>
-          runJobFitComparison(jobDescription),
+        execute: async ({ jobDescription }) => {
+          const comparison = await runJobFitComparison(jobDescription);
+          const ids = comparison.strongestMatches.flatMap(match => match.evidenceIds);
+          return {
+            ...comparison,
+            evidenceLinks: resolveEvidence([...new Set(ids)]).map(item => ({
+              id: item.id,
+              title: item.title,
+              route: item.route,
+              anchor: item.anchor,
+            })),
+          };
+        },
       }),
     },
     // Let the model search, then answer with what it found.

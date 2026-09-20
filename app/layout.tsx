@@ -75,7 +75,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "window.__deepLinkHash=location.hash;" +
+              "window.__deepLinkHash=location.hash;window.__deepLinkPathname=location.pathname;" +
               // Read the fragment off the event, not off `location`: the
               // router's replaceState can land between the hash being
               // assigned and `hashchange` being dispatched, in which case
@@ -84,6 +84,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               "addEventListener('hashchange',function(e){" +
               "var u=e.newURL||'',i=u.indexOf('#');" +
               "window.__deepLinkHash=i<0?'':u.slice(i);" +
+              "window.__deepLinkPathname=new URL(u).pathname;" +
               "},true);",
           }}
         />

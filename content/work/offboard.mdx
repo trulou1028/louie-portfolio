@@ -1,299 +1,109 @@
 import { CaseStudySection } from "@/components/portfolio/case-study-section";
-import {
-  SystemDiagram,
-  FlowDiagram,
-  TreeDiagram,
-} from "@/components/portfolio/system-diagram";
+import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagram";
 import { ArchitectureMap } from "@/components/portfolio/architecture-map";
-import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
-import { PendingContent } from "@/components/portfolio/pending-content";
 import { ARCHITECTURE_DESCRIPTION } from "@/content/work/offboard-architecture";
 
-{/*
-  Offboard case study — section anchors are fixed by spec §13 and are a
-  public contract (see lib/routes.ts). Narrative beats come from the spec;
-  anything requiring a fact the spec does not supply is a PendingContent
-  block rather than a guess (spec §29, §39.5).
-*/}
+<CaseStudySection id="context" title="A career transition creates work before the application" eyebrow="Context and ownership">
 
-<CaseStudySection id="context" title="The problem: context that never carries" eyebrow="Context">
+Researching a company, tailoring a resume, preparing outreach, and tracking progress often means rebuilding the same context in separate tools. I founded, designed, and built Offboard to connect that work.
 
-A job search is not one task. It is jobs, company research, contacts, resumes,
-application materials, interview preparation, tasks, and — increasingly — AI
-conversations. Each of those lives in a different tool, and none of those tools
-know anything about the others.
+My scope spans product direction, interaction design, implementation, and operation. Job Packets is the focused workflow in this story: turning a role into research and editable application materials, while preserving the person's decision about whether to pursue it.
 
-The cost is not that any single tool is bad. It is that the job seeker becomes
-the integration layer. Every move between tools means re-establishing the same
-context by hand: who this company is, what the role asks for, what was already
-said, which version of the resume went out, what still needs doing.
+</CaseStudySection>
 
-That work is invisible, repetitive, and paid for entirely in the applicant's
-time — at the exact moment they have least of it to spare.
+<CaseStudySection id="system" title="Give each opportunity a persistent workspace" eyebrow="Product model">
 
-<SystemDiagram
-  title="Before and after"
-  description="A dozen disconnected point tools, each holding one fragment of a search, consolidated into a single persistent workspace per opportunity that keeps all of them together."
->
-  <FlowDiagram
-    stages={[
-      {
-        parallel: [
-          { label: "Job boards", tone: "muted" },
-          { label: "Company research", tone: "muted" },
-          { label: "Contacts and outreach", tone: "muted" },
-        ],
-      },
-      {
-        parallel: [
-          { label: "Resume versions", tone: "muted" },
-          { label: "Interview prep", tone: "muted" },
-          { label: "AI chat threads", tone: "muted" },
-        ],
-      },
-      {
-        node: {
-          label: "One persistent workspace per opportunity",
-          note: "Context is kept, not rebuilt",
-          tone: "accent",
-        },
-      },
-    ]}
-  />
+Treating a job as a row in a tracker leaves its supporting work scattered elsewhere. I made the opportunity the organizing unit for the role, company, people, research, materials, preparation, tasks, and history.
+
+LUMO, the AI layer, works across that stored context. A Job Packet is one coordinated workflow inside the broader product. It is not a separate story about a separate application.
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-risk" title="Evaluate the opportunity before tailoring the application" eyebrow="Decision 01">
+
+Automating more documents is not helpful if the opportunity deserves a second look. The packet workflow assesses the role before generating tailored materials. A risk gate can pause progress so the person can decide whether to continue.
+
+This is a warning and a choice, not proof that a listing is fraudulent or a guarantee that a role is good. The product needs to make the assessment useful without pretending to know an employer's intent.
+
+<SystemDiagram title="The risk gate" description="Conceptual workflow: role intelligence and risk assessment precede tailored generation; a flagged opportunity pauses for the user's decision.">
+  <FlowDiagram stages={[
+    { node: { label: "Role submitted" } },
+    { node: { label: "Role intelligence" } },
+    { node: { label: "Risk assessment", tone: "accent" } },
+    { node: { label: "Flagged?" }, branch: { condition: "Yes", outcome: "Pause for the user's choice" } },
+    { node: { label: "Continue to tailored materials" } },
+  ]} />
 </SystemDiagram>
 
 </CaseStudySection>
 
-<CaseStudySection id="system" title="The product model: every opportunity is a workspace" eyebrow="Product model">
+<CaseStudySection id="decision-control" title="Automate preparation while keeping authorship with the person" eyebrow="Decision 02">
 
-The central decision was to stop treating a job as a row in a list.
+The person should be able to inspect and edit the result before using it. Packet outputs remain drafts. Nothing sends itself to an employer. If a resume is missing, the workflow can skip resume-dependent writing and return a partial packet instead of inventing the person's experience.
 
-> Make every opportunity a persistent workspace.
+That does not mean every internal action needs approval. Filing results into the tracker can happen automatically. The meaningful boundary is between organizing work inside the product and representing the person outside it.
 
-An opportunity is the unit the whole product is organised around. Everything
-that accumulates during a search — the role, the company, the people, the
-research, the materials, the conversation — belongs to it and stays with it.
-Nothing has to be re-supplied to do the next piece of work.
-
-<SystemDiagram
-  title="What an opportunity contains"
-  description="A single Opportunity record holds the role, company, people, research, resume, application materials, interview preparation, tasks, conversation, and history — so any later step can draw on all of them."
->
-  <TreeDiagram
-    root={{
-      label: "Opportunity",
-      children: [
-        { label: "Role" },
-        { label: "Company" },
-        { label: "People" },
-        { label: "Research" },
-        { label: "Resume" },
-        { label: "Application materials" },
-        { label: "Interview prep" },
-        { label: "Tasks" },
-        { label: "Conversation" },
-        { label: "History" },
-      ],
-    }}
-  />
+<SystemDiagram title="Draft, review, decide" description="Conceptual control boundary: the product prepares and files editable materials; the person reviews them and decides what to use. This is not a screenshot of a confirmation dialog.">
+  <FlowDiagram stages={[
+    { node: { label: "Prepare research and drafts" } },
+    { node: { label: "File results in the workspace" } },
+    { node: { label: "Person reviews and edits", tone: "accent" } },
+    { node: { label: "Person decides what to use" } },
+  ]} />
 </SystemDiagram>
-
-LUMO, the AI layer, is not a separate chatbot bolted onto that structure. It
-operates across it. Because the workspace already holds the context, LUMO can
-act with knowledge of the specific role, company, and history rather than
-asking the user to paste it in again.
 
 </CaseStudySection>
 
-<CaseStudySection id="decision-risk" title="Protect the user's effort" eyebrow="Decision 01">
+<CaseStudySection id="decision-context" title="Reuse the context, not just the generated text" eyebrow="Decision 03">
 
-Tailoring an application is expensive. It takes real attention, and job seekers
-have a finite amount of it. Spending that attention on an opportunity that was
-never real is worse than doing nothing.
+Parsing the role once and sharing research across downstream tasks avoids asking each step to rediscover the company and requirements. The same context can inform resume work, outreach, and interview preparation.
 
-So the system evaluates before it generates:
-
-> Do not burn a job seeker's time generating tailored materials before the
-> system has evaluated whether an opportunity appears worth pursuing.
-
-This is a gate, not a warning banner. Role intelligence and a risk assessment
-run first; if an opportunity looks like a ghost listing or otherwise low value,
-the product says so before the user invests in it.
-
-<SystemDiagram
-  title="The risk gate"
-  description="A submitted role is enriched with role intelligence, then risk-assessed. If the assessment is unfavourable the user is warned or the flow pauses; only if they continue does the research and application workflow begin."
->
-  <FlowDiagram
-    stages={[
-      { node: { label: "Role submitted" } },
-      { node: { label: "Role intelligence" } },
-      { node: { label: "Risk assessment", tone: "accent" } },
-      {
-        node: { label: "Continue?" },
-        branch: { condition: "No", outcome: "Warn the user, or pause the workflow" },
-      },
-      { node: { label: "Research and application workflow", tone: "accent" } },
-    ]}
-  />
-</SystemDiagram>
-
-The interesting part is what this implies about the product's stance: it is
-willing to talk a user out of work. A tool measured on output volume would
-never do this.
+The design tradeoff is consistency versus stale information. Reuse is useful only while the underlying context remains relevant. This case study describes the coordination model; it does not claim a measured cost or latency reduction.
 
 </CaseStudySection>
 
-<CaseStudySection id="decision-control" title="AI acts with visible control" eyebrow="Decision 02">
+<CaseStudySection id="decision-entry-point" title="A strong workflow can still be the wrong starting point" eyebrow="What changed">
 
-The AI in Offboard does not only answer — it acts. It can research, draft,
-revise, and update the workspace. That makes the question of control a design
-problem rather than a technical one.
+Job Packets initially carried too much of the burden of introducing Offboard. It assumes someone already has a role worth pursuing. A person facing a fresh career transition may first need direction and a manageable next step.
 
-The pattern is that consequential actions are always previewed and always
-confirmed. The user sees which tool is about to run, on what, and what it will
-produce, before it happens — and sees the result afterwards as a discrete,
-attributable change rather than a silent mutation.
+I moved the product story toward a plan-first journey, with packets later in the sequence. That changes the design question from “Can we generate a complete packet?” to “Can this person take their first useful action?”
 
-<SystemDiagram
-  title="Human-in-the-loop action"
-  description="The assistant proposes an action, a specific tool is selected, a preview is generated, the user confirms, the action runs, and the result is shown as a visible change to the workspace."
->
-  <FlowDiagram
-    stages={[
-      { node: { label: "AI suggestion" } },
-      { node: { label: "Tool selected" } },
-      { node: { label: "Preview", tone: "accent" } },
-      { node: { label: "User confirmation", tone: "accent" } },
-      { node: { label: "Action" } },
-      { node: { label: "Visible result" } },
-    ]}
-  />
-</SystemDiagram>
-
-In the shipped product this shows up as a family of patterns rather than a
-single dialog: visible agent progress while the assistant works, outputs that
-stay editable rather than final, approval checkpoints before consequential
-steps, and confirmation-first actions — safeguards designed specifically for
-decisions that are emotionally high-stakes for the person making them.
-
-<PendingContent
-  summary="Screenshots of the pattern in use."
-  items={[
-    "A preview state and the resulting change",
-    "Any case where the pattern was deliberately relaxed, and why",
-  ]}
-/>
-
-</CaseStudySection>
-
-<CaseStudySection id="decision-context" title="Context compounds" eyebrow="Decision 03">
-
-Most tools restart. Each new task begins from an empty box, and the user pays
-the setup cost again.
-
-Offboard is built so that work accumulates instead. The research done for an
-opportunity feeds the resume tailored to it; the resume and the research feed
-the outreach; all of it feeds interview preparation. Each artifact inherits
-what came before rather than asking for it again.
-
-<SystemDiagram
-  title="Downstream work inherits upstream work"
-  description="The role, company, and the user's own context feed a research layer. That research then informs the resume, the outreach, and the interview preparation in parallel, and those in turn produce the application materials and decisions."
->
-  <FlowDiagram
-    stages={[
-      { node: { label: "Role + Company + User context" } },
-      { node: { label: "Research layer", tone: "accent" } },
-      {
-        parallel: [
-          { label: "Resume" },
-          { label: "Outreach" },
-          { label: "Interview prep" },
-        ],
-      },
-      { node: { label: "Application materials and decisions", tone: "accent" } },
-    ]}
-  />
-</SystemDiagram>
+This is a product-direction correction. I do not yet present a measured activation or conversion lift for the change.
 
 </CaseStudySection>
 
 <CaseStudySection id="architecture" title="Architecture" eyebrow="How it is built">
 
-Offboard is a product I designed and built, so the architecture is part of the
-design story rather than an appendix to it. What follows is the shape of the
-system at a level a product designer or an engineer can both hold in their
-head — how data and actions actually move — rather than a wall of logos.
+I designed and built the product with AI development tools as part of the workflow. The client uses Vite, React, TypeScript, Tailwind, and shadcn/ui. Supabase provides Postgres with per-user row-level security, and Deno edge functions coordinate server-side work.
 
-<SystemDiagram
-  title="How data and actions move"
-  description={ARCHITECTURE_DESCRIPTION}
->
-  {/* Wide screens get the explorable map; everything else gets the same
-      ordered list the other diagrams use. Both are built from one graph in
-      content/work/offboard-architecture.ts. */}
+The architecture supports persistent context, AI workflows, document generation, authentication, credits, employer workspaces, and paid plans. Those are product capabilities, not evidence of adoption or revenue.
+
+<SystemDiagram title="How data and actions move" description={ARCHITECTURE_DESCRIPTION}>
   <ArchitectureMap />
 </SystemDiagram>
 
-The stack is Vite, React, TypeScript, Tailwind, and shadcn/ui on the client,
-with Supabase providing Postgres under per-user row-level security and Deno
-edge functions doing the server-side work. Around that core sit the
-operational surfaces a real product needs: authentication, user data, AI
-credits, document generation, assistant experiences, employer workspaces, and
-paid plans.
+</CaseStudySection>
 
-All of it is built solo, with AI development tools — Claude Code, Codex,
-Lovable — as part of the workflow. That is itself a design position: using
-AI-first tools daily is where the intuition comes from for how AI-first
-software should feel, where automation should defer to humans, and how model
-output becomes a usable product experience.
+<CaseStudySection id="product" title="A completed workflow becomes a reviewable packet" eyebrow="Product">
+
+The product screenshot at the top of this page shows a completed Job Packet marked ready for review. The role, match assessment, research sections, and prepared materials stay together, with the pipeline visible alongside them.
+
+The workflow completing is not the same as an application being sent. The packet gives the person a place to inspect the result and decide what to use next.
 
 </CaseStudySection>
 
-<CaseStudySection id="product" title="The product" eyebrow="Product">
+<CaseStudySection id="outcomes" title="Built end to end; the behavioral outcome remains a question" eyebrow="Outcome">
 
-The screens below are where the decisions above become something a person can
-use. Each caption connects the interface back to the argument it came from.
+Offboard moved from product concepts into live beta workflows through my design and implementation work. The evidence here establishes a built product and the reasoning behind its workflow.
 
-{/* TODO(asset): opportunity workspace screenshot. */}
-<ArtifactFrame caption="The opportunity workspace: one record holding the role, the company, the research, and the conversation together, so no later step has to ask for them again." />
-
-{/* TODO(asset): risk gate screenshot. */}
-<ArtifactFrame caption="The risk gate as a user meets it — the assessment arrives before any tailored material is generated, not after." />
-
-{/* TODO(asset): preview-and-confirm screenshot. */}
-<ArtifactFrame caption="A preview-and-confirm step: what the assistant intends to do, shown in full before it does it." />
+It does not establish adoption, repeat usage, revenue, or a conversion improvement. The next evaluation needs to connect a person's starting situation to their first completed plan action and subsequent use of a packet.
 
 </CaseStudySection>
 
-<CaseStudySection id="outcomes" title="Outcomes" eyebrow="Outcomes">
+<CaseStudySection id="learnings" title="Sequence is part of the product" eyebrow="Reflection">
 
-Offboard has moved from ambiguous product concepts to live beta workflows —
-designed, built, and operated as a solo effort across the full stack.
+A polished workflow can ask for the wrong commitment at the wrong time. The correction was to give the person's readiness as much attention as the packet's completeness.
 
-<PendingContent
-  summary="Only verifiable outcomes belong here. Nothing has been estimated or inferred — where a number is not known, this section stays empty rather than carrying a plausible one (spec §13.8)."
-  items={[
-    "Whether the product is shipped and actively used, and by roughly how many people",
-    "Workflow completion or repeat-usage figures, if they are measured",
-    "Number of application packets or interview preparation sessions, if tracked",
-    "Any employer-sponsored users",
-    "Qualitative feedback that can be quoted, with permission",
-  ]}
-/>
-
-</CaseStudySection>
-
-<CaseStudySection id="learnings" title="Learnings" eyebrow="Learnings">
-
-<PendingContent
-  summary="A reflective close: what is working, where users struggle, and what Louie would change next. Written from real observation rather than generalities — reflective, not apologetic (spec §13.9)."
-  items={[
-    "The decision that has held up best in use",
-    "Where users still get stuck, or use the product differently than expected",
-    "What would change in the next iteration, and why",
-  ]}
-/>
+I would test the initial journey with people at different stages of a transition, observe where they hesitate, and check whether the next action is useful before measuring how much the system generates.
 
 </CaseStudySection>

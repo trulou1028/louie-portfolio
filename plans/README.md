@@ -114,6 +114,37 @@ them is code:
   or drop ~200KB of dependency — decide when the outcomes content arrives.
 - **Per-route share images** for the two case studies, once screenshots exist.
 
+## Portfolio narrative revision (implemented first pass 2026-09-19)
+
+Plans 029-035 respond to Louie's request to review five portfolio sources and
+create a strategy and series of plans. Louie then authorized implementation.
+The application changes and editorial kit are implemented locally; production
+publishing is not included. Start with [release review](portfolio-strategy/release-review.md),
+[029](029-portfolio-narrative-strategy.md), and the [source review](portfolio-strategy/source-review.md).
+Adopted deviations are recorded in README.
+
+| Plan | Deliverable | Priority | Depends on | Status |
+|------|-------------|----------|------------|--------|
+| [029](029-portfolio-narrative-strategy.md) | Positioning, portfolio sequence, and consolidation decisions | P1 | none | Implemented |
+| [030](030-case-study-source-reconciliation.md) | Claim, ownership, and asset reconciliation | P1 | 029 direction | Ledger/briefs complete; evidence gaps open |
+| [031](031-portfolio-reading-layout.md) | Work-first homepage and shared article layout | P1 | 029 adopted; 030 metadata/assets | Implemented and verified |
+| [032](032-ck12-analytics-case-study.md) | New CK-12 Foresights & Insights flagship | P1 | 030; 031 shell | Implemented; collaboration gap open |
+| [033](033-offboard-consolidated-story.md) | Consolidated Offboard and Job Packets narrative | P1 | 030; 031 shell | Implemented; asset/observation gaps open |
+| [034](034-flexi-neuron-and-work-taxonomy.md) | Distinct Flexi story and Neuron Shift exploration | P2 | 030; 031 | Implemented and verified |
+| [035](035-interview-story-kit-and-release.md) | Interview story kit, evidence QA, and release checks | P1/P2 | 032-033 for flagship release; 034 for full collection | Kit and local QA complete; owner rehearsal/release pending |
+
+Execution order: 029 → 030 → 031 → 032 → 033 → flagship checks in 035;
+then 034 → remaining checks in 035. Editorial drafts for 032-034 can precede
+shell implementation once their claims are resolved. No agent delegation is
+requested or authorized by these recommendations.
+
+Recommended default sequence: CK-12 Foresights & Insights, then Offboard;
+Flexi as additional production work; Neuron Shift as a clearly labeled
+exploration. Preserve existing case-study URLs and deep links. Complete
+claims and images before promoting a new project. The current first pass uses real images;
+the full Offboard workflow asset set remains open in the release review. Model recommendations are
+dated inside every plan and do not authorize model-setting changes.
+
 ## Execution log
 
 - **020 — DONE 2026-08-31.** Executed by dispatched subagent in worktree

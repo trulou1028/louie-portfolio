@@ -1,3 +1,5 @@
+import { RevealHeading } from "@/components/portfolio/reveal-heading";
+import { MotionReveal } from "@/components/portfolio/motion-reveal";
 import * as React from "react";
 
 import { SectionLabel } from "@/components/system/section-label";
@@ -40,14 +42,16 @@ function CaseStudySection({
         className,
       )}
     >
+      <MotionReveal stagger>
       {eyebrow ? <SectionLabel className="mb-3">{eyebrow}</SectionLabel> : null}
-      <h2
+      <RevealHeading
         id={`${id}-heading`}
         className="font-serif text-heading-xl text-balance text-foreground"
       >
         {title}
-      </h2>
+      </RevealHeading>
       {children}
+      </MotionReveal>
     </section>
   );
 }

@@ -136,7 +136,7 @@ function Canvas({
   // scroll would have been reset by the browser. Restore that expectation —
   // unless the URL carries a hash, which the deep-link behaviour handles.
   React.useEffect(() => {
-    if (!window.location.hash) scrollRef.current?.scrollTo(0, 0);
+    if (!window.location.hash) scrollRef.current?.scrollTo({ top: 0, behavior: "instant" });
   }, [pathname]);
 
   const showPanes = Boolean(rail) && hasRailPane;

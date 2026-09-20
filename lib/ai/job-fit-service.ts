@@ -2,7 +2,7 @@ import "server-only";
 
 import { generateObject } from "ai";
 
-import { getModel } from "@/lib/ai/provider";
+import { getModel, getProviderOptions } from "@/lib/ai/provider";
 import {
   JOB_FIT_INSTRUCTIONS,
   evidenceForComparison,
@@ -34,6 +34,7 @@ export async function runJobFitComparison(
   const { object } = await generateObject({
     model: getModel(),
     schema: jobFitResultSchema,
+    providerOptions: getProviderOptions(),
     system: JOB_FIT_INSTRUCTIONS,
     prompt: [
       "Portfolio evidence (the only permitted source):",

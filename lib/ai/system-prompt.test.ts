@@ -17,8 +17,9 @@ describe("buildSystemPrompt", () => {
     }
   });
 
-  it("never claims to be Louie", () => {
+  it("uses first-person portfolio voice while disclosing its AI identity", () => {
     const prompt = buildSystemPrompt();
-    expect(prompt).toContain("You are not Louie and must not claim to be him.");
+    expect(prompt).toContain("Speak in Louie's authorized first-person portfolio voice");
+    expect(prompt).toContain("You are an AI guide, not the human Louie.");
   });
 });

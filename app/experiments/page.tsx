@@ -8,7 +8,7 @@ import { experiments } from "@/content/experiments/experiments";
 export const metadata: Metadata = {
   title: "Experiments",
   description:
-    "Small, opinionated prototypes exploring AI interaction patterns — voice and tool calling, human-in-the-loop confirmation, agent interfaces, and design engineering.",
+    "Independent prototypes exploring AI interaction patterns and human judgment.",
   alternates: { canonical: "/experiments" },
 };
 
@@ -30,12 +30,12 @@ export default function ExperimentsIndex() {
         <p className="mt-6 max-w-[62ch] text-body-lg text-foreground-muted">
           Short prototypes for questions that are easier to answer by building
           than by arguing. Each is an exploration rather than a finished
-          demonstration — the status on every card says where it actually
+          demonstration. The status on every card says where it actually
           stands.
         </p>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
-          {experiments.map((experiment) => (
+          {experiments.filter((experiment) => experiment.status !== "exploration").map((experiment) => (
             <ExperimentCard
               key={experiment.slug}
               experiment={experiment}

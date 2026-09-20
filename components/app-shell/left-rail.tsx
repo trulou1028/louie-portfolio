@@ -1,3 +1,4 @@
+import { AskLouieTrigger } from "@/components/ai/ask-louie-dialog";
 import Link from "next/link";
 import { Mail } from "lucide-react";
 
@@ -22,7 +23,7 @@ import { profile } from "@/content/profile";
  * worse than an absent one (spec §29).
  */
 function LeftRail() {
-  const { availability, links, quotes } = profile;
+  const { availability, links } = profile;
   const hasContact = Boolean(links.linkedin || links.email);
 
   return (
@@ -55,6 +56,7 @@ function LeftRail() {
             />
           );
         })}
+        <AskLouieTrigger className="mt-3 w-full justify-start" />
       </nav>
 
       {availability.status && availability.label ? (
@@ -76,16 +78,7 @@ function LeftRail() {
         </div>
       ) : null}
 
-      {/* A bare blockquote, not a <figure>: there is no caption, and an
-          empty-captioned figure on every page pollutes figure-scoped queries
-          (it broke the case-study diagram assertions). */}
-      <blockquote className="mt-auto border-t border-border-subtle pt-6 font-serif text-body text-foreground-muted">
-        <span className="block border-l-2 border-accent-muted pl-3.5">
-          {quotes.approach}
-        </span>
-      </blockquote>
-
-      <div className="flex flex-col gap-4">
+      <div className="mt-auto flex flex-col gap-4">
         {hasContact ? (
           <div className="flex items-center gap-2">
             {links.email ? (

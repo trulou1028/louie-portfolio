@@ -52,8 +52,7 @@ function ThreadSkeleton() {
           className="min-w-0 border-accent-muted/70 bg-surface-raised p-4"
         >
           <p className="text-body-sm text-foreground">
-            Hi — ask me anything about Louie&rsquo;s work. I answer from his
-            case studies and project evidence.
+            Hi, ask me about my work. I answer from my case studies and project evidence.
           </p>
         </Surface>
       </div>

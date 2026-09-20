@@ -10,20 +10,10 @@ function text(literal: string) {
   return new RegExp(escaped.replace(/['’]/g, "['’]"));
 }
 
-/**
- * Below lg (1024px), `Canvas` renders the rail in a structurally different
- * tree than on lg+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) —
- * `useMinWidth` reports desktop for the first client render even on a real
- * mobile viewport (matching SSR, so hydration never mismatches) and corrects
- * one effect later, which unmounts and remounts the rail's subtree. A `goto`
- * followed immediately by `scrollIntoViewIfNeeded` can therefore catch
- * `#ask-ai-louie` mid-swap; retrying the whole action rides that out, the
- * same way a real visitor's slower first interaction never would.
- */
+/** Open the on-demand assistant through its visible entry point. */
 async function scrollToAskPanel(page: Page) {
-  await expect(async () => {
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
-  }).toPass({ timeout: 5_000 });
+  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  await expect(page.locator("#ask-ai-louie")).toBeVisible();
 }
 
 /**
@@ -50,7 +40,7 @@ test.describe("the AI surface", () => {
     // Plan 012: the panel is a complementary landmark, not just an id —
     // scoping to it is what proves the suggestions live in the rail, not
     // buried somewhere else in the main column.
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const panel = page.locator("#ask-ai-louie");
 
     await expect(
       panel.getByRole("heading", { name: "Ask Louie" }),
@@ -59,7 +49,7 @@ test.describe("the AI surface", () => {
     await expect(
       panel.getByText(
         text(
-          "Hi — ask me anything about Louie's work. I answer from his case studies and project evidence.",
+          "Hi, ask me about my work. I answer from my case studies and project evidence.",
         ),
       ),
     ).toBeVisible();
@@ -70,7 +60,7 @@ test.describe("the AI surface", () => {
 
     for (const prompt of [
       "Show me Offboard",
-      "How technical is Louie?",
+      "How technical are you?",
       "Tell me about Flexi",
     ]) {
       await expect(panel.getByText(prompt, { exact: true })).toBeVisible();
@@ -105,7 +95,8 @@ test.describe("the AI surface", () => {
     test.skip(testInfo.project.name !== "desktop", "desktop only");
 
     await page.goto("/");
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    await scrollToAskPanel(page);
+    const panel = page.locator("#ask-ai-louie");
     await expect(
       panel.getByRole("textbox", { name: "Ask anything about Louie's work" }),
     ).toBeEnabled();
@@ -124,22 +115,23 @@ test.describe("the AI surface", () => {
       await route.fulfill({ status: 503, json: { error: "ai_unavailable" } });
     });
 
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
-    const suggestion = panel.getByText("How technical is Louie?", { exact: true });
+    const panel = page.locator("#ask-ai-louie");
+    const suggestion = panel.getByText("How technical are you?", { exact: true });
     await suggestion.focus();
     await expect(suggestion).toBeFocused();
     await page.keyboard.press("Enter");
 
     await expect.poll(() => body !== null, { timeout: 10_000 }).toBe(true);
     expect(JSON.stringify((body as unknown as { messages: unknown[] }).messages)).toContain(
-      "How technical is Louie?",
+      "How technical are you?",
     );
   });
 
   test("ships no voice, attachment, or research controls", async ({ page }) => {
     // Spec §11: do not ship fake controls. Voice is Plan 009.
     await page.goto("/");
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    await scrollToAskPanel(page);
+    const panel = page.locator("#ask-ai-louie");
 
     for (const name of [/microphone/i, /talk/i, /attach/i, /deep research/i]) {
       await expect(panel.getByRole("button", { name })).toHaveCount(0);
@@ -280,7 +272,7 @@ test.describe("the AI surface", () => {
     await scrollToAskPanel(page);
     await page.getByText("Tell me about Flexi", { exact: true }).click();
 
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const panel = page.locator("#ask-ai-louie");
     await expect(panel.getByText(paragraph.slice(0, 30))).toBeVisible({
       timeout: 10_000,
     });
@@ -321,8 +313,8 @@ test.describe("the AI surface", () => {
     await scrollToAskPanel(page);
     await page.getByText("Show me Offboard", { exact: true }).click();
 
-    // The hero's CTAs were removed (owner decision 2026-08-27); Featured
-    // work carries the route out to /work now.
+    // Closing the assistant restores the primary reading/navigation surface.
+    await page.getByRole("dialog", { name: "Ask Louie", exact: true }).getByRole("button", { name: "Close", exact: true }).click();
     await page
       .getByTestId("featured-work")
       .getByRole("link", { name: "All work →" })
@@ -376,7 +368,7 @@ test.describe("the AI surface", () => {
     await scrollToAskPanel(page);
     await page.getByText("Tell me about Flexi", { exact: true }).click();
 
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const panel = page.locator("#ask-ai-louie");
 
     // Real elements, not just visually-bold-looking text.
     await expect(
@@ -407,7 +399,7 @@ test.describe("the AI surface", () => {
     await scrollToAskPanel(page);
     await page.getByText("Tell me about Flexi", { exact: true }).click();
 
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const panel = page.locator("#ask-ai-louie");
 
     // The markup shows up as visible text instead of being rendered...
     await expect(
@@ -454,7 +446,7 @@ test.describe("the AI surface", () => {
     await scrollToAskPanel(page);
     await page.getByText("Tell me about Flexi", { exact: true }).click();
 
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const panel = page.locator("#ask-ai-louie");
 
     await expect(panel.getByText("done")).toBeVisible({ timeout: 10_000 });
 
@@ -492,7 +484,7 @@ test.describe("the AI surface", () => {
     await scrollToAskPanel(page);
     await page.getByText("Tell me about Flexi", { exact: true }).click();
 
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const panel = page.locator("#ask-ai-louie");
 
     // The one real route is a link...
     const good = panel.getByRole("link", { name: "the architecture" });
@@ -521,7 +513,7 @@ test.describe("the AI surface", () => {
     await page.goto("/");
     await scrollToAskPanel(page);
 
-    const panel = page.getByRole("complementary", { name: "Ask Louie" });
+    const panel = page.locator("#ask-ai-louie");
     const textarea = panel.getByRole("textbox", {
       name: "Ask anything about Louie's work",
     });

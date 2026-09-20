@@ -10,7 +10,7 @@ import { evidence } from "@/content/evidence/evidence";
 export const metadata: Metadata = {
   title: "AI Systems",
   description:
-    "The AI design decisions behind Offboard and CK-12 Flexi — human-in-the-loop control, grounding, scaffolding, uncertainty, and multi-sided systems.",
+    "Design decisions across teacher analytics, Offboard, Flexi, and the Neuron Shift prototype.",
   alternates: { canonical: "/ai-systems" },
 };
 
@@ -38,7 +38,7 @@ const THEMES = [
     title: "Being honest about limits",
     question:
       "How does a system show the edge of what it knows, to someone with no way to check?",
-    ids: ["flexi-expose-uncertainty"],
+    ids: ["analytics-uncertainty", "analytics-evaluation"],
   },
   {
     title: "Context that compounds",
@@ -50,7 +50,7 @@ const THEMES = [
     title: "Systems with more than one user",
     question:
       "How do you hold competing needs together without quietly picking a winner?",
-    ids: ["flexi-teacher-first-class", "flexi-multi-sided-system"],
+    ids: ["analytics-prediction-diagnosis", "neuron-shift-decisions"],
   },
   {
     title: "Built, not just specified",
@@ -68,9 +68,9 @@ export default function AiSystemsPage() {
           The decisions behind the AI, not the models behind it
         </h1>
         <p className="mt-6 max-w-[62ch] text-body-lg text-foreground-muted">
-          Both products here are ones where the hard part was deciding what the
-          system should refuse to do. This page collects those decisions and
-          links straight to where each one is argued in full.
+          These examples connect model behavior to human judgment: interpreting
+          a prediction, reviewing a draft, asking for better help, or inheriting
+          a decision. Each links to its evidence and limitations.
         </p>
 
         <div className="mt-14 flex flex-col gap-12">

@@ -10,6 +10,8 @@ import { test, expect } from "@playwright/test";
 const ROUTES = [
   "/",
   "/work",
+  "/work/ck12-analytics",
+  "/experiments/neuron-shift",
   "/work/offboard",
   "/work/flexi",
   "/ai-systems",

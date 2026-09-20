@@ -51,11 +51,10 @@ async function openDialog(page: Page) {
   // real mobile viewport (matching SSR) and corrects one effect later,
   // unmounting and remounting the rail's subtree. Retrying the whole action
   // rides out a `goto` that lands mid-swap.
-  await expect(async () => {
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
-  }).toPass({ timeout: 5_000 });
+  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  await expect(page.locator("#ask-ai-louie")).toBeVisible();
   await page.getByRole("button", { name: "Paste a job description" }).click();
-  return page.getByRole("dialog");
+  return page.getByRole("dialog", { name: "Evaluating Louie for a role?" });
 }
 
 test.describe("the evaluator dialog", () => {
@@ -155,11 +154,11 @@ test.describe("the evaluator dialog", () => {
     await dialog.getByLabel("Job description").fill(JOB_DESCRIPTION);
 
     await page.keyboard.press("Escape");
-    await expect(page.getByRole("dialog")).toBeHidden();
+    await expect(page.getByRole("dialog", { name: "Evaluating Louie for a role?" })).toBeHidden();
 
     // Reopening starts clean — the description is not retained.
     await page.getByRole("button", { name: "Paste a job description" }).click();
-    await expect(page.getByRole("dialog").getByLabel("Job description")).toHaveValue(
+    await expect(page.getByRole("dialog", { name: "Evaluating Louie for a role?" }).getByLabel("Job description")).toHaveValue(
       "",
     );
   });

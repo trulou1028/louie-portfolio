@@ -58,7 +58,7 @@ import { Bubble, BubbleContent } from "@/components/ui/bubble";
  */
 const SUGGESTIONS = [
   "Show me Offboard",
-  "How technical is Louie?",
+  "How technical are you?",
   "Tell me about Flexi",
 ] as const;
 
@@ -69,7 +69,7 @@ const SUGGESTIONS = [
  */
 const SUGGESTION_SLUGS: Record<string, string> = {
   "Show me Offboard": "show-offboard",
-  "How technical is Louie?": "how-technical",
+  "How technical are you?": "how-technical",
   "Tell me about Flexi": "show-flexi",
 };
 
@@ -370,8 +370,7 @@ function AiLouieLive() {
                       className="min-w-0 border-accent-muted/70 bg-surface-raised p-4"
                     >
                       <p className="text-body-sm text-foreground">
-                        Hi — ask me anything about Louie&rsquo;s work. I
-                        answer from his case studies and project evidence.
+                        Hi, ask me about my work. I answer from my case studies and project evidence.
                       </p>
                     </Surface>
                   </div>

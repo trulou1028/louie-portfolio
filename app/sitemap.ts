@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const priorities: Record<string, number> = {
     "/": 1,
     "/work": 0.9,
+    "/work/ck12-analytics": 0.9,
     "/work/offboard": 0.9,
     "/work/flexi": 0.9,
     "/ai-systems": 0.7,
@@ -33,5 +34,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.4,
   }));
 
-  return [...pages, ...experimentPages];
+  return [...new Map([...pages, ...experimentPages].map((page) => [page.url, page])).values()];
 }

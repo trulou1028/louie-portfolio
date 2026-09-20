@@ -8,9 +8,14 @@ import AxeBuilder from "@axe-core/playwright";
  * the keyboard and landmark assertions in the other suites rather than
  * standing in for them. Zero serious or critical violations is the bar.
  */
+// Audit the fully readable state, not a transient entrance fade.
+test.beforeEach(async ({ page }) => { await page.emulateMedia({ reducedMotion: "reduce" }); });
+
 const ROUTES = [
   "/",
   "/work",
+  "/work/ck12-analytics",
+  "/experiments/neuron-shift",
   "/work/offboard",
   "/work/flexi",
   "/ai-systems",
@@ -89,11 +94,10 @@ test("the evaluator dialog is accessible when open", async ({ page }) => {
   // real mobile viewport (matching SSR) and corrects one effect later,
   // unmounting and remounting the rail's subtree. Retrying the whole action
   // rides out a `goto` that lands mid-swap.
-  await expect(async () => {
-    await page.locator("#ask-ai-louie").scrollIntoViewIfNeeded();
-  }).toPass({ timeout: 5_000 });
+  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  await expect(page.locator("#ask-ai-louie")).toBeVisible();
   await page.getByRole("button", { name: "Paste a job description" }).click();
-  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Evaluating Louie for a role?" })).toBeVisible();
 
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])

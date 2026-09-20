@@ -43,7 +43,6 @@ export default function OffboardCaseStudy() {
         <CaseStudyHeader
           project={project}
           lede="Job seekers lose most of their time to work that has nothing to do with the job: rebuilding the same context across a dozen tools that do not talk to each other."
-          // TODO(content): Louie to supply role, timeframe, and team.
         />
 
         <TableOfContentsInline anchors={OFFBOARD_ANCHORS} className="mb-10" />

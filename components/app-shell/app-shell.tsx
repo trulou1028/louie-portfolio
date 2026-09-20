@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { AskLouieProvider } from "@/components/ai/ask-louie-dialog";
+import { usePathname } from "next/navigation";
 
 import { LeftRail } from "@/components/app-shell/left-rail";
 import { MobileNav } from "@/components/app-shell/mobile-nav";
@@ -33,9 +35,19 @@ import { useMinWidth } from "@/lib/use-breakpoint";
  */
 function AppShell({ children }: { children: React.ReactNode }) {
   const isLg = useMinWidth(RAIL_BREAKPOINT_PX);
+  const pathname = usePathname();
+
+  React.useEffect(() => {
+    // This shell survives responsive remounts and page transitions. Clear
+    // only on departure, so hydration can still restore a swallowed hash.
+    if (window.__deepLinkPathname !== pathname) {
+      window.__deepLinkHash = undefined;
+      window.__deepLinkPathname = undefined;
+    }
+  }, [pathname]);
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden">
+    <AskLouieProvider><div className="flex h-dvh flex-col overflow-hidden">
       {/* Skip link — first tab stop on every page (spec §26). */}
       <a
         href="#main"
@@ -82,7 +94,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
           </main>
         </ResizablePanel>
       </PersistentPanelGroup>
-    </div>
+    </div></AskLouieProvider>
   );
 }
 

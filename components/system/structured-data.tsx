@@ -68,7 +68,7 @@ export function WebSiteSchema() {
   );
 }
 
-export function CreativeWorkSchema({ project }: { project: WorkProject }) {
+export function CreativeWorkSchema({ project }: { project: Pick<WorkProject, "title" | "name" | "href" | "summary" | "tags"> }) {
   return (
     <JsonLd
       data={{

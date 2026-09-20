@@ -1,3 +1,9 @@
+import { CreativeWorkSchema } from "@/components/system/structured-data";
+import NeuronContent from "@/content/experiments/neuron-shift.mdx";
+import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
+import { TableOfContentsInline } from "@/components/portfolio/table-of-contents";
+import { NEURON_ANCHORS } from "@/lib/routes";
+import { TrackView } from "@/components/system/track-view";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -28,6 +34,7 @@ export async function generateMetadata({
       experiment.summary ??
       `An in-progress exploration of ${experiment.title.toLowerCase()}.`,
     alternates: { canonical: `/experiments/${experiment.slug}` },
+    openGraph: { type: "article", title: experiment.title, description: experiment.summary ?? undefined, url: `/experiments/${experiment.slug}` },
   };
 }
 
@@ -40,8 +47,9 @@ export default async function ExperimentPage({
 
   return (
     <Canvas>
+      <DeepLinkHighlight />
       <article className="max-w-[760px]">
-        <SectionLabel>Experiment</SectionLabel>
+        <SectionLabel>{slug === "neuron-shift" ? "Neuron Shift / Experiment" : "Experiment"}</SectionLabel>
 
         <h1 className="mt-5 max-w-[20ch] font-serif text-display-lg text-balance text-foreground">
           {experiment.title}
@@ -52,7 +60,7 @@ export default async function ExperimentPage({
             status={experiment.status === "shipped" ? "available" : "neutral"}
             label={
               experiment.status === "exploration"
-                ? "Exploration — not yet built"
+                ? "Exploration, not yet built"
                 : experiment.status === "prototype"
                   ? "Prototype"
                   : "Shipped"
@@ -81,6 +89,13 @@ export default async function ExperimentPage({
             ]}
           />
         )}
+
+        {slug === "neuron-shift" ? <>
+          <CreativeWorkSchema project={{ title: experiment.title, name: "Neuron Shift", href: "/experiments/neuron-shift", summary: experiment.summary ?? "", tags: experiment.tags }} />
+          <TrackView event="portfolio_project_opened" properties={{ project: "neuron-shift" }} />
+          <TableOfContentsInline anchors={NEURON_ANCHORS} className="mt-8 lg:block" />
+          <NeuronContent />
+        </> : null}
 
         <div className="mt-10 flex flex-wrap gap-3">
           <Action variant="secondary" render={<Link href="/experiments" />}>

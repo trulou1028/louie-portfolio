@@ -1,0 +1,3 @@
+
+# Treat generated resumes as binary; PDF xref whitespace is significant.
+*.pdf binary

@@ -2,27 +2,22 @@
  * Canonical source of truth for identity and positioning facts (spec §29).
  * Never re-type these values into components — import from here.
  *
- * Only facts stated in LOUIE_PORTFOLIO_V2_IMPLEMENTATION_SPEC.md appear below.
+ * Facts come from the spec and supplied resume; adopted narrative lives in plans/.
  * Anything unverified is a TODO for Louie, never a guess (spec §39.5).
  */
 
 export const profile = {
   name: "Louie Sakoda",
-  role: "AI Product Designer & Builder",
+  role: "Senior Product Designer",
 
   positioning: {
-    /**
-     * Owner decision (2026-08-23) superseding spec §1, §11's original
-     * wording — see README "Deviations" ledger, Plan 011.
-     * Owner decision (2026-08-31): "plan" added to name the strategy work
-     * that "design & ship" left implicit.
-     */
-    primary: "I plan, design & ship AI products.",
-    /** Spec §1, §11 — supporting positioning. */
+    /** Plans 029-035 adopted by Louie, 2026-09-19. */
+    primary: "Complex workflows. Clear decisions.",
+    /** Adopted supporting positioning, Plans 029-031. */
     supporting:
-      "Product designer working across AI systems, complex workflows, design engineering, and product strategy.",
-    /** Spec §11 — hero eyebrow. */
-    eyebrow: "AI PRODUCT DESIGN · SYSTEMS · DESIGN ENGINEERING",
+      "I shape AI products around the decisions people need to make, from learning tools at CK-12 to building Offboard end to end.",
+    /** Positioning label, not a new employer title. */
+    eyebrow: "SENIOR PRODUCT DESIGNER · AI & COMPLEX WORKFLOWS",
   },
 
   /**
@@ -31,14 +26,14 @@ export const profile = {
    * TODO(content): Louie may refine the wording.
    */
   heroSecondaryLine:
-    "Formerly Lead UX at CK-12, designing Flexi — an AI tutor on a platform serving 20M+ learners. Now building Offboard, an AI career-transition platform, end to end." as string | null,
+    "Formerly Lead UX at CK-12. Now building Offboard, an AI career-transition product." as string | null,
 
   /**
    * "Louie in brief" panel (spec §11 §5). The spec lists these as *potential*
-   * points — Louie must confirm wording and the "10+ years" figure before launch.
+   * points. Louie confirmed 14+ years of digital product design on September 19, 2026.
    */
   brief: [
-    "10+ years designing digital products", // verified: resume summary
+    "14+ years designing digital products", // confirmed by Louie, September 19, 2026
     "Nine years of AI and education product experience at CK-12",
     "AI-first product design and full-stack execution",
     "Complex workflow and system design",

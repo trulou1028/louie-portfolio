@@ -241,7 +241,7 @@ export default function DesignSystemPage() {
       <Row title="Metrics">
         <div className="flex flex-wrap gap-10">
           <Metric value="—" label="Only ever real, verified numbers" note="spec §13.8" />
-          <Metric value="10+" label="Years designing digital products" />
+          <Metric value="14+" label="Years designing digital products" />
         </div>
       </Row>
 

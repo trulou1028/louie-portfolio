@@ -53,6 +53,20 @@ Conventions for anyone (human or agent) working in here: see
 
 Recorded per spec §39.14, in build order.
 
+**Plans 029-035: adopted narrative and reading layout (2026-09-19)**
+
+Louie authorized implementation of the seven portfolio plans. The following supersede the earlier homepage and narrative decisions, without rewriting the original spec:
+
+- Senior Product Designer positioning; shorter hero; analytics followed by Offboard as featured stories. Flexi remains secondary product work. Neuron is explicitly an independent simulated prototype.
+- Homepage Ask Louie starts closed in a keyboard-accessible dialog. Its draft/transcript stay mounted after first use; the existing hash opens it. The homepage right rail is removed. Case-study contents rails remain.
+- AI Systems moves to secondary links from Home and Work. Primary navigation is Home, Work, About, Resume. Left-rail philosophy quotes are removed.
+- Image-led work rows replace placeholder thumbnails. Real public portfolio assets are attributed in `plans/portfolio-strategy/asset-manifest.md`.
+- `/work/ck12-analytics` and `/experiments/neuron-shift` are added, with reviewed evidence, schema/route registration, and deduplicated sitemap entries. Old Offboard/Flexi section anchors remain.
+- Offboard general/Job Packets stories are consolidated. Automatic tracker filing is distinguished from external sending. Flexi's unproven teacher controls/confidence behaviors and inactive legacy metrics are omitted. Published research is attributed separately from personal design ownership.
+- The editorial draft is shorter than the proposed word budgets where fuller treatment would require missing evidence. No placeholder frames are promoted in these four articles. Offboard review/risk screens and a concrete CK-12 influence episode remain gaps, not completed deliverables.
+- The interview kit is drafted in `plans/portfolio-strategy/interview-story-kit.md`. Timed owner rehearsal, external review, and production publishing are not complete. See the release review for verification and remaining work.
+
+
 **Phase 0 — scaffold (Plan 001)**
 
 1. **Next.js 16 / React 19 / Tailwind v4.** The spec names the stack but not
@@ -400,7 +414,7 @@ To run it locally, put real values in `.env.local`:
 
 ```bash
 OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o-mini   # any model id; never hard-coded in the app
+OPENAI_MODEL=gpt-5.6-luna   # locally evaluated; model remains environment-configurable
 ```
 
 Without them the panel loads and the endpoint returns 503, so the thread shows
@@ -547,3 +561,30 @@ Playwright runs against a production build on port 3100, so a running
 WebKit on an iPhone 13 profile — WebKit because a portfolio gets opened on
 Macs and iPhones, and it is the engine most likely to differ. No API keys are
 needed; every suite must pass without them (spec §31).
+
+## September 19 portfolio follow-up
+
+User-requested motion uses the existing Motion package (`motion/react-mini`) for once-per-view hero, card, case-study header, and article-section entrances. Server HTML stays visible, scroll positions remain native, and reduced-motion preferences disable entrances, including changes during an animation. Timings and travel distance use global tokens. The reveal timing is 700ms with 1.5rem travel, a soft ease-out curve, and 90ms stagger steps; timing parsing accepts both `ms` and `s` because production CSS minification changes units. This extends spec §24 at the owner’s request.
+
+Deep-link capture is scoped to its route and cleared on departure so a prior section cannot redirect a fresh card visit. Direct section links retain focus and highlighting. The supplied Offboard packet screenshot now appears on both listings and the article, with matching alt text and caption.
+
+The owner-selected accent is now `#a37eff`, represented by HSL tokens. Dark mode uses that exact violet for text and primary fills, with dark text on filled controls. Light-mode links use a deeper violet for contrast. This supersedes the earlier rust/amber palette in spec §6. Offboard now leads Home and Work. The desktop case-study contents tracks the section at the reading line with `aria-current="location"` and a borderless violet tint, using native scroll events without changing the URL or moving focus.
+
+Headings, copy, and artifacts cascade independently within hero and case-study groups; adjacent entrances share a capped stagger. Homepage and Work section headings participate too. Experience copy now uses Louie’s confirmed 14+ years of digital product design (September 19, 2026).
+
+## September 19 editorial motion and navigation revision
+
+Motion now follows the public [editorial stagger reference](https://motion.dev/ui/hero-sections): masked visual lines in headings, followed by restrained fade-and-lift entrances. This is a local implementation using the existing Motion package, not an installation of the authenticated Motion+ registry source. Visual lines retain native responsive wrapping and one accessible heading name. Entrances are prepared before observation to avoid the previous backwards jump; reduced motion, focus, and resize reveal content immediately. Server HTML remains readable without JavaScript.
+
+Ask Louie now lives in the desktop sidebar and mobile navigation header, backed by one persistent dialog in the app shell. Drafts survive route changes, and internal evidence links dismiss the dialog. The homepage hero has no assistant action, raising the first project card. About now ends with one panel grouping Explore and Get in touch links. These owner-requested changes supersede the earlier hero placement and whole-section motion.
+
+Ask Louie intentionally has no Live status badge. Do not reuse dot-and-pill live indicators as decoration elsewhere in the portfolio. Availability text and actual loading/error feedback have distinct meanings.
+
+
+### Ask Louie voice and model audit, September 19, 2026
+
+Per Louie's explicit request, Ask Louie speaks in his first-person portfolio voice. This supersedes the third-person framing in spec sections 16.1 and 20 while retaining AI disclosure when asked and all eleven grounding rules. The greeting and technical suggested question follow that voice. Local configuration now selects `gpt-5.6-luna` with low reasoning effort; no production environment was changed. Revert `OPENAI_MODEL` to the previous `gpt-4o-mini` if rollback is needed, but note the audit failures recorded below.
+
+Chat and job-fit requests explicitly set `store: false`. This disables Responses API application storage; it is not a claim of zero provider retention. Streaming errors log only their class, including the SDK-level callback. Job-fit grounding includes full evidence details so research attribution and outcome limitations survive the projection. Existing citation validation checks IDs, not semantic truth.
+
+Live audit findings and verification: [Ask Louie audit](plans/portfolio-strategy/ask-louie-audit-2026-09-19.md). Rerun the opt-in synthetic audit with `pnpm exec tsx scripts/audit-ask-louie.ts --live --model=gpt-5.6-luna`; it uses the local key and writes answers to `/tmp/ask-louie-audit.json`. Never add real applicant data or private resumes to its fixtures.

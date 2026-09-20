@@ -9,6 +9,7 @@ declare global {
   interface Window {
     /** Set by the inline capture script in `app/layout.tsx`. */
     __deepLinkHash?: string;
+    __deepLinkPathname?: string;
   }
 }
 
@@ -50,9 +51,10 @@ function DeepLinkHighlight() {
     };
 
     const reveal = () => {
-      // Fall back to the pre-hydration capture only when the live hash is
-      // gone, so a later navigation always wins over a stale one.
-      const id = (window.location.hash || window.__deepLinkHash || "").slice(1);
+      // Scope the hydration fallback to this route. AppShell clears it on
+      // departure, while responsive remounts on the same route retain it.
+      const captured = window.__deepLinkPathname === pathname ? window.__deepLinkHash : "";
+      const id = (window.location.hash || captured || "").slice(1);
       if (!id) return;
 
       const target = document.getElementById(id);

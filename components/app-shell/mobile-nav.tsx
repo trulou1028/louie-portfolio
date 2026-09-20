@@ -1,5 +1,7 @@
 "use client";
 
+import { AskLouieTrigger } from "@/components/ai/ask-louie-dialog";
+
 import * as React from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
@@ -39,6 +41,8 @@ function MobileNav() {
         </span>
       </Link>
 
+      <div className="flex items-center gap-1">
+      <AskLouieTrigger compact />
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger
           className="focus-ring inline-flex size-11 items-center justify-center rounded-sm text-foreground-muted transition-colors duration-(--duration-fast) hover:bg-surface-muted hover:text-foreground"
@@ -81,6 +85,7 @@ function MobileNav() {
           ) : null}
         </SheetContent>
       </Sheet>
+      </div>
     </header>
   );
 }

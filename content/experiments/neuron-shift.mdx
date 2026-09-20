@@ -1,0 +1,63 @@
+import { CaseStudySection } from "@/components/portfolio/case-study-section";
+import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
+import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagram";
+
+<p className="mt-6 text-body text-foreground-muted">Independent exploratory prototype, developed for my interview preparation. Not affiliated with or endorsed by Teserac. All operational data is simulated. No live model, telemetry, or operator interviews.</p>
+
+<ArtifactFrame src="/work/neuron-shift/demo.jpg" alt="Neuron Shift simulated workspace with a power-path graph, inherited decision, and an asset recommendation awaiting review." width={1280} height={720} caption="Live demo captured September 19, 2026. Names, readings, thresholds, and recommendations are fictional. This is a prototype, not an operational deployment." />
+
+<p className="mt-6">[Try the simulated demo](https://neuron-shift.vercel.app/) · [Original case study](https://neuron-shift.vercel.app/case-study#premise) · [Source code](https://github.com/trulou1028/neuron-shift)</p>
+
+<div className="mt-12 flex flex-col gap-12">
+<CaseStudySection id="premise" title="An alarm history does not explain the previous operator's judgment" eyebrow="Premise">
+
+An incoming operator needs more than what changed. They need to know what someone decided, why, and what would make that decision worth revisiting. I used shift handoff to explore that interaction problem.
+
+The user model is a hypothesis based on public material. It has not been validated through operator research.
+
+### Walk through one inherited decision
+
+1. Open the shift brief and inspect the UPS-A1 handoff item.
+2. Start the shift and trace the affected power path. Compare the asset evidence with its downstream impact.
+3. Review the recommendation. Approve, defer with a revisit trigger, approve with changes, or reject with a reason.
+4. Inspect the decision record and the reasoning the next shift would inherit.
+
+</CaseStudySection>
+
+<CaseStudySection id="decisions" title="Three choices that preserve judgment" eyebrow="Interaction decisions">
+
+**Attach intelligence to the asset.** Keep the recommendation, supporting evidence, and impact in the context of the equipment being investigated. The operator should not have to reconstruct that connection from an isolated chat thread.
+
+**Scale friction to reversibility.** A low-consequence inspection and a consequential operational change should not ask for the same commitment. The prototype explores decision gates, not a validated operational safety policy.
+
+**Preserve reasons for deferring and overriding.** A defer decision can contain useful judgment. Save the reason and revisit condition so the next operator can distinguish intentional waiting from neglect.
+
+<SystemDiagram title="The inherited decision record" description="A conceptual six-field record preserves the asset and situation, recommendation, human decision, reasoning, revisit condition, and author and time.">
+  <FlowDiagram stages={[
+    { node: { label: "Asset and situation" } },
+    { node: { label: "Recommendation" } },
+    { node: { label: "Human decision", tone: "accent" } },
+    { node: { label: "Reasoning" } },
+    { node: { label: "Revisit condition" } },
+    { node: { label: "Author and time" } },
+  ]} />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="technical" title="Make the visible system internally consistent" eyebrow="Building the prototype">
+
+The prototype computes reachability through its modeled graph so the impact view can follow the selected asset. It is a simplified electrical topology, not an engineering simulation; for example, it does not model generators.
+
+Decisions persist locally in the browser. There is no backend, authentication, live telemetry, or model call. The implementation exercise is about consistency between the graph, the recommendation, and the inherited record, rather than proving the recommendation is operationally correct.
+
+</CaseStudySection>
+
+<CaseStudySection id="limits" title="The next test needs a real operator" eyebrow="Limits">
+
+The largest untested assumption is that this record contains the context an incoming operator actually needs. I would ask an operator to interpret a handoff, investigate one item, and author the outgoing record, then examine what they omit, distrust, or look for elsewhere.
+
+A working interaction demonstrates the idea. It does not establish usefulness, safety, adoption, or compatibility with a real facility.
+
+</CaseStudySection>
+</div>

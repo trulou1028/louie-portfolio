@@ -11,6 +11,7 @@ import { ROUTES } from "@/lib/routes";
  */
 
 export const projectSchema = z.enum([
+  "ck12-analytics",
   "offboard",
   "flexi",
   "career",

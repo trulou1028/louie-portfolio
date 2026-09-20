@@ -30,8 +30,7 @@ const actionVariants = cva(
     variants: {
       variant: {
         primary:
-          // Fill pair, not the text accent: in dark the fill is a deep rust
-          // that cannot carry text, so its label uses the cream on-fill token.
+          // Keep the fill and its contrast-safe label paired across themes.
           "border-transparent bg-accent-fill text-accent-on-fill hover:bg-accent-fill-hover",
         secondary:
           "border border-border-default bg-surface text-foreground hover:border-border-strong hover:bg-surface-muted",

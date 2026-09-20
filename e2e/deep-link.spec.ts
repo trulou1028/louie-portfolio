@@ -28,10 +28,11 @@ test.describe("deep links into case studies", () => {
     await expect(section).toHaveAttribute("data-highlight", "true");
 
     // The wash must actually paint, not just set an attribute.
-    const painted = await section.evaluate(
+    // The highlight transitions from transparent; wait for an actual paint
+    // rather than sampling the first frame after the attribute appears.
+    await expect.poll(() => section.evaluate(
       (el) => getComputedStyle(el).backgroundColor,
-    );
-    expect(painted).not.toBe("rgba(0, 0, 0, 0)");
+    )).not.toBe("rgba(0, 0, 0, 0)");
 
     // ...and it must clear, so the page does not stay marked up.
     await expect(section).not.toHaveAttribute("data-highlight", "true", {
@@ -173,4 +174,45 @@ test.describe("deep links into case studies", () => {
     await page.waitForTimeout(1_700); // > HIGHLIGHT_MS, well past any expiry
     await expect(page.locator('[data-highlight="true"]')).toHaveCount(0);
   });
+});
+
+for (const source of ["offboard", "flexi"]) {
+  test(`opening the Offboard card after ${source} outcomes starts at the top`, async ({ page, isMobile }) => {
+    await page.goto(`/work/${source}#outcomes`);
+    await expect(page.locator("#outcomes")).toBeInViewport();
+    if (isMobile) await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await page.getByRole("navigation", { name: "Primary", exact: true }).getByRole("link", { name: "Work", exact: true }).click();
+    await expect(page).toHaveURL(/\/work$/);
+    await page.locator('main a[href="/work/offboard"]').click();
+    await expect(page).toHaveURL(/\/work\/offboard$/);
+    await expect(page.locator("article h1")).toBeInViewport();
+    // Wait past both smooth scrolling and entrance motion to catch late replays.
+    await page.waitForTimeout(700);
+    await expect(page.locator("article h1")).toBeInViewport();
+    await expect(page.locator("#outcomes")).not.toHaveAttribute("data-highlight", "true");
+  });
+}
+
+test("native anchor clicks use smooth scrolling, with a reduced-motion fallback", async ({ page, isMobile }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/work/offboard");
+  const canvas = page.locator("[data-canvas-scroll]");
+  await expect(canvas).toHaveCSS("scroll-behavior", "smooth");
+  if (isMobile) await page.locator("details summary").click();
+  const link = isMobile ? page.locator('details a[href="#decision-control"]') : page.getByRole("navigation", { name: "On this page" }).locator('a[href="#decision-control"]');
+  const movement = canvas.evaluate(el => new Promise<number[]>(resolve => {
+    const positions: number[] = [];
+    const started = performance.now();
+    const sample = () => {
+      positions.push(el.scrollTop);
+      if (performance.now() - started < 700) requestAnimationFrame(sample);
+      else resolve(positions);
+    };
+    requestAnimationFrame(sample);
+  }));
+  await link.click();
+  expect(new Set((await movement).map(Math.round)).size).toBeGreaterThan(3);
+  await expect(page.locator("#decision-control")).toBeInViewport();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(canvas).toHaveCSS("scroll-behavior", "auto");
 });

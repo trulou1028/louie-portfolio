@@ -1,14 +1,3 @@
-/**
- * Experiments index (spec §15).
- *
- * The four entries below are the initial categories named in spec §11 §4 and
- * §15. They are genuinely explorations — none has shipped as a demo yet, and
- * `status: "exploration"` says so on the card rather than implying finished
- * work. Summaries stay null until Louie writes them: describing work that
- * does not exist yet would be inventing content (spec §29, §39.5).
- *
- * Plan 008 builds these out into 20–60 second demonstrations.
- */
 export type Experiment = {
   slug: string;
   title: string;
@@ -17,9 +6,21 @@ export type Experiment = {
   status: "prototype" | "shipped" | "exploration";
   /** ISO date; null until the experiment actually exists. */
   date: string | null;
+  image?: { src: string; alt: string; width: number; height: number };
+  demoUrl?: string;
 };
 
 export const experiments: readonly Experiment[] = [
+  {
+    slug: "neuron-shift",
+    image: { src: "/work/neuron-shift/demo.jpg", alt: "Simulated Neuron Shift workspace showing an asset graph and recommendation awaiting review.", width: 1280, height: 720 },
+    demoUrl: "https://neuron-shift.vercel.app/",
+    title: "Preserving operator judgment across shift changes",
+    summary: "Neuron Shift: an independent prototype exploring asset context, reversible decisions, and a handoff that preserves the reason behind an action. Simulated data; no live model or operator research.",
+    tags: ["Operator workflows", "Design engineering"],
+    status: "prototype",
+    date: null,
+  },
   {
     slug: "voice-tool-calling",
     title: "Voice + tool calling",
