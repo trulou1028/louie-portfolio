@@ -64,6 +64,7 @@ function LeftRail() {
           <StatusDot
             status={availability.status === "open" ? "available" : "selective"}
             label={availability.label}
+            className="font-medium text-foreground"
           />
           {availability.detail ? (
             <span className="pl-3.5 text-body-sm text-foreground-muted">
@@ -71,7 +72,7 @@ function LeftRail() {
             </span>
           ) : null}
           {links.calendly ? (
-            <InlineLink href={links.calendly} className="pl-3.5 text-body-sm">
+            <InlineLink href={links.calendly} className="mt-1 pl-3.5 text-body-sm">
               Book time
             </InlineLink>
           ) : null}

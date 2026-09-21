@@ -1,4 +1,5 @@
 import { InlineLink } from "@/components/system/inline-link";
+import { cn } from "@/lib/utils";
 import { profile } from "@/content/profile";
 
 /**
@@ -6,7 +7,7 @@ import { profile } from "@/content/profile";
  *
  * Contact links appear only once real values exist in `content/profile.ts`.
  */
-function SiteFooter() {
+function SiteFooter({ wide = false }: { wide?: boolean }) {
   const year = new Date().getFullYear();
   const { links } = profile;
   // The footer container is `flex flex-wrap items-center`, so each link is a
@@ -18,7 +19,7 @@ function SiteFooter() {
 
   return (
     <footer className="border-t border-border-subtle">
-      <div className="mx-auto flex w-full max-w-[1240px] flex-wrap items-center gap-x-6 gap-y-3 px-6 py-8 text-body-sm text-foreground-muted sm:px-8">
+      <div className={cn("mx-auto flex w-full max-w-[1240px] flex-wrap items-center gap-x-6 gap-y-3 px-6 py-8 text-body-sm text-foreground-muted sm:px-8", wide && "portfolio-wide")}>
         <InlineLink href="/resume" className={tapTarget}>
           Resume
         </InlineLink>

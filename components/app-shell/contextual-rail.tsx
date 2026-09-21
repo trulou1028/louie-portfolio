@@ -110,8 +110,10 @@ function Canvas({
   stackRail = false,
   stackedRailAfter = "content",
   railDefaultSize = 350,
+  width = "reading",
 }: {
   className?: string;
+  width?: "reading" | "wide";
   children: React.ReactNode;
   rail?: React.ReactNode;
   /** Below the rail breakpoint, render the rail after the content instead of dropping it. */
@@ -211,12 +213,13 @@ function Canvas({
       <div
         className={cn(
           "mx-auto w-full max-w-[900px] px-6 py-10 sm:px-8 lg:py-14",
+          width === "wide" && "portfolio-wide",
           className,
         )}
       >
         {bodyContent}
       </div>
-      <SiteFooter />
+      <SiteFooter wide={width === "wide"} />
     </div>
   );
 

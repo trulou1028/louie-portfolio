@@ -67,7 +67,7 @@ export const profile = {
     // Confirmed by Louie supplying his scheduling link (2026-08-22); wording
     // is the strategy mockup's two lines.
     status: "open" as "open" | "selective" | "unavailable" | null,
-    label: "Available for new projects" as string | null,
+    label: "Open to new opportunities" as string | null,
     detail: "Open to full-time and part-time roles" as string | null,
   },
 

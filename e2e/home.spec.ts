@@ -150,3 +150,25 @@ test("About has one unified closing action section", async ({ page }) => {
     await expect(actions.getByRole("link", { name: label, exact: true })).toBeVisible();
   }
 });
+
+test("homepage keeps bounded gutters and aligns its footer", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "desktop viewport coverage");
+  for (const width of [1024, 1440, 1680, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    const geometry = await page.locator(".portfolio-wide").evaluateAll((frames) => frames.map((frame) => {
+      const rect = frame.getBoundingClientRect();
+      const style = getComputedStyle(frame);
+      const parent = frame.closest("[data-canvas-scroll]")!.getBoundingClientRect();
+      return { left: rect.left + parseFloat(style.paddingLeft), right: rect.right - parseFloat(style.paddingRight), paneLeft: parent.left, paneRight: parent.right };
+    }));
+    expect(geometry).toHaveLength(2);
+    const [content, footer] = geometry;
+    expect(content.left - content.paneLeft).toBeGreaterThanOrEqual(32);
+    expect(content.left - content.paneLeft).toBeLessThanOrEqual(65);
+    expect(content.paneRight - content.right).toBeGreaterThanOrEqual(32);
+    expect(content.right - content.left).toBeLessThanOrEqual(1041);
+    expect(Math.abs(content.left - footer.left)).toBeLessThan(1);
+    expect(Math.abs(content.right - footer.right)).toBeLessThan(1);
+  }
+});

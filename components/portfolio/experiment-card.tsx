@@ -35,7 +35,7 @@ function ExperimentCard({ experiment, href = "/experiments", className }: Experi
       className={cn("group flex flex-col gap-2.5 p-5")}
       render={<Link href={href} />}
     >
-      {experiment.image ? <Image src={experiment.image.src} alt={experiment.image.alt} width={experiment.image.width} height={experiment.image.height} sizes="(min-width: 1024px) 760px, 90vw" className="mb-2 h-auto w-full rounded-sm border border-border-subtle" /> : null}
+      {experiment.image ? <Image src={experiment.image.src} alt={experiment.image.alt} width={experiment.image.width} height={experiment.image.height} sizes="(min-width: 1024px) 1040px, 90vw" className="mb-4 h-auto w-full rounded-sm border border-border-subtle" /> : null}
       <StatusDot
         status={experiment.status === "shipped" ? "available" : "neutral"}
         label={STATUS_LABEL[experiment.status]}
