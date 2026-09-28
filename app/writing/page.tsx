@@ -23,7 +23,7 @@ export default function WritingIndex() {
     <Canvas>
       <div className="max-w-[760px]">
         <SectionLabel>Writing</SectionLabel>
-        <h1 className="mt-5 max-w-[18ch] font-serif text-display-lg text-balance text-foreground">
+        <h1 className="mt-5 max-w-[18ch] font-display text-display-lg text-balance text-foreground">
           Notes on building AI products
         </h1>
 

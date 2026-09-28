@@ -26,7 +26,7 @@ export default function AboutPage() {
       <div className="max-w-[760px]">
         <SectionLabel>About</SectionLabel>
 
-        <h1 className="mt-5 max-w-[18ch] font-serif text-display-lg text-balance text-foreground">
+        <h1 className="mt-5 max-w-[18ch] font-display text-display-lg text-balance text-foreground">
           {profile.positioning.primary}
         </h1>
 
@@ -34,7 +34,7 @@ export default function AboutPage() {
           {profile.positioning.supporting}
         </p>
 
-        <blockquote className="mt-10 max-w-[56ch] border-l-2 border-accent pl-5 font-serif text-heading-md text-balance text-foreground">
+        <blockquote className="mt-10 max-w-[30ch] border-t border-foreground pt-5 font-display text-heading-lg text-balance text-foreground">
           {quotes.philosophy}
         </blockquote>
 

@@ -22,8 +22,10 @@ function isInternal(href: string) {
 
 function InlineLink({ className, href, children, ...props }: InlineLinkProps) {
   const classes = cn(
-    "font-medium text-accent underline-offset-4 hover:underline focus-ring rounded-xs",
-    "transition-colors duration-(--duration-instant) hover:text-accent-hover",
+    // Always underlined: in the light theme the accent is ink, so color
+    // alone would not tell a link from body text (WCAG 1.4.1).
+    "font-medium text-accent underline decoration-border-strong decoration-1 underline-offset-4 focus-ring rounded-xs",
+    "transition-colors duration-(--duration-instant) hover:text-accent-hover hover:decoration-current",
     className,
   );
 

@@ -62,7 +62,7 @@ const components: Components = {
     </h4>
   ),
   blockquote: ({ children }) => (
-    <blockquote className="mt-2 border-l-2 border-accent-muted pl-3 text-body-sm text-foreground-muted italic first:mt-0">
+    <blockquote className="mt-2 rounded-sm bg-surface-muted px-3 py-2 text-body-sm text-foreground-muted italic first:mt-0">
       {children}
     </blockquote>
   ),

@@ -7,7 +7,7 @@ const NAV = [
   { label: "Resume", path: "/resume" },
 ];
 
-test("homepage leads with Offboard then analytics in the responsive selected-work grid", async ({ page }, testInfo) => {
+test("homepage leads with Offboard then analytics, each on its own plate", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "Complex workflows. Clear decisions." })).toBeVisible();
   await expect(page.locator("main canvas")).toHaveCount(0);
@@ -16,23 +16,30 @@ test("homepage leads with Offboard then analytics in the responsive selected-wor
   const projectLinks = featured.locator('a[href^="/work/"]');
   const destinations = await projectLinks.evaluateAll((els) => els.map((el) => el.getAttribute("href")));
   expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics"]);
-  await expect(featured.locator("img")).toHaveCount(4);
+  // Per plate: a wordmark, the hero screenshot, and one real gallery image.
+  await expect(featured.locator("img")).toHaveCount(6);
+  // Asset requests render in development only; a production build shows none.
   await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
   await expect(projectLinks.first()).toBeVisible();
   await page.waitForTimeout(1_000);
-  const [firstCard, secondCard] = await Promise.all([projectLinks.nth(0).boundingBox(), projectLinks.nth(1).boundingBox()]);
-  expect(firstCard).not.toBeNull();
-  expect(secondCard).not.toBeNull();
-  if (testInfo.project.name === "mobile") {
-    expect(Math.abs(secondCard!.x - firstCard!.x)).toBeLessThan(2);
-    expect(secondCard!.y).toBeGreaterThan(firstCard!.y + firstCard!.height);
-  } else {
-    expect(Math.abs(secondCard!.y - firstCard!.y)).toBeLessThan(2);
-    expect(secondCard!.x).toBeGreaterThan(firstCard!.x + firstCard!.width);
-  }
+  // Plan 037: plates stack full-width at every size, Offboard first.
+  const plates = featured.locator("article");
+  const [first, second] = await Promise.all([plates.nth(0).boundingBox(), plates.nth(1).boundingBox()]);
+  expect(first).not.toBeNull();
+  expect(second).not.toBeNull();
+  expect(Math.abs(second!.x - first!.x)).toBeLessThan(2);
+  expect(second!.y).toBeGreaterThan(first!.y + first!.height);
   const allWork = featured.getByRole("link", { name: "All work →" });
   await expect(allWork).toHaveAttribute("href", "/work");
   await expect(allWork).not.toHaveAttribute("role", "button");
+});
+
+test("the hero record lists employers from the resume", async ({ page }) => {
+  await page.goto("/");
+  const record = page.getByRole("list", { name: "Experience" });
+  for (const company of ["Offboard", "CK-12 Foundation", "Odyssey", "Lowe's Companies"]) {
+    await expect(record.getByText(company, { exact: true })).toBeVisible();
+  }
 });
 
 test("Ask Louie is closed on arrival and preserves a draft across closes", async ({ page }) => {
@@ -151,7 +158,7 @@ test("About has one unified closing action section", async ({ page }) => {
   }
 });
 
-test("homepage keeps bounded gutters and aligns its footer", async ({ page }, testInfo) => {
+test("homepage centers its frame and aligns header, content, and footer", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "desktop viewport coverage");
   for (const width of [1024, 1440, 1680, 1920]) {
     await page.setViewportSize({ width, height: 900 });
@@ -159,16 +166,17 @@ test("homepage keeps bounded gutters and aligns its footer", async ({ page }, te
     const geometry = await page.locator(".portfolio-wide").evaluateAll((frames) => frames.map((frame) => {
       const rect = frame.getBoundingClientRect();
       const style = getComputedStyle(frame);
-      const parent = frame.closest("[data-canvas-scroll]")!.getBoundingClientRect();
-      return { left: rect.left + parseFloat(style.paddingLeft), right: rect.right - parseFloat(style.paddingRight), paneLeft: parent.left, paneRight: parent.right };
+      return { left: rect.left + parseFloat(style.paddingLeft), right: rect.right - parseFloat(style.paddingRight) };
     }));
-    expect(geometry).toHaveLength(2);
-    const [content, footer] = geometry;
-    expect(content.left - content.paneLeft).toBeGreaterThanOrEqual(32);
-    expect(content.left - content.paneLeft).toBeLessThanOrEqual(65);
-    expect(content.paneRight - content.right).toBeGreaterThanOrEqual(32);
-    expect(content.right - content.left).toBeLessThanOrEqual(1041);
-    expect(Math.abs(content.left - footer.left)).toBeLessThan(1);
-    expect(Math.abs(content.right - footer.right)).toBeLessThan(1);
+    // Header, homepage content, and footer.
+    expect(geometry).toHaveLength(3);
+    const [header, content, footer] = geometry;
+    expect(content.left).toBeGreaterThanOrEqual(16);
+    expect(Math.abs(content.left - (width - content.right))).toBeLessThan(2);
+    expect(content.right - content.left).toBeLessThanOrEqual(1320);
+    for (const frame of [header, footer]) {
+      expect(Math.abs(frame.left - content.left)).toBeLessThan(1);
+      expect(Math.abs(frame.right - content.right)).toBeLessThan(1);
+    }
   }
 });

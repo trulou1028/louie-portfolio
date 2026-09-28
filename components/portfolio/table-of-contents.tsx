@@ -79,7 +79,7 @@ function TableOfContentsInline({
         className,
       )}
     >
-      <summary className="focus-ring cursor-pointer rounded-sm font-mono text-label uppercase text-foreground-muted">
+      <summary className="focus-ring cursor-pointer rounded-sm text-body-sm font-semibold text-foreground-muted">
         On this page
       </summary>
       <ol className="mt-3 flex flex-col gap-0.5">

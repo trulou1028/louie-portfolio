@@ -1,38 +1,29 @@
 import { cn } from "@/lib/utils";
 
 /**
- * The facts row beneath a case-study title: role, timeframe, and what Louie
- * personally did (spec §13, §29).
+ * Quick facts for a project: role, years, team, platform (Plan 037).
  *
- * Every field is optional and simply omitted when unknown — an empty "Role"
- * label with nothing after it would be worse than no row at all.
+ * Recruiters and hiring managers look for these first, so they sit directly
+ * under the title as a ruled row instead of in the body. Values come from
+ * `content/work/projects.ts`, which restates only resume-stated facts.
  */
-type ProjectMetaProps = {
-  role?: string | null;
-  timeframe?: string | null;
-  team?: string | null;
+function ProjectMeta({
+  items,
+  className,
+}: {
+  items: readonly { label: string; value: string }[];
   className?: string;
-};
-
-function Item({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <dt className="font-mono text-system uppercase text-foreground-muted">
-        {label}
-      </dt>
-      <dd className="text-body-sm text-foreground">{value}</dd>
-    </div>
-  );
-}
-
-function ProjectMeta({ role, timeframe, team, className }: ProjectMetaProps) {
-  if (!role && !timeframe && !team) return null;
+}) {
+  if (!items.length) return null;
 
   return (
-    <dl className={cn("flex flex-wrap gap-x-10 gap-y-4", className)}>
-      {role ? <Item label="Role" value={role} /> : null}
-      {timeframe ? <Item label="Timeframe" value={timeframe} /> : null}
-      {team ? <Item label="Team" value={team} /> : null}
+    <dl className={cn("grid grid-cols-2 gap-x-8 gap-y-4 border-t border-foreground pt-4 sm:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))]", className)}>
+      {items.map((item) => (
+        <div key={item.label} className="flex flex-col gap-0.5">
+          <dt className="text-body-sm text-foreground-muted">{item.label}</dt>
+          <dd className="text-body font-semibold text-foreground">{item.value}</dd>
+        </div>
+      ))}
     </dl>
   );
 }

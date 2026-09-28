@@ -97,7 +97,7 @@ export function isAnchorOnRoute(route: string, anchor: string): boolean {
 }
 
 /**
- * Primary navigation, in display order (spec §10 left rail).
+ * Primary navigation, in display order (site header and mobile drawer).
  * `/work/*` detail pages are intentionally absent — they are reached from /work.
  *
  * Writing and Experiments left the primary nav by owner decision, 2026-08-23

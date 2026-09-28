@@ -20,7 +20,7 @@ export function AboutActions() {
     ] },
   ];
   return <Surface radius="panel" className="mt-12 p-6 sm:p-8" render={<section aria-labelledby="about-next-heading" />}>
-    <h2 id="about-next-heading" className="font-serif text-heading-lg text-foreground">Let’s start a conversation.</h2>
+    <h2 id="about-next-heading" className="font-display text-heading-lg text-foreground">Let’s start a conversation.</h2>
     <p className="mt-3 text-body text-foreground-muted">Take a closer look at the work, or get in touch.</p>
     <div className="mt-6 grid gap-6 sm:grid-cols-2 sm:gap-8">
       {groups.filter(group => group.items.length).map(group => <div key={group.title}>

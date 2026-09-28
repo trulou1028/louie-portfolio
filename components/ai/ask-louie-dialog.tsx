@@ -38,6 +38,6 @@ export function AskLouieProvider({ children }: { children: React.ReactNode }) {
 }
 
 /** Responsive navigation triggers share one persistent dialog and transcript. */
-export function AskLouieTrigger({ className, compact = false }: { className?: string; compact?: boolean }) {
-  return <DialogTrigger render={<Action variant={compact ? "ghost" : "secondary"} size={compact ? "sm" : "md"} className={className} />}><Sparkles aria-hidden="true" className="size-4" />Ask Louie</DialogTrigger>;
+export function AskLouieTrigger({ className, compact = false, variant }: { className?: string; compact?: boolean; variant?: "primary" | "secondary" | "ghost" }) {
+  return <DialogTrigger render={<Action variant={variant ?? (compact ? "ghost" : "secondary")} size={compact ? "sm" : "md"} className={className} />}><Sparkles aria-hidden="true" className="size-4" />Ask Louie</DialogTrigger>;
 }

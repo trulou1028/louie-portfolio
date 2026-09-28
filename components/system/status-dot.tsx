@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * A status indicator — availability in the left rail, experiment status on a
+ * A status indicator — availability in the site header, experiment status on a
  * card (spec §10, §15).
  *
  * The visible `label` is required, not optional: status must never be carried

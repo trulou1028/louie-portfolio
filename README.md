@@ -597,3 +597,44 @@ The Plan 036 “Beneath the surface” sculpture remains an archived experiment 
 ## Portfolio feedback refinement, September 21, 2026
 
 Applied the supplied Portfolio feedback session: homepage content expands to 1040px with shared, bounded desktop gutters for the content and footer, the repeated hero identity is removed, and All work sits beside Selected work. The existing headline size is preserved with its original 0.95 leading; secondary dark-theme text is brighter and topic labels have a 13px floor. Cards use 12px corner tokens, standard p-6 content padding, 26px maximum project-title tokens, and a 54/46 visual split for horizontal work. The experiment image has more breathing room, and How I work has distinct heading-sized principle rows. Availability now leads with Open to new opportunities while retaining the owner-confirmed full-time and part-time detail. These requested changes supersede the original spec geometry and homepage composition; case-study reading widths stay unchanged.
+
+## Direction A, "The work, framed" (Plan 037), September 27, 2026
+
+Louie chose direction A from three static mocks, plus direction B's amber
+decision marks inside the case studies. Details and rationale:
+[Plan 037](plans/037-direction-a-work-framed.md). These changes supersede the
+entries above where they conflict:
+
+- **Light is the default theme.** `<html>` no longer carries `dark`. The dark
+  half stays in `app/globals.css` for a future toggle. Supersedes deviation 6.
+- **Neutral shell, color from the work.** Canvas is near-white, ink is
+  near-black, and the accent resolves to ink. The owner-selected violet is
+  retired (supersedes the September 19 accent note). Each project has its own
+  plate color from its brand. One amber `signal` color is reserved for
+  decision marks.
+- **Archivo replaces Outfit and Roboto Slab.** One family; the width axis
+  separates display (`font-display`, `wdth` 112) from body. `font-serif` is
+  renamed `font-display`. Supersedes deviation 4 and spec §7's type pairing.
+- **The persistent left rail is removed.** A desktop header carries the name,
+  primary navigation, availability, and Ask Louie. Mobile keeps its header
+  and drawer. Supersedes spec §10's left rail and Plan 003's shell.
+- **Homepage.** A two-tone headline, an experience record read from
+  `content/resume.ts`, and a "Compare a job description" entry point. Each
+  project sits on a full-width brand-color plate with its screenshot and a
+  gallery strip. The frame is centered at 1320px. Supersedes the September 21
+  1040px frame and two-column card grid.
+- **Case studies.** A quick-facts row replaces the violet side-stripe
+  callout; the status and result follow the hero image. Screenshots carry
+  amber decision marks whose labels restate existing captions, alt text, or
+  case-study copy. Each case study ends with a link to the next one.
+- **Asset requests.** Gallery slots without an image render as labeled
+  `TODO(asset)` frames in development only. Production builds omit them.
+- **Dialog and sheet backdrops** use `bg-foreground/30` instead of upstream
+  `bg-black/10`, which was too faint on the light canvas. The one local edit
+  to `components/ui/`.
+- **Template cues removed.** `SectionLabel` is sentence case instead of mono
+  uppercase, and the side-stripe blockquotes are replaced by a top rule.
+- **Tests.** Homepage, listing-image, and accent browser tests now assert the
+  plate layout and plate colors instead of the card grid and violet accent.
+  Lighthouse scores in "Measured performance" predate this change and were
+  not re-measured.

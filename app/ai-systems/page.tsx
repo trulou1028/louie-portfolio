@@ -64,7 +64,7 @@ export default function AiSystemsPage() {
     <Canvas>
       <div className="max-w-[820px]">
         <SectionLabel>AI Systems</SectionLabel>
-        <h1 className="mt-5 max-w-[20ch] font-serif text-display-lg text-balance text-foreground">
+        <h1 className="mt-5 max-w-[20ch] font-display text-display-lg text-balance text-foreground">
           The decisions behind the AI, not the models behind it
         </h1>
         <p className="mt-6 max-w-[62ch] text-body-lg text-foreground-muted">
@@ -83,7 +83,7 @@ export default function AiSystemsPage() {
 
             return (
               <section key={theme.title}>
-                <h2 className="font-serif text-heading-lg text-balance text-foreground">
+                <h2 className="font-display text-heading-lg text-balance text-foreground">
                   {theme.title}
                 </h2>
                 <p className="mt-3 max-w-[62ch] text-body text-foreground-muted">

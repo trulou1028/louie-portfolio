@@ -40,7 +40,7 @@ function TreeDiagram({ root }: { root: TreeNode }) {
        `CardHeader` grows its bottom padding to 24px whenever it carries a
        `border-b`, which reads as dead space under a one-line label. */
     <Card className="gap-0 overflow-hidden rounded-lg border-border-default bg-surface py-0 shadow-none">
-      <CardHeader className="flex bg-accent-soft px-5 py-4">
+      <CardHeader className="flex bg-surface-muted px-5 py-4">
         <span className="font-mono text-label uppercase text-accent">
           {root.label}
         </span>

@@ -17,25 +17,18 @@ import { cn } from "@/lib/utils";
  * inside a CSS-hidden container with no stacked fallback and silently vanish
  * at one viewport band (this happened once — see Plan 015).
  *
- * - This constant (the JS half), imported by `app-shell.tsx` in place of a
- *   hardcoded `useMinWidth` literal.
- * - `app-shell.tsx:67` — `max-lg:hidden` on the left-rail pane.
- * - `app-shell.tsx:72` — `max-lg:hidden` on the rail's resize handle.
- * - `contextual-rail.tsx:56` — `lg:overflow-y-auto` on the padded rail
- *   scroller.
- * - `contextual-rail.tsx:216` — `max-lg:hidden` on the canvas resize handle.
- * - `contextual-rail.tsx:230` — `max-lg:hidden` on the canvas rail pane.
+ * - This constant (the JS half).
+ * - `contextual-rail.tsx` — `lg:overflow-y-auto` on the padded rail
+ *   scroller, and `max-lg:hidden` on the canvas resize handle and rail pane.
+ * - `site-header.tsx` — `max-lg:hidden` on the desktop header.
  * - `ask-panel.tsx:45` — `max-lg:max-h-[80svh]` + `max-lg:rounded-panel` +
  *   `max-lg:border`, the stacked-card treatment.
  * - `mobile-nav.tsx:35` — `lg:hidden` on the mobile header.
  * - `table-of-contents.tsx:52` — `lg:hidden` on the collapsed inline TOC.
- * - `app/globals.css:297` — `@media (max-width: 1023.98px)` hiding the
- *   `left-rail` pane + `resizable-handle` pre-hydration.
- * - `app/globals.css:307` — a second, separate `@media (max-width:
- *   1023.98px)` block hiding the `canvas-rail` pane pre-hydration.
+ * - `app/globals.css` — the `@media (max-width: 1023.98px)` block hiding
+ *   the `canvas-rail` pane pre-hydration.
  *
- * That is twelve sites, not three. `e2e/home.spec.ts`'s 1023/1025 boundary
- * test is what catches a miss.
+ * `e2e/home.spec.ts`'s 1023/1025 boundary test is what catches a miss.
  */
 export const RAIL_BREAKPOINT_PX = 1024;
 
@@ -87,8 +80,8 @@ function ContextualRail({
  * A page's content column, and the owner of its scrolling.
  *
  * The shell locks the viewport (`main` never scrolls), so every page scrolls
- * inside Canvas — which is what makes the columns independent: the left rail,
- * this column, and the contextual rail each keep their own scroll position,
+ * inside Canvas — which is what makes the columns independent: this column
+ * and the contextual rail each keep their own scroll position,
  * and the divider between content and rail is draggable, like a desktop tool.
  *
  * Layout by viewport (RAIL_BREAKPOINT_PX, currently `lg` = 1024px):

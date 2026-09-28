@@ -65,10 +65,12 @@ styling and semantics belong in wrappers: `components/system/`,
 `components/portfolio/`, `components/app-shell/`, `components/ai/`
 (spec §33). Do not scatter raw `Button`/`Card`/`Badge` through pages.
 
-**Fonts.** Roboto Slab (`font-serif`, also `--font-heading`) for display
-statements and project titles only. Outfit (`font-sans`) for UI and body.
-Geist Mono (`font-mono`) for short system labels only — never paragraphs
-(spec §7). All three load through `next/font/google` in `app/layout.tsx`.
+**Fonts.** One family, Archivo, in two roles (Plan 037). `font-display`
+(also `--font-heading`) runs the wide width axis for display statements and
+project titles only. `font-sans` is the same face at default width for UI and
+body. Geist Mono (`font-mono`) for short system labels and decision-mark tags
+only — never paragraphs (spec §7). Both load through `next/font/google` in
+`app/layout.tsx`.
 
 **Card anatomy.** One padding scale, no in-between values: compact card
 `p-4`, standard card `p-5`, panel `p-6` (a panel may step up to `sm:p-8`).
@@ -89,12 +91,18 @@ metadata rows. Decorative icons always `aria-hidden`.
 job-fit dialog, which previews its four result sections). No bare spinners
 without text, and no skeleton that misrepresents what is coming.
 
-**Dark mode.** Dark is the default (`<html class="dark">`); both palettes
-live in `app/globals.css`. Do not add `dark:` variants in portfolio
-components — write against the tokens, which already resolve per theme.
-Respect the split accent: `text-accent` for text and markers, `bg-accent-fill`
-(+ `text-accent-on-fill`) for filled controls; see the note above `:root` in
-`globals.css`.
+**Theme.** Light is the default (Plan 037); the dark half stays in
+`app/globals.css` for a future toggle, but nothing sets `.dark`. Do not add
+`dark:` variants in portfolio components — write against the tokens. The
+shell is neutral ink on near-white; color belongs to the work:
+
+- `bg-plate-*` / `text-plate-*-ink` / `text-plate-*-muted`: each project's
+  own brand field. Use them only for that project.
+- `signal` (amber): reserved for `DecisionMark`, the redline drawn over a
+  real screenshot. Mark labels restate the caption, alt text, or case study.
+- The split accent still holds: `text-accent` for text and markers,
+  `bg-accent-fill` (+ `text-accent-on-fill`) for filled controls. In light
+  both resolve to ink, so `InlineLink` is always underlined.
 
 ## Content integrity — the rule that matters most
 

@@ -60,7 +60,7 @@ function Avatar({
       ) : (
         <span
           aria-hidden={label ? undefined : true}
-          className={cn("font-serif text-foreground-muted", text)}
+          className={cn("font-display text-foreground-muted", text)}
         >
           {initials(profile.name)}
         </span>

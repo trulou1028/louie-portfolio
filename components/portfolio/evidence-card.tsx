@@ -4,6 +4,13 @@ import { ArrowUpRight } from "lucide-react";
 import { Surface } from "@/components/system/surface";
 import { SystemLabel } from "@/components/system/system-label";
 import { cn } from "@/lib/utils";
+import { workProjects } from "@/content/work/projects";
+
+/** Evidence entries store a project slug; readers see the project's name. */
+function projectLabel(project: string) {
+  if (project === "experiment") return "Experiment";
+  return workProjects.find((p) => p.slug === project)?.name ?? project;
+}
 
 /**
  * A pointer to a specific piece of evidence (spec §16.2, §34).
@@ -47,8 +54,8 @@ function EvidenceCard({
       data-evidence-id={evidenceId}
       render={<Link href={href} />}
     >
-      <SystemLabel tone={highlighted ? "accent" : "default"}>
-        {project}
+      <SystemLabel tone={highlighted ? "accent" : "default"} className="self-start">
+        {projectLabel(project)}
       </SystemLabel>
 
       <h3 className="text-body-lg font-medium text-foreground">{title}</h3>

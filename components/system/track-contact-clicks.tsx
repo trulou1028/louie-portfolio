@@ -5,7 +5,7 @@ import * as React from "react";
 import { track } from "@/lib/analytics";
 
 /**
- * One document-level listener for contact clicks, so the left rail and the
+ * One document-level listener for contact clicks, so the header and the
  * footer can stay server components.
  *
  * The alternative was a client wrapper around every contact link in two

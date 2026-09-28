@@ -34,7 +34,7 @@ export default function ResumePage() {
       <div className="max-w-[760px]">
         <SectionLabel>Resume</SectionLabel>
 
-        <h1 className="mt-5 font-serif text-display-lg text-balance text-foreground">
+        <h1 className="mt-5 font-display text-display-lg text-balance text-foreground">
           {profile.name}
         </h1>
         <p className="mt-3 font-mono text-label uppercase text-foreground-muted">

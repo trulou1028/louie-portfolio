@@ -40,7 +40,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <strong className="font-medium text-foreground">{children}</strong>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="mt-8 max-w-[60ch] border-l-2 border-accent pl-5 font-serif text-heading-md text-balance text-foreground">
+      <blockquote className="mt-8 max-w-[40ch] border-t border-foreground pt-5 font-display text-heading-md text-balance text-foreground">
         {children}
       </blockquote>
     ),

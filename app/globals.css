@@ -2,50 +2,74 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Registers the `dark` variant for upstream shadcn components. Both palettes
-   are defined below — light on :root, dark on .dark — and <html class="dark">
-   makes dark the default. */
+/* Registers the `dark` variant for upstream shadcn components. Light is the
+   default theme; the dark half below is kept so a theme toggle stays a
+   one-line change, but nothing sets `.dark` today. */
 @custom-variant dark (&:is(.dark *));
 
 /* ---------------------------------------------------------------------------
    Design tokens — source of truth.
-   Color values are spec §6 verbatim (HSL triplets, consumed via hsl(var(--x))).
-   Radii are spec §9. Motion durations are spec §24.
---------------------------------------------------------------------------- */
-/* ---------------------------------------------------------------------------
-   RHEA (branch restyle/rhea-dark) — Louie's shadcn preset, updated.
-   Converted from the preset's oklch to this site's HSL-triplet convention.
 
-   The preset defines BOTH halves, so both are here: light on :root, dark on
-   .dark, with <html class="dark"> making dark the default. A theme toggle is
-   therefore a later one-liner, not a rebuild.
+   Direction A "The work, framed" (Plan 037, September 2026). The shell is a
+   true neutral: near-white canvas, near-black ink, no brand hue of its own.
+   Color belongs to the work. Each project brings its own plate color, and one
+   signal color (amber) has one job: marking the decision inside a real
+   screenshot, the way a designer redlines a spec.
 
-   Owner-selected violet accent. Dark uses the supplied color for text and
-   fills with dark button text. Light uses a deeper violet for readable links.
+   Accent split (unchanged contract): `text-accent` for text and markers,
+   `bg-accent-fill` + `text-accent-on-fill` for filled controls. In the light
+   theme both resolve to ink, so links carry an underline to stay findable.
+   `accent-muted` / `accent-soft` are amber tints: the deep-link wash and AI
+   surfaces share the signal color's family.
+
+   Colors are HSL triplets consumed as hsl(var(--token)). Radii are spec §9.
+   Motion durations are spec §24.
 --------------------------------------------------------------------------- */
 :root {
   color-scheme: light;
 
-  --canvas: 0 0% 100%;
+  --canvas: 0 0% 98%;
   --surface: 0 0% 100%;
-  --surface-muted: 60 5% 96%;
+  --surface-muted: 230 6% 95%;
   --surface-raised: 0 0% 100%;
-  --foreground: 20 14% 4%;         /* 19.8:1 on canvas */
-  --foreground-muted: 26 6% 45%;   /* 4.79:1 — AA for body text */
-  --foreground-subtle: 24 6% 64%;  /* non-text only */
+  --foreground: 230 8% 10%;         /* 17.0:1 on canvas */
+  --foreground-muted: 230 5% 36%;   /* 6.7:1 on canvas — body copy */
+  --foreground-subtle: 230 4% 60%;  /* non-text only */
+  --foreground-quiet: 230 4% 50%;   /* 4.0:1 — display-size text only */
 
-  --border-subtle: 20 6% 92%;
-  --border-default: 20 6% 90%;
-  --border-strong: 24 6% 80%;
+  --border-subtle: 230 6% 91%;
+  --border-default: 230 5% 86%;
+  --border-strong: 230 4% 72%;
 
-  --accent: 257.209302 65% 43%;
-  --accent-hover: 257.209302 65% 35%;
-  --accent-fill: 257.209302 100.000000% 74.705882%;
-  --accent-fill-hover: 257.209302 100% 80%;
-  --accent-on-fill: 20 14% 4%;
-  --accent-muted: 257.209302 55% 85%;
-  --accent-soft: 257.209302 80% 96%;
-  --accent-foreground: 257.209302 65% 35%;
+  --accent: 230 8% 10%;
+  --accent-hover: 230 6% 32%;
+  --accent-fill: 230 8% 10%;
+  --accent-fill-hover: 230 7% 24%;
+  --accent-on-fill: 0 0% 100%;
+  --accent-muted: 42 92% 80%;
+  --accent-soft: 45 100% 95%;
+  --accent-foreground: 32 80% 26%;  /* 7.5:1 on accent-soft */
+
+  /* The redline. Used only by DecisionMark and the marks it draws. */
+  --signal: 41 91% 57%;
+  --signal-ink: 35 60% 12%;         /* label text on signal, 8.5:1 */
+
+  /* Project plates. Each project's own brand color, used as a full field
+     behind its work on the homepage. `-ink` is body text on the plate
+     (≥ 4.5:1); `-mark` is a small accent on the plate. */
+  --plate-offboard: 145 33% 18%;
+  --plate-offboard-ink: 90 40% 93%;       /* 10.6:1 */
+  --plate-offboard-muted: 100 18% 76%;    /* 7.1:1 */
+  --plate-offboard-mark: 100 60% 58%;
+  --plate-foresights: 16 86% 58%;
+  --plate-foresights-ink: 15 55% 10%;     /* 5.7:1 */
+  --plate-foresights-muted: 15 50% 15%;   /* 5.0:1 */
+  --plate-flexi: 88 45% 73%;
+  --plate-flexi-ink: 100 40% 11%;         /* 10.1:1 */
+  --plate-flexi-muted: 100 30% 22%;       /* 6.4:1 */
+  --plate-neuron: 230 12% 12%;
+  --plate-neuron-ink: 230 10% 93%;        /* 14.4:1 */
+  --plate-neuron-muted: 230 6% 70%;       /* 7.8:1 */
 
   --danger: 0 72% 45%;
   --success: 145 55% 30%;
@@ -62,6 +86,8 @@
   /* Elevation. Border first, background second, shadow last (spec §9). */
   --shadow-soft:
     0 1px 2px hsl(0 0% 0% / 0.35), 0 8px 24px hsl(0 0% 0% / 0.35);
+  /* A product screenshot lifted off its project plate (Plan 037). */
+  --shadow-shot: 0 30px 60px -30px hsl(230 30% 5% / 0.55);
 
   /* Motion — spec §24 */
   --duration-instant: 90ms;
@@ -104,7 +130,7 @@
   --ring: hsl(var(--accent));
 }
 
-/* Dark half of the preset. Default via <html class="dark">. */
+/* Dark half, kept for a future theme toggle. Nothing sets `.dark` today. */
 .dark {
   color-scheme: dark;
 
@@ -115,20 +141,21 @@
   --foreground: 60 9% 98%;         /* 18.9:1 on canvas */
   --foreground-muted: 27 6% 66%;   /* Brighter secondary copy, September 2026 feedback. */
   --foreground-subtle: 25 5% 45%;  /* non-text only */
+  --foreground-quiet: 27 5% 58%;
 
   --border-subtle: 12 5% 20%;
   --border-default: 20 5% 26%;
   --border-strong: 24 5% 36%;
 
-  /* Owner-supplied #a37eff, represented as the shared HSL token. */
-  --accent: 257.209302 100.000000% 74.705882%;
-  --accent-hover: 257.209302 100% 84%;
-  --accent-fill: 257.209302 100.000000% 74.705882%;
-  --accent-fill-hover: 257.209302 100% 80%;
-  --accent-on-fill: 20 14% 4%;
-  --accent-muted: 257.209302 40% 32%;
-  --accent-soft: 257.209302 30% 15%;
-  --accent-foreground: 257.209302 100.000000% 74.705882%;
+  /* Amber replaces the former violet so both halves share one signal. */
+  --accent: 41 91% 62%;
+  --accent-hover: 41 91% 72%;
+  --accent-fill: 41 91% 62%;
+  --accent-fill-hover: 41 91% 70%;
+  --accent-on-fill: 35 60% 10%;
+  --accent-muted: 38 40% 25%;
+  --accent-soft: 38 30% 12%;
+  --accent-foreground: 41 91% 62%;
 
   --hero-system-layer: 20 7% 12%;
   --hero-system-layer-highlight: 24 7% 22%;
@@ -172,6 +199,7 @@
   --color-foreground: hsl(var(--foreground));
   --color-foreground-muted: hsl(var(--foreground-muted));
   --color-foreground-subtle: hsl(var(--foreground-subtle));
+  --color-foreground-quiet: hsl(var(--foreground-quiet));
 
   --color-border-subtle: hsl(var(--border-subtle));
   --color-border-default: hsl(var(--border-default));
@@ -188,6 +216,23 @@
 
   --color-danger: hsl(var(--danger));
   --color-success: hsl(var(--success));
+
+  --color-signal: hsl(var(--signal));
+  --color-signal-ink: hsl(var(--signal-ink));
+
+  --color-plate-offboard: hsl(var(--plate-offboard));
+  --color-plate-offboard-ink: hsl(var(--plate-offboard-ink));
+  --color-plate-offboard-muted: hsl(var(--plate-offboard-muted));
+  --color-plate-offboard-mark: hsl(var(--plate-offboard-mark));
+  --color-plate-foresights: hsl(var(--plate-foresights));
+  --color-plate-foresights-ink: hsl(var(--plate-foresights-ink));
+  --color-plate-foresights-muted: hsl(var(--plate-foresights-muted));
+  --color-plate-flexi: hsl(var(--plate-flexi));
+  --color-plate-flexi-ink: hsl(var(--plate-flexi-ink));
+  --color-plate-flexi-muted: hsl(var(--plate-flexi-muted));
+  --color-plate-neuron: hsl(var(--plate-neuron));
+  --color-plate-neuron-ink: hsl(var(--plate-neuron-ink));
+  --color-plate-neuron-muted: hsl(var(--plate-neuron-muted));
 
   /* shadcn semantic names, mapped onto the same palette */
   --color-background: var(--background);
@@ -206,50 +251,53 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Typography — spec §7 */
-  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  /* Typography — spec §7, revised by Plan 037. One family (Archivo); the
+     width axis separates display from body. `font-display` is the display
+     role (hero, project titles, section statements); `font-heading` is the
+     same face for upstream shadcn titles. Geist Mono stays for short
+     machine-ish labels only. */
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
-  /* The display slot: Roboto Slab, per the preset (style base-nova). A slab
-     serif — structure AND a serif voice, which is why this round lands
-     differently from the Raleway attempt. */
-  --font-serif: var(--font-roboto-slab), ui-serif, Georgia, serif;
-  --font-heading: var(--font-roboto-slab), ui-serif, Georgia, serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display--font-variation-settings: "wdth" 112;
+  --font-heading: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-heading--font-variation-settings: "wdth" 106;
 
   /* Type scale — spec §8. Display and heading sizes scale fluidly. */
   --text-display-xl: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
   --text-display-xl--line-height: 0.95;
   --text-display-xl--letter-spacing: -0.035em;
-  --text-display-xl--font-weight: 600;
+  --text-display-xl--font-weight: 800;
 
-  --text-home-hero: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
+  --text-home-hero: clamp(2.75rem, 1.2rem + 4.6vw, 5.25rem);
   --text-home-hero--line-height: 0.95;
   --text-home-hero--letter-spacing: -0.035em;
-  --text-home-hero--font-weight: 600;
+  --text-home-hero--font-weight: 820;
 
   --text-project-title: clamp(1.5rem, 1.25rem + 0.4vw, 1.625rem);
   --text-project-title--line-height: 1.2;
   --text-project-title--letter-spacing: -0.015em;
-  --text-project-title--font-weight: 600;
+  --text-project-title--font-weight: 750;
 
   --text-display-lg: clamp(2rem, 1.3rem + 3.5vw, 3.5rem);
   --text-display-lg--line-height: 1;
   --text-display-lg--letter-spacing: -0.03em;
-  --text-display-lg--font-weight: 600;
+  --text-display-lg--font-weight: 780;
 
   --text-heading-xl: clamp(1.75rem, 1.3rem + 2.2vw, 2.625rem);
   --text-heading-xl--line-height: 1.05;
   --text-heading-xl--letter-spacing: -0.025em;
-  --text-heading-xl--font-weight: 600;
+  --text-heading-xl--font-weight: 760;
 
   --text-heading-lg: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
   --text-heading-lg--line-height: 1.1;
   --text-heading-lg--letter-spacing: -0.02em;
-  --text-heading-lg--font-weight: 600;
+  --text-heading-lg--font-weight: 720;
 
   --text-heading-md: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
   --text-heading-md--line-height: 1.2;
   --text-heading-md--letter-spacing: -0.015em;
-  --text-heading-md--font-weight: 600;
+  --text-heading-md--font-weight: 650;
 
   --text-body-lg: 1.125rem;
   --text-body-lg--line-height: 1.6;
@@ -270,6 +318,7 @@
 
   /* Elevation */
   --shadow-soft: var(--shadow-soft);
+  --shadow-shot: var(--shadow-shot);
 
   /* Geometry */
   --radius-xs: var(--radius-xs);
@@ -305,25 +354,15 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Pane-layout guards for the pre-hydration frame.
+   Pane-layout guard for the pre-hydration frame.
 
    The server renders the desktop pane tree (the canonical document); the
-   right pane trees for smaller viewports are chosen client-side after mount.
+   right pane tree for smaller viewports is chosen client-side after mount.
    Panels carry inline flex-basis styles, so without these overrides a phone
    briefly paints the desktop layout squeezed into 375px before hydration.
    These rules make the FIRST paint correct at every width; the JS swap that
    follows only changes which tree is mounted, never what it looks like.
 --------------------------------------------------------------------------- */
-@media (max-width: 1023.98px) {
-  [data-panel][id="left-rail"],
-  [data-slot="resizable-handle"] {
-    display: none !important;
-  }
-  [data-panel][id="content"] {
-    flex: 1 1 auto !important;
-  }
-}
-
 @media (max-width: 1023.98px) {
   [data-panel][id="canvas-rail"] {
     display: none !important;
@@ -375,14 +414,39 @@
   html, [data-canvas-scroll] { scroll-behavior: smooth; }
 }
 
-/* Shared homepage/footer frame: bounded gutters, independent of viewport centering. */
+/* Shared wide frame: homepage content, its footer, and the desktop header.
+   Centered, with fluid gutters, so the header name, content edge, and footer
+   line up at every width (Plan 037). */
 .portfolio-wide {
-  max-width: 1168px;
-  margin-inline: 0;
+  max-width: 1320px;
+  margin-inline: auto;
   width: 100%;
+  padding-inline: clamp(16px, 4vw, 56px);
 }
-@media (min-width: 1024px) {
-  .portfolio-wide {
-    padding-inline: clamp(32px, 4vw, 64px);
+
+/* Decision marks (Plan 037). The dim outside the mark is a spread shadow the
+   screenshot frame clips. When the browser supports scroll-driven animation,
+   the mark lands as its image scrolls into view; otherwise, and for reduced
+   motion, it is simply there. The final state is always the default. */
+.decision-mark {
+  box-shadow: 0 0 0 200vmax hsl(var(--foreground) / 0.22);
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .decision-mark {
+      animation: decision-mark-land linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 40%;
+    }
+  }
+}
+@keyframes decision-mark-land {
+  from {
+    opacity: 0;
+    scale: 1.08;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
   }
 }

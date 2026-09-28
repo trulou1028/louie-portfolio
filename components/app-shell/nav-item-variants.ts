@@ -18,8 +18,9 @@ export const navItemVariants = cva(
   {
     variants: {
       size: {
-        /** Desktop left rail. */
+        /** Former desktop left rail; kept for any vertical nav list. */
         rail: "h-9 text-body-sm",
+        bar: "h-9 px-3 text-body-sm",
         /** Mobile sheet — larger touch target (spec §26). */
         sheet: "h-11 text-body",
       },

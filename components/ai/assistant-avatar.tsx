@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  * AI Louie's face (owner decision, 2026-08-31).
  *
  * This is Louie's persona answering, so it wears Louie's portrait — the same
- * `profile.avatar` the left rail's logo uses, so the two can never drift.
+ * `profile.avatar` the site's other avatar uses, so the two can never drift.
  *
  * It lives in its own file, depending on nothing from the chat components,
  * because both the lazy `ThreadSkeleton` and the loaded thread render it. A

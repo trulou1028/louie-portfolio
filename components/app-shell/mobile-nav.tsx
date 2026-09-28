@@ -36,7 +36,7 @@ function MobileNav() {
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border-subtle bg-canvas/90 px-4 backdrop-blur-sm lg:hidden">
       <Link href="/" className="focus-ring rounded-sm">
-        <span className="font-serif text-heading-md leading-none text-foreground">
+        <span className="font-display text-heading-md leading-none text-foreground">
           {profile.name}
         </span>
       </Link>
@@ -53,7 +53,7 @@ function MobileNav() {
 
         <SheetContent side="right" className="w-[280px] bg-canvas">
           <SheetHeader>
-            <SheetTitle className="font-serif text-heading-md">
+            <SheetTitle className="font-display text-heading-md">
               {profile.name}
             </SheetTitle>
             <p className="text-body-sm text-foreground-muted">{profile.role}</p>

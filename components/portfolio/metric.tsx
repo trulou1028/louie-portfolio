@@ -23,7 +23,7 @@ function Metric({ className, value, label, note, ...props }: MetricProps) {
       className={cn("flex flex-col gap-1", className)}
       {...props}
     >
-      <span className="font-serif text-heading-lg text-foreground">
+      <span className="font-display text-heading-lg text-foreground">
         {value}
       </span>
       <span className="text-body-sm text-foreground-muted">{label}</span>

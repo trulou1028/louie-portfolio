@@ -43,8 +43,8 @@ const COLOR_TOKENS = [
 ] as const;
 
 const TYPE_SCALE = [
-  ["display-xl", "text-display-xl font-serif"],
-  ["display-lg", "text-display-lg font-serif"],
+  ["display-xl", "text-display-xl font-display"],
+  ["display-lg", "text-display-lg font-display"],
   ["heading-xl", "text-heading-xl"],
   ["heading-lg", "text-heading-lg"],
   ["heading-md", "text-heading-md"],
@@ -88,7 +88,7 @@ export default function DesignSystemPage() {
   return (
     <div className="h-full overflow-y-auto mx-auto w-full max-w-[900px] px-6 py-16">
       <SystemLabel tone="accent">Internal</SystemLabel>
-      <h1 className="mt-4 font-serif text-display-lg">Design system</h1>
+      <h1 className="mt-4 font-display text-display-lg">Design system</h1>
       <p className="mt-3 max-w-[65ch] text-body text-foreground-muted">
         Every primitive, in every variant. Not linked from navigation and not
         indexed; removed before launch.

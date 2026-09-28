@@ -46,7 +46,7 @@ function CaseStudySection({
       {eyebrow ? <SectionLabel className="mb-3">{eyebrow}</SectionLabel> : null}
       <RevealHeading
         id={`${id}-heading`}
-        className="font-serif text-heading-xl text-balance text-foreground"
+        className="font-display text-heading-xl text-balance text-foreground"
       >
         {title}
       </RevealHeading>

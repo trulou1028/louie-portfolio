@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Content from "@/content/work/ck12-analytics.mdx";
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
 import { CaseStudyHeader } from "@/components/portfolio/case-study-header";
+import { NextCaseStudy } from "@/components/portfolio/next-case-study";
 import { CreativeWorkSchema } from "@/components/system/structured-data";
 import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
 import {
@@ -50,6 +51,7 @@ export default function AnalyticsCaseStudy() {
         <div className="flex flex-col gap-14">
           <Content />
         </div>
+        <NextCaseStudy current="ck12-analytics" />
       </article>
     </Canvas>
   );

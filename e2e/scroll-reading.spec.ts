@@ -31,10 +31,19 @@ test("case-study sections visibly animate on scroll and then settle", async ({ p
   await expect(reveal).toHaveCSS("opacity", "1");
 });
 
-test("Work leads with Offboard and uses the requested violet accent", async ({ page }) => {
+test("Work leads with Offboard on its own plate color", async ({ page }) => {
   await page.goto("/work");
   await expect(page.locator('main a[href^="/work/"]').first()).toHaveAttribute("href", "/work/offboard");
-  await expect(page.locator('main a[href="/work/offboard"] .text-accent').first()).toHaveCSS("color", "rgb(163, 126, 255)");
+  const plate = page.locator("main article").filter({ has: page.locator('a[href="/work/offboard"]') });
+  const [actual, expected] = await plate.evaluate((node) => {
+    const probe = document.createElement("div");
+    probe.style.backgroundColor = "hsl(var(--plate-offboard))";
+    document.body.append(probe);
+    const token = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return [getComputedStyle(node).backgroundColor, token];
+  });
+  expect(actual).toBe(expected);
 });
 
 test("homepage section headings participate in motion and experience is current", async ({ page }) => {

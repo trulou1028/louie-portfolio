@@ -109,7 +109,7 @@ function JobDescriptionDialog({
 
       <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-[680px]">
         <DialogHeader>
-          <DialogTitle className="font-serif text-heading-md">
+          <DialogTitle className="font-display text-heading-md">
             Evaluating Louie for a role?
           </DialogTitle>
           <DialogDescription>

@@ -24,7 +24,7 @@ export default function ExperimentsIndex() {
     <Canvas>
       <div className="max-w-[820px]">
         <SectionLabel>Experiments</SectionLabel>
-        <h1 className="mt-5 max-w-[18ch] font-serif text-display-lg text-balance text-foreground">
+        <h1 className="mt-5 max-w-[18ch] font-display text-display-lg text-balance text-foreground">
           Small things, built to find out
         </h1>
         <p className="mt-6 max-w-[62ch] text-body-lg text-foreground-muted">

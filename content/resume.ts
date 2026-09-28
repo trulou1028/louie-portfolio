@@ -16,6 +16,11 @@ export type ResumeRole = {
   title: string;
   /** Display string as it appears on the resume, e.g. "May 2016 - May 2025". */
   period: string;
+  /**
+   * One short scale line for the homepage record (Plan 037). Condensed from
+   * this role's own highlights, never a new fact.
+   */
+  scale?: string;
   highlights: string[];
 };
 
@@ -54,6 +59,7 @@ export const resume: Resume = {
       company: "Offboard",
       title: "Founding Product Designer & AI Systems Lead",
       period: "May 2025 - Present",
+      scale: "Six-person startup",
       highlights: [
         "Led product design from concept through production for an AI-powered career-transition platform spanning job search, research, decision support, document generation, and employer-sponsored experiences.",
         "Designed information architectures that turn fragmented user data and complex tasks into guided workflows with visible system status, checkpoints, and user control.",
@@ -67,6 +73,7 @@ export const resume: Resume = {
       company: "CK-12 Foundation",
       title: "Lead UX Designer",
       period: "May 2016 - May 2025",
+      scale: "Platform serving 20M+ users",
       highlights: [
         "Designed workflows for a K-12 learning platform serving 20M+ users worldwide, supporting student, teacher, and administrator needs across content, practice, assignments, reporting, and platform management.",
         "Led the development and evolution of CK-12's 2.0 design system, establishing reusable interaction patterns across responsive web experiences and partnering with engineering on a parallel React component library.",
@@ -81,6 +88,7 @@ export const resume: Resume = {
       company: "Odyssey",
       title: "Product Lead",
       period: "Nov 2021 - Nov 2022",
+      scale: "80,000+ learners onboarded",
       highlights: [
         "Designed and developed an education platform that onboarded 80,000+ learners into crypto and web3 concepts through simple, approachable learning experiences.",
         "Created an automated email course completed by 12,000+ learners, combining curriculum design, UX writing, product strategy, and engagement analytics.",
@@ -91,6 +99,7 @@ export const resume: Resume = {
       company: "Lowe's Companies, Inc.",
       title: "UX Production Designer",
       period: "Jun 2014 - May 2016",
+      scale: "Managed 4 designers on a global redesign",
       highlights: [
         "Produced and iterated on creative assets for home, landing, and brand pages in a fast-paced, experiment-driven ecommerce environment.",
         "Managed a team of 4 designers on a Global Redesign effort to modernize the ecommerce experience and align it with updated brand and UX guidelines.",

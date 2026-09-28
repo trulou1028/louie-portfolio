@@ -51,7 +51,7 @@ export default async function ExperimentPage({
       <article className="max-w-[760px]">
         <SectionLabel>{slug === "neuron-shift" ? "Neuron Shift / Experiment" : "Experiment"}</SectionLabel>
 
-        <h1 className="mt-5 max-w-[20ch] font-serif text-display-lg text-balance text-foreground">
+        <h1 className="mt-5 max-w-[20ch] font-display text-display-lg text-balance text-foreground">
           {experiment.title}
         </h1>
 
