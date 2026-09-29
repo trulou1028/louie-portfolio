@@ -19,7 +19,7 @@ Required imagery: real tutoring exchange, a substantiated follow-up/recovery pat
 
 Add `/experiments/neuron-shift` to the existing experiments system. It deserves a named card and direct live-demo link, not burial inside a generic “design engineering” category.
 
-Proposed title: **Preserving operator judgment across shift changes.** Above the demo link state: independent exploratory prototype; simulated operational data; no live model integration; not affiliated with or endorsed by Teserac. Explain that the user model is a hypothesis based on public material and that no operators were interviewed. A deployed demo is not a production operational deployment.
+Proposed title: **Preserving operator judgment across shift changes.** Above the demo link state: independent exploratory prototype; simulated operational data; no live model integration; not affiliated with or endorsed by any company. Explain that the user model is a hypothesis based on public material and that no operators were interviewed. A deployed demo is not a production operational deployment.
 
 Use this compact sequence:
 

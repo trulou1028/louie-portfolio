@@ -23,7 +23,7 @@ The claim ledger needs: ID, project, exact claim, source URL/artifact and date, 
 | Offboard timing, price, and architecture | Verify eight agents, 2-3 minute timing, risk threshold 70, 30-day cache freshness, credits/refunds, and the current plan-first stage placement. These may describe historical versions. |
 | Offboard strategic correction | Obtain the dated observation/query or owner account behind packet-first → plan-first. Distinguish the decision from any unmeasured improvement. |
 | Offboard control boundaries | The newer deck says the tracker files automatically; the old prose implies every change is confirmed. Describe automatic workspace bookkeeping separately from gated costly/consequential steps and human sending. |
-| Neuron Shift | Preserve independent prototype, simulated data, no live model, no real operators interviewed, and no Teserac endorsement. Product behavior is demonstration, not field validation. |
+| Neuron Shift | Preserve independent prototype, simulated data, no live model, no real operators interviewed, and no company affiliation or endorsement. Product behavior is demonstration, not field validation. |
 
 ## Asset manifest
 

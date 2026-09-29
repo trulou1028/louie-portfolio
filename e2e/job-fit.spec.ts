@@ -36,82 +36,117 @@ const SAMPLE_RESULT = {
 
 const JOB_DESCRIPTION = "We are looking for a senior product designer. ".repeat(12);
 
+/** Plan 042: the comparison lives in the Ask Louie panel's "Compare a role" view. */
 async function openDialog(page: Page) {
   await page.goto("/");
-  // Plan 012: the trigger lives inside the Ask panel, now the homepage's
-  // persistent rail. On desktop it is already on screen at paint; below xl
-  // it still stacks after the rest of the homepage (spec §10), so
-  // approaching it is what triggers the lazy-loaded runtime that renders
-  // this button (spec §27). The button is unique on the page either way —
-  // there is only one JobDescriptionDialog trigger site.
-  //
-  // Below xl, `Canvas` renders the rail in a structurally different tree
-  // than on xl+ (a stacked `<div>` vs. a `PersistentPanelGroup` pane) —
-  // `useMinWidth` reports desktop for the first client render even on a
-  // real mobile viewport (matching SSR) and corrects one effect later,
-  // unmounting and remounting the rail's subtree. Retrying the whole action
-  // rides out a `goto` that lands mid-swap.
   await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
   await expect(page.locator("#ask-ai-louie")).toBeVisible();
-  await page.getByRole("button", { name: "Paste a job description" }).click();
-  return page.getByRole("dialog", { name: "Evaluating Louie for a role?" });
+  await page.locator("#ask-ai-louie").getByRole("button", { name: "Paste a job description" }).click();
+  const view = page.locator("#ask-ai-louie").getByRole("region", { name: "Compare a role" });
+  await expect(view).toBeVisible();
+  // Opening the view puts focus in the text box (see JobCompare).
+  await expect(view.getByLabel("Job description")).toBeFocused();
+  return view;
 }
 
-test.describe("the evaluator dialog", () => {
+test.describe("the job comparison", () => {
   test("opens with the recruiter framing and the privacy note", async ({ page }) => {
-    const dialog = await openDialog(page);
+    const view = await openDialog(page);
 
-    await expect(
-      dialog.getByRole("heading", { name: "Evaluating Louie for a role?" }),
-    ).toBeVisible();
+    await expect(view.getByRole("heading", { name: "Compare a role" })).toBeVisible();
 
     // The privacy line must be visible before anything is pasted (spec §22).
-    await expect(
-      dialog.getByText(/Used only to compare against portfolio evidence/),
-    ).toBeVisible();
-    await expect(dialog.getByText(/Not stored/)).toBeVisible();
+    await expect(view.getByText(/Used only for this comparison/)).toBeVisible();
+    await expect(view.getByText(/Not stored/)).toBeVisible();
 
     // No account required (spec §22).
-    await expect(dialog.getByText(/sign in|sign up|create an account/i)).toHaveCount(0);
+    await expect(view.getByText(/sign in|sign up|create an account/i)).toHaveCount(0);
+  });
+
+  test("the hero button opens the same view", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "Paste a job description" }).click();
+    await expect(page.locator("#ask-ai-louie").getByRole("region", { name: "Compare a role" })).toBeVisible();
   });
 
   test("requires a substantial description before comparing", async ({ page }) => {
-    const dialog = await openDialog(page);
-    const submit = dialog.getByRole("button", { name: /Compare with/ });
+    const view = await openDialog(page);
+    const submit = view.getByRole("button", { name: /Compare with/ });
 
     await expect(submit).toBeDisabled();
-    await dialog.getByLabel("Job description").fill("Designer wanted");
+    await view.getByLabel("Job description").fill("Designer wanted");
     await expect(submit).toBeDisabled();
 
-    await dialog.getByLabel("Job description").fill(JOB_DESCRIPTION);
+    await view.getByLabel("Job description").fill(JOB_DESCRIPTION);
     await expect(submit).toBeEnabled();
   });
 
-  test("renders all four spec sections", async ({ page }) => {
+  test("shows a reading state while comparing", async ({ page }) => {
+    await page.route("**/api/job-fit", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await route.fulfill({ status: 200, json: { result: SAMPLE_RESULT } });
+    });
+    const view = await openDialog(page);
+    await view.getByLabel("Job description").fill(JOB_DESCRIPTION);
+    await view.getByRole("button", { name: /Compare with/ }).click();
+    await expect(view.getByText("Comparing this role with my case studies")).toBeVisible();
+    await expect(view.locator('[aria-busy="true"]')).toBeVisible();
+    await expect(view.getByText("Where I match", { exact: true })).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("renders a short result: matches, gaps, and questions", async ({ page }) => {
     await page.route("**/api/job-fit", (route) =>
       route.fulfill({ status: 200, json: { result: SAMPLE_RESULT } }),
     );
 
-    const dialog = await openDialog(page);
-    await dialog.getByLabel("Job description").fill(JOB_DESCRIPTION);
-    await dialog.getByRole("button", { name: /Compare with/ }).click();
+    const view = await openDialog(page);
+    await view.getByLabel("Job description").fill(JOB_DESCRIPTION);
+    await view.getByRole("button", { name: /Compare with/ }).click();
 
-    for (const section of [
-      "Strong evidence",
-      "Relevant work to review",
-      "Gaps or unclear areas",
-      "Suggested questions",
-    ]) {
-      await expect(dialog.getByText(section, { exact: true })).toBeVisible();
+    for (const section of ["Where I match", "Gaps to ask me about", "Questions to ask me"]) {
+      await expect(view.getByText(section, { exact: true })).toBeVisible();
     }
 
     // Gaps are stated plainly, not hidden.
-    await expect(dialog.getByText("Managing a design team")).toBeVisible();
+    await expect(view.getByText("Managing a design team")).toBeVisible();
 
     // Matches link to their evidence.
-    await expect(
-      dialog.locator('a[href*="/work/offboard"]').first(),
-    ).toBeVisible();
+    await expect(view.locator('a[href*="/work/offboard"]').first()).toBeVisible();
+  });
+
+  test("shows three rows per group and reveals the rest on request", async ({ page }) => {
+    const many = {
+      ...SAMPLE_RESULT,
+      weakerAreas: ["A", "B", "C", "D", "E"].map((letter) => ({ requirement: `Requirement ${letter}`, explanation: "Not documented here." })),
+    };
+    await page.route("**/api/job-fit", (route) => route.fulfill({ status: 200, json: { result: many } }));
+    const view = await openDialog(page);
+    await view.getByLabel("Job description").fill(JOB_DESCRIPTION);
+    await view.getByRole("button", { name: /Compare with/ }).click();
+    await expect(view.getByText("Requirement C")).toBeVisible();
+    await expect(view.getByText("Requirement D")).toHaveCount(0);
+    await view.getByRole("button", { name: "Show 2 more" }).click();
+    await expect(view.getByText("Requirement E")).toBeVisible();
+  });
+
+  test("shows each evidence page once, even when several entries share it", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
+    const shared = {
+      ...SAMPLE_RESULT,
+      strongestMatches: [{
+        requirement: "Full-stack implementation",
+        evidenceIds: ["career-technical-fluency", "career-experience-arc"],
+        explanation: "Both entries live on the resume page.",
+      }],
+    };
+    await page.route("**/api/job-fit", (route) => route.fulfill({ status: 200, json: { result: shared } }));
+    const view = await openDialog(page);
+    await view.getByLabel("Job description").fill(JOB_DESCRIPTION);
+    await view.getByRole("button", { name: /Compare with/ }).click();
+    await expect(view.getByText("Full-stack implementation")).toBeVisible();
+    await expect(view.locator('a[href="/resume"]')).toHaveCount(1);
+    expect(errors.filter((text) => text.includes("same key"))).toEqual([]);
   });
 
   test("the result view never introduces a score of its own", async ({ page }) => {
@@ -124,12 +159,12 @@ test.describe("the evaluator dialog", () => {
       route.fulfill({ status: 200, json: { result: SAMPLE_RESULT } }),
     );
 
-    const dialog = await openDialog(page);
-    await dialog.getByLabel("Job description").fill(JOB_DESCRIPTION);
-    await dialog.getByRole("button", { name: /Compare with/ }).click();
-    await expect(dialog.getByText("Strong evidence", { exact: true })).toBeVisible();
+    const view = await openDialog(page);
+    await view.getByLabel("Job description").fill(JOB_DESCRIPTION);
+    await view.getByRole("button", { name: /Compare with/ }).click();
+    await expect(view.getByText("Where I match", { exact: true })).toBeVisible();
 
-    const body = await dialog.innerText();
+    const body = await view.innerText();
     expect(body).not.toMatch(/\d{1,3}\s?%/);
     expect(body).not.toMatch(/\d\s*(\/|out of)\s*\d/);
     expect(body).not.toMatch(/\b(score|rating|ranked)\s*[:=]/i);
@@ -140,27 +175,30 @@ test.describe("the evaluator dialog", () => {
       route.fulfill({ status: 502, json: { error: "comparison_failed" } }),
     );
 
-    const dialog = await openDialog(page);
-    await dialog.getByLabel("Job description").fill(JOB_DESCRIPTION);
-    await dialog.getByRole("button", { name: /Compare with/ }).click();
+    const view = await openDialog(page);
+    await view.getByLabel("Job description").fill(JOB_DESCRIPTION);
+    await view.getByRole("button", { name: /Compare with/ }).click();
 
-    await expect(dialog.getByRole("alert")).toContainText(
-      /couldn.t be completed/i,
-    );
+    await expect(view.getByRole("alert")).toContainText(/couldn.t be completed/i);
   });
 
-  test("closes on Escape and forgets what was pasted", async ({ page }) => {
-    const dialog = await openDialog(page);
-    await dialog.getByLabel("Job description").fill(JOB_DESCRIPTION);
+  test("closing the panel forgets what was pasted", async ({ page }) => {
+    const view = await openDialog(page);
+    await view.getByLabel("Job description").fill(JOB_DESCRIPTION);
 
     await page.keyboard.press("Escape");
-    await expect(page.getByRole("dialog", { name: "Evaluating Louie for a role?" })).toBeHidden();
+    await expect(page.locator("#ask-ai-louie")).toBeHidden();
 
     // Reopening starts clean — the description is not retained.
-    await page.getByRole("button", { name: "Paste a job description" }).click();
-    await expect(page.getByRole("dialog", { name: "Evaluating Louie for a role?" }).getByLabel("Job description")).toHaveValue(
-      "",
-    );
+    await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+    await page.locator("#ask-ai-louie").getByRole("button", { name: "Paste a job description" }).click();
+    await expect(page.locator("#ask-ai-louie").getByLabel("Job description")).toHaveValue("");
+  });
+
+  test("Back to chat keeps the conversation", async ({ page }) => {
+    const view = await openDialog(page);
+    await view.getByRole("button", { name: "Back to chat" }).click();
+    await expect(page.locator("#ask-ai-louie").getByRole("textbox", { name: "Ask anything about Louie's work" })).toBeVisible();
   });
 });
 

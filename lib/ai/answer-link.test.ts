@@ -83,3 +83,21 @@ describe("resolveAnswerLink", () => {
     });
   });
 });
+
+describe("link text that names a project (Plan 042)", () => {
+  it("sends a project name linked to another page to that project's page", () => {
+    expect(resolveAnswerLink("/resume", "Offboard")).toEqual({ kind: "internal", href: "/work/offboard" });
+    expect(resolveAnswerLink("/work/offboard#architecture", "Flexi")).toEqual({ kind: "internal", href: "/work/flexi" });
+  });
+  it("keeps a link whose text matches its page, including its anchor", () => {
+    expect(resolveAnswerLink("/work/offboard#architecture", "the Offboard architecture")).toEqual({ kind: "internal", href: "/work/offboard#architecture" });
+    expect(resolveAnswerLink("/resume", "my resume")).toEqual({ kind: "internal", href: "/resume" });
+  });
+  it("leaves links alone when the text names several projects or none", () => {
+    expect(resolveAnswerLink("/work", "Offboard and Flexi")).toEqual({ kind: "internal", href: "/work" });
+    expect(resolveAnswerLink("/about", "how I work")).toEqual({ kind: "internal", href: "/about" });
+  });
+  it("still rejects invalid targets", () => {
+    expect(resolveAnswerLink("https://example.com", "Offboard")).toEqual({ kind: "invalid" });
+  });
+});

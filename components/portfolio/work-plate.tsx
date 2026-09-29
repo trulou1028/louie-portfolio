@@ -22,7 +22,7 @@ import type { GalleryItem } from "@/content/work/projects";
 type PlateTone = "offboard" | "foresights" | "flexi" | "neuron";
 
 /* Static class strings so Tailwind can see every token. */
-const TONES: Record<PlateTone, { field: string; ink: string; muted: string; rule: string }> = {
+export const TONES: Record<PlateTone, { field: string; ink: string; muted: string; rule: string }> = {
   offboard: { field: "bg-plate-offboard", ink: "text-plate-offboard-ink", muted: "text-plate-offboard-muted", rule: "border-plate-offboard-muted/40" },
   foresights: { field: "bg-plate-foresights", ink: "text-plate-foresights-ink", muted: "text-plate-foresights-muted", rule: "border-plate-foresights-ink/30" },
   flexi: { field: "bg-plate-flexi", ink: "text-plate-flexi-ink", muted: "text-plate-flexi-muted", rule: "border-plate-flexi-ink/25" },

@@ -1,3 +1,4 @@
+import type * as React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
@@ -88,7 +89,7 @@ const components: Components = {
    * nowhere.
    */
   a: ({ href, children }) => {
-    const link = resolveAnswerLink(href);
+    const link = resolveAnswerLink(href, textOf(children));
     if (link.kind === "invalid") return <>{children}</>;
     return <InlineLink href={link.href}>{children}</InlineLink>;
   },
@@ -100,6 +101,16 @@ const components: Components = {
    */
   img: ({ alt }) => (alt ? <>{alt}</> : null),
 };
+
+/** The plain text of a link's children, for checking it against its target. */
+function textOf(node: React.ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join("");
+  if (node && typeof node === "object" && "props" in node) {
+    return textOf((node as { props: { children?: React.ReactNode } }).props.children);
+  }
+  return "";
+}
 
 function AnswerMarkdown({ text }: { text: string }) {
   return (

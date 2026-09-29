@@ -42,7 +42,37 @@ function allowedExternalHrefs(): string[] {
   ].filter((value): value is string => Boolean(value));
 }
 
-export function resolveAnswerLink(href: string | undefined): AnswerLink {
+/**
+ * Project pages by the names a visitor reads in link text. Used to catch a
+ * link whose text names one project but whose target is another page: the
+ * observed case was "Offboard" linked to /resume, because the evidence
+ * behind the answer lives on the resume.
+ */
+const PROJECT_PAGES: readonly { route: string; name: RegExp }[] = [
+  { route: "/work/offboard", name: /\boffboard\b/i },
+  { route: "/work/ck12-analytics", name: /\b(foresights|insights)\b/i },
+  { route: "/work/flexi", name: /\bflexi\b/i },
+  { route: "/experiments/neuron-shift", name: /\bneuron\b/i },
+];
+
+/**
+ * Validates an answer link, then checks it against its text. When the text
+ * names exactly one project and the target is a different page, the link
+ * opens that project's page instead: a real route, and the one the reader
+ * expects from the words they clicked.
+ */
+export function resolveAnswerLink(href: string | undefined, label?: string): AnswerLink {
+  const link = resolveAnswerHref(href);
+  if (link.kind !== "internal" || !label) return link;
+
+  const named = PROJECT_PAGES.filter((page) => page.name.test(label));
+  if (named.length !== 1) return link;
+
+  const route = link.href.split("#")[0];
+  return route === named[0].route ? link : { kind: "internal", href: named[0].route };
+}
+
+function resolveAnswerHref(href: string | undefined): AnswerLink {
   if (!href) return { kind: "invalid" };
 
   const trimmed = href.trim();

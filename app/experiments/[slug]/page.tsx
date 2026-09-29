@@ -1,14 +1,15 @@
 import { CreativeWorkSchema } from "@/components/system/structured-data";
 import NeuronContent from "@/content/experiments/neuron-shift.mdx";
 import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
-import { TableOfContentsInline } from "@/components/portfolio/table-of-contents";
+import { TableOfContents, TableOfContentsInline } from "@/components/portfolio/table-of-contents";
+import { AskAboutProject } from "@/components/ai/ask-about-project";
 import { NEURON_ANCHORS } from "@/lib/routes";
 import { TrackView } from "@/components/system/track-view";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-import { Canvas } from "@/components/app-shell/contextual-rail";
+import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
 import { PendingContent } from "@/components/portfolio/pending-content";
 import { Action } from "@/components/system/action";
 import { SectionLabel } from "@/components/system/section-label";
@@ -46,7 +47,14 @@ export default async function ExperimentPage({
   if (!experiment) notFound();
 
   return (
-    <Canvas>
+    <Canvas
+      rail={slug === "neuron-shift" ? (
+        <ContextualRail aria-label="Case study contents">
+          <TableOfContents anchors={NEURON_ANCHORS} />
+          <AskAboutProject />
+        </ContextualRail>
+      ) : undefined}
+    >
       <DeepLinkHighlight />
       <article className="max-w-[760px]">
         <SectionLabel>{slug === "neuron-shift" ? "Neuron Shift / Experiment" : "Experiment"}</SectionLabel>
@@ -93,7 +101,10 @@ export default async function ExperimentPage({
         {slug === "neuron-shift" ? <>
           <CreativeWorkSchema project={{ title: experiment.title, name: "Neuron Shift", href: "/experiments/neuron-shift", summary: experiment.summary ?? "", tags: experiment.tags }} />
           <TrackView event="portfolio_project_opened" properties={{ project: "neuron-shift" }} />
-          <TableOfContentsInline anchors={NEURON_ANCHORS} className="mt-8 lg:block" />
+          <div className="mt-8 flex flex-col gap-3 @5xl/canvas:hidden">
+            <TableOfContentsInline anchors={NEURON_ANCHORS} />
+            <AskAboutProject variant="inline" />
+          </div>
           <NeuronContent />
         </> : null}
 

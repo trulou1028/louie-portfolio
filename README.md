@@ -638,3 +638,132 @@ entries above where they conflict:
   plate layout and plate colors instead of the card grid and violet accent.
   Lighthouse scores in "Measured performance" predate this change and were
   not re-measured.
+
+## Homepage: compact hero and bento grid (Plan 038), September 27, 2026
+
+Louie chose variation 1's compact hero and variation 3's bento grid, with the
+amber decision mark in the headline. Supersedes the Plan 037 homepage layout
+above; case studies and `/work` keep their Plan 037 plates.
+
+- **Hero.** The headline is sized to fit one line at 1440px
+  (`--text-home-hero` max 3.4rem). "Clear decisions." carries the amber mark
+  and a "the job" tag, which appear after the headline's entrance finishes.
+  The lede and both actions share a row; the four employers sit in a row
+  below them.
+- **Bento grid.** All four projects appear as brand-color tiles in a 12-column
+  grid: large and small, then small and large. The separate "More work"
+  section is gone. Neuron Shift's tile keeps the live demo as a second link.
+- **Tests.** The homepage test now asserts the tile order and the bento
+  geometry, and a new test checks that the marked headline keeps its plain
+  accessible name.
+
+### Follow-up (Plan 039), September 27, 2026
+
+- **Calmer bento tiles.** Tiles show brand, a two-line title, the role, and
+  the screenshot. Summaries and fact lines moved off the homepage. In each
+  row the large tile sets the height and the small tile's screenshot fills
+  the rest (cropped at the bottom and right). Screenshots run 12px past the
+  tile edge, so the hover lift no longer opens a gap.
+- **Ask Louie modal.** The title, a subtitle, and Louie's avatar share the
+  header row with an icon Close button. The greeting is a neutral bubble; the
+  job-description path is a card; the three starter questions are full-width
+  rows directly under the greeting instead of pinned above the composer.
+- **Hero (Plan 039).** The headline stacks "Complex workflows." above the
+  boxed "Clear decisions.", which stays on one line. The "the job" tag hangs
+  below the box's bottom-right corner, so the box sits directly under the
+  line above it. The type scales to the text column (`cqi`), not the
+  viewport, so the boxed line never overruns its column (verified at 320 to
+  1920px). Louie's supplied photo (`public/images/louie-working-session.webp`,
+  `profile.heroPhoto`) sits beside the text; employers follow in one row.
+
+## Neuron Shift refresh, September 28, 2026
+
+The Neuron Shift page now follows Louie's revised case study and screenshots
+(`github.com/trulou1028/neuron-shift`, commits `babbaa6`, `b42b46f`). Eight
+supplied screenshots replace the September 19 capture (`demo.jpg`, removed);
+the console screenshot also drives the homepage and Work tiles. Copy is
+condensed from the source case study with no new claims. Three sections are
+added, with matching evidence entries so AI Louie can cite them: Position on
+chat (`#chat`), Color semantics (`#color`), and The unguided visitor
+(`#unguided`). Existing anchors are unchanged.
+
+## Photo-banner hero (Plan 040), September 28, 2026
+
+Louie chose hero option E. The homepage opens on his photo as a rounded
+banner: on wide screens the photo fills it and a dark ink scrim runs from the
+left under the white headline; on phones the photo sits on top and fades into
+the dark panel, so the text never covers his face. The marked "Clear
+decisions." and both actions are unchanged. The headline still scales to its
+text column (`cqi`), with a smaller floor (1.625rem) so the boxed line fits a
+320px phone. `RevealHeading` gained `quietClassName` for the lighter quiet
+words over the photo.
+
+The data-center company Neuron Shift was once framed around is no longer
+named anywhere in this repository or in Neuron Shift (commit `09c23b0`
+there); the non-affiliation statement now reads "not affiliated with or
+endorsed by any company". The shift-brief screenshot is cropped above its
+footer, which still named the company.
+
+## Work-led hero with the Neuron Shift loop (Plan 041), September 28, 2026
+
+Louie moved the hero away from his photo to option W1: the headline beside a
+looping screen recording of the live Neuron Shift prototype
+(`public/work/neuron-shift/hero-loop.{webm,mp4}`, 18.2s, about 1MB each, and a
+poster frame). Every frame is the real app, captured at 2x from
+neuron-shift.vercel.app with a scripted browser session; nothing is redrawn.
+`scripts/record-neuron-hero.cjs` re-records it and lists the encode steps.
+
+`HeroLoop` never plays under reduced motion (the poster stays), plays only
+while on screen, and has a visible pause control (WCAG 2.2.2). The Neuron
+Shift tile now uses the tour screenshot, so the console does not appear twice.
+The photo from Plan 040 stays in `profile.heroPhoto` but is not rendered.
+
+## Offboard updated UI, and logos on the next-case-study card, September 29, 2026
+
+Offboard shipped a new UI and palette. Louie supplied two screenshots of the
+same completed packet. The three-panel image (`offboard/packet-panels.webp`)
+is now the hero and the homepage and Work image; the full-window screenshot
+(`offboard/packet.webp`) sits in the Product section. The old-UI
+`application-packet.jpg` and dashboard `product.jpg` are removed, so the
+Offboard Work plate shows no gallery image until a dashboard screenshot in
+the new UI arrives (`TODO(asset)` in `projects.ts`).
+
+The Offboard plate follows the app: warm charcoal (`30 12% 10%`) with the
+app's lime (`#c0ff01`) as the mark color, replacing the earlier dark green.
+
+`NextCaseStudy` now leads with the next project's logo (`ProjectBrand`,
+on-plate variant) and the "Next case study" label.
+
+## Homepage polish, September 29, 2026
+
+- Offboard's title is "Founding Product Designer & AI Systems Lead"
+  everywhere, matching the resume (Louie confirmed).
+- The Offboard plate is `34 9% 15%`, the same color as the backdrop of
+  `packet-panels.webp`, so the app panels float on the tile without a
+  second frame.
+- Tile crops for Neuron and Flexi were tried and reverted the same day:
+  Louie found the full screenshots easier to take in. The Offboard homepage
+  tile uses the flat full-window screenshot (`tileImage`, `packet.webp`) so
+  it matches the other tiles; the case study hero keeps the three-panel image.
+- The "Open to new opportunities" link is removed from the header.
+- How I work: each principle's sentence is plain text, followed by a link
+  named for its project. The About and AI-decisions links moved under the
+  section heading.
+- The headline mark tag is 0.875rem (was 0.75rem).
+
+## Ask Louie in the hero and a side panel (Plan 042), September 29, 2026
+
+The hero's two buttons are replaced by an ask bar with three starter
+buttons. Ask Louie opens as a non-modal side panel on desktop and a
+full-screen sheet on phones. On project pages it starts from that project's
+questions. See `plans/042-ask-louie-side-panel.md`. The Offboard case study
+now says "designed and engineered" instead of "founded".
+
+Same day: case studies gained an "Ask about <project>" card under their
+contents, case-study pages now use the header's centered frame (the
+resizable full-bleed panes are gone), and the hero lost its helper line.
+Later: the desktop panel docks and pushes the header and page, which reflow
+through container queries; the thinking line shares the avatar's row; and
+the header shows Louie's photo. Then: the canvas is warm off-white
+(#f9f7ef), answer links always open the page their text names, and the
+job comparison moved into the panel with a shorter result.

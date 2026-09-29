@@ -4,15 +4,17 @@ import * as React from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { ThinkingOrb } from "thinking-orbs";
+import { ArrowRight, ChevronRight, FileText } from "lucide-react";
 
 import { AiLouieComposer } from "@/components/ai/ai-louie-composer";
 import { AssistantAvatar } from "@/components/ai/assistant-avatar";
 import { AnswerMarkdown } from "@/components/ai/answer-markdown";
-import { JobDescriptionDialog } from "@/components/ai/job-description-dialog";
+import { JobDescriptionTrigger } from "@/components/ai/job-description-dialog";
+import { useAskLouie } from "@/components/ai/ask-louie-dialog";
+import { STARTER_QUESTIONS, type AskQuestion } from "@/components/ai/ask-questions";
 import { SectionLabel } from "@/components/system/section-label";
 import { Surface } from "@/components/system/surface";
 import { track } from "@/lib/analytics";
-import { cn } from "@/lib/utils";
 import {
   MessageScrollerProvider,
   MessageScroller,
@@ -48,30 +50,6 @@ import { Bubble, BubbleContent } from "@/components/ui/bubble";
  * measured folding the chunk into the eager bundle and kept the lazy load.
  * That file owns the bundle-size figures; do not duplicate them here.
  */
-
-/**
- * Three suggestions only (Plan 014, owner decision) — cut from five so every
- * one reliably returns grounded evidence; see the retrieval assertions in
- * `lib/ai/portfolio-search.test.ts`. "Paste a job description" is not in
- * this list because it is not a question — it opens the evaluator dialog
- * beside the list instead.
- */
-const SUGGESTIONS = [
-  "Show me Offboard",
-  "How technical are you?",
-  "Tell me about Flexi",
-] as const;
-
-/**
- * A short kebab slug per suggestion, sent to analytics instead of the prompt
- * text — keeps the property stable if the copy is reworded, and keeps every
- * message-shaped string out of `track` on principle.
- */
-const SUGGESTION_SLUGS: Record<string, string> = {
-  "Show me Offboard": "show-offboard",
-  "How technical are you?": "how-technical",
-  "Tell me about Flexi": "show-flexi",
-};
 
 /**
  * Renders only "text" parts as visible content. Every other part type —
@@ -139,6 +117,20 @@ function hasVisibleText(message: UIMessage): boolean {
   );
 }
 
+/**
+ * Louie's side of the thread (Plan 042): the avatar on the left, the turn's
+ * content beside it. The thinking line and the answer use the same row, so
+ * the avatar never moves and the answer appears where "Thinking" was.
+ */
+function AssistantRow({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-start gap-3">
+      <AssistantAvatar className="size-7" />
+      <div className="min-w-0 flex-1 pt-1">{children}</div>
+    </div>
+  );
+}
+
 function AssistantMessage({ message }: { message: UIMessage }) {
   /**
    * An assistant turn with no text yet renders nothing at all — not even the
@@ -152,59 +144,39 @@ function AssistantMessage({ message }: { message: UIMessage }) {
   if (!hasVisibleText(message)) return null;
 
   return (
-    <div className="flex flex-col gap-2">
-      <AssistantAvatar />
-      {/* Open editorial text that streams in place (spec §21), flowing under
-          the avatar at the panel's full width rather than beside it (Plan
-          014) — there is no evidence card or tool UI competing for the row
-          anymore. shadcn's `Message` lays the avatar and content out as a
-          row by default (`flex ... gap-2`), which fights that decision, so
-          this stacks `MessageAvatar` and `MessageContent` in a plain
-          flex-col wrapper instead of using `Message` itself. */}
+    <AssistantRow>
       {/* No per-message error here on purpose: a failed turn already raises
           the thread-level notice below, and showing both means a visitor
           reads two apologies for one failure. */}
-      <MessageContent className="min-w-0 gap-3 text-body-sm text-foreground">
+      <MessageContent className="ask-fade-in min-w-0 gap-3 text-body-sm text-foreground">
         <MessageParts parts={message.parts} markdown />
       </MessageContent>
-    </div>
+    </AssistantRow>
   );
 }
 
 /**
- * A quiet, alive "thinking" line for the gap before and between tool calls,
- * when there is no streaming text yet to show (Plan 014). It appears the
- * moment the request is in flight — before `useChat` even has an assistant
- * message to attach it to — and disappears the instant real text starts
- * streaming, which is the only "alive" signal needed after that.
+ * The line shown before the answer's first word (Plan 014, Plan 042).
  *
- * The motion is `thinking-orbs`' dotted orb (owner decision, 2026-08-31 —
- * orbs.jakubantalik.com), in its `breathing` state at the 20px inline-text
- * preset: that is the pairing the source site labels "Agent thinking". It
- * replaces the previous `Marker` + `shimmer` text row.
+ * `thinking-orbs`' dotted orb in its `breathing` state (owner decision,
+ * 2026-08-31) beside a plain label, on the same row as the avatar. The
+ * label says what is happening when the stream tells us: "Searching my case
+ * studies" while the `search_portfolio` tool runs, "Thinking" otherwise.
+ * It never shows reasoning (spec §21).
  *
- * Two deliberate choices here:
- * - The avatar stays Louie's face and the orb sits inline beside the label,
- *   rather than the orb replacing the avatar. The face says who is speaking;
- *   the orb says what is happening. Swapping the avatar out mid-turn would
- *   also make the row jump when the answer arrives and the face returns.
- * - The label is plain, not `shimmer`. The orb now carries the motion, and
- *   two animations racing on one short row reads as busy rather than alive.
- *
- * `aria-hidden` on the orb is what keeps this to a single announcement: the
- * canvas ships `role="img"` with its own "Breathing…" label, which would
- * otherwise be read out alongside the visible "Thinking" inside the thread's
- * `aria-live` region.
+ * `aria-hidden` on the orb keeps this to one announcement: the canvas ships
+ * `role="img"` with its own "Breathing…" label, which would otherwise be
+ * read out alongside the visible label inside the thread's `aria-live`
+ * region.
  */
-function ThinkingIndicator() {
+function ThinkingIndicator({ searching }: { searching: boolean }) {
   return (
-    <div className="flex flex-col gap-2">
-      <AssistantAvatar />
-      <div className="flex items-center gap-2">
+    <AssistantRow>
+      <div className="ask-fade-in -mt-1 flex h-7 items-center gap-2">
         <ThinkingOrb state="breathing" size={20} aria-hidden="true" />
-        <span className="text-body-sm text-foreground-muted">Thinking</span>
+        <span className="text-body-sm text-foreground-muted">{searching ? "Searching my case studies" : "Thinking"}</span>
       </div>
-    </div>
+    </AssistantRow>
   );
 }
 
@@ -242,81 +214,93 @@ function ThreadError({ error }: { error: Error | undefined }) {
 }
 
 /**
- * One shared geometry for every chip in the suggestion row.
- *
- * Previously "Paste a job description" was a `rounded-sm`, 44px-tall
- * rectangle sitting among three `rounded-full`, ~30px pills — two radii and
- * two heights inside a single four-item group, which is what made the row
- * look unfinished. Shape is now shared and colour alone carries the
- * difference in kind.
- *
- * `min-h-9` (36px) is above the row's old pill height rather than below the
- * old button's: it clears WCAG 2.2 AA's 24px target (2.5.8) with room to
- * spare and makes the three question pills easier to hit than they were,
- * so unifying the row costs the recruiter path nothing.
+ * The opening message. The panel header already shows Louie's avatar, so the
+ * greeting is a plain bubble without a second one (Plan 039).
  */
-const SUGGESTION_CHIP = cn(
-  "inline-flex min-h-9 items-center rounded-full border px-3.5 py-1.5",
-  "text-left text-body-sm focus-ring transition-colors duration-(--duration-fast)",
-  "disabled:pointer-events-none disabled:opacity-60",
-);
+export function Greeting() {
+  return (
+    <p className="max-w-[44ch] rounded-lg rounded-tl-xs bg-surface-muted px-4 py-3 text-body text-foreground">
+      Hi, ask me about my work. I answer from my case studies and project evidence.
+    </p>
+  );
+}
 
+/**
+ * Empty-thread entry points (Plan 039): the recruiter path as one card, then
+ * the three starter questions as full-width rows. Rows beat wrapping pills
+ * here: every option lines up, reads as a real button, and has a large
+ * target.
+ */
 function Suggestions({
+  questions,
+  label,
   onSelect,
   disabled,
 }: {
+  questions: readonly AskQuestion[];
+  label: string;
   onSelect: (prompt: string) => void;
   disabled: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2.5">
-      {/* The site labels its sections with a mono eyebrow ("FEATURED WORK",
-          the hero's positioning line). This row is the panel's one such
-          label, so it uses the same component rather than a bespoke
-          sentence-case line — the panel reads as part of the site. */}
-      <SectionLabel>Try asking</SectionLabel>
-      {/* Wrapping pills, not one question per line — the Ask-LUMO pattern
-          from the Offboard app uses the rail's width. */}
-      <ul className="flex flex-wrap gap-1.5">
-        {SUGGESTIONS.map((prompt) => (
-          <li key={prompt}>
+    <div className="flex flex-col gap-5">
+      {/* Spec §22's recruiter entry point: the one option that opens a
+          dialog rather than sending a question. */}
+      <JobDescriptionTrigger
+        trigger={
+          <button
+            type="button"
+            className="group flex w-full items-center gap-3.5 rounded-lg border border-border-default bg-surface p-3.5 text-left focus-ring transition-colors duration-(--duration-fast) hover:border-border-strong"
+          >
+            <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-md bg-accent-soft text-accent-foreground">
+              <FileText className="size-5" />
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-body font-semibold text-foreground">Paste a job description</span>
+              <span className="text-body-sm text-foreground-muted">Compare it with the evidence here, including where it falls short.</span>
+            </span>
+            <ChevronRight aria-hidden="true" className="size-4 shrink-0 text-foreground-muted transition-transform duration-(--duration-fast) group-hover:translate-x-0.5" />
+          </button>
+        }
+      />
+
+      <QuestionRows label={label} questions={questions} onSelect={onSelect} disabled={disabled} />
+    </div>
+  );
+}
+
+/** Starter questions as full-width rows (Plan 039), under a short label. */
+function QuestionRows({
+  label,
+  questions,
+  onSelect,
+  disabled,
+}: {
+  label: string;
+  questions: readonly AskQuestion[];
+  onSelect: (prompt: string) => void;
+  disabled: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <SectionLabel>{label}</SectionLabel>
+      <ul className="flex flex-col divide-y divide-border-subtle border-y border-border-subtle">
+        {questions.map((question) => (
+          <li key={question.slug}>
             <button
               type="button"
               disabled={disabled}
               onClick={() => {
-                track("ai_prompt_chip_clicked", { chip: SUGGESTION_SLUGS[prompt] });
-                onSelect(prompt);
+                track("ai_prompt_chip_clicked", { chip: question.slug });
+                onSelect(question.text);
               }}
-              className={cn(
-                SUGGESTION_CHIP,
-                "border-transparent bg-surface-muted text-foreground-muted",
-                "hover:border-accent-muted hover:bg-accent-soft hover:text-accent-foreground",
-              )}
+              className="group flex w-full items-center justify-between gap-3 rounded-xs py-3 text-left text-body text-foreground focus-ring transition-colors duration-(--duration-fast) hover:text-foreground-muted disabled:pointer-events-none disabled:opacity-60"
             >
-              {prompt}
+              {question.text}
+              <ArrowRight aria-hidden="true" className="size-4 shrink-0 text-foreground-muted transition-transform duration-(--duration-fast) group-hover:translate-x-0.5" />
             </button>
           </li>
         ))}
-        <li>
-          {/* Spec §22's recruiter entry point — the one chip that opens a
-              dialog rather than sending a question, so it carries the accent
-              tint the rest of the site reserves for AI and tool affordances
-              (the `SystemLabel` accent tone uses this same pairing). */}
-          <JobDescriptionDialog
-            trigger={
-              <button
-                type="button"
-                className={cn(
-                  SUGGESTION_CHIP,
-                  "border-accent-muted bg-accent-soft font-medium text-accent-foreground",
-                  "hover:border-accent",
-                )}
-              >
-                Paste a job description
-              </button>
-            }
-          />
-        </li>
       </ul>
     </div>
   );
@@ -340,6 +324,10 @@ function AiLouieLive() {
   const lastMessageHasText =
     lastMessage?.role === "assistant" && hasVisibleText(lastMessage);
   const showThinking = isBusy && !lastMessageHasText;
+  // A tool part on the pending turn means the portfolio search is running.
+  const searching =
+    lastMessage?.role === "assistant" &&
+    lastMessage.parts.some((part) => part.type.startsWith("tool-"));
 
   function sendText(text: string) {
     const trimmed = text.trim();
@@ -347,6 +335,26 @@ function AiLouieLive() {
     track("ai_question_submitted", { turn: messages.length });
     sendMessage({ text: trimmed });
   }
+
+  // Plan 042: a question asked from outside the panel (the homepage ask
+  // bar) waits here until the runtime has loaded and is idle.
+  const { pending, clearPending, page } = useAskLouie();
+  // Each question is sent once, even when an effect runs twice.
+  const sentIds = React.useRef(new Set<number>());
+  React.useEffect(() => {
+    if (!pending || isBusy || sentIds.current.has(pending.id)) return;
+    sentIds.current.add(pending.id);
+    clearPending(pending.id);
+    track("ai_question_submitted", { turn: messages.length, source: "hero" });
+    sendMessage({ text: pending.text });
+  }, [pending, isBusy, clearPending, messages.length, sendMessage]);
+
+  // On a project page, the questions not yet asked stay offered after the
+  // first answer ("More about Offboard").
+  const asked = new Set(
+    messages.filter((m) => m.role === "user").flatMap((m) => m.parts.map((part) => (part.type === "text" ? part.text : ""))),
+  );
+  const moreQuestions = page ? page.questions.filter((q) => !asked.has(q.text)) : [];
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -363,16 +371,14 @@ function AiLouieLive() {
               {messages.length === 0 ? (
                 // Opening message, shown until the visitor says something.
                 <MessageScrollerItem messageId="greeting" scrollAnchor={false}>
-                  <div className="flex flex-col gap-2">
-                    <AssistantAvatar />
-                    <Surface
-                      radius="lg"
-                      className="min-w-0 border-accent-muted/70 bg-surface-raised p-4"
-                    >
-                      <p className="text-body-sm text-foreground">
-                        Hi, ask me about my work. I answer from my case studies and project evidence.
-                      </p>
-                    </Surface>
+                  <div className="flex flex-col gap-6">
+                    <Greeting />
+                    <Suggestions
+                      questions={page?.questions ?? STARTER_QUESTIONS}
+                      label={page ? `About ${page.name}` : "Or try asking"}
+                      onSelect={sendText}
+                      disabled={isBusy}
+                    />
                   </div>
                 </MessageScrollerItem>
               ) : (
@@ -393,24 +399,25 @@ function AiLouieLive() {
 
               {showThinking && (
                 <MessageScrollerItem messageId="thinking" scrollAnchor={false}>
-                  <ThinkingIndicator />
+                  <ThinkingIndicator searching={searching} />
                 </MessageScrollerItem>
               )}
+
+              {messages.length > 0 && !isBusy && page && moreQuestions.length > 0 ? (
+                <MessageScrollerItem messageId="more" scrollAnchor={false}>
+                  <QuestionRows label={`More about ${page.name}`} questions={moreQuestions} onSelect={sendText} disabled={isBusy} />
+                </MessageScrollerItem>
+              ) : null}
             </MessageScrollerContent>
           </MessageScrollerViewport>
         </MessageScroller>
 
         <ThreadError error={error} />
 
-        {/* Pinned footer: suggestions (until the conversation starts) and
-            the composer sit at the bottom of the panel, the way the
-            Ask-LUMO block anchors the Offboard rail. */}
+        {/* Pinned footer: the composer. Suggestions sit directly under the
+            greeting instead (Plan 039), so an empty thread has no dead band
+            between the opening message and the composer. */}
         <div className="flex shrink-0 flex-col gap-3">
-          {/* Suggestions collapse once the conversation is underway. */}
-          {messages.length === 0 && (
-            <Suggestions onSelect={sendText} disabled={isBusy} />
-          )}
-
           <AiLouieComposer
             value={input}
             onChange={setInput}

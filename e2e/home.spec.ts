@@ -7,7 +7,7 @@ const NAV = [
   { label: "Resume", path: "/resume" },
 ];
 
-test("homepage leads with Offboard then analytics, each on its own plate", async ({ page }) => {
+test("homepage leads with Offboard then analytics in the bento grid", async ({ page }, testInfo) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "Complex workflows. Clear decisions." })).toBeVisible();
   await expect(page.locator("main canvas")).toHaveCount(0);
@@ -15,23 +15,36 @@ test("homepage leads with Offboard then analytics, each on its own plate", async
   await expect(featured).toHaveCount(1);
   const projectLinks = featured.locator('a[href^="/work/"]');
   const destinations = await projectLinks.evaluateAll((els) => els.map((el) => el.getAttribute("href")));
-  expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics"]);
-  // Per plate: a wordmark, the hero screenshot, and one real gallery image.
-  await expect(featured.locator("img")).toHaveCount(6);
-  // Asset requests render in development only; a production build shows none.
+  expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics", "/work/flexi"]);
+  await expect(featured.locator('a[href="/experiments/neuron-shift"]')).toHaveCount(1);
+  // Case-study tiles: a wordmark and a screenshot each. Neuron Shift: a screenshot.
+  await expect(featured.locator("img")).toHaveCount(7);
   await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
-  await expect(projectLinks.first()).toBeVisible();
   await page.waitForTimeout(1_000);
-  // Plan 037: plates stack full-width at every size, Offboard first.
-  const plates = featured.locator("article");
-  const [first, second] = await Promise.all([plates.nth(0).boundingBox(), plates.nth(1).boundingBox()]);
-  expect(first).not.toBeNull();
-  expect(second).not.toBeNull();
-  expect(Math.abs(second!.x - first!.x)).toBeLessThan(2);
-  expect(second!.y).toBeGreaterThan(first!.y + first!.height);
+  // Plan 038: large + small tiles share a row on desktop and stack on mobile.
+  const tiles = featured.locator("article");
+  await expect(tiles).toHaveCount(4);
+  const [first, second, third] = await Promise.all([0, 1, 2].map((i) => tiles.nth(i).boundingBox()));
+  if (testInfo.project.name === "mobile") {
+    expect(Math.abs(second!.x - first!.x)).toBeLessThan(2);
+    expect(second!.y).toBeGreaterThan(first!.y + first!.height);
+  } else {
+    expect(Math.abs(second!.y - first!.y)).toBeLessThan(2);
+    expect(second!.x).toBeGreaterThan(first!.x + first!.width);
+    expect(first!.width).toBeGreaterThan(second!.width);
+    expect(third!.y).toBeGreaterThan(first!.y + first!.height);
+  }
   const allWork = featured.getByRole("link", { name: "All work →" });
   await expect(allWork).toHaveAttribute("href", "/work");
   await expect(allWork).not.toHaveAttribute("role", "button");
+});
+
+test("the headline marks its decision without changing its accessible name", async ({ page }) => {
+  await page.goto("/");
+  const heading = page.getByRole("heading", { level: 1 });
+  await expect(heading).toHaveAccessibleName("Complex workflows. Clear decisions.");
+  await expect(heading.locator(".headline-mark")).toContainText("Clear");
+  await expect(heading.locator(".headline-mark-tag")).toHaveText("the job");
 });
 
 test("the hero record lists employers from the resume", async ({ page }) => {
@@ -122,6 +135,12 @@ test.describe("responsive shell", () => {
   test("Ask dialog remains usable around the former rail breakpoint", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== "desktop", "desktop viewport resize");
     for (const width of [390, 768, 1023, 1025, 1440]) {
+      // Resize on a blank page. Resizing a loaded page makes it request new
+      // image sizes, and navigating away at once cancels them; `next start`'s
+      // local image optimizer then stalls the same size on the next load
+      // (observed September 27, 2026). The subject here is the dialog at
+      // each width, not a live resize.
+      await page.goto("about:blank");
       await page.setViewportSize({ width, height: 900 });
       await page.goto("/");
       await page.getByRole("button", { name: "Ask Louie", exact: true }).click();

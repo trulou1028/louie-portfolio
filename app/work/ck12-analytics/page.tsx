@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import Content from "@/content/work/ck12-analytics.mdx";
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
+import { AskAboutProject } from "@/components/ai/ask-about-project";
 import { CaseStudyHeader } from "@/components/portfolio/case-study-header";
 import { NextCaseStudy } from "@/components/portfolio/next-case-study";
 import { CreativeWorkSchema } from "@/components/system/structured-data";
@@ -34,6 +35,7 @@ export default function AnalyticsCaseStudy() {
       rail={
         <ContextualRail aria-label="Case study contents">
           <TableOfContents anchors={ANALYTICS_ANCHORS} />
+          <AskAboutProject />
         </ContextualRail>
       }
     >
@@ -46,7 +48,10 @@ export default function AnalyticsCaseStudy() {
           lede="Helping teachers decide when and how to support a student, without confusing a prediction with an explanation."
         />
 
-        <TableOfContentsInline anchors={ANALYTICS_ANCHORS} className="mb-10" />
+        <div className="mb-10 flex flex-col gap-3 @5xl/canvas:hidden">
+          <TableOfContentsInline anchors={ANALYTICS_ANCHORS} />
+          <AskAboutProject variant="inline" />
+        </div>
 
         <div className="flex flex-col gap-14">
           <Content />

@@ -13,7 +13,10 @@ export type Experiment = {
 export const experiments: readonly Experiment[] = [
   {
     slug: "neuron-shift",
-    image: { src: "/work/neuron-shift/demo.jpg", alt: "Simulated Neuron Shift workspace showing an asset graph and recommendation awaiting review.", width: 1280, height: 720 },
+    // Supplied screenshot from Louie's revised case study, 2026-09-28. The
+    // tour view, not the console, because the homepage hero already loops
+    // the console (Plan 041).
+    image: { src: "/work/neuron-shift/tour.webp", alt: "The Neuron Shift guided tour on step 5 of 7: PDU-05 is ringed on the power path and both racks below it go dark, showing a single point of failure. All values are simulated.", width: 2880, height: 1800 },
     demoUrl: "https://neuron-shift.vercel.app/",
     title: "Preserving operator judgment across shift changes",
     summary: "Neuron Shift: an independent prototype exploring asset context, reversible decisions, and a handoff that preserves the reason behind an action. Simulated data; no live model or operator research.",

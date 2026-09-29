@@ -221,7 +221,7 @@ export const evidence: EvidenceItem[] = [
   "project": "offboard",
   "title": "From packet-first to plan-first",
   "summary": "Louie moved the product direction toward a first useful plan action, with Job Packets later in the journey.",
-  "detail": "A packet assumes the person already has an opportunity to pursue. The supplied founder narrative identifies that as too much to ask at the start of a fresh transition. No measured activation or conversion lift is established for the correction.",
+  "detail": "A packet assumes the person already has an opportunity to pursue. Louie's own account identifies that as too much to ask at the start of a fresh transition. No measured activation or conversion lift is established for the correction.",
   "route": "/work/offboard",
   "anchor": "decision-entry-point",
   "tags": [
@@ -304,11 +304,77 @@ export const evidence: EvidenceItem[] = [
   "evidenceType": "product"
 },
 {
+  "id": "neuron-shift-chat",
+  "project": "experiment",
+  "title": "Chat is the right fallback and the wrong default",
+  "summary": "In Neuron Shift, AI attaches to objects, answers as interface state, and records what the operator accepts or overrides.",
+  "detail": "A chat box asks for the question when the operator has the least time to form one, and its answer does not attach to an asset or persist. Selecting an asset is the query, answers are drawn on the graph, and accepted or overridden recommendations join the inherited record. A command bar that returns interface changes was scoped out. Simulated prototype; no model is called.",
+  "route": "/experiments/neuron-shift",
+  "anchor": "chat",
+  "tags": [
+    "neuron",
+    "chat",
+    "conversational",
+    "ai",
+    "interface",
+    "handoff"
+  ],
+  "skills": [
+    "Interaction Design",
+    "Systems Design"
+  ],
+  "evidenceType": "product"
+},
+{
+  "id": "neuron-shift-color",
+  "project": "experiment",
+  "title": "One meaning per color: red means a person owes a decision",
+  "summary": "Neuron Shift's canvas shows where judgment is outstanding, not only where the plant is unhappy.",
+  "detail": "The chrome carries no hue; color only means state. Green is flowing or decided, amber is an equipment condition to watch, and red means a person owes a decision, which deciding clears. A rack at 92 percent of budget stays amber because no decision is owed. A failure preview shows lost power as gray dashes and dark assets rather than red, so red keeps one meaning. Simulated prototype.",
+  "route": "/experiments/neuron-shift",
+  "anchor": "color",
+  "tags": [
+    "neuron",
+    "color",
+    "visual",
+    "semantics",
+    "state",
+    "design"
+  ],
+  "skills": [
+    "Visual Design",
+    "Interaction Design"
+  ],
+  "evidenceType": "product"
+},
+{
+  "id": "neuron-shift-unguided",
+  "project": "experiment",
+  "title": "A prototype that explains itself to an unguided visitor",
+  "summary": "Neuron Shift was redesigned for a portfolio visitor with a seven-step guided tour and a separate phone page.",
+  "detail": "The first version assumed Louie would present it. The redesign adds a first-visit tour in which every step asks for a real action and completes on app state rather than clicks. Every task can be done for the visitor except the consequential approval. Phones get their own page because the console needs a laptop-sized screen.",
+  "route": "/experiments/neuron-shift",
+  "anchor": "unguided",
+  "tags": [
+    "neuron",
+    "onboarding",
+    "tour",
+    "portfolio",
+    "mobile",
+    "prototype"
+  ],
+  "skills": [
+    "Interaction Design",
+    "Design Engineering"
+  ],
+  "evidenceType": "product"
+},
+{
   "id": "neuron-shift-decisions",
   "project": "experiment",
   "title": "Preserve the reasons behind an operator decision",
   "summary": "Attach recommendations to assets, scale friction to reversibility, and retain defer or override reasoning.",
-  "detail": "The prototype preserves the asset situation, recommendation, human decision, reason, revisit condition, and author/time. These are fictional records. Local browser persistence and graph reachability support the simulated interaction, not an engineering-grade model.",
+  "detail": "Each shift-brief item keeps what changed, what we know, what was decided, why, who decided, and what you need to do. Recommendations show what Neuron does alone, what needs approval, and what it never does; the choices are Approve, Defer with a trigger, Approve with changes, and Reject. These are fictional records. Local browser persistence and graph reachability support the simulated interaction, not an engineering-grade model.",
   "route": "/experiments/neuron-shift",
   "anchor": "decisions",
   "tags": [

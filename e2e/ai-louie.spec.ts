@@ -151,7 +151,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Show me Offboard", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("Show me Offboard", { exact: true }).click();
 
     await expect.poll(() => body !== null, { timeout: 10_000 }).toBe(true);
 
@@ -311,7 +311,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Show me Offboard", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("Show me Offboard", { exact: true }).click();
 
     // Closing the assistant restores the primary reading/navigation surface.
     await page.getByRole("dialog", { name: "Ask Louie", exact: true }).getByRole("button", { name: "Close", exact: true }).click();

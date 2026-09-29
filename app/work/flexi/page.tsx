@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import Content from "@/content/work/flexi.mdx";
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
+import { AskAboutProject } from "@/components/ai/ask-about-project";
 import { CaseStudyHeader } from "@/components/portfolio/case-study-header";
 import { NextCaseStudy } from "@/components/portfolio/next-case-study";
 import { CreativeWorkSchema } from "@/components/system/structured-data";
@@ -34,6 +35,7 @@ export default function FlexiCaseStudy() {
       rail={
         <ContextualRail aria-label="Case study contents">
           <TableOfContents anchors={FLEXI_ANCHORS} />
+          <AskAboutProject />
         </ContextualRail>
       }
     >
@@ -46,7 +48,10 @@ export default function FlexiCaseStudy() {
           lede="An AI tutor has to satisfy a student who wants the answer, a teacher who needs the learning to survive, and an institution that needs to trust both."
         />
 
-        <TableOfContentsInline anchors={FLEXI_ANCHORS} className="mb-10" />
+        <div className="mb-10 flex flex-col gap-3 @5xl/canvas:hidden">
+          <TableOfContentsInline anchors={FLEXI_ANCHORS} />
+          <AskAboutProject variant="inline" />
+        </div>
 
         <div className="flex flex-col gap-14">
           <Content />

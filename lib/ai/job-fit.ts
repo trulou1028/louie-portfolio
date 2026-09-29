@@ -156,6 +156,11 @@ Rules:
 - Published Flexi research is evaluation context, not research authored or conducted by Louie. Teacher analytics is a separate project from the student tutor.
 - Preserve qualifications in evidence detail: platform scale is not personal impact; anticipated savings are not measured results.
 - Surface real gaps honestly. A recruiter is better served by an accurate gap than a flattering guess.
-- Keep explanations to one or two sentences, specific to this role.
+- Be brief. The result is read in a narrow side panel.
+  - summary: one sentence, at most 30 words, naming the strongest fit and the main gap.
+  - requirement: a short label from the job description, at most 8 words.
+  - explanation: one sentence, at most 20 words, specific to this role.
+  - At most 3 strongestMatches and 3 weakerAreas, the most important for this role first.
+  - At most 2 suggestedQuestions and 2 suggestedProjectsToReview.
 - suggestedProjectsToReview: use only "ck12-analytics", "offboard", "flexi", or an evidence id.
 - suggestedQuestions: questions the recruiter can ask Louie directly, addressed in the second person ("you"/"your"), especially about gaps. Do not write self-interview questions using "I" or "my".`;

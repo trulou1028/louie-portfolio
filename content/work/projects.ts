@@ -23,6 +23,9 @@ export type WorkProject = {
   imageCaption: string;
   imageWidth: number;
   imageHeight: number;
+  /** A different screenshot for the homepage tile, when `image` is styled
+   *  differently from the other tiles' flat screenshots. */
+  tileImage?: { src: string; alt: string; width: number; height: number };
   role: string;
   scope: string;
   status: string;
@@ -45,27 +48,28 @@ export const workProjects: readonly WorkProject[] = [
     tags: ["Product strategy", "Agentic workflows", "Design engineering"],
     href: "/work/offboard",
     summary: "One workspace for a role, with research and drafts that stay connected. Automation does the repeated work; the person decides what goes out.",
-    image: "/work/offboard/application-packet.jpg",
-    imageAlt: "Offboard application packet ready for review, with job fit, research sections, tailored materials, and a completed pipeline.",
+    image: "/work/offboard/packet-panels.webp",
+    imageAlt: "An Offboard application packet for a Senior Product Designer role at Clever, marked ready for review, shown as three panels: the navigation, the packet with its fit assessment and sections, and the completed nine-step pipeline.",
     imageCaption: "Ready for review. A Job Packet keeps the role, research, and prepared materials together so the person can inspect what the workflow produced. Supplied product screenshot.",
-    imageWidth: 1556, imageHeight: 957,
-    role: "Founder & Product Designer",
+    imageWidth: 1538, imageHeight: 1096,
+    tileImage: { src: "/work/offboard/packet.webp", alt: "An Offboard application packet for a Senior Product Designer role at Clever, marked ready for review, in the full app window: navigation, the packet with its fit assessment and sections, and the completed nine-step pipeline.", width: 2000, height: 1073 },
+    role: "Founding Product Designer & AI Systems Lead",
     scope: "Product direction, UX, interface design, full-stack implementation, and iteration",
     status: "Working product",
     result: "Built end to end. The next product question is whether the first step meets the seeker where they are, not simply whether a packet can be generated.",
     featured: true,
     plate: "offboard",
     facts: [
-      { label: "Role", value: "Founder & Product Designer" },
+      { label: "Role", value: "Founding Product Designer & AI Systems Lead" },
       { label: "Years", value: "2025 to now" },
       { label: "Team", value: "Six-person startup" },
     ],
     gallery: [
-      { src: "/work/offboard/product.jpg", alt: "Offboard dashboard showing the sections of Louie's workspace.", width: 2048, height: 1052 },
+      { need: "Home dashboard in the updated UI" },
       { need: "Risk gate: the pause for the person's choice" },
       { need: "Job Packet on a phone" },
     ],
-    imageMarks: [{ x: 80, y: 9, w: 18.8, h: 46.2, label: "The pipeline stays visible" }],
+    imageMarks: [{ x: 75.3, y: 20.6, w: 18.7, h: 40.5, label: "The pipeline stays visible" }],
   },
   {
     slug: "ck12-analytics",

@@ -56,7 +56,7 @@ My next iteration would lead with an explanation and test whether a teacher can 
 
 ## Offboard: 90-second opener
 
-“I built Offboard around a repeated problem in a career transition: the person keeps rebuilding the same context to research a role, tailor materials, prepare outreach, and track what happened. I founded, designed, and implemented the product, using AI development tools as part of that work.
+“I built Offboard around a repeated problem in a career transition: the person keeps rebuilding the same context to research a role, tailor materials, prepare outreach, and track what happened. I designed and engineered the product, using AI development tools as part of that work.
 
 Job Packets is one concrete workflow inside it. It coordinates research and editable application materials around an opportunity. Three decisions matter more than the amount of content it can generate.
 
@@ -78,7 +78,7 @@ I can show the built product and the reasoning behind that change. I’m not pre
 
 ### Ten-to-twelve-minute deep dive
 
-1. **0:00-1:00, situation and scope.** Identify the person and repeated task. State founder/design/implementation ownership without turning a solo build into a team-management claim.
+1. **0:00-1:00, situation and scope.** Identify the person and repeated task. State design and engineering ownership without turning a solo build into a team-management claim.
 2. **1:00-2:30, organizing model.** Explain what belongs to an opportunity and why the context persists. Keep LUMO and Job Packets inside the same product story.
 3. **2:30-4:00, evaluation before generation.** Walk the risk gate. Explain its uncertainty and the user's choice. TODO(asset): replace conceptual diagram with a real gate/review sequence when available.
 4. **4:00-5:30, control and partial success.** Show what happens when a resume is missing; distinguish useful partial work from fabricated personal content. Explicitly separate filing from sending.
@@ -91,7 +91,7 @@ I can show the built product and the reasoning behind that change. I’m not pre
 
 - **Why not automate sending?** The materials represent a person. Their inspection and decision remain outside automatic generation.
 - **Does every action require approval?** No. Tracker filing can be automatic. Explain the meaningful boundary.
-- **What prompted the correction?** Current source: founder narrative about readiness. TODO(content): supply the actual observation and date rather than improvising a research session.
+- **What prompted the correction?** Current source: Louie's account of readiness. TODO(content): supply the actual observation and date rather than improvising a research session.
 - **What improved?** Built capability and changed direction are supported. Conversion, retention, revenue, and volume improvements are not established here.
 - **How did AI tools contribute?** Say which tools helped with implementation, then describe a concrete verification episode you personally performed. TODO(content): choose an actual example; do not borrow this portfolio's test run as an Offboard incident.
 - **Who did you influence?** This is strong execution and product direction evidence. Use a CK-12 example for cross-team influence when available.

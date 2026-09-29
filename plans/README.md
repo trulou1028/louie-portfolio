@@ -133,6 +133,8 @@ Adopted deviations are recorded in README.
 | [034](034-flexi-neuron-and-work-taxonomy.md) | Distinct Flexi story and Neuron Shift exploration | P2 | 030; 031 | Implemented and verified |
 | [035](035-interview-story-kit-and-release.md) | Interview story kit, evidence QA, and release checks | P1/P2 | 032-033 for flagship release; 034 for full collection | Kit and local QA complete; owner rehearsal/release pending |
 | [037](037-direction-a-work-framed.md) | Visual redesign: light shell, project plates, amber decision marks | P1 | 031-034 content | Implemented locally; not merged or deployed |
+| [038](038-compact-hero-and-bento.md) | Homepage: compact hero with marked headline, bento project grid | P1 | 037 | Implemented locally; not merged or deployed |
+| [042](042-ask-louie-side-panel.md) | Ask Louie: hero ask bar, side panel, project questions | P1 | 014, 039 | Implemented locally; not merged or deployed |
 
 Execution order: 029 → 030 → 031 → 032 → 033 → flagship checks in 035;
 then 034 → remaining checks in 035. Editorial drafts for 032-034 can precede

@@ -96,8 +96,8 @@ test("the evaluator dialog is accessible when open", async ({ page }) => {
   // rides out a `goto` that lands mid-swap.
   await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
   await expect(page.locator("#ask-ai-louie")).toBeVisible();
-  await page.getByRole("button", { name: "Paste a job description" }).click();
-  await expect(page.getByRole("dialog", { name: "Evaluating Louie for a role?" })).toBeVisible();
+  await page.locator("#ask-ai-louie").getByRole("button", { name: "Paste a job description" }).click();
+  await expect(page.locator("#ask-ai-louie").getByRole("region", { name: "Compare a role" })).toBeVisible();
 
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])

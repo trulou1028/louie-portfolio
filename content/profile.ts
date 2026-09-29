@@ -81,6 +81,18 @@ export const profile = {
    * rail's logo and AI Louie's chat avatar.
    */
   avatar: "/images/louie.jpg" as string | null,
+
+  /**
+   * Photo supplied by Louie on 2026-09-27 (1536×1024). Not rendered since
+   * Plan 041 moved the homepage hero to the Neuron Shift loop; kept for the
+   * About page or a future use. Alt text describes only what the image shows.
+   */
+  heroPhoto: {
+    src: "/images/louie-working-session.webp",
+    alt: "Louie Sakoda talking through Offboard workflow notes on a whiteboard, with the San Francisco skyline behind him.",
+    width: 1536,
+    height: 1024,
+  } as { src: string; alt: string; width: number; height: number } | null,
 } as const;
 
 export type Profile = typeof profile;

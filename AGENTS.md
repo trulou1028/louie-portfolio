@@ -94,7 +94,7 @@ without text, and no skeleton that misrepresents what is coming.
 **Theme.** Light is the default (Plan 037); the dark half stays in
 `app/globals.css` for a future toggle, but nothing sets `.dark`. Do not add
 `dark:` variants in portfolio components — write against the tokens. The
-shell is neutral ink on near-white; color belongs to the work:
+shell is neutral ink on a warm off-white canvas (#f9f7ef); color belongs to the work:
 
 - `bg-plate-*` / `text-plate-*-ink` / `text-plate-*-muted`: each project's
   own brand field. Use them only for that project.

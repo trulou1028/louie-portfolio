@@ -39,5 +39,8 @@ test("entrances finish visibly and reduced motion skips their animation", async 
   await expect(card).toBeInViewport();
   await expect(card).toHaveCSS("opacity", "1");
   await expect(card).toHaveCSS("transform", "none");
-  expect(await card.evaluate(el => el.getAnimations().length)).toBe(0);
+  // Reduced motion shortens any CSS animation to 0.01ms (globals.css), so
+  // one can still be in flight for a frame under load. A real entrance runs
+  // 700ms, so a 200ms window still fails if the entrance was not skipped.
+  await expect.poll(() => card.evaluate(el => el.getAnimations().length), { timeout: 200 }).toBe(0);
 });

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
  *
  * Offboard's wordmark is white lettering, and CK-12's is drawn for white. So
  * each sits on a chip of the background it was drawn for whenever the
- * surrounding surface would hide it: Offboard on its own green away from its
+ * surrounding surface would hide it: Offboard on its own charcoal away from its
  * plate, CK-12 on white when it sits on a colored plate (Plan 037).
  */
 export function ProjectBrand({ project, onPlate = false, className }: { project: WorkProject; onPlate?: boolean; className?: string }) {

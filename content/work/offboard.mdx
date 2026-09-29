@@ -1,11 +1,12 @@
 import { CaseStudySection } from "@/components/portfolio/case-study-section";
 import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagram";
 import { ArchitectureMap } from "@/components/portfolio/architecture-map";
+import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
 import { ARCHITECTURE_DESCRIPTION } from "@/content/work/offboard-architecture";
 
 <CaseStudySection id="context" title="A career transition creates work before the application" eyebrow="Context and ownership">
 
-Researching a company, tailoring a resume, preparing outreach, and tracking progress often means rebuilding the same context in separate tools. I founded, designed, and built Offboard to connect that work.
+Researching a company, tailoring a resume, preparing outreach, and tracking progress often means rebuilding the same context in separate tools. I designed and engineered Offboard to connect that work.
 
 My scope spans product direction, interaction design, implementation, and operation. Job Packets is the focused workflow in this story: turning a role into research and editable application materials, while preserving the person's decision about whether to pursue it.
 
@@ -87,6 +88,8 @@ The architecture supports persistent context, AI workflows, document generation,
 <CaseStudySection id="product" title="A completed workflow becomes a reviewable packet" eyebrow="Product">
 
 The product screenshot at the top of this page shows a completed Job Packet marked ready for review. The role, match assessment, research sections, and prepared materials stay together, with the pipeline visible alongside them.
+
+<ArtifactFrame src="/work/offboard/packet.webp" alt="The same Offboard packet in the full app window. The navigation is on the left with Packets selected. The packet shows the Clever role card with a Worth a shot label, a partial match of 58, a ghost risk of 28, and five paths, followed by the Ghost Analysis, Company Intel, and Role Match Analysis sections. The completed pipeline and the context panel are on the right." width={2000} height={1073} caption="The packet in the full app window. Each section opens in place, so the person can edit or regenerate it without leaving the packet. Supplied product screenshot." />
 
 The workflow completing is not the same as an application being sent. The packet gives the person a place to inspect the result and decide what to use next.
 

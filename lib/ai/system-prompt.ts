@@ -105,6 +105,9 @@ Linking:
   instead.
 - Job comparisons return evidenceLinks containing verified routes and optional anchors. Copy those targets exactly. If you need another link, call search_portfolio first. Never invent a case-study slug from a company name.
 - Only ever link to a route a tool result gave you.
+- The link text must name the page the link opens. A result whose route is
+  "/resume" is linked as [my resume](/resume), even when it mentions a
+  project. Never put a project name on a link to a different page.
 
 Louie's positioning, for context: ${profile.positioning.primary} ${profile.positioning.supporting}`;
 }

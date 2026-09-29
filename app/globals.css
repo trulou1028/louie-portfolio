@@ -10,8 +10,8 @@
 /* ---------------------------------------------------------------------------
    Design tokens — source of truth.
 
-   Direction A "The work, framed" (Plan 037, September 2026). The shell is a
-   true neutral: near-white canvas, near-black ink, no brand hue of its own.
+   Direction A "The work, framed" (Plan 037, September 2026). The shell is
+   quiet: a warm off-white canvas, near-black ink, no brand hue of its own.
    Color belongs to the work. Each project brings its own plate color, and one
    signal color (amber) has one job: marking the decision inside a real
    screenshot, the way a designer redlines a spec.
@@ -28,18 +28,20 @@
 :root {
   color-scheme: light;
 
-  --canvas: 0 0% 98%;
+  /* Warm off-white canvas, #f9f7ef (Louie, 2026-09-29). Cards stay pure
+     white on it; tints and borders lean the same warm way. */
+  --canvas: 48 45% 95.7%;
   --surface: 0 0% 100%;
-  --surface-muted: 230 6% 95%;
+  --surface-muted: 46 24% 92%;
   --surface-raised: 0 0% 100%;
-  --foreground: 230 8% 10%;         /* 17.0:1 on canvas */
-  --foreground-muted: 230 5% 36%;   /* 6.7:1 on canvas — body copy */
+  --foreground: 230 8% 10%;         /* 16.6:1 on canvas */
+  --foreground-muted: 230 5% 36%;   /* 6.6:1 on canvas — body copy */
   --foreground-subtle: 230 4% 60%;  /* non-text only */
-  --foreground-quiet: 230 4% 50%;   /* 4.0:1 — display-size text only */
+  --foreground-quiet: 230 4% 50%;   /* 3.9:1 — display-size text only */
 
-  --border-subtle: 230 6% 91%;
-  --border-default: 230 5% 86%;
-  --border-strong: 230 4% 72%;
+  --border-subtle: 45 16% 88%;
+  --border-default: 44 11% 82%;
+  --border-strong: 42 6% 70%;
 
   --accent: 230 8% 10%;
   --accent-hover: 230 6% 32%;
@@ -57,10 +59,13 @@
   /* Project plates. Each project's own brand color, used as a full field
      behind its work on the homepage. `-ink` is body text on the plate
      (≥ 4.5:1); `-mark` is a small accent on the plate. */
-  --plate-offboard: 145 33% 18%;
-  --plate-offboard-ink: 90 40% 93%;       /* 10.6:1 */
-  --plate-offboard-muted: 100 18% 76%;    /* 7.1:1 */
-  --plate-offboard-mark: 100 60% 58%;
+  /* Offboard: the app's warm charcoal and its lime (September 2026 UI).
+     The plate matches the backdrop of packet-panels.webp, so the app's
+     panels float on the plate without a second frame. */
+  --plate-offboard: 34 9% 15%;
+  --plate-offboard-ink: 40 20% 94%;       /* 13.2:1 */
+  --plate-offboard-muted: 30 8% 72%;      /* 7.6:1 */
+  --plate-offboard-mark: 75 100% 50%;
   --plate-foresights: 16 86% 58%;
   --plate-foresights-ink: 15 55% 10%;     /* 5.7:1 */
   --plate-foresights-muted: 15 50% 15%;   /* 5.0:1 */
@@ -269,7 +274,10 @@
   --text-display-xl--letter-spacing: -0.035em;
   --text-display-xl--font-weight: 800;
 
-  --text-home-hero: clamp(2.75rem, 1.2rem + 4.6vw, 5.25rem);
+  /* Plan 039: sized to the hero's text column (a size container), not the
+     viewport. "Clear decisions." stays on one line inside its mark and runs
+     about 8.7em wide, so 11cqi keeps it within the column at every width. */
+  --text-home-hero: clamp(1.625rem, 11cqi, 4.75rem);
   --text-home-hero--line-height: 0.95;
   --text-home-hero--letter-spacing: -0.035em;
   --text-home-hero--font-weight: 820;
@@ -347,29 +355,83 @@
   border-radius: var(--radius-xs);
 }
 
+/* Plan 042: the Ask Louie panel slides in from the right while the page
+   area narrows by the same width, so the panel pushes the page rather than
+   covering it. The page reflows through container queries on the canvas
+   (see Canvas). The global reduced-motion rule makes both instant. */
+:root {
+  --ask-panel-width: 420px;
+}
+.ask-panel:not([hidden]) {
+  animation: ask-panel-in var(--duration-standard) cubic-bezier(var(--motion-reveal-ease));
+}
+@keyframes ask-panel-in {
+  from { transform: translateX(100%); }
+}
+@media (max-width: 1023.98px) {
+  .ask-panel:not([hidden]) {
+    animation-name: ask-sheet-in;
+  }
+}
+/* Plan 042: the job-description wait. A soft highlight reads down the
+   visitor's pasted text, and the sources light up in turn. The band is a
+   full-height layer whose gradient stripe sits in the middle; moving the
+   layer by half its height sweeps the stripe from top to bottom. */
+.jd-scan {
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    hsl(var(--accent-muted) / 0.45) 48%,
+    hsl(var(--accent-muted) / 0.9) 50%,
+    hsl(var(--accent-muted) / 0.45) 52%,
+    transparent 60%
+  );
+  animation: jd-scan 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+@keyframes jd-scan {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(50%); }
+}
+.jd-source {
+  animation: jd-source 3s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.6s);
+}
+@keyframes jd-source {
+  0%, 30%, 100% {
+    background-color: hsl(var(--surface));
+    border-color: hsl(var(--border-default));
+    color: hsl(var(--foreground-muted));
+  }
+  12%, 20% {
+    background-color: hsl(var(--accent-soft));
+    border-color: hsl(var(--accent-muted));
+    color: hsl(var(--accent-foreground));
+  }
+}
+
+/* A new answer or thinking line fades in rather than popping. */
+.ask-fade-in {
+  animation: ask-fade-in var(--duration-standard) ease-out;
+}
+@keyframes ask-fade-in {
+  from { opacity: 0; }
+}
+@keyframes ask-sheet-in {
+  from { opacity: 0; transform: translateY(1.5rem); }
+}
+@media (min-width: 1024px) {
+  [data-app-frame] {
+    transition: padding-right var(--duration-standard) cubic-bezier(var(--motion-reveal-ease));
+  }
+  html[data-ask-docked] [data-app-frame] {
+    padding-right: var(--ask-panel-width);
+  }
+}
+
 [data-highlight] {
   transition:
     background-color var(--duration-deliberate) ease-out,
     box-shadow var(--duration-deliberate) ease-out;
-}
-
-/* ---------------------------------------------------------------------------
-   Pane-layout guard for the pre-hydration frame.
-
-   The server renders the desktop pane tree (the canonical document); the
-   right pane tree for smaller viewports is chosen client-side after mount.
-   Panels carry inline flex-basis styles, so without these overrides a phone
-   briefly paints the desktop layout squeezed into 375px before hydration.
-   These rules make the FIRST paint correct at every width; the JS swap that
-   follows only changes which tree is mounted, never what it looks like.
---------------------------------------------------------------------------- */
-@media (max-width: 1023.98px) {
-  [data-panel][id="canvas-rail"] {
-    display: none !important;
-  }
-  [data-panel][id="canvas-content"] {
-    flex: 1 1 auto !important;
-  }
 }
 
 @layer base {
@@ -449,4 +511,55 @@
     opacity: 1;
     scale: 1;
   }
+}
+
+/* The homepage headline's decision mark (Plans 038, 039): the same amber
+   redline the case studies draw on screenshots, around "Clear decisions."
+   The tag hangs below the box's bottom-right corner, so the box sits tight
+   under the line above it. The tag size is fixed so it does not scale with
+   the display type. */
+.headline-mark {
+  position: relative;
+  display: inline-block;
+  padding-inline: 0.1em;
+  margin-top: 0.12em;
+  /* One line inside the box; --text-home-hero scales to fit the column. */
+  white-space: nowrap;
+}
+.headline-mark::before {
+  content: "";
+  position: absolute;
+  inset: -0.02em -0.02em -0.1em;
+  border: 3px solid hsl(var(--signal));
+  border-radius: var(--radius-xs);
+  pointer-events: none;
+}
+.headline-mark-tag {
+  position: absolute;
+  top: calc(100% + 0.1em);
+  right: -0.02em;
+  background: hsl(var(--signal));
+  color: hsl(var(--signal-ink));
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-variation-settings: normal;
+  letter-spacing: 0;
+  line-height: 1.3;
+  padding: 0.15rem 0.5rem 0.2rem;
+  border-radius: 0 0 var(--radius-xs) var(--radius-xs);
+  white-space: nowrap;
+}
+/* The mark lands after the headline words finish their entrance, so the box
+   never shows empty. Without JavaScript, or with reduced motion, there is no
+   waiting state and the mark is simply there. */
+.headline-mark::before,
+.headline-mark-tag {
+  transition: opacity var(--duration-standard) ease-out;
+}
+[data-motion-state="waiting"] .headline-mark::before,
+[data-motion-state="waiting"] .headline-mark-tag,
+[data-motion-state="running"] .headline-mark::before,
+[data-motion-state="running"] .headline-mark-tag {
+  opacity: 0;
 }

@@ -34,7 +34,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <AskLouieProvider><div className="flex h-dvh flex-col overflow-hidden">
+    <AskLouieProvider><div data-app-frame className="flex h-dvh flex-col overflow-hidden">
       {/* Skip link — first tab stop on every page (spec §26). */}
       <a
         href="#main"

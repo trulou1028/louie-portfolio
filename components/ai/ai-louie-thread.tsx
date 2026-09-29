@@ -3,8 +3,6 @@
 import * as React from "react";
 import dynamic from "next/dynamic";
 
-import { AssistantAvatar } from "@/components/ai/assistant-avatar";
-import { Surface } from "@/components/system/surface";
 import { track } from "@/lib/analytics";
 
 /**
@@ -45,17 +43,10 @@ const AiLouieLive = dynamic(() => import("@/components/ai/ai-louie-live"), {
 function ThreadSkeleton() {
   return (
     <div aria-busy="true" className="flex min-h-0 flex-1 flex-col gap-5">
-      <div className="flex flex-col gap-2">
-        <AssistantAvatar />
-        <Surface
-          radius="lg"
-          className="min-w-0 border-accent-muted/70 bg-surface-raised p-4"
-        >
-          <p className="text-body-sm text-foreground">
-            Hi, ask me about my work. I answer from my case studies and project evidence.
-          </p>
-        </Surface>
-      </div>
+      <p className="max-w-[44ch] rounded-lg rounded-tl-xs bg-surface-muted px-4 py-3 text-body text-foreground">
+        Hi, ask me about my work. I answer from my case studies and project evidence.
+      </p>
+      <div className="flex-1" />
       {/* Mirrors the real composer's box exactly — same radius, border,
           surface, padding, and a spacer carrying the textarea's own
           `px-2 py-2.5 text-body` metrics — so the footer does not resize or

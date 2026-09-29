@@ -79,7 +79,10 @@ export const ANALYTICS_ANCHORS = [
 
 export const NEURON_ANCHORS = [
   { id: "premise", label: "The handoff" },
-  { id: "decisions", label: "Three choices" },
+  { id: "chat", label: "Position on chat" },
+  { id: "decisions", label: "Design decisions" },
+  { id: "color", label: "Color semantics" },
+  { id: "unguided", label: "The unguided visitor" },
   { id: "technical", label: "Making it work" },
   { id: "limits", label: "Limits and next test" },
 ] as const satisfies readonly Anchor[];

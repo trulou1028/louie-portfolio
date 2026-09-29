@@ -1,173 +1,159 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
-import { CircleHelp, MessageCircleQuestion, TriangleAlert } from "lucide-react";
+import { ArrowRight, CircleCheck, CircleDashed } from "lucide-react";
 
-import { EvidenceCard } from "@/components/portfolio/evidence-card";
 import { SectionLabel } from "@/components/system/section-label";
-import { Surface } from "@/components/system/surface";
 import { resolveEvidence, type VerifiedJobFit } from "@/lib/ai/job-fit";
+import type { EvidenceItem } from "@/content/evidence/evidence";
 import { workProjects } from "@/content/work/projects";
+import { CASE_STUDY_ANCHORS } from "@/lib/routes";
 
 /**
- * The fit view (spec §22).
+ * The fit view (spec §22), sized for the side panel (Plan 042).
  *
- * Four sections, in the spec's order: strong evidence, relevant work to
- * review, gaps, and questions to ask. It is an evidence navigator, not a
- * score — there is no number anywhere in this component, and the gaps section
- * is given the same visual weight as the matches rather than being tucked
- * away.
+ * One sentence, then matches and gaps as one-line rows with a short
+ * explanation and a small link to the evidence. Gaps get the same weight as
+ * matches. Groups show three rows; "Show N more" reveals the rest, so the
+ * view stays short without hiding anything the comparison found.
  *
- * Everything renders as plain text nodes. Nothing the model returns is
- * treated as markup (spec §32).
+ * No number anywhere: it is an evidence navigator, not a score. Everything
+ * renders as plain text nodes; nothing the model returns is markup
+ * (spec §32).
  */
 
-function Section({
-  title,
-  icon,
-  children,
-}: {
-  title: string;
-  icon?: React.ReactNode;
-  children: React.ReactNode;
-}) {
+const VISIBLE = 3;
+
+const PAGE_NAMES: Record<string, string> = {
+  "/work/offboard": "Offboard",
+  "/work/ck12-analytics": "CK-12 Foresights",
+  "/work/flexi": "Flexi",
+  "/experiments/neuron-shift": "Neuron Shift",
+  "/resume": "Resume",
+  "/about": "About",
+};
+
+/** "Neuron Shift · Color semantics": the page, then the section when known. */
+function evidenceLink(item: EvidenceItem) {
+  const page = PAGE_NAMES[item.route] ?? item.title;
+  const section = item.anchor ? CASE_STUDY_ANCHORS[item.route]?.find((a) => a.id === item.anchor)?.label : undefined;
+  return {
+    href: item.anchor ? `${item.route}#${item.anchor}` : item.route,
+    label: section ? `${page} · ${section}` : page,
+  };
+}
+
+function EvidenceLinks({ ids }: { ids: readonly string[] }) {
+  // Several evidence entries can share one page (the resume holds most
+  // career entries), so keep each destination once.
+  const links = resolveEvidence(ids)
+    .map(evidenceLink)
+    .filter((link, index, all) => all.findIndex((other) => other.href === link.href) === index)
+    .slice(0, 2);
+  if (links.length === 0) return null;
   return (
-    <section className="flex flex-col gap-3">
-      <div className="flex items-center gap-2">
-        {icon}
-        <SectionLabel>{title}</SectionLabel>
-      </div>
-      {children}
+    <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+      {links.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className="focus-ring group inline-flex items-center gap-1 rounded-xs text-body-sm font-medium text-foreground underline decoration-border-strong underline-offset-4 hover:decoration-current"
+        >
+          {link.label}
+          <ArrowRight aria-hidden="true" className="size-3.5 transition-transform duration-(--duration-fast) group-hover:translate-x-0.5" />
+        </Link>
+      ))}
+    </p>
+  );
+}
+
+type Row = { requirement: string; explanation: string; evidenceIds?: readonly string[] };
+
+function FitGroup({ title, rows, icon }: { title: string; rows: readonly Row[]; icon: React.ReactNode }) {
+  const [expanded, setExpanded] = React.useState(false);
+  if (rows.length === 0) return null;
+  const shown = expanded ? rows : rows.slice(0, VISIBLE);
+  const hidden = rows.length - shown.length;
+
+  return (
+    <section className="flex flex-col gap-2">
+      <SectionLabel>{title}</SectionLabel>
+      <ul className="flex flex-col divide-y divide-border-subtle border-y border-border-subtle">
+        {shown.map((row, index) => (
+          <li key={`${index}-${row.requirement}`} className="flex gap-3 py-3">
+            <span aria-hidden="true" className="mt-0.5 shrink-0 text-foreground-muted">{icon}</span>
+            <div className="min-w-0">
+              <p className="text-body-sm font-semibold text-foreground">{row.requirement}</p>
+              <p className="text-body-sm text-foreground-muted">{row.explanation}</p>
+              {row.evidenceIds ? <EvidenceLinks ids={row.evidenceIds} /> : null}
+            </div>
+          </li>
+        ))}
+      </ul>
+      {hidden > 0 ? (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="focus-ring self-start rounded-xs text-body-sm font-medium text-foreground-muted underline decoration-border-strong underline-offset-4 hover:text-foreground"
+        >
+          Show {hidden} more
+        </button>
+      ) : null}
     </section>
   );
 }
 
 function JobFitResult({ result }: { result: VerifiedJobFit }) {
-  const projectsToReview = result.suggestedProjectsToReview
-    .map((ref) => {
-      const bySlug = workProjects.find((p) => p.slug === ref);
-      if (bySlug) return { href: bySlug.href, label: bySlug.name };
-      const [item] = resolveEvidence([ref]);
-      if (item) {
-        return {
-          href: item.anchor ? `${item.route}#${item.anchor}` : item.route,
-          label: item.title,
-        };
-      }
-      return null;
-    })
-    .filter((entry): entry is { href: string; label: string } => entry !== null);
+  const startWith = result.suggestedProjectsToReview
+    .map((ref) => workProjects.find((project) => project.slug === ref))
+    .filter((project) => project !== undefined)
+    .slice(0, 2);
 
   return (
-    <div className="flex flex-col gap-7">
-      <p className="max-w-[62ch] text-body text-foreground">{result.summary}</p>
+    <div className="ask-fade-in flex flex-col gap-6">
+      <p className="text-body text-foreground">{result.summary}</p>
 
-      {result.strongestMatches.length > 0 ? (
-        <Section title="Strong evidence">
-          <ul className="flex flex-col gap-4">
-            {result.strongestMatches.map((match) => (
-              <li key={match.requirement} className="flex flex-col gap-2">
-                <p className="text-body font-medium text-foreground">
-                  {match.requirement}
-                </p>
-                <p className="max-w-[62ch] text-body-sm text-foreground-muted">
-                  {match.explanation}
-                </p>
-                <ul className="flex flex-col gap-2">
-                  {resolveEvidence(match.evidenceIds).map((item) => (
-                    <li key={item.id}>
-                      <EvidenceCard
-                        evidenceId={item.id}
-                        project={item.project}
-                        title={item.title}
-                        relevance={item.summary}
-                        route={item.route}
-                        anchor={item.anchor}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      ) : null}
-
-      {projectsToReview.length > 0 ? (
-        <Section title="Relevant work to review">
-          <ul className="flex flex-wrap gap-2">
-            {projectsToReview.map((entry) => (
-              <li key={entry.href}>
-                <Link
-                  href={entry.href}
-                  className="focus-ring inline-flex rounded-sm border border-border-default bg-surface px-3 py-1.5 text-body-sm text-foreground transition-colors duration-(--duration-fast) hover:border-accent-muted hover:bg-accent-soft"
-                >
-                  {entry.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      ) : null}
-
-      {result.weakerAreas.length > 0 ? (
-        <Section
-          title="Gaps or unclear areas"
-          icon={
-            <TriangleAlert
-              aria-hidden="true"
-              className="size-3.5 text-foreground-muted"
-            />
-          }
-        >
-          <ul className="flex flex-col gap-3">
-            {result.weakerAreas.map((area) => (
-              <li key={area.requirement} className="flex flex-col gap-1">
-                <p className="text-body-sm font-medium text-foreground">
-                  {area.requirement}
-                </p>
-                <p className="max-w-[62ch] text-body-sm text-foreground-muted">
-                  {area.explanation}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      ) : null}
+      <FitGroup
+        title="Where I match"
+        rows={result.strongestMatches}
+        icon={<CircleCheck className="size-4 text-foreground" />}
+      />
+      <FitGroup
+        title="Gaps to ask me about"
+        rows={result.weakerAreas}
+        icon={<CircleDashed className="size-4" />}
+      />
 
       {result.suggestedQuestions.length > 0 ? (
-        <Section
-          title="Suggested questions"
-          icon={
-            <MessageCircleQuestion
-              aria-hidden="true"
-              className="size-3.5 text-foreground-muted"
-            />
-          }
-        >
-          <ul className="flex flex-col gap-2">
-            {result.suggestedQuestions.map((question) => (
-              <li
-                key={question}
-                className="max-w-[62ch] text-body-sm text-foreground-muted before:mr-2 before:content-['—']"
-              >
-                {question}
-              </li>
+        <section className="flex flex-col gap-2">
+          <SectionLabel>Questions to ask me</SectionLabel>
+          <ul className="flex flex-col gap-1.5">
+            {result.suggestedQuestions.slice(0, 2).map((question, index) => (
+              <li key={`${index}-${question}`} className="text-body-sm text-foreground">{question}</li>
             ))}
           </ul>
-        </Section>
+        </section>
       ) : null}
 
-      <Surface
-        variant="muted"
-        className="flex items-start gap-2.5 p-4 text-body-sm text-foreground-muted"
-      >
-        <CircleHelp aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
-        <span>
-          This compares a role against published portfolio evidence. It is not
-          a score, and it can only see what has been written up here.
-        </span>
-      </Surface>
+      {startWith.length > 0 ? (
+        <p className="text-body-sm text-foreground-muted">
+          Start with{" "}
+          {startWith.map((project, index) => (
+            <React.Fragment key={project.slug}>
+              {index > 0 ? " and " : null}
+              <Link href={project.href} className="focus-ring rounded-xs font-medium text-foreground underline decoration-border-strong underline-offset-4 hover:decoration-current">
+                {project.name}
+              </Link>
+            </React.Fragment>
+          ))}
+          .
+        </p>
+      ) : null}
+
+      <p className="text-body-sm text-foreground-muted">
+        Not a score. This only sees what is published here.
+      </p>
     </div>
   );
 }

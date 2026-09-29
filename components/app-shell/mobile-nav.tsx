@@ -3,6 +3,7 @@
 import { AskLouieTrigger } from "@/components/ai/ask-louie-dialog";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 
@@ -35,7 +36,10 @@ function MobileNav() {
 
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border-subtle bg-canvas/90 px-4 backdrop-blur-sm lg:hidden">
-      <Link href="/" className="focus-ring rounded-sm">
+      <Link href="/" className="focus-ring flex items-center gap-2.5 rounded-sm">
+        {profile.avatar ? (
+          <Image src={profile.avatar} alt="" width={32} height={32} loading="eager" className="size-8 rounded-full object-cover ring-1 ring-foreground/10" />
+        ) : null}
         <span className="font-display text-heading-md leading-none text-foreground">
           {profile.name}
         </span>

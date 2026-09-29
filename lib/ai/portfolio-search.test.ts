@@ -163,3 +163,33 @@ describe("basic recruiter questions", () => {
     expect(searchEvidence({ query }).results.map(item => item.id)).toContain(id);
   });
 });
+
+describe("starter questions (Plan 042)", () => {
+  it.each([
+    ["Why does the Offboard packet pause for risk?", "offboard-risk-gate"],
+    ["What stays under the person's control in Offboard?", "offboard-hitl-actions"],
+    ["Why did Offboard move from packet-first to plan-first?", "offboard-entry-point"],
+    ["Why separate prediction from diagnosis in Foresights?", "analytics-prediction-diagnosis"],
+    ["How does Foresights show uncertainty?", "analytics-uncertainty"],
+    ["What did the Foresights evaluation find?", "analytics-evaluation"],
+    ["What follow-up choices does Flexi offer?", "flexi-scaffolding-loop"],
+    ["How does Flexi label AI answers and sources?", "flexi-expose-uncertainty"],
+    ["What does the research say about Flexi?", "flexi-research"],
+    ["Why isn't Neuron Shift a chat box?", "neuron-shift-chat"],
+    ["What does red mean in Neuron Shift?", "neuron-shift-color"],
+    ["Was Neuron Shift built for a real customer?", "neuron-shift-prototype"],
+  ])("retrieves grounded evidence for %s", (query, id) => {
+    expect(searchEvidence({ query }).results.map((item) => item.id)).toContain(id);
+  });
+
+  it("covers every page question", async () => {
+    const { PAGE_QUESTIONS } = await import("@/components/ai/ask-questions");
+    const tested = new Set([
+      "offboard-risk", "offboard-control", "offboard-entry",
+      "analytics-prediction", "analytics-uncertainty", "analytics-evaluation",
+      "flexi-next-step", "flexi-check", "flexi-research",
+      "neuron-chat", "neuron-color", "neuron-customer",
+    ]);
+    for (const page of PAGE_QUESTIONS) for (const q of page.questions) expect(tested.has(q.slug), q.slug).toBe(true);
+  });
+});
