@@ -54,7 +54,7 @@ export default function Home() {
       <div className="grid items-center gap-10 @5xl/canvas:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] @5xl/canvas:gap-14">
         <MotionReveal stagger className="@container"><div>
           <RevealHeading as="h1" quietWords={firstSentence.split(" ").length} markLabel="the job" className="font-display text-home-hero text-balance text-foreground">{profile.positioning.primary}</RevealHeading>
-          <p className="mt-10 max-w-[40ch] text-body-lg text-foreground-muted sm:text-heading-md sm:font-normal">{profile.positioning.supporting}</p>
+          <p className="mt-10 max-w-[40ch] text-body-lg text-foreground-muted sm:text-lead">{profile.positioning.supporting}</p>
           {/* Plan 042: the ask bar replaces the two buttons. It opens the
               Ask Louie side panel; "See the work" is a link under it. */}
           <HeroAsk className="mt-8 max-w-[560px]" />

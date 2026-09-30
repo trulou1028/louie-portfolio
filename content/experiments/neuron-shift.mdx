@@ -8,7 +8,7 @@ import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagra
 
 <p className="mt-6 text-body text-foreground-muted">Independent concept prototype, not built for a customer. Not affiliated with or endorsed by any company. All operational data is simulated. No live model, telemetry, or operator interviews.</p>
 
-<ArtifactFrame marks={[{ x: 77.4, y: 22.6, w: 21.3, h: 14.4, label: "Neuron proposes, the operator decides" }]} src="/work/neuron-shift/console.webp" alt="The Neuron Shift console. An investigation rail on the left, the power path in the middle running from the utility feed down to two racks, and the selected asset on the right. The affected path is traced in amber, and two assets are outlined in red because a decision is owed on them." width={2880} height={1800} caption="The console after taking the shift. Amber traces the investigated path. Red marks where a person owes a decision. All values are simulated." />
+<ArtifactFrame marks={[{ x: 77.4, y: 22.6, w: 21.3, h: 14.4, label: "Neuron proposes, the operator decides" }]} url="neuron-shift.vercel.app" src="/work/neuron-shift/console.webp" alt="The Neuron Shift console. An investigation rail on the left, the power path in the middle running from the utility feed down to two racks, and the selected asset on the right. The affected path is traced in amber, and two assets are outlined in red because a decision is owed on them." width={2880} height={1800} caption="The console after taking the shift. Amber traces the investigated path. Red marks where a person owes a decision. All values are simulated." />
 
 <p className="mt-6">[Try the prototype](https://neuron-shift.vercel.app/) · [Full case study](https://neuron-shift.vercel.app/case-study.html) · [Source code](https://github.com/trulou1028/neuron-shift)</p>
 
@@ -29,7 +29,7 @@ A critical facilities technician or shift engineer, arriving rather than leaving
 
 This profile comes from public material and reasoning, not interviews.
 
-<ArtifactFrame src="/work/neuron-shift/brief.webp" alt="The shift brief. Item 01, UPS-A1 battery impedance, is open and shows six rows from what changed to what you need to do, with an Open on graph button. Below it, a list of what changed since 19:02." width={1280} height={1926} caption="The shift brief opens on load. Each item keeps the reasoning, not only the data." className="mx-auto max-w-md" />
+<ArtifactFrame frame="none" src="/work/neuron-shift/brief.webp" alt="The shift brief. Item 01, UPS-A1 battery impedance, is open and shows six rows from what changed to what you need to do, with an Open on graph button. Below it, a list of what changed since 19:02." width={1280} height={1926} caption="The shift brief opens on load. Each item keeps the reasoning, not only the data." className="mx-auto max-w-md" />
 
 </CaseStudySection>
 
@@ -51,7 +51,7 @@ Chat is still good at the question nobody anticipated. A command bar that return
 
 **Friction scales with reversibility.** Raising an alert threshold is one click. Transferring critical load takes four checks and the asset name typed back. A one-click approve on a consequential action invites rubber stamping.
 
-<ArtifactFrame marks={[{ x: 3.8, y: 55.7, w: 92.4, h: 32.4, label: "Friction scales with reversibility" }]} src="/work/neuron-shift/gate.webp" alt="The decision dialog for transferring critical load. It lists what Neuron does alone, what needs approval, and what it never does, with the last two struck through. Approve is selected, four pre-flight checks are ticked, and UPS-A1 is typed into the confirmation field." width={1240} height={1566} caption="A consequential approval: four checks and the asset name typed back. Nothing is executed; the prototype records the decision." className="mx-auto max-w-lg" />
+<ArtifactFrame marks={[{ x: 3.8, y: 55.7, w: 92.4, h: 32.4, label: "Friction scales with reversibility" }]} frame="none" src="/work/neuron-shift/gate.webp" alt="The decision dialog for transferring critical load. It lists what Neuron does alone, what needs approval, and what it never does, with the last two struck through. Approve is selected, four pre-flight checks are ticked, and UPS-A1 is typed into the confirmation field." width={1240} height={1566} caption="A consequential approval: four checks and the asset name typed back. Nothing is executed; the prototype records the decision." className="mx-auto max-w-lg" />
 
 **Approve and Reject is the wrong pair.** The choices are Approve, Defer with a trigger, Approve with changes, and Reject. Deferring names what brings it back. Overriding requires a reason. In operations the common right answer is "not yet", and an override is an expert disagreeing with the model, which is exactly the knowledge the industry is losing.
 
@@ -77,15 +77,15 @@ The chrome carries no hue at all. Color only ever means state. Green is flowing 
 The proof case is Rack R-42. It sits at 92 percent of its budget and stays amber, because nobody owes a decision on it. The canvas shows where judgment is outstanding, not just where the plant is unhappy.
 
 <div className="mt-8 grid gap-4 sm:grid-cols-2">
-<ArtifactFrame src="/work/neuron-shift/colors.webp" alt="The power path at rest. SWGR-A and UPS-A1 are outlined in red with Needs your decision. Rack R-42 reads 18.6 kW in amber." width={1670} height={1696} caption="Before: two decisions owed." className="mt-0" />
-<ArtifactFrame src="/work/neuron-shift/decided.webp" alt="The same power path after both recommendations were approved. No red remains. Each asset reads Decided by you, and a green Approved card is pinned beside each one." width={1670} height={1696} caption="After: both decided and pinned. Rack R-42 stays amber throughout." className="mt-0" />
+<ArtifactFrame frame="none" src="/work/neuron-shift/colors.webp" alt="The power path at rest. SWGR-A and UPS-A1 are outlined in red with Needs your decision. Rack R-42 reads 18.6 kW in amber." width={1670} height={1696} caption="Before: two decisions owed." className="mt-0" />
+<ArtifactFrame frame="none" src="/work/neuron-shift/decided.webp" alt="The same power path after both recommendations were approved. No red remains. Each asset reads Decided by you, and a green Approved card is pinned beside each one." width={1670} height={1696} caption="After: both decided and pinned. Rack R-42 stays amber throughout." className="mt-0" />
 </div>
 
 **Losing power is shown as absence, not as red.** An earlier version drew the failure preview in dashed red. That gave red a second meaning right after the visitor learned it means "your call". Now the flow stops, the line turns to gray dashes, and the asset goes dark.
 
 <div className="mt-8 grid gap-4 sm:grid-cols-2">
-<ArtifactFrame src="/work/neuron-shift/impact-ups.webp" alt="Failure preview for UPS-A1. Its lines are dashed, but PDU-05 and both racks are outlined in green and labeled Held by redundancy." width={1670} height={1472} caption="If UPS-A1 fails, redundancy holds everything below it." className="mt-0" />
-<ArtifactFrame src="/work/neuron-shift/impact-pdu.webp" alt="Failure preview for PDU-05. Both racks below it go dark with dashed outlines, struck-through readings, and the label Loses power." width={1670} height={1472} caption="If PDU-05 fails, both racks go dark. Neither result is written by hand." className="mt-0" />
+<ArtifactFrame frame="none" src="/work/neuron-shift/impact-ups.webp" alt="Failure preview for UPS-A1. Its lines are dashed, but PDU-05 and both racks are outlined in green and labeled Held by redundancy." width={1670} height={1472} caption="If UPS-A1 fails, redundancy holds everything below it." className="mt-0" />
+<ArtifactFrame frame="none" src="/work/neuron-shift/impact-pdu.webp" alt="Failure preview for PDU-05. Both racks below it go dark with dashed outlines, struck-through readings, and the label Loses power." width={1670} height={1472} caption="If PDU-05 fails, both racks go dark. Neither result is written by hand." className="mt-0" />
 </div>
 
 </CaseStudySection>
@@ -99,7 +99,7 @@ The first version assumed I would present it. In a portfolio, nobody does. A vis
 - **"Do it for me", with one exception.** Every task can be performed for you, except the consequential approval.
 - **Phones get their own page.** The console needs a laptop-sized screen, so a phone shows the idea and what the colors mean instead of a squeezed layout.
 
-<ArtifactFrame src="/work/neuron-shift/tour.webp" alt="The guided tour on step 5 of 7. A light card reads: now compare a single point of failure. PDU-05 is ringed on the graph, both racks below it are dark with struck-through readings, and the task Select PDU-05 on the graph is checked off." width={2880} height={1800} caption="Step 5 of 7. The card places itself where it hides the fewest assets." />
+<ArtifactFrame url="neuron-shift.vercel.app" src="/work/neuron-shift/tour.webp" alt="The guided tour on step 5 of 7. A light card reads: now compare a single point of failure. PDU-05 is ringed on the graph, both racks below it are dark with struck-through readings, and the task Select PDU-05 on the graph is checked off." width={2880} height={1800} caption="Step 5 of 7. The card places itself where it hides the fewest assets." />
 
 </CaseStudySection>
 

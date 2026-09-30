@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowLeft, ArrowRight, Lock, RotateCw } from "lucide-react";
 
 import { DecisionMark } from "@/components/portfolio/decision-mark";
 import type { DecisionMarkSpec } from "@/lib/decision-mark";
@@ -29,8 +30,48 @@ type ArtifactFrameProps = {
   marks?: readonly DecisionMarkSpec[];
   /** Load eagerly when the frame is above the fold (Next 16: `loading`, not `priority`). */
   eager?: boolean;
+  /**
+   * `browser` (default) puts a browser window bar above a full-window
+   * screenshot. `none` is for crops and panels, which were never a window.
+   */
+  frame?: "browser" | "none";
+  /** The address shown in the bar. Only a real, published address; left empty otherwise. */
+  url?: string;
   className?: string;
 };
+
+/**
+ * A Chrome-style window bar (Plan 044): window dots, back, forward, and
+ * reload, and the address field. Decorative, so hidden from screen readers;
+ * the caption and alt text carry the meaning. Neutral tokens only, so the
+ * bar never competes with the screenshot's own color.
+ */
+function BrowserBar({ url }: { url?: string }) {
+  return (
+    <div aria-hidden="true" className="flex h-9 items-center gap-3 border-b border-border-subtle bg-surface-muted px-3 sm:h-10 sm:px-4">
+      <span className="flex gap-1.5">
+        <span className="size-2.5 rounded-full bg-border-strong" />
+        <span className="size-2.5 rounded-full bg-border-strong" />
+        <span className="size-2.5 rounded-full bg-border-strong" />
+      </span>
+      <span className="flex items-center gap-2 text-foreground-subtle max-sm:hidden">
+        <ArrowLeft className="size-3.5" />
+        <ArrowRight className="size-3.5" />
+        <RotateCw className="size-3.5" />
+      </span>
+      <span className="flex h-6 min-w-0 flex-1 items-center gap-1.5 rounded-full bg-surface px-3 text-body-sm text-foreground-muted sm:mx-auto sm:max-w-md">
+        {url ? (
+          <>
+            <Lock className="size-3 shrink-0" />
+            <span className="truncate">{url}</span>
+          </>
+        ) : null}
+      </span>
+      {/* Balances the dots, so the address field sits in the middle. */}
+      <span className="w-[42px] shrink-0 max-sm:hidden sm:w-[98px]" />
+    </div>
+  );
+}
 
 function ArtifactFrame({
   src,
@@ -40,6 +81,8 @@ function ArtifactFrame({
   height = 1000,
   marks,
   eager = false,
+  frame = "browser",
+  url,
   className,
 }: ArtifactFrameProps) {
   // Screen readers get each mark's label from the caption. Skip any label
@@ -51,7 +94,11 @@ function ArtifactFrame({
   return (
     <figure className={cn("mt-8", className)}>
       {src ? (
-        <div className="relative overflow-hidden rounded-lg border border-border-subtle bg-surface">
+        <div className="overflow-hidden rounded-lg border border-border-subtle bg-surface">
+          {frame === "browser" ? <BrowserBar url={url} /> : null}
+          {/* Marks are placed in percent of the image, so they stay inside
+              this box and never count the browser bar. */}
+          <div className="relative">
           <Image
             src={src}
             alt={alt ?? ""}
@@ -62,6 +109,7 @@ function ArtifactFrame({
             sizes="(min-width: 1024px) 760px, 100vw"
           />
           {marks?.map((mark) => <DecisionMark key={mark.label} mark={mark} />)}
+          </div>
         </div>
       ) : (
         /* Awaiting a real screenshot. `data-pending-asset` makes these
@@ -77,7 +125,7 @@ function ArtifactFrame({
           </span>
         </div>
       )}
-      <figcaption className="mt-3 max-w-[68ch] text-body-sm text-foreground-muted">
+      <figcaption className="mt-3 text-body text-foreground-muted">
         {unstated.length ? (
           <span className="mr-1.5 font-medium text-foreground">
             {unstated.map((mark) => mark.label).join(". ")}.

@@ -36,6 +36,10 @@ This is a warning and a choice, not proof that a listing is fraudulent or a guar
   ]} />
 </SystemDiagram>
 
+<ArtifactFrame marks={[{ x: 29.9, y: 51.4, w: 35.5, h: 22.3, label: "The pause for the person's choice" }]} url="offboard.co" src="/work/offboard/risk-gate.webp" alt="An Offboard packet paused under Action Required. Job Details, Ghost Check, and Application are done, and the ghost check reads 84 out of 100, high risk. A card reads High Ghost Risk Detected, 84/100: This job posting shows signs it may not be a real, active listing. You can still proceed if you have additional information. Under it are three options: Continue Anyway, Save Application Only, and Discard. The pipeline on the right has stopped after Save Application." width={2000} height={1472} caption="The pause for the person's choice. After the ghost check, a high score stops the packet before any tailoring. The person can continue, save only the application, or discard it. A test packet: the role is sample data, and its score was set to show the gate. Supplied product screenshot." />
+
+<ArtifactFrame url="offboard.co" src="/work/offboard/packet-stopped.webp" alt="An Offboard packet that stopped. The message reads: We couldn't finish this packet. The job page did not include enough job details to build a packet. A No credits charged label sits under it, then three options: try again with this link, try a different job, or paste the job description instead. The packet pipeline on the right shows the same message at its last step." width={2000} height={999} caption="A stop before tailoring, in the product. When a job page does not give enough detail to assess the role, the packet stops and asks the person what to do next. No credits are charged. Supplied product screenshot." />
+
 </CaseStudySection>
 
 <CaseStudySection id="decision-control" title="Automate preparation while keeping authorship with the person" eyebrow="Decision 02">
@@ -52,6 +56,8 @@ That does not mean every internal action needs approval. Filing results into the
     { node: { label: "Person decides what to use" } },
   ]} />
 </SystemDiagram>
+
+<ArtifactFrame marks={[{ x: 62.3, y: 48.6, w: 36, h: 27.5, label: "Each change shown, the original struck through" }]} url="offboard.co" src="/work/offboard/resume-review.webp" alt="The Tailored Resume section of an Offboard packet: Tailored for this posting, 6 changes applied, with Download tailored resume and Preview buttons and a link to view or adjust it. The preview panel on the right shows the resume. Each changed line shows the original struck through, with the rewrite highlighted under it. The contact details are blurred." width={2000} height={999} caption="The tailored resume stays a draft with each change shown, the original struck through above the rewrite. The person previews it, adjusts it, and decides whether to download it. Contact details blurred. Supplied product screenshot." />
 
 </CaseStudySection>
 
@@ -71,6 +77,8 @@ I moved the product story toward a plan-first journey, with packets later in the
 
 This is a product-direction correction. I do not yet present a measured activation or conversion lift for the change.
 
+<ArtifactFrame url="offboard.co" src="/work/offboard/layoff-plan.webp" alt="Offboard's Layoff Plan page. The intro reads: The steps that fit your situation. Do them in any order. Mark each one done as you finish. 5 of 24 done. The first group, Protect the first week, lists steps such as taking 20 minutes before signing or replying, saving layoff documents in one place, writing down key dates, and filing for unemployment benefits." width={2000} height={999} caption="The plan-first start. The Layoff Plan gives the person steps that fit their situation, in groups they can do in any order. Packets come later in the sequence. Supplied product screenshot." />
+
 </CaseStudySection>
 
 <CaseStudySection id="architecture" title="Architecture" eyebrow="How it is built">
@@ -89,7 +97,7 @@ The architecture supports persistent context, AI workflows, document generation,
 
 The product screenshot at the top of this page shows a completed Job Packet marked ready for review. The role, match assessment, research sections, and prepared materials stay together, with the pipeline visible alongside them.
 
-<ArtifactFrame src="/work/offboard/packet.webp" alt="The same Offboard packet in the full app window. The navigation is on the left with Packets selected. The packet shows the Clever role card with a Worth a shot label, a partial match of 58, a ghost risk of 28, and five paths, followed by the Ghost Analysis, Company Intel, and Role Match Analysis sections. The completed pipeline and the context panel are on the right." width={2000} height={1073} caption="The packet in the full app window. Each section opens in place, so the person can edit or regenerate it without leaving the packet. Supplied product screenshot." />
+<ArtifactFrame url="offboard.co" src="/work/offboard/packet.webp" alt="The same Offboard packet in the full app window. The navigation is on the left with Packets selected. The packet shows the Clever role card with a Worth a shot label, a partial match of 58, a ghost risk of 28, and five paths, followed by the Ghost Analysis, Company Intel, and Role Match Analysis sections. The completed pipeline and the context panel are on the right." width={2000} height={1073} caption="The packet in the full app window. Each section opens in place, so the person can edit or regenerate it without leaving the packet. Supplied product screenshot." />
 
 The workflow completing is not the same as an application being sent. The packet gives the person a place to inspect the result and decide what to use next.
 

@@ -65,9 +65,9 @@ export const workProjects: readonly WorkProject[] = [
       { label: "Team", value: "Six-person startup" },
     ],
     gallery: [
-      { need: "Home dashboard in the updated UI" },
-      { need: "Risk gate: the pause for the person's choice" },
-      { need: "Job Packet on a phone" },
+      { src: "/work/offboard/resume-review.webp", alt: "The tailored resume in an Offboard packet, with each changed line shown: the original struck through above the rewrite. Contact details blurred.", width: 2000, height: 999 },
+      { src: "/work/offboard/layoff-plan.webp", alt: "Offboard's Layoff Plan: steps that fit the person's situation, in groups, done in any order. 5 of 24 done.", width: 2000, height: 999 },
+      { src: "/work/offboard/risk-gate.webp", alt: "An Offboard packet paused by the risk gate: High Ghost Risk Detected, 84/100, with Continue Anyway, Save Application Only, and Discard. A test packet.", width: 2000, height: 1472 },
     ],
     imageMarks: [{ x: 75.3, y: 20.6, w: 18.7, h: 40.5, label: "The pipeline stays visible" }],
   },
@@ -95,7 +95,7 @@ export const workProjects: readonly WorkProject[] = [
     ],
     gallery: [
       { src: "/work/ck12-analytics/insights.png", alt: "Insights demo-class scatterplot separating skill from engagement, with a student detail panel.", width: 1280, height: 768 },
-      { need: "Detail: one range with the not-enough-data state" },
+      { src: "/work/ck12-analytics/not-enough-data.webp", alt: "Foresights with too little data: no prediction, a message saying what data it needs, and grey per-question bars.", width: 2000, height: 1200 },
       { need: "Early sketch or the rejected single-score concept" },
     ],
     imageMarks: [{ x: 21, y: 31.5, w: 45.5, h: 39.5, label: "A range, not a verdict" }],

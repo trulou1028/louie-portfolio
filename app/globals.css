@@ -311,6 +311,10 @@
   --text-heading-md--letter-spacing: -0.015em;
   --text-heading-md--font-weight: 650;
 
+  /* The homepage lead under the display statement (Plan 044). */
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.5;
+
   --text-body-lg: 1.125rem;
   --text-body-lg--line-height: 1.6;
 

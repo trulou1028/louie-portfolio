@@ -13,7 +13,7 @@ import { InlineLink } from "@/components/system/inline-link";
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     p: ({ children }) => (
-      <p className="mt-4 max-w-[68ch] text-body text-foreground-muted">
+      <p className="mt-4 text-body text-foreground-muted">
         {children}
       </p>
     ),
@@ -26,10 +26,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </h4>
     ),
     ul: ({ children }) => (
-      <ul className="mt-4 flex max-w-[68ch] flex-col gap-2">{children}</ul>
+      <ul className="mt-4 flex flex-col gap-2">{children}</ul>
     ),
     ol: ({ children }) => (
-      <ol className="mt-4 flex max-w-[68ch] list-decimal flex-col gap-2 pl-5">
+      <ol className="mt-4 flex list-decimal flex-col gap-2 pl-5">
         {children}
       </ol>
     ),

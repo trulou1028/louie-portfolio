@@ -18,7 +18,10 @@ Refreshed September 19, 2026 against the implementation, replacing the stale Pla
 
 - [ ] TODO(content): one concrete CK-12 collaboration/influence episode with the constraint, recommendation, participants, and resulting change.
 - [ ] TODO(content): date and observation behind packet-first to plan-first; any measured result after the change.
-- [ ] TODO(asset): Offboard expanded editing state (ready-for-review screenshot supplied September 19), risk gate, partial result, substantiated before/after entry point.
+- [x] Offboard editing state (tailored resume with tracked changes), stopped packet, and plan-first Layoff Plan: supplied September 30, placed in Decisions 01, 02, and the entry-point section. Contact details blurred.
+- [x] CK-12 Foresights not-enough-data state: supplied September 30, placed in Decision 02.
+- [x] Offboard risk gate: supplied September 30, placed in Decision 01. A test packet with sample role data; its score was set to show the gate, and the caption says so.
+- [ ] TODO(asset): Offboard packet-first entry point (the before state) to pair with the Layoff Plan.
 - [ ] TODO(content): exact ownership and chronology of Flexi research versus later independent evaluation.
 - [ ] TODO(content): define and date CK-12 20M+/265M+ figures before using a scale headline. Existing resume source is historical employer context, not feature impact.
 - [ ] TODO(content): leadership episode for mentoring/critique; design-system adoption/governance; actual cross-team tension if relevant.

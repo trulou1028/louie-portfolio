@@ -2,9 +2,9 @@ import { test, expect } from "@playwright/test";
 
 // "/" (Plan 038 bento): three case-study tiles (wordmark + screenshot) and
 // Neuron Shift (screenshot): seven images. "/work" (Plan 037 plates): the
-// same plus the real gallery images: nine. Offboard has none until a
-// dashboard screenshot in its updated UI arrives.
-for (const [path, count] of [["/", 7], ["/work", 9]] as const) {
+// same plus the real gallery images: thirteen. Offboard has three (resume
+// review, Layoff Plan, risk gate), CK-12 two, and Flexi one.
+for (const [path, count] of [["/", 7], ["/work", 13]] as const) {
   test(`${path} loads and its project images decode`, async ({ page }) => {
     await page.goto(path);
     const images = page.locator("main article img");
