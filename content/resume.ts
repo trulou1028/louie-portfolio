@@ -49,10 +49,10 @@ export type Resume = {
 };
 
 export const resume: Resume = {
-  headline: "Senior Product Designer | Complex Systems & AI",
+  headline: "Founding Product Designer & AI Systems Lead | Complex Workflows",
 
   summary:
-    "Senior Product Designer with 14+ years designing digital products across education, AI, and complex workflows. Former Lead UX Designer at CK-12, where I designed student, teacher, and administrator experiences for a learning platform serving 20M+ users, led design-system work, and shaped information architecture across learning workflows. My practice combines user research, accessibility, interaction design, and technical prototyping. At Offboard, I lead product design and AI systems, working from early concepts through production.",
+    "Founding Product Designer & AI Systems Lead at Offboard, with 14+ years designing digital products across education, AI, and complex workflows. At Offboard, I lead product design and AI systems, working from early concepts through production. Before that, as Lead UX Designer at CK-12, I designed student, teacher, and administrator experiences for a learning platform serving 20M+ users, led design-system work, and shaped information architecture across learning workflows. My practice combines user research, accessibility, interaction design, and technical prototyping.",
 
   roles: [
     {

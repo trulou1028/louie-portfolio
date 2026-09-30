@@ -8,7 +8,7 @@
 
 export const profile = {
   name: "Louie Sakoda",
-  role: "Senior Product Designer",
+  role: "Founding Product Designer & AI Systems Lead",
 
   positioning: {
     /** Plans 029-035 adopted by Louie, 2026-09-19. */
@@ -16,8 +16,8 @@ export const profile = {
     /** Adopted supporting positioning, Plans 029-031. */
     supporting:
       "I shape AI products around the decisions people need to make, from learning tools at CK-12 to building Offboard end to end.",
-    /** Positioning label, not a new employer title. */
-    eyebrow: "SENIOR PRODUCT DESIGNER · AI & COMPLEX WORKFLOWS",
+    /** Louie's current title at Offboard, used site-wide (owner decision, 2026-09-30). */
+    eyebrow: "FOUNDING PRODUCT DESIGNER & AI SYSTEMS LEAD",
   },
 
   /**

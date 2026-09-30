@@ -40,4 +40,4 @@ def footer(canvas, doc):
     canvas.setFont('Helvetica',8)
     canvas.setFillColor(colors.HexColor('#666666'))
     canvas.drawRightString(570,24,str(doc.page))
-SimpleDocTemplate(destination, pagesize=(612,792), rightMargin=42,leftMargin=42,topMargin=35,bottomMargin=35,title='Louie Sakoda | Senior Product Designer',author='Louie Sakoda').build(story,onFirstPage=footer,onLaterPages=footer)
+SimpleDocTemplate(destination, pagesize=(612,792), rightMargin=42,leftMargin=42,topMargin=35,bottomMargin=35,title='Louie Sakoda | Founding Product Designer & AI Systems Lead',author='Louie Sakoda').build(story,onFirstPage=footer,onLaterPages=footer)

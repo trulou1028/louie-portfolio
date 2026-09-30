@@ -1,5 +1,6 @@
 import type { DecisionMarkSpec } from "@/lib/decision-mark";
 import type { Route } from "@/lib/routes";
+import type { CaseStudyBriefContent } from "@/components/portfolio/case-study-brief";
 
 /**
  * A secondary image for the homepage plate. `need` entries are open asset
@@ -30,6 +31,8 @@ export type WorkProject = {
   scope: string;
   status: string;
   result: string;
+  /** The three-line summary at the top of the case study (Plan 045). */
+  brief: CaseStudyBriefContent;
   featured: boolean;
   /** Homepage plate color: the project's own brand color (Plan 037). */
   plate: "offboard" | "foresights" | "flexi";
@@ -57,6 +60,11 @@ export const workProjects: readonly WorkProject[] = [
     scope: "Product direction, UX, interface design, full-stack implementation, and iteration",
     status: "Working product",
     result: "Built end to end. The next product question is whether the first step meets the seeker where they are, not simply whether a packet can be generated.",
+    brief: {
+      problem: "People in a career transition rebuild the same context across a dozen disconnected tools. AI that only writes more documents can push them toward roles that are not worth it.",
+      did: "As founding designer, I designed and engineered Offboard end to end: a workspace for each opportunity, an AI pipeline that checks a role before tailoring anything, drafts the person reviews before use, and a plan-first start for people not yet ready to apply.",
+      result: "A live product. In an early signup cohort, 92% finished onboarding and 45% ran a ghost check, but only 8% built a packet in their first days. That gap is the case for starting with a plan.",
+    },
     featured: true,
     plate: "offboard",
     facts: [
@@ -86,6 +94,11 @@ export const workProjects: readonly WorkProject[] = [
     scope: "Experience architecture, interaction model, prototypes, and visual language",
     status: "Product case study",
     result: "Teachers saw value in the tools. Published reviews also found that half struggled with each tool’s central chart.",
+    brief: {
+      problem: "A predicted skill level does not tell a teacher what to do next, and a single score is easy to overread.",
+      did: "I led the experience architecture, interaction model, and visual language: predicted ranges instead of a single score, a clear no-data state, and Insights, which separates skill from engagement so a teacher can check one student before acting.",
+      result: "In CK-12’s published reviews with ten teachers each, 90% found each tool’s menu easy to interpret and 90% or more expected it to save time. Half struggled with each tool’s main chart, which set the next goal: explain before you visualize.",
+    },
     featured: true,
     plate: "foresights",
     facts: [
@@ -115,6 +128,11 @@ export const workProjects: readonly WorkProject[] = [
     scope: "Research, UX/UI design, and prototyping with product, engineering, and curriculum partners",
     status: "Product case study",
     result: "Published classroom research describes useful support alongside prompting, comprehension, and tone barriers. Activity alone is not evidence of learning.",
+    brief: {
+      problem: "An AI tutor can answer the question and still skip the learning. Students need help getting unstuck without the tutor doing the work for them.",
+      did: "I led UX for Flexi with product, engineering, and curriculum partners: follow-up actions, so a student can ask for the next kind of help without writing a better prompt, and labels that separate AI-generated answers from CK-12 Library content.",
+      result: "In an external six-week study, teachers reported more student engagement and confidence, with prompting and reading level as the barriers. In CK-12’s analysis of Flexi in Adaptive Practice, answer-seeking questions fell from 72% to 52% by a student’s eighth question.",
+    },
     featured: false,
     plate: "flexi",
     facts: [

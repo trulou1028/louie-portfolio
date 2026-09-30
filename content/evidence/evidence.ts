@@ -199,7 +199,7 @@ export const evidence: EvidenceItem[] = [
   "project": "ck12-analytics",
   "title": "Perceived value exceeded comprehension",
   "summary": "Two published evaluations, ten teachers each using a demo class, found graph difficulty for half of participants.",
-  "detail": "Foresights: 70% meaningful, 90% anticipated time savings, 75% mean comprehension. Insights: 90% meaningful, 100% anticipated time savings, 73% mean comprehension. Both: 50% difficulty with the key graph. Expected savings are not measured savings. No causal learning effect or broad adoption is established. Sources are linked in the case study; these are CK-12 evaluations, not claimed personal research ownership.",
+  "detail": "Foresights: 90% found the menu easy to interpret, 70% meaningful, 90% anticipated time savings, 70% would recommend, 75% mean comprehension. Insights: 90% found the menu easy to interpret, 90% meaningful, 100% anticipated time savings, 90% would recommend, 73% mean comprehension. Both: 50% difficulty with the key graph. Expected savings are not measured savings. No causal learning effect or broad adoption is established. Sources are linked in the case study; these are CK-12 evaluations, not claimed personal research ownership.",
   "route": "/work/ck12-analytics",
   "anchor": "evaluation",
   "tags": [
@@ -241,9 +241,9 @@ export const evidence: EvidenceItem[] = [
 {
   "id": "offboard-outcome-limits",
   "project": "offboard",
-  "title": "A built product, without an attributed conversion lift",
-  "summary": "Offboard moved into live beta workflows through Louie’s end-to-end design and implementation.",
-  "detail": "The case study establishes built capabilities and product direction. It does not establish adoption counts, repeat usage, revenue, or a conversion improvement. Do not invent metrics or imply that packet-to-plan sequencing has a measured effect.",
+  "title": "Live product with early usage signal, reported as shares",
+  "summary": "Offboard is live; Louie designed and built it end to end. In an August 2026 signup cohort of 38 people, 92% finished onboarding, 47% uploaded a resume, 45% ran a ghost check, and 8% built a packet in their first days. Of members who had built a full packet by September 2026, 72% had built only one.",
+  "detail": "Other measured results (September 2026): one LinkedIn post drove 150 public ghost checks in 24 hours; the public ghost checker ran about 500 analyses in its first five weeks; job search found the right role in the top ten for all 20 test queries, up from one; the LUMO assistant passed 29 of 29 test cases, 22% faster, at about 80% lower model cost per test run; the backend (188 functions, 175 tables) moved to a new Supabase project with about six minutes of downtime and no data lost; the product runs more than 200 server functions and about 4,500 automated tests. The numbers are early and small. They do not establish revenue, long-term retention, or a measured effect of the plan-first change. Do not state revenue, subscriber, or account counts.",
   "route": "/work/offboard",
   "anchor": "outcomes",
   "tags": [
@@ -251,7 +251,11 @@ export const evidence: EvidenceItem[] = [
     "outcomes",
     "metrics",
     "revenue",
-    "conversion"
+    "conversion",
+    "activation",
+    "onboarding",
+    "usage",
+    "shipped"
   ],
   "skills": [
     "Design Engineering"
@@ -262,8 +266,8 @@ export const evidence: EvidenceItem[] = [
   "id": "flexi-evaluation-limits",
   "project": "flexi",
   "title": "Conversation activity is not proof of learning",
-  "summary": "CK-12 dialogue research examined 5,000 students and selected 15 cases for qualitative analysis.",
-  "detail": "The published research distinguishes deeper learning-oriented exchanges from superficial use. It does not isolate the effect of Louie’s interface work or establish that his design caused academic gains. Sources are linked in the case study.",
+  "summary": "CK-12 dialogue research examined 5,000 students and selected 15 cases for qualitative analysis. In Flexi inside Adaptive Practice, direct answer-seeking questions fell from 72% of first questions to 52% by the eighth, and learning-oriented questions rose from 11% to 26%.",
+  "detail": "The published research distinguishes deeper learning-oriented exchanges from superficial use: students who grew asked follow-ups and checked their understanding. The analysis is descriptive and CK-12-run. It does not isolate the effect of Louie’s interface work or establish that his design caused academic gains. Sources are linked in the case study.",
   "route": "/work/flexi",
   "anchor": "outcomes",
   "tags": [
@@ -567,8 +571,8 @@ export const evidence: EvidenceItem[] = [
     id: "flexi-research",
     project: "flexi",
     title: "Published classroom research on Flexi",
-    summary: "CK-12 published a six-week Spring 2025 study with ten teachers.",
-    detail: "The published study used surveys, diaries, focus groups, and interviews. It described engagement and confidence alongside prompting, comprehension, tone, and over-reliance challenges. Louie cites this research as evaluation context, not as a claim that he authored the study or that it caused each interface decision. The article links the original study.",
+    summary: "Leanlab Education, an external research nonprofit, ran a six-week Spring 2025 Flexi study with ten teachers in five states, published by CK-12. In a separate CK-12 comparison, nine of ten teachers preferred Flexi overall to Khanmigo and Quizlet's Q-Chat.",
+    detail: "The external study used surveys, diaries, focus groups, and interviews. Teachers reported more student engagement, confidence, and curiosity, time saved, and clearer insight into student thinking, alongside prompting, reading-level, tone, and over-reliance challenges. The study calls its findings early indicators, not conclusive. Louie cites this research as evaluation context, not as a claim that he authored the study or that it caused each interface decision. The article links the original study.",
     route: "/work/flexi",
     anchor: "research",
     tags: ["user research", "education", "students", "teachers", "over-reliance"],
