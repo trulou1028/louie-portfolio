@@ -59,9 +59,9 @@ test.describe("the AI surface", () => {
     ).toBeVisible();
 
     for (const prompt of [
-      "Show me Offboard",
-      "How technical are you?",
-      "Tell me about Flexi",
+      "How do you design AI people trust?",
+      "Can you build what you design?",
+      "What have you shipped at scale?",
     ]) {
       await expect(panel.getByText(prompt, { exact: true })).toBeVisible();
     }
@@ -116,14 +116,14 @@ test.describe("the AI surface", () => {
     });
 
     const panel = page.locator("#ask-ai-louie");
-    const suggestion = panel.getByText("How technical are you?", { exact: true });
+    const suggestion = panel.getByText("Can you build what you design?", { exact: true });
     await suggestion.focus();
     await expect(suggestion).toBeFocused();
     await page.keyboard.press("Enter");
 
     await expect.poll(() => body !== null, { timeout: 10_000 }).toBe(true);
     expect(JSON.stringify((body as unknown as { messages: unknown[] }).messages)).toContain(
-      "How technical are you?",
+      "Can you build what you design?",
     );
   });
 
@@ -151,7 +151,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.locator("#ask-ai-louie").getByText("Show me Offboard", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("How do you design AI people trust?", { exact: true }).click();
 
     await expect.poll(() => body !== null, { timeout: 10_000 }).toBe(true);
 
@@ -159,7 +159,7 @@ test.describe("the AI surface", () => {
       messages: unknown[];
       tools?: Record<string, unknown>;
     };
-    expect(JSON.stringify(sent.messages)).toContain("Show me Offboard");
+    expect(JSON.stringify(sent.messages)).toContain("How do you design AI people trust?");
     const toolNames = Object.keys(sent.tools ?? {});
     for (const removed of [
       "navigate_portfolio",
@@ -177,7 +177,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Tell me about Flexi", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("What have you shipped at scale?", { exact: true }).click();
 
     await expect(
       page.getByText(
@@ -197,7 +197,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Tell me about Flexi", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("What have you shipped at scale?", { exact: true }).click();
 
     await expect(
       page.getByText(text("try again in a few minutes")).first(),
@@ -216,7 +216,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Tell me about Flexi", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("What have you shipped at scale?", { exact: true }).click();
 
     await expect(
       page.getByText(text("too long for the chat")).first(),
@@ -270,7 +270,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Tell me about Flexi", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("What have you shipped at scale?", { exact: true }).click();
 
     const panel = page.locator("#ask-ai-louie");
     await expect(panel.getByText(paragraph.slice(0, 30))).toBeVisible({
@@ -311,7 +311,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.locator("#ask-ai-louie").getByText("Show me Offboard", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("How do you design AI people trust?", { exact: true }).click();
 
     // Closing the assistant restores the primary reading/navigation surface.
     await page.getByRole("dialog", { name: "Ask Louie", exact: true }).getByRole("button", { name: "Close", exact: true }).click();
@@ -366,7 +366,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Tell me about Flexi", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("What have you shipped at scale?", { exact: true }).click();
 
     const panel = page.locator("#ask-ai-louie");
 
@@ -397,7 +397,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Tell me about Flexi", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("What have you shipped at scale?", { exact: true }).click();
 
     const panel = page.locator("#ask-ai-louie");
 
@@ -444,7 +444,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Tell me about Flexi", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("What have you shipped at scale?", { exact: true }).click();
 
     const panel = page.locator("#ask-ai-louie");
 
@@ -482,7 +482,7 @@ test.describe("the AI surface", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.getByText("Tell me about Flexi", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("What have you shipped at scale?", { exact: true }).click();
 
     const panel = page.locator("#ask-ai-louie");
 

@@ -87,6 +87,10 @@
   --radius-xl: 24px;
   --radius-panel: 28px;
   --radius: var(--radius-md);
+  /* Nesting pair: a control inset 8px inside a field. The outer radius is
+     the inner radius plus the gap between them (AGENTS.md, Radius). */
+  --radius-control: 8px;
+  --radius-field: 16px;
 
   /* Elevation. Border first, background second, shadow last (spec §9). */
   --shadow-soft:
@@ -335,6 +339,8 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
   --radius-panel: var(--radius-panel);
+  --radius-control: var(--radius-control);
+  --radius-field: var(--radius-field);
 }
 
 /* One focus treatment for the whole site, so every interactive element is
@@ -407,6 +413,34 @@
     border-color: hsl(var(--accent-muted));
     color: hsl(var(--accent-foreground));
   }
+}
+
+/* Ask Louie's thinking state. A thin arc turns around Louie's avatar while
+   an answer is on its way. The ring is a conic gradient masked to 2px. */
+.ask-thinking-ring {
+  position: relative;
+  display: inline-flex;
+  border-radius: 9999px;
+}
+.ask-thinking-ring::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, transparent 0 30%, hsl(var(--foreground) / 0.25) 55%, hsl(var(--foreground)) 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  animation: ask-spin 1.1s linear infinite;
+}
+@keyframes ask-spin {
+  to { transform: rotate(1turn); }
+}
+/* A new status line rises into place. */
+.ask-status-in {
+  animation: ask-status-in var(--duration-standard) cubic-bezier(var(--motion-reveal-ease));
+}
+@keyframes ask-status-in {
+  from { opacity: 0; transform: translateY(4px); filter: blur(2px); }
 }
 
 /* A new answer or thinking line fades in rather than popping. */

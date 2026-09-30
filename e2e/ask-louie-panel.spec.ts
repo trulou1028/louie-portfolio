@@ -45,9 +45,9 @@ test("the hero ask bar opens the panel and asks the question once", async ({ pag
 test("a hero starter question opens the panel and asks it", async ({ page }) => {
   const bodies = await mockChat(page);
   await page.goto("/");
-  await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "How technical are you?" }).click();
+  await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "Can you build what you design?" }).click();
   await expect(page.locator("#ask-ai-louie").getByText("A risk gate can pause")).toBeVisible({ timeout: 15_000 });
-  expect(bodies[0]).toContain("How technical are you?");
+  expect(bodies[0]).toContain("Can you build what you design?");
 });
 
 test("the hero keeps the job-description comparison one click away", async ({ page }) => {
@@ -62,7 +62,7 @@ test("on a case study, the panel starts from that project", async ({ page }) => 
   const panel = page.locator("#ask-ai-louie");
   await expect(panel.getByText("Reading:")).toContainText("Offboard");
   await expect(panel.getByRole("button", { name: "Why does the Offboard packet pause for risk?" })).toBeVisible({ timeout: 15_000 });
-  await expect(panel.getByRole("button", { name: "Show me Offboard" })).toHaveCount(0);
+  await expect(panel.getByRole("button", { name: "How do you design AI people trust?" })).toHaveCount(0);
 });
 
 test("on desktop, a cited link keeps the panel open and highlights the section", async ({ page, isMobile }) => {
@@ -140,16 +140,18 @@ test("on desktop, the open panel pushes the header and page instead of covering 
   await expect(page.getByRole("group").filter({ hasText: "On this page" }).or(page.locator("details", { hasText: "On this page" }))).toBeVisible();
 });
 
-test("the thinking line sits on the avatar's row", async ({ page }) => {
+test("the thinking line sits on the avatar's row, with the work cards under it", async ({ page }) => {
   await page.route("**/api/chat", async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
     await route.fulfill({ status: 503, json: { error: "ai_unavailable" } });
   });
   await page.goto("/");
-  await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "Show me Offboard" }).click();
+  await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "How do you design AI people trust?" }).click();
   const panel = page.locator("#ask-ai-louie");
-  const label = panel.getByText("Thinking", { exact: true });
+  // The visible status is decorative; the thread announces the sr-only copy.
+  const label = panel.getByText("Reading your question", { exact: true }).first();
   await expect(label).toBeVisible({ timeout: 10_000 });
+  await expect(panel.locator(".sr-only", { hasText: "Reading your question" })).toBeAttached();
   const avatar = await panel.locator('[data-slot="message-avatar"]').last().boundingBox();
   const text = await label.boundingBox();
   const middle = text!.y + text!.height / 2;

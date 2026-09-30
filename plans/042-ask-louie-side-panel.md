@@ -1,6 +1,6 @@
 # Plan 042: Ask Louie in the hero and a side panel
 
-Status: implemented locally, 2026-09-29. Not merged or deployed.
+Status: shipped, 2026-09-29 (commit 7067fa7). Plan 043 revises the hero starters and the thinking state.
 
 ## Why
 

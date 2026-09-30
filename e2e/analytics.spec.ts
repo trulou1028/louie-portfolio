@@ -66,7 +66,7 @@ test.describe("analytics", () => {
 
     await page.goto("/");
     await scrollToAskPanel(page);
-    await page.locator("#ask-ai-louie").getByText("Show me Offboard", { exact: true }).click();
+    await page.locator("#ask-ai-louie").getByText("How do you design AI people trust?", { exact: true }).click();
 
     await expect
       .poll(() =>

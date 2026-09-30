@@ -9,11 +9,16 @@
  * so the answer does not depend on which page the visitor is on.
  */
 
-/** The general set: the panel's empty state away from a project page. */
+/**
+ * The general set: the homepage ask bar and the panel's empty state away
+ * from a project page (Plan 043). Each answers a question a hiring manager
+ * brings to this role: AI judgment, whether the designer builds, and scale.
+ * The work itself is one scroll below, so no question only names a project.
+ */
 export const STARTER_QUESTIONS = [
-  { text: "Show me Offboard", slug: "show-offboard" },
-  { text: "How technical are you?", slug: "how-technical" },
-  { text: "Tell me about Flexi", slug: "show-flexi" },
+  { text: "How do you design AI people trust?", slug: "ai-trust" },
+  { text: "Can you build what you design?", slug: "build-what-you-design" },
+  { text: "What have you shipped at scale?", slug: "shipped-at-scale" },
 ] as const;
 
 export type AskQuestion = { text: string; slug: string };

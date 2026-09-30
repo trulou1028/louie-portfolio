@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { ThinkingOrb } from "thinking-orbs";
 import { ArrowRight, ChevronRight, FileText } from "lucide-react";
 
 import { AiLouieComposer } from "@/components/ai/ai-louie-composer";
@@ -11,10 +10,13 @@ import { AssistantAvatar } from "@/components/ai/assistant-avatar";
 import { AnswerMarkdown } from "@/components/ai/answer-markdown";
 import { JobDescriptionTrigger } from "@/components/ai/job-description-dialog";
 import { useAskLouie } from "@/components/ai/ask-louie-dialog";
+import { SourceStack } from "@/components/ai/thinking-sources";
+import { statusFor, thinkingState } from "@/lib/ai/thinking-state";
 import { STARTER_QUESTIONS, type AskQuestion } from "@/components/ai/ask-questions";
 import { SectionLabel } from "@/components/system/section-label";
 import { Surface } from "@/components/system/surface";
 import { track } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
 import {
   MessageScrollerProvider,
   MessageScroller,
@@ -122,10 +124,12 @@ function hasVisibleText(message: UIMessage): boolean {
  * content beside it. The thinking line and the answer use the same row, so
  * the avatar never moves and the answer appears where "Thinking" was.
  */
-function AssistantRow({ children }: { children: React.ReactNode }) {
+function AssistantRow({ children, thinking = false }: { children: React.ReactNode; thinking?: boolean }) {
   return (
     <div className="flex items-start gap-3">
-      <AssistantAvatar className="size-7" />
+      <span className={cn("shrink-0", thinking && "ask-thinking-ring")}>
+        <AssistantAvatar className="size-7" />
+      </span>
       <div className="min-w-0 flex-1 pt-1">{children}</div>
     </div>
   );
@@ -156,25 +160,31 @@ function AssistantMessage({ message }: { message: UIMessage }) {
 }
 
 /**
- * The line shown before the answer's first word (Plan 014, Plan 042).
+ * The wait before the answer's first word (Plan 043).
  *
- * `thinking-orbs`' dotted orb in its `breathing` state (owner decision,
- * 2026-08-31) beside a plain label, on the same row as the avatar. The
- * label says what is happening when the stream tells us: "Searching my case
- * studies" while the `search_portfolio` tool runs, "Thinking" otherwise.
- * It never shows reasoning (spec §21).
+ * A thin arc turns around Louie's avatar. Beside it, a status line that
+ * changes only when the stream says something new: "Reading your
+ * question", then "Searching my case studies" while `search_portfolio`
+ * runs, then "Writing from what I found". Under the line, small cards of
+ * the work deal through a stack while Louie searches, then the sources the
+ * search really returned open into labeled chips. It never shows reasoning
+ * (spec §21).
  *
- * `aria-hidden` on the orb keeps this to one announcement: the canvas ships
- * `role="img"` with its own "Breathing…" label, which would otherwise be
- * read out alongside the visible label inside the thread's `aria-live`
- * region.
+ * Each new status line is keyed, so it rises in rather than swapping in
+ * place. The thread is an `aria-live` region, so the status text is what a
+ * screen reader hears; the colors are decorative.
  */
-function ThinkingIndicator({ searching }: { searching: boolean }) {
+function ThinkingIndicator({ message }: { message: UIMessage | undefined }) {
+  const { phase, found } = thinkingState(message);
+  const status = statusFor(phase, found);
   return (
-    <AssistantRow>
-      <div className="ask-fade-in -mt-1 flex h-7 items-center gap-2">
-        <ThinkingOrb state="breathing" size={20} aria-hidden="true" />
-        <span className="text-body-sm text-foreground-muted">{searching ? "Searching my case studies" : "Thinking"}</span>
+    <AssistantRow thinking>
+      <div className="ask-fade-in -mt-1 flex flex-col gap-2">
+        <p className="flex h-7 items-center overflow-hidden text-body-sm text-foreground-muted">
+          <span key={status.text} aria-hidden="true" className="ask-status-in">{status.text}</span>
+          <span className="sr-only">{status.spoken}</span>
+        </p>
+        <SourceStack found={found} dealing={phase !== "writing"} />
       </div>
     </AssistantRow>
   );
@@ -324,10 +334,6 @@ function AiLouieLive() {
   const lastMessageHasText =
     lastMessage?.role === "assistant" && hasVisibleText(lastMessage);
   const showThinking = isBusy && !lastMessageHasText;
-  // A tool part on the pending turn means the portfolio search is running.
-  const searching =
-    lastMessage?.role === "assistant" &&
-    lastMessage.parts.some((part) => part.type.startsWith("tool-"));
 
   function sendText(text: string) {
     const trimmed = text.trim();
@@ -399,7 +405,7 @@ function AiLouieLive() {
 
               {showThinking && (
                 <MessageScrollerItem messageId="thinking" scrollAnchor={false}>
-                  <ThinkingIndicator searching={searching} />
+                  <ThinkingIndicator message={lastMessage?.role === "assistant" ? lastMessage : undefined} />
                 </MessageScrollerItem>
               )}
 

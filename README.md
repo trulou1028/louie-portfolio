@@ -299,16 +299,17 @@ Owner decisions from Louie's review of the live site.
     but zero images *outside* an avatar, which is the invariant it was always
     testing.
 
-34. **The thinking state uses `thinking-orbs`.** The dotted orb replaces the
-    `Marker` + `shimmer` text row, in its `breathing` state at the 20px
-    inline-text preset — the pairing orbs.jakubantalik.com labels "Agent
-    thinking". MIT, no dependencies, ~55KB, and it ships its own
-    reduced-motion and page-visibility handling. It sits beside the label
-    rather than replacing the avatar: the face says who is speaking, the orb
-    says what is happening, and swapping the avatar mid-turn would make the
-    row jump when the answer arrives. It is `aria-hidden`, because the canvas
-    carries its own `role="img"` label that would otherwise be announced
-    alongside the visible "Thinking" inside the thread's live region.
+34. **The thinking state deals the work (Plan 043).** It replaced the
+    `thinking-orbs` dotted orb, which is no longer a dependency. A thin arc
+    turns around Louie's avatar. The status line changes only when the
+    stream reports something new: "Reading your question", "Searching my
+    case studies" while `search_portfolio` runs, then "Writing from what I
+    found". Under it, small cards of the real work deal through a stack;
+    when the search returns, the sources it returned open into labeled
+    chips. The chips come from the tool output's routes, so the wait shows
+    true progress and never shows reasoning (spec §21). The visible status is
+    `aria-hidden`; an `sr-only` line names the found sources for screen
+    readers. The job-description wait uses the same card stack.
 
 35. **No accent border on a rounded edge, anywhere (owner decision).** The
     accent-bar-down-the-left-edge treatment had spread to four unrelated

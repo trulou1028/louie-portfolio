@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import { ArrowLeft } from "lucide-react";
-import { ThinkingOrb } from "thinking-orbs";
 
 import { useAskLouie } from "@/components/ai/ask-louie-dialog";
 import { JobFitResult } from "@/components/ai/job-fit-result";
+import { SourceStack } from "@/components/ai/thinking-sources";
 import { Action } from "@/components/system/action";
 import type { VerifiedJobFit } from "@/lib/ai/job-fit";
 import { track } from "@/lib/analytics";
@@ -49,8 +49,8 @@ function Comparing({ text }: { text: string }) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-surface to-transparent" />
       </div>
 
-      <div className="flex items-center gap-2">
-        <ThinkingOrb state="breathing" size={20} aria-hidden="true" />
+      <div className="flex items-center gap-2.5">
+        <SourceStack dealing />
         <p className="text-body-sm text-foreground">Comparing this role with my case studies</p>
       </div>
 

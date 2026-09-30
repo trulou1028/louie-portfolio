@@ -78,6 +78,13 @@ Inside a card: `gap-2.5` between rows, `gap-4` between cards, sections own
 their own outer spacing (`mt-12`+). A genuinely dense row may deviate, but
 it carries a comment saying so.
 
+**Radius.** Nest corners: an outer radius is the inner radius plus the gap
+between the two edges. Controls inset 8px inside a field use
+`rounded-control` (8px) in a `rounded-field` (16px); a 20px thumbnail inset
+4px in a chip uses `rounded-xs` in `rounded-sm`. Treat this as a guideline and
+check the result by eye: pills (`rounded-full`) and very small insets can
+need an adjustment.
+
 **Chips and labels.** Use `Tag` for topic and project tags (`tone="mono"`
 for the uppercase technical variant on cards). Use `SystemLabel` only for
 machine-ish markers like `AI SYSTEM` or `TOOL CALL` — it means something,

@@ -178,6 +178,9 @@ describe("starter questions (Plan 042)", () => {
     ["Why isn't Neuron Shift a chat box?", "neuron-shift-chat"],
     ["What does red mean in Neuron Shift?", "neuron-shift-color"],
     ["Was Neuron Shift built for a real customer?", "neuron-shift-prototype"],
+    ["How do you design AI people trust?", "flexi-expose-uncertainty"],
+    ["Can you build what you design?", "career-technical-fluency"],
+    ["What have you shipped at scale?", "career-ck12-scale"],
   ])("retrieves grounded evidence for %s", (query, id) => {
     expect(searchEvidence({ query }).results.map((item) => item.id)).toContain(id);
   });
@@ -191,5 +194,11 @@ describe("starter questions (Plan 042)", () => {
       "neuron-chat", "neuron-color", "neuron-customer",
     ]);
     for (const page of PAGE_QUESTIONS) for (const q of page.questions) expect(tested.has(q.slug), q.slug).toBe(true);
+  });
+
+  it("covers every general starter question", async () => {
+    const { STARTER_QUESTIONS } = await import("@/components/ai/ask-questions");
+    const tested = new Set(["ai-trust", "build-what-you-design", "shipped-at-scale"]);
+    for (const q of STARTER_QUESTIONS) expect(tested.has(q.slug), q.slug).toBe(true);
   });
 });
