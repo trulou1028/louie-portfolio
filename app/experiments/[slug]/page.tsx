@@ -11,6 +11,7 @@ import Link from "next/link";
 
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
 import { PendingContent } from "@/components/portfolio/pending-content";
+import { CaseStudyBrief } from "@/components/portfolio/case-study-brief";
 import { Action } from "@/components/system/action";
 import { SectionLabel } from "@/components/system/section-label";
 import { StatusDot } from "@/components/system/status-dot";
@@ -84,9 +85,12 @@ export default async function ExperimentPage({
         </div>
 
         {experiment.summary ? (
-          <p className="mt-6 max-w-[62ch] text-body-lg text-foreground-muted">
-            {experiment.summary}
-          </p>
+          <>
+            <p className="mt-6 max-w-[62ch] text-body-lg text-foreground-muted">
+              {experiment.summary}
+            </p>
+            {experiment.brief ? <CaseStudyBrief brief={experiment.brief} className="mt-8" /> : null}
+          </>
         ) : (
           <PendingContent
             summary={`This exploration has not been built yet. Describing what it demonstrates before it exists would be inventing work.`}
