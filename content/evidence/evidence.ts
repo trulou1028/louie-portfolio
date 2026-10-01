@@ -615,6 +615,17 @@ export const evidence: EvidenceItem[] = [
     evidenceType: "career",
   },
   {
+    id: "career-about-story",
+    project: "career",
+    title: "Why Offboard, how Louie works, and what he wants next",
+    summary: "Louie leads product and technology at Offboard, an AI career-transition platform the founders started building after going through the layoff process themselves. He has designed and built much of it end to end, including Lumo (the AI career agent), Career Context, job analysis, application tools, and interview preparation.",
+    detail: "His approach: start with the decision a person is trying to make; let AI gather context and do the repetitive work while the person stays in control; build the real thing in code (React, TypeScript, AI coding tools, APIs, real product data), using Figma when it helps him think. At CK-12 his work included Flexi, predictive learning analytics, diagnostic experiences, content creation tools, and the CK-12 2.0 design system. Before design he played football at the University of Utah, where in 2008 he was a unanimous Consensus All-American kicker (the only one in Utah football history) and a first-team Academic All-American, then played professionally in the CFL. He is most interested in what happens when designers can build: products that are fundamentally different because AI exists. Louie supplied this in his own words for the About page.",
+    route: "/about",
+    tags: ["about", "background", "story", "why", "offboard", "founder", "layoff", "approach", "process", "football", "cfl", "all-american", "kicker", "athlete", "next", "looking", "interested", "figma", "code"],
+    skills: ["Product Design", "AI Product Design", "Design Engineering"],
+    evidenceType: "career",
+  },
+  {
     id: "career-experience-arc",
     project: "career",
     title: "14+ years across AI, education, and workflow products",

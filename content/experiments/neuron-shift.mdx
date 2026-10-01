@@ -6,56 +6,50 @@ import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagra
     September 28, 2026 (github.com/trulou1028/neuron-shift, commits babbaa6,
     b42b46f). Wording is condensed from that source; no new claims. */}
 
-<p className="mt-6 text-body text-foreground-muted">Independent concept prototype, not built for a customer. Not affiliated with or endorsed by any company. All operational data is simulated. No live model, telemetry, or operator interviews.</p>
+<p className="mt-6 text-body text-foreground-muted">Independent concept prototype. Not built for, affiliated with, or endorsed by any company. All data is simulated. No live model, telemetry, or operator interviews.</p>
 
-<ArtifactFrame marks={[{ x: 77.4, y: 22.6, w: 21.3, h: 14.4, label: "Neuron proposes, the operator decides" }]} url="neuron-shift.vercel.app" src="/work/neuron-shift/console.webp" alt="The Neuron Shift console. An investigation rail on the left, the power path in the middle running from the utility feed down to two racks, and the selected asset on the right. The affected path is traced in amber, and two assets are outlined in red because a decision is owed on them." width={2880} height={1800} caption="The console after taking the shift. Amber traces the investigated path. Red marks where a person owes a decision. All values are simulated." />
+<ArtifactFrame marks={[{ x: 77.4, y: 22.6, w: 21.3, h: 14.4, label: "Neuron proposes, the operator decides" }]} url="neuron-shift.vercel.app" src="/work/neuron-shift/console.webp" alt="The Neuron Shift console. An investigation rail on the left, the power path in the middle running from the utility feed down to two racks, and the selected asset on the right. The affected path is traced in amber, and two assets are outlined in red because a decision is owed on them." width={2880} height={1800} caption="The console after taking the shift. Amber traces the investigated path. Red marks a decision owed." />
 
 <p className="mt-6">[Try the prototype](https://neuron-shift.vercel.app/) · [Full case study](https://neuron-shift.vercel.app/case-study.html) · [Source code](https://github.com/trulou1028/neuron-shift)</p>
 
 <div className="mt-12 flex flex-col gap-12">
-<CaseStudySection id="premise" title="The shift starts here. What does the next operator inherit?" eyebrow="Premise">
+<CaseStudySection id="premise" title="What does the next operator inherit?" eyebrow="Premise">
 
-At 19:00 one operator goes home and another takes responsibility for the building. What changed? What was investigated and deliberately left open? What must the new operator not touch, because someone already decided otherwise?
+At 19:00 one operator goes home and another takes over the building. What changed, what was left open on purpose, and what must they not touch?
 
-Neuron already holds the telemetry, topology, incidents, and procedures. The gap is not data. Most systems keep what happened and lose why a person chose what they chose.
+The gap is not data. Systems keep what happened and lose why a person chose it.
 
-> Do not only preserve knowledge for later search. Put the right knowledge into the exact moment responsibility changes hands.
+> Put the right knowledge into the exact moment responsibility changes hands.
 
-The same applies to the model. Neuron proposes, the operator decides, and the decision and its reason become the record the next shift inherits.
+Neuron proposes, the operator decides, and the decision and its reason become the record the next shift inherits. For the arriving shift engineer, the costliest mistake is undoing a decision a colleague made on purpose.
 
-### Who it is for
-
-A critical facilities technician or shift engineer, arriving rather than leaving, with a building to answer for. Handover happens twice a day and is the most repeated moment in the operation. The window is short, and the valuable part is what was left alone: the costliest mistake is undoing a decision a colleague made on purpose.
-
-This profile comes from public material and reasoning, not interviews.
-
-<ArtifactFrame frame="none" src="/work/neuron-shift/brief.webp" alt="The shift brief. Item 01, UPS-A1 battery impedance, is open and shows six rows from what changed to what you need to do, with an Open on graph button. Below it, a list of what changed since 19:02." width={1280} height={1926} caption="The shift brief opens on load. Each item keeps the reasoning, not only the data." className="mx-auto max-w-md" />
+<ArtifactFrame frame="none" src="/work/neuron-shift/brief.webp" alt="The shift brief. Item 01, UPS-A1 battery impedance, is open and shows six rows from what changed to what you need to do, with an Open on graph button. Below it, a list of what changed since 19:02." width={1280} height={1926} caption="The shift brief opens on load and keeps the reasoning, not only the data." className="mx-auto max-w-md" />
 
 </CaseStudySection>
 
 <CaseStudySection id="chat" title="Chat is the right fallback and the wrong default" eyebrow="Position on chat">
 
-A chat box asks the operator for the question at the moment they have the least time and the least certainty about what to ask. Its answer does not attach to an asset, does not persist, and cannot be inherited. So every AI surface in the prototype follows three rules:
+A chat box asks for a question when the operator has the least time to form one, and its answer does not pass to the next shift. So every AI surface follows three rules:
 
 - **It attaches to objects.** Selecting an asset is the query.
-- **Its output is interface state.** "What happens if this fails" is answered by drawing on the graph.
-- **What you accept or override joins the record.** That makes AI reasoning inheritable.
+- **Its output is interface state.** Failure impact is drawn on the graph.
+- **What you accept or override joins the record.** AI reasoning becomes inheritable.
 
-Chat is still good at the question nobody anticipated. A command bar that returns a reconfigured interface instead of a paragraph would keep that strength. I scoped it out.
+Chat still suits the question nobody anticipated. I scoped it out.
 
 </CaseStudySection>
 
 <CaseStudySection id="decisions" title="The calls, and what each one argues against" eyebrow="Design decisions">
 
-**Autonomy is shown, not implied.** Every recommendation lists what Neuron does alone, what needs approval, and what it must never touch. A promise about behavior builds more trust than a confidence score.
+**Autonomy is shown, not implied.** Each recommendation lists what Neuron does alone, what needs approval, and what it must never touch. That promise builds more trust than a confidence score.
 
-**Friction scales with reversibility.** Raising an alert threshold is one click. Transferring critical load takes four checks and the asset name typed back. A one-click approve on a consequential action invites rubber stamping.
+**Friction scales with reversibility.** Raising an alert threshold is one click. Transferring critical load takes four checks and the asset name typed back.
 
-<ArtifactFrame marks={[{ x: 3.8, y: 55.7, w: 92.4, h: 32.4, label: "Friction scales with reversibility" }]} frame="none" src="/work/neuron-shift/gate.webp" alt="The decision dialog for transferring critical load. It lists what Neuron does alone, what needs approval, and what it never does, with the last two struck through. Approve is selected, four pre-flight checks are ticked, and UPS-A1 is typed into the confirmation field." width={1240} height={1566} caption="A consequential approval: four checks and the asset name typed back. Nothing is executed; the prototype records the decision." className="mx-auto max-w-lg" />
+<ArtifactFrame marks={[{ x: 3.8, y: 55.7, w: 92.4, h: 32.4, label: "Friction scales with reversibility" }]} frame="none" src="/work/neuron-shift/gate.webp" alt="The decision dialog for transferring critical load. It lists what Neuron does alone, what needs approval, and what it never does, with the last two struck through. Approve is selected, four pre-flight checks are ticked, and UPS-A1 is typed into the confirmation field." width={1240} height={1566} caption="A consequential approval. Nothing is executed; the prototype records the decision." className="mx-auto max-w-lg" />
 
-**Approve and Reject is the wrong pair.** The choices are Approve, Defer with a trigger, Approve with changes, and Reject. Deferring names what brings it back. Overriding requires a reason. In operations the common right answer is "not yet", and an override is an expert disagreeing with the model, which is exactly the knowledge the industry is losing.
+**Approve and Reject is the wrong pair.** The choices are Approve, Defer with a trigger, Approve with changes, and Reject. An override needs a reason: expert disagreement with the model is the knowledge the industry is losing.
 
-**The learning layer is not the product.** An earlier version taught the domain inside the operator tool. Real operators know what a PDU is. The teaching now lives in a separate layer, off by default.
+**The learning layer is not the product.** Real operators know what a PDU is, so domain teaching is a separate layer, off by default.
 
 <SystemDiagram title="The inherited record" description="Each shift-brief item keeps six fields: what changed, what we know, what was decided, why, who decided, and what you need to do.">
   <FlowDiagram stages={[
@@ -72,32 +66,30 @@ Chat is still good at the question nobody anticipated. A command bar that return
 
 <CaseStudySection id="color" title="One meaning per color" eyebrow="Color semantics">
 
-The chrome carries no hue at all. Color only ever means state. Green is flowing or decided. Amber is a condition to watch, a state of the equipment. Red means a person owes a decision, a state of the work, not the plant; deciding clears it.
-
-The proof case is Rack R-42. It sits at 92 percent of its budget and stays amber, because nobody owes a decision on it. The canvas shows where judgment is outstanding, not just where the plant is unhappy.
+Color only means state. Green is flowing or decided. Amber is an equipment condition to watch. Red means a person owes a decision. Rack R-42 sits at 92 percent of its budget and stays amber, because nobody owes a decision on it.
 
 <div className="mt-8 grid gap-4 sm:grid-cols-2">
 <ArtifactFrame frame="none" src="/work/neuron-shift/colors.webp" alt="The power path at rest. SWGR-A and UPS-A1 are outlined in red with Needs your decision. Rack R-42 reads 18.6 kW in amber." width={1670} height={1696} caption="Before: two decisions owed." className="mt-0" />
-<ArtifactFrame frame="none" src="/work/neuron-shift/decided.webp" alt="The same power path after both recommendations were approved. No red remains. Each asset reads Decided by you, and a green Approved card is pinned beside each one." width={1670} height={1696} caption="After: both decided and pinned. Rack R-42 stays amber throughout." className="mt-0" />
+<ArtifactFrame frame="none" src="/work/neuron-shift/decided.webp" alt="The same power path after both recommendations were approved. No red remains. Each asset reads Decided by you, and a green Approved card is pinned beside each one." width={1670} height={1696} caption="After: both decided. Rack R-42 stays amber." className="mt-0" />
 </div>
 
-**Losing power is shown as absence, not as red.** An earlier version drew the failure preview in dashed red. That gave red a second meaning right after the visitor learned it means "your call". Now the flow stops, the line turns to gray dashes, and the asset goes dark.
+**Losing power is shown as absence, not as red.** The flow stops, the line turns to gray dashes, and the asset goes dark.
 
 <div className="mt-8 grid gap-4 sm:grid-cols-2">
 <ArtifactFrame frame="none" src="/work/neuron-shift/impact-ups.webp" alt="Failure preview for UPS-A1. Its lines are dashed, but PDU-05 and both racks are outlined in green and labeled Held by redundancy." width={1670} height={1472} caption="If UPS-A1 fails, redundancy holds everything below it." className="mt-0" />
-<ArtifactFrame frame="none" src="/work/neuron-shift/impact-pdu.webp" alt="Failure preview for PDU-05. Both racks below it go dark with dashed outlines, struck-through readings, and the label Loses power." width={1670} height={1472} caption="If PDU-05 fails, both racks go dark. Neither result is written by hand." className="mt-0" />
+<ArtifactFrame frame="none" src="/work/neuron-shift/impact-pdu.webp" alt="Failure preview for PDU-05. Both racks below it go dark with dashed outlines, struck-through readings, and the label Loses power." width={1670} height={1472} caption="If PDU-05 fails, both racks go dark." className="mt-0" />
 </div>
 
 </CaseStudySection>
 
-<CaseStudySection id="unguided" title="Designing for a visitor nobody walks through it" eyebrow="The unguided visitor">
+<CaseStudySection id="unguided" title="Built for a visitor on their own" eyebrow="The unguided visitor">
 
-The first version assumed I would present it. In a portfolio, nobody does. A visitor arrives from a link, has a couple of minutes, and does not know the domain. So the prototype makes its own argument: on a first visit, a guided tour covers the core ideas in seven steps.
+In a portfolio, nobody walks the visitor through it. So a seven-step tour runs on the first visit.
 
-- **Every step asks for a real action.** A tour that describes buttons is a slideshow; one that asks you to press them lets the product demonstrate the claim.
+- **Every step asks for a real action**, not a description of one.
 - **Steps complete on state, not on clicks.** Exploring ahead is never punished.
-- **"Do it for me", with one exception.** Every task can be performed for you, except the consequential approval.
-- **Phones get their own page.** The console needs a laptop-sized screen, so a phone shows the idea and what the colors mean instead of a squeezed layout.
+- **"Do it for me" covers every task** except the consequential approval.
+- **Phones get their own page** instead of a squeezed console.
 
 <ArtifactFrame url="neuron-shift.vercel.app" src="/work/neuron-shift/tour.webp" alt="The guided tour on step 5 of 7. A light card reads: now compare a single point of failure. PDU-05 is ringed on the graph, both racks below it are dark with struck-through readings, and the task Select PDU-05 on the graph is checked off." width={2880} height={1800} caption="Step 5 of 7. The card places itself where it hides the fewest assets." />
 
@@ -105,29 +97,23 @@ The first version assumed I would present it. In a portfolio, nobody does. A vis
 
 <CaseStudySection id="technical" title="Where the engineering went" eyebrow="Building the prototype">
 
-React 19, TypeScript, Vite, and React Flow. The interesting parts are not the stack.
+**Impact is computed, not written.** The preview removes the selected asset and reruns reachability from the utility source. The topology is simplified and does not model generators.
 
-**Impact is computed, not written.** The preview removes the selected asset and reruns reachability from the utility source. Unreachable means it loses power; still reachable downstream means redundancy holds it. It is a simplified topology, not an engineering simulation, and it does not model generators.
+**Accessibility is part of the work.** Nodes are keyboard selectable, dialogs trap focus, and every colored state is named in text.
 
-**Never ship an affordance you cannot honor.** The nodes looked draggable but every drag was discarded. I found the cause in the graph library's source, then confirmed it by dragging a node and measuring that it had not moved.
-
-**Accessibility is part of the work.** Nodes are keyboard selectable, dialogs trap focus, continuous motion stops under the reduced-motion preference, and every colored state is also named in text.
-
-**How it was built.** I built it with an AI pair. I wrote the plans and acceptance criteria, gated each phase, checked every result in a real browser, and made every product and design call. The AI wrote most of the code. A second pass redesigned it for a visitor on their own rather than an interviewer with me in the room.
+**How it was built.** I built it with an AI pair in React 19, TypeScript, Vite, and React Flow. I wrote the plans and acceptance criteria, checked every result in a real browser, and made every product and design call. The AI wrote most of the code.
 
 </CaseStudySection>
 
 <CaseStudySection id="limits" title="The next test needs a real operator" eyebrow="Limits and next steps">
 
-Every value is simulated, and the interface says so. No model is called; reasoning and confidence figures are written and labeled illustrative. Decisions persist in the browser only. I do not claim to know data center operations. I claim to have learned enough to build something an expert can correct.
+Reasoning and confidence figures are labeled illustrative. Decisions persist in the browser only. I do not claim to know data center operations, only enough to build something an expert can correct.
 
-What comes next, in order:
+Next:
 
-1. Put it in front of one real operator. Six fields felt right to me. Nobody who runs a facility has told me so.
-2. An authoring flow for the outgoing operator. How do you get a tired operator at 18:55 to write one honest sentence about why?
-3. A decision timeline that shows model confidence and human decisions moving together.
-
-An open question sits behind the work: could an intelligence layer carry the newest person on site through a failure? My working answer is to hand capability downward in proportion to reversibility, and to aim for a competent first responder rather than a novice hero.
+1. Test it with one real operator. Six fields felt right to me, but nobody who runs a facility has confirmed that.
+2. An authoring flow. How does a tired operator at 18:55 write one honest sentence about why?
+3. A timeline that shows model confidence and human decisions together.
 
 </CaseStudySection>
 </div>

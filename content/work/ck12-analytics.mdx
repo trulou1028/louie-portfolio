@@ -5,27 +5,23 @@ import { AnalyticsEvaluation } from "@/components/portfolio/analytics-evaluation
 
 <CaseStudySection id="context" title="A prediction still leaves a teacher with a decision" eyebrow="Context">
 
-Before assigning work, a teacher needs to know who may need support. Afterward, they need to understand what happened and what to do next. A score alone cannot answer both questions.
+Before an assignment, a teacher needs to know who may need support. After it, what to do next. One score cannot answer both.
 
-In CK-12's [focus groups on AI and Flexi](https://info.ck12.org/impact-team-studies/focus-group-2), most of the eight teachers asked for class trends on upcoming content. Six named a lack of transparency in how AI assesses students as a reason not to trust it.
+In CK-12's [focus groups](https://info.ck12.org/impact-team-studies/focus-group-2), most of the eight teachers asked for class trends on upcoming content. Six cited a lack of transparency in AI assessment as a reason for distrust.
 
-Foresights and Insights connect those moments. The challenge was to make a model's signals useful without making them look more certain, or more explanatory, than they were.
+My goal: make the model's signals useful without making them look more certain than they were.
 
 </CaseStudySection>
 
 <CaseStudySection id="role" title="What I owned" eyebrow="Scope">
 
-As Lead Product Designer, I owned the experience architecture, interaction model, prototypes, and visual language. I worked with educators, Product, Data Science, and Engineering to connect the analytics to classroom decisions.
-
-The interface work is my contribution. The studies cited below are CK-12's published evaluations, and their findings are attributed separately.
+As Lead Product Designer, I owned the experience architecture, interaction model, prototypes, and visual language. I worked with educators, Product, Data Science, and Engineering. The studies below are CK-12's published evaluations, not my research.
 
 </CaseStudySection>
 
 <CaseStudySection id="decision-prediction" title="Separate prediction from diagnosis" eyebrow="Decision 01">
 
-Combining everything into one performance score would make scanning easier, but blur two different jobs. Foresights supports planning before an assignment. Insights supports investigation after students have worked.
-
-I structured the experience around those moments: anticipate where support may be needed, inspect the evidence that comes back, then decide what to change. This keeps a prediction from becoming an explanation of a student's behavior.
+One performance score is easy to scan but blurs two jobs: planning and investigation. I kept Foresights and Insights apart so a prediction does not pose as an explanation.
 
 <SystemDiagram title="Two moments, connected" description="Before an assignment, Foresights supports planning. After practice, Insights supports investigation and the teacher chooses the next action. This diagram describes the experience model, not a measured outcome.">
   <FlowDiagram stages={[
@@ -40,30 +36,23 @@ I structured the experience around those moments: anticipate where support may b
 
 <CaseStudySection id="decision-uncertainty" title="Show a range, then help someone interpret it" eyebrow="Decision 02">
 
-A single predicted value is easy to rank and easy to overread. The Foresights view uses ranges to make uncertainty visible. Missing or limited evidence also matters: an absence of data should not read as an absence of ability.
+A single predicted value is easy to overread, so Foresights shows a range (see the demo-class chart at the top). But teachers still need to know what a range lets them conclude.
 
-The range chart at the top of this page is the supplied demo-class interface. It makes uncertainty visible, but visibility is only the first step. Teachers still have to understand what the range permits them to conclude. The later comprehension results show why that distinction matters.
-
-<ArtifactFrame marks={[{ x: 19, y: 36.3, w: 39.6, h: 29.7, label: "No prediction without enough data" }]} url="ck12.org" src="/work/ck12-analytics/not-enough-data.webp" alt="CK-12 Foresights for a whole class with no prediction shown. The skill level chart is greyed out behind a message: We need more performance data. To start surfacing Foresights, students need to have completed a couple of practice questions related to this subject. A Try Demo Class button sits under it. The Learning Analytics panel on the right shows its predicted missed questions bars as empty grey bars." width={2000} height={1200} caption="No prediction without enough data. Foresights says what data it needs, and the per-question bars stay grey, so missing data does not read as low ability. Supplied product screenshot." />
-
+<ArtifactFrame marks={[{ x: 19, y: 36.3, w: 39.6, h: 29.7, label: "No prediction without enough data" }]} url="ck12.org" src="/work/ck12-analytics/not-enough-data.webp" alt="CK-12 Foresights for a whole class with no prediction shown. The skill level chart is greyed out behind a message: We need more performance data. To start surfacing Foresights, students need to have completed a couple of practice questions related to this subject. A Try Demo Class button sits under it. The Learning Analytics panel on the right shows its predicted missed questions bars as empty grey bars." width={2000} height={1200} caption="No prediction without enough data. Foresights says what data it needs and the bars stay grey, so missing data does not read as low ability. Supplied product screenshot." />
 
 </CaseStudySection>
 
 <CaseStudySection id="decision-investigation" title="Keep skill and engagement separate" eyebrow="Decision 03">
 
-Low performance can come with very different patterns of effort. Collapsing skill and engagement into one score hides that difference. Insights separates the signals so a teacher can notice a class pattern and inspect an individual student before acting.
+Low performance can come with different patterns of effort, and one score hides that. Insights separates skill from engagement, so a teacher can spot a class pattern, then check one student before acting.
 
-The interaction moves from overview to student detail. The goal is to support an investigation, not let the chart prescribe an intervention on its own.
-
-<ArtifactFrame marks={[{ x: 72.5, y: 24.5, w: 25.8, h: 69.5, label: "One student's evidence, beside the class" }]} url="ck12.org" src="/work/ck12-analytics/insights.png" alt="Insights demo-class scatterplot separating skill from engagement, with a student detail panel." width={1280} height={768} caption="Supplied demo-class view: the class pattern remains visible while the teacher inspects a student's evidence. These are demonstration records, not reported classroom outcomes." />
+<ArtifactFrame marks={[{ x: 72.5, y: 24.5, w: 25.8, h: 69.5, label: "One student's evidence, beside the class" }]} url="ck12.org" src="/work/ck12-analytics/insights.png" alt="Insights demo-class scatterplot separating skill from engagement, with a student detail panel." width={1280} height={768} caption="One student's evidence, beside the class. Supplied demo-class view with demonstration records." />
 
 </CaseStudySection>
 
-<CaseStudySection id="system" title="The interface depends on the evidence underneath it" eyebrow="System consequence">
+<CaseStudySection id="system" title="The interface depends on the evidence beneath it" eyebrow="System consequence">
 
-A teacher can act more precisely when the evidence refers to a particular concept. An assignment spanning several concepts makes a single result harder to interpret. The design therefore exposed a dependency between content structure, assignment structure, and the quality of the teacher's decision.
-
-This is a system constraint, not something chart styling can resolve. The case study does not attribute a broader curriculum or platform change to this interface work.
+Evidence is easier to act on when it maps to one concept. Assignments that span several concepts blur the result. Chart styling cannot fix that.
 
 <SystemDiagram title="From content to a decision" description="Concept structure informs an assignment, which produces evidence that a teacher interprets before choosing an action.">
   <FlowDiagram stages={[
@@ -79,18 +68,18 @@ This is a system constraint, not something chart styling can resolve. The case s
 
 <CaseStudySection id="evaluation" title="Teachers saw value. Interpretation still needed work." eyebrow="Evaluation">
 
-CK-12's published evaluations each involved ten teachers using a demo class. They measured perceived usefulness and comprehension, rather than classroom learning gains or actual time saved.
+Each CK-12 study used ten teachers and a demo class. They measured perceived usefulness and comprehension, not learning gains or time saved.
 
 <AnalyticsEvaluation />
 
-The graph difficulty is the important counterweight to the positive usefulness ratings. A valuable concept can still demand too much interpretation. These small evaluations support that design question; they do not establish broad adoption or a causal learning outcome.
+Graph difficulty offsets the usefulness ratings. A valuable concept can still demand too much interpretation.
 
 </CaseStudySection>
 
 <CaseStudySection id="learnings" title="Put the explanation before the visualization" eyebrow="Next iteration">
 
-My next iteration would start with a plain-language interpretation and let the teacher inspect the chart as supporting evidence. I would test whether teachers can explain the uncertainty, identify what they do not know, and choose a defensible next step with a real assignment.
+Next, I would put a plain-language interpretation first and the chart second. I would test whether teachers can explain the uncertainty and choose a defensible next step on a real assignment. Success means better interpretation, not a higher rating.
 
-The result I would look for is better interpretation, not simply a higher usefulness rating. The related student-facing question appears in [Flexi: helping students get unstuck](/work/flexi).
+For the student side, see [Flexi: helping students get unstuck](/work/flexi).
 
 </CaseStudySection>

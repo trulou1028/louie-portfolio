@@ -189,7 +189,7 @@ export const resume: Resume = {
   ],
 
   additional: [
-    "Former professional football player in the CFL and Academic All-American at the University of Utah.",
+    "Former professional football player in the CFL. At the University of Utah, the only unanimous Consensus All-American in program history (2008) and a first-team Academic All-American.",
   ],
 
   pdfPath: "/resume/louie-sakoda-resume.pdf",

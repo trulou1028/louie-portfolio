@@ -6,25 +6,19 @@ import { ARCHITECTURE_DESCRIPTION } from "@/content/work/offboard-architecture";
 
 <CaseStudySection id="context" title="A career transition creates work before the application" eyebrow="Context and ownership">
 
-Researching a company, tailoring a resume, preparing outreach, and tracking progress often means rebuilding the same context in separate tools. I designed and engineered Offboard to connect that work.
-
-My scope spans product direction, interaction design, implementation, and operation. Job Packets is the focused workflow in this story: turning a role into research and editable application materials, while preserving the person's decision about whether to pursue it.
+A job search splits across separate tools: research, resume, outreach, and tracking. I designed and engineered Offboard to connect that work, from product direction to operation. This story follows Job Packets, which turn a role into research and editable application materials.
 
 </CaseStudySection>
 
 <CaseStudySection id="system" title="Give each opportunity a persistent workspace" eyebrow="Product model">
 
-Treating a job as a row in a tracker leaves its supporting work scattered elsewhere. I made the opportunity the organizing unit for the role, company, people, research, materials, preparation, tasks, and history.
-
-LUMO, the AI layer, works across that stored context. A Job Packet is one coordinated workflow inside the broader product. It is not a separate story about a separate application.
+I made the opportunity, not a tracker row, the organizing unit. It holds the role, company, people, research, materials, preparation, tasks, and history. LUMO, the AI layer, works across that context.
 
 </CaseStudySection>
 
-<CaseStudySection id="decision-risk" title="Evaluate the opportunity before tailoring the application" eyebrow="Decision 01">
+<CaseStudySection id="decision-risk" title="Check the role before tailoring anything" eyebrow="Decision 01">
 
-Automating more documents is not helpful if the opportunity deserves a second look. The packet workflow assesses the role before generating tailored materials. A risk gate can pause progress so the person can decide whether to continue.
-
-This is a warning and a choice, not proof that a listing is fraudulent or a guarantee that a role is good. The product needs to make the assessment useful without pretending to know an employer's intent.
+The packet assesses the role first. A risk gate can pause it so the person decides whether to continue. The gate is a warning, not proof that a listing is fake.
 
 <SystemDiagram title="The risk gate" description="Conceptual workflow: role intelligence and risk assessment precede tailored generation; a flagged opportunity pauses for the user's decision.">
   <FlowDiagram stages={[
@@ -36,17 +30,15 @@ This is a warning and a choice, not proof that a listing is fraudulent or a guar
   ]} />
 </SystemDiagram>
 
-<ArtifactFrame marks={[{ x: 29.9, y: 51.4, w: 35.5, h: 22.3, label: "The pause for the person's choice" }]} url="offboard.co" src="/work/offboard/risk-gate.webp" alt="An Offboard packet paused under Action Required. Job Details, Ghost Check, and Application are done, and the ghost check reads 84 out of 100, high risk. A card reads High Ghost Risk Detected, 84/100: This job posting shows signs it may not be a real, active listing. You can still proceed if you have additional information. Under it are three options: Continue Anyway, Save Application Only, and Discard. The pipeline on the right has stopped after Save Application." width={2000} height={1472} caption="The pause for the person's choice. After the ghost check, a high score stops the packet before any tailoring. The person can continue, save only the application, or discard it. A test packet: the role is sample data, and its score was set to show the gate. Supplied product screenshot." />
+<ArtifactFrame marks={[{ x: 29.9, y: 51.4, w: 35.5, h: 22.3, label: "The pause for the person's choice" }]} url="offboard.co" src="/work/offboard/risk-gate.webp" alt="An Offboard packet paused under Action Required. Job Details, Ghost Check, and Application are done, and the ghost check reads 84 out of 100, high risk. A card reads High Ghost Risk Detected, 84/100: This job posting shows signs it may not be a real, active listing. You can still proceed if you have additional information. Under it are three options: Continue Anyway, Save Application Only, and Discard. The pipeline on the right has stopped after Save Application." width={2000} height={1472} caption="The pause for the person's choice. A high ghost check score stops the packet before tailoring. The person can continue, save only the application, or discard it. A test packet with sample data and a set score. Supplied product screenshot." />
 
-<ArtifactFrame url="offboard.co" src="/work/offboard/packet-stopped.webp" alt="An Offboard packet that stopped. The message reads: We couldn't finish this packet. The job page did not include enough job details to build a packet. A No credits charged label sits under it, then three options: try again with this link, try a different job, or paste the job description instead. The packet pipeline on the right shows the same message at its last step." width={2000} height={999} caption="A stop before tailoring, in the product. When a job page does not give enough detail to assess the role, the packet stops and asks the person what to do next. No credits are charged. Supplied product screenshot." />
+<ArtifactFrame url="offboard.co" src="/work/offboard/packet-stopped.webp" alt="An Offboard packet that stopped. The message reads: We couldn't finish this packet. The job page did not include enough job details to build a packet. A No credits charged label sits under it, then three options: try again with this link, try a different job, or paste the job description instead. The packet pipeline on the right shows the same message at its last step." width={2000} height={999} caption="When a job page lacks the detail to assess the role, the packet stops and asks what to do next. No credits are charged. Supplied product screenshot." />
 
 </CaseStudySection>
 
-<CaseStudySection id="decision-control" title="Automate preparation while keeping authorship with the person" eyebrow="Decision 02">
+<CaseStudySection id="decision-control" title="Automate the preparation, keep the person as author" eyebrow="Decision 02">
 
-The person should be able to inspect and edit the result before using it. Packet outputs remain drafts. Nothing sends itself to an employer. If a resume is missing, the workflow can skip resume-dependent writing and return a partial packet instead of inventing the person's experience.
-
-That does not mean every internal action needs approval. Filing results into the tracker can happen automatically. The meaningful boundary is between organizing work inside the product and representing the person outside it.
+Outputs stay editable drafts. Nothing sends itself to an employer. With no resume, the packet comes back partial instead of inventing experience. Filing into the tracker is automatic. The line sits between organizing work inside the product and speaking for the person outside it.
 
 <SystemDiagram title="Draft, review, decide" description="Conceptual control boundary: the product prepares and files editable materials; the person reviews them and decides what to use. This is not a screenshot of a confirmation dialog.">
   <FlowDiagram stages={[
@@ -57,37 +49,29 @@ That does not mean every internal action needs approval. Filing results into the
   ]} />
 </SystemDiagram>
 
-<ArtifactFrame marks={[{ x: 62.3, y: 48.6, w: 36, h: 27.5, label: "Each change shown, the original struck through" }]} url="offboard.co" src="/work/offboard/resume-review.webp" alt="The Tailored Resume section of an Offboard packet: Tailored for this posting, 6 changes applied, with Download tailored resume and Preview buttons and a link to view or adjust it. The preview panel on the right shows the resume. Each changed line shows the original struck through, with the rewrite highlighted under it. The contact details are blurred." width={2000} height={999} caption="The tailored resume stays a draft with each change shown, the original struck through above the rewrite. The person previews it, adjusts it, and decides whether to download it. Contact details blurred. Supplied product screenshot." />
+<ArtifactFrame marks={[{ x: 62.3, y: 48.6, w: 36, h: 27.5, label: "Each change shown, the original struck through" }]} url="offboard.co" src="/work/offboard/resume-review.webp" alt="The Tailored Resume section of an Offboard packet: Tailored for this posting, 6 changes applied, with Download tailored resume and Preview buttons and a link to view or adjust it. The preview panel on the right shows the resume. Each changed line shows the original struck through, with the rewrite highlighted under it. The contact details are blurred." width={2000} height={999} caption="A tailored resume draft: each change shown, the original struck through above its rewrite. The person previews, adjusts, and decides whether to download. Contact details blurred. Supplied product screenshot." />
 
 </CaseStudySection>
 
-<CaseStudySection id="decision-context" title="Reuse the context, not just the generated text" eyebrow="Decision 03">
+<CaseStudySection id="decision-context" title="Parse the role once, reuse it everywhere" eyebrow="Decision 03">
 
-Parsing the role once and sharing research across downstream tasks avoids asking each step to rediscover the company and requirements. The same context can inform resume work, outreach, and interview preparation.
-
-The design tradeoff is consistency versus stale information. Reuse is useful only while the underlying context remains relevant. This case study describes the coordination model; it does not claim a measured cost or latency reduction.
+The workflow parses the role once and shares that research with resume work, outreach, and interview preparation. Reuse buys consistency at the risk of stale information.
 
 </CaseStudySection>
 
 <CaseStudySection id="decision-entry-point" title="A strong workflow can still be the wrong starting point" eyebrow="What changed">
 
-Job Packets initially carried too much of the burden of introducing Offboard. It assumes someone already has a role worth pursuing. A person facing a fresh career transition may first need direction and a manageable next step.
+A packet assumes the person already has a role worth pursuing. Someone new to a career transition may first need direction and a manageable next step. Early data, below, showed that gap.
 
-Early cohort data shows the same gap. In an August 2026 signup cohort of 38 people, 92% finished onboarding, but 8% built a packet in their first days.
+So I made the start plan-first and moved packets later. The question became “Can this person take their first useful action?”
 
-I moved the product story toward a plan-first journey, with packets later in the sequence. That changes the design question from “Can we generate a complete packet?” to “Can this person take their first useful action?”
-
-This is a product-direction correction. I do not yet present a measured activation or conversion lift for the change.
-
-<ArtifactFrame url="offboard.co" src="/work/offboard/layoff-plan.webp" alt="Offboard's Layoff Plan page. The intro reads: The steps that fit your situation. Do them in any order. Mark each one done as you finish. 5 of 24 done. The first group, Protect the first week, lists steps such as taking 20 minutes before signing or replying, saving layoff documents in one place, writing down key dates, and filing for unemployment benefits." width={2000} height={999} caption="The plan-first start. The Layoff Plan gives the person steps that fit their situation, in groups they can do in any order. Packets come later in the sequence. Supplied product screenshot." />
+<ArtifactFrame url="offboard.co" src="/work/offboard/layoff-plan.webp" alt="Offboard's Layoff Plan page. The intro reads: The steps that fit your situation. Do them in any order. Mark each one done as you finish. 5 of 24 done. The first group, Protect the first week, lists steps such as taking 20 minutes before signing or replying, saving layoff documents in one place, writing down key dates, and filing for unemployment benefits." width={2000} height={999} caption="The plan-first start. The Layoff Plan gives steps that fit the person's situation, in groups they can do in any order. Supplied product screenshot." />
 
 </CaseStudySection>
 
 <CaseStudySection id="architecture" title="Architecture" eyebrow="How it is built">
 
-I designed and built the product with AI development tools as part of the workflow. The client uses Vite, React, TypeScript, Tailwind, and shadcn/ui. Supabase provides Postgres with per-user row-level security, and Deno edge functions coordinate server-side work.
-
-The architecture supports persistent context, AI workflows, document generation, authentication, credits, employer workspaces, and paid plans. Those are product capabilities, not evidence of adoption or revenue.
+I built it with AI development tools in the loop. The client runs Vite, React, TypeScript, Tailwind, and shadcn/ui. Supabase Postgres enforces per-user row-level security. Deno edge functions run server-side work.
 
 <SystemDiagram title="How data and actions move" description={ARCHITECTURE_DESCRIPTION}>
   <ArchitectureMap />
@@ -97,30 +81,26 @@ The architecture supports persistent context, AI workflows, document generation,
 
 <CaseStudySection id="product" title="A completed workflow becomes a reviewable packet" eyebrow="Product">
 
-The product screenshot at the top of this page shows a completed Job Packet marked ready for review. The role, match assessment, research sections, and prepared materials stay together, with the pipeline visible alongside them.
+The screenshot at the top shows a completed Job Packet ready for review: role, match, research, and materials together beside the pipeline.
 
-<ArtifactFrame url="offboard.co" src="/work/offboard/packet.webp" alt="The same Offboard packet in the full app window. The navigation is on the left with Packets selected. The packet shows the Clever role card with a Worth a shot label, a partial match of 58, a ghost risk of 28, and five paths, followed by the Ghost Analysis, Company Intel, and Role Match Analysis sections. The completed pipeline and the context panel are on the right." width={2000} height={1073} caption="The packet in the full app window. Each section opens in place, so the person can edit or regenerate it without leaving the packet. Supplied product screenshot." />
-
-The workflow completing is not the same as an application being sent. The packet gives the person a place to inspect the result and decide what to use next.
+<ArtifactFrame url="offboard.co" src="/work/offboard/packet.webp" alt="The same Offboard packet in the full app window. The navigation is on the left with Packets selected. The packet shows the Clever role card with a Worth a shot label, a partial match of 58, a ghost risk of 28, and five paths, followed by the Ghost Analysis, Company Intel, and Role Match Analysis sections. The completed pipeline and the context panel are on the right." width={2000} height={1073} caption="The packet in the full app window. Each section opens in place to edit or regenerate. Supplied product screenshot." />
 
 </CaseStudySection>
 
 <CaseStudySection id="outcomes" title="Live, with early signal on where people start" eyebrow="Outcome">
 
-Offboard is live, and I designed and built it end to end. The numbers are early and small, so I report them as shares of a named group. They show how people use the product; they do not show revenue or long-term retention.
+Offboard is live. The numbers are early and small. They show use, not revenue, long-term retention, or the effect of the plan-first change.
 
-- **The drop is the first packet, not onboarding.** In an August 2026 signup cohort of 38 people, 92% finished onboarding, 47% uploaded a resume, and 45% ran a ghost check. 8% built a packet in their first days.
-- **The next problem is the second packet.** Of the members who had built a full packet by September 2026, 72% had built only one. The next design work is the return trip.
-- **The ghost check travels on its own.** One LinkedIn post drove 150 public ghost checks in 24 hours. The public checker ran about 500 analyses in its first five weeks.
-- **Quality work is measured.** In September 2026, job search found the right role in its top ten results for all 20 test queries, up from one. The LUMO assistant passed 29 of 29 test cases, 22% faster, at about 80% lower model cost per test run.
-- **The system holds up under change.** The backend (188 functions and 175 tables) moved to a new Supabase project with about six minutes of downtime, no data lost, and no one signed out. It now runs more than 200 server functions and about 4,500 automated tests.
+- **The drop is the first packet, not onboarding.** Of 38 people who signed up in August 2026, 92% finished onboarding, 47% uploaded a resume, 45% ran a ghost check, and 8% built a packet in their first days.
+- **The next problem is the second packet.** By September 2026, 72% of members with a full packet had built only one.
+- **The ghost check spreads on its own.** One LinkedIn post drove 150 public ghost checks in 24 hours. The public checker ran about 500 analyses in its first five weeks.
+- **Quality is measured.** In September 2026, job search put the right role in the top ten for all 20 test queries, up from one. LUMO passed 29 of 29 test cases, 22% faster, at about 80% lower model cost per run.
+- **The system holds up.** The backend (188 functions, 175 tables) moved to a new Supabase project with about six minutes of downtime, no data lost, and no one signed out. It runs more than 200 server functions and about 4,500 automated tests.
 
 </CaseStudySection>
 
 <CaseStudySection id="learnings" title="Sequence is part of the product" eyebrow="Reflection">
 
-A polished workflow can ask for the wrong commitment at the wrong time. The correction was to give the person's readiness as much attention as the packet's completeness.
-
-I would test the initial journey with people at different stages of a transition, observe where they hesitate, and check whether the next action is useful before measuring how much the system generates.
+A polished workflow can ask for the wrong commitment at the wrong time. Next, I would test the first journey with people at different stages of a transition, watch where they hesitate, and check that the next step is useful before measuring output.
 
 </CaseStudySection>

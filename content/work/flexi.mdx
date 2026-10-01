@@ -1,86 +1,76 @@
 import { CaseStudySection } from "@/components/portfolio/case-study-section";
 import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
 
-<CaseStudySection id="context" title="Getting help should leave the student able to continue" eyebrow="Context and ownership">
+<CaseStudySection id="context" title="Help should leave the student able to continue" eyebrow="Context and ownership">
 
-Flexi is CK-12's AI student tutor. As Lead UX Designer, I worked on the learning experience with Product, Engineering, Data Science, curriculum, and research partners. My work connected the tutor's capabilities to interactions a student could understand and use.
+Flexi is CK-12's AI student tutor. As Lead UX Designer, I worked with Product, Engineering, Data Science, curriculum, and research partners. I turned the tutor's capabilities into interactions students could use.
 
-The design problem was to help students through a point of confusion while keeping the learning effort with them. CK-12's overall platform reach is not a measure of this feature's impact.
+My goal: help students past confusion and keep the learning effort with them. CK-12's platform reach does not measure this feature's impact.
 
 </CaseStudySection>
 
 <CaseStudySection id="tension" title="An answer can satisfy the request and miss the learning goal" eyebrow="The tension">
 
-Refusing help can drive a student away. Supplying an answer without a path to understanding can turn the tutor into a shortcut. The interaction needs a useful middle: help now, followed by a clear way to clarify, practice, or go deeper.
-
-That also creates different expectations. Students want immediate assistance; teachers care about understanding and over-reliance; institutions need confidence in the experience students encounter.
+Refusing help can drive a student away. A bare answer turns the tutor into a shortcut. The middle path: help now, then a clear way to clarify, practice, or go deeper.
 
 </CaseStudySection>
 
 <CaseStudySection id="decision-scaffolding" title="Make the next learning move easy to ask for" eyebrow="Decision 01">
 
-A blank prompt assumes a student knows how to ask for better help. The supplied interface makes follow-up actions visible: simplify, add detail, use an analogy, translate, rephrase, or try a challenge.
+A blank prompt assumes a student knows how to ask for better help. The interface shows follow-up actions instead: simplify, add detail, use an analogy, translate, rephrase, or try a challenge.
 
-Those actions give the student ways to continue beyond the first answer. The tradeoff is between useful guidance and a menu that asks for another decision when someone is already confused. That makes the clarity of each choice part of the learning experience.
+The tradeoff: a menu asks a confused student for one more decision. So each choice must be clear.
 
 </CaseStudySection>
 
 <CaseStudySection id="decision-uncertainty" title="Give the student a way to inspect and recover" eyebrow="Decision 02">
 
-The interface distinguishes AI-generated content from a CK-12 Library explanation and lets students ask for a different explanation. Source labels and follow-up controls provide concrete points of orientation.
+The interface labels AI-generated content apart from CK-12 Library explanations. Students can ask for a different one. A source label is not a confidence estimate, but it helps the student orient.
 
-A source label is not a confidence estimate. The next question is whether a student recognizes when an explanation is not helping and can use these choices to recover.
-
-<ArtifactFrame marks={[{ x: 8.4, y: 25, w: 41.6, h: 8.6, label: "Each source is labeled" }]} url="ck12.org" src="/work/flexi/photosynthesis.webp" alt="Flexi photosynthesis explanation with AI-generated and CK-12 Library labels and follow-up learning actions." width={1920} height={1136} caption="Supplied Flexi product view: explanation sources and follow-up actions are visible. The image supports these interface choices, not a measured learning gain." />
+<ArtifactFrame marks={[{ x: 8.4, y: 25, w: 41.6, h: 8.6, label: "Each source is labeled" }]} url="ck12.org" src="/work/flexi/photosynthesis.webp" alt="Flexi photosynthesis explanation with AI-generated and CK-12 Library labels and follow-up learning actions." width={1920} height={1136} caption="Supplied Flexi product view. Each source is labeled, and follow-up actions are visible." />
 
 </CaseStudySection>
 
 <CaseStudySection id="decision-teacher" title="Teacher trust remains part of the question" eyebrow="Boundary">
 
-Teachers need to understand whether help is supporting learning or replacing it. This article demonstrates the student experience; teacher monitoring and pause controls are not substantiated by the available artifacts.
-
-The separate [Foresights and Insights case study](/work/ck12-analytics) covers teacher analytics. It addresses interpretation of assignment evidence, a distinct problem.
+Teachers need to know whether help supports learning or replaces it. This case study covers the student side. The [Foresights and Insights case study](/work/ck12-analytics) covers teacher analytics.
 
 </CaseStudySection>
 
 <CaseStudySection id="research" title="Later classroom research sharpens the question" eyebrow="Published evidence">
 
-A [Spring 2025 Flexi study](https://info.ck12.org/impact-team-studies/flexi-ck-12s-ai-student-tutor-spring-2025-study) by Leanlab Education, an external research nonprofit, followed ten middle- and high-school teachers in five states over six weeks, using surveys, diaries, focus groups, and interviews. Teachers reported more student engagement, confidence, and curiosity, time saved, and clearer insight into student thinking. They also named barriers: students struggled to write prompts, some explanations were hard for struggling readers, and some teachers worried about over-reliance. The study calls its findings early indicators, not conclusive.
+I did not author this research. A [Spring 2025 Flexi study](https://info.ck12.org/impact-team-studies/flexi-ck-12s-ai-student-tutor-spring-2025-study) by Leanlab Education, an external nonprofit, followed ten middle- and high-school teachers in five states over six weeks. Teachers reported more student engagement, confidence, and curiosity. They also named barriers: students struggled to write prompts, and some teachers worried about over-reliance. Leanlab calls these early indicators, not conclusive.
 
-In a separate [CK-12 comparison](https://info.ck12.org/impact-team-studies/teacher-comparative-test-overview), nine of ten teachers preferred Flexi overall to Khanmigo and Quizlet's Q-Chat, and all ten named its visual, interactive responses as an advantage.
+In a [CK-12 comparison](https://info.ck12.org/impact-team-studies/teacher-comparative-test-overview), nine of ten teachers preferred Flexi to Khanmigo and Quizlet's Q-Chat. All ten named its visual, interactive responses as an advantage.
 
-The prompting barrier is the same problem the follow-up actions address: a student who does not know how to ask can choose the next kind of help instead.
-
-I use this published research to evaluate the design question. I do not claim that I authored the study or that these later findings caused each interface decision shown here.
+The follow-up actions address that prompting barrier.
 
 </CaseStudySection>
 
 <CaseStudySection id="system" title="The follow-up is part of the answer" eyebrow="Interaction model">
 
-An explanation, its source, and the next learning action belong together. Separating them makes the student do more work to recover when the first response misses the mark.
-
-This model connects content and interaction. It does not establish that the system can infer understanding from engagement alone.
+An explanation, its source, and the next learning action belong together. Split them, and recovery from a weak answer takes more work.
 
 </CaseStudySection>
 
 <CaseStudySection id="product" title="A concrete path beyond the first response" eyebrow="Product">
 
-The product image at the top shows the follow-up menu alongside the conversation. The important detail is the invitation to choose the kind of help, rather than requiring the student to invent a better prompt.
+The image at the top shows the follow-up menu beside the conversation.
 
 </CaseStudySection>
 
 <CaseStudySection id="outcomes" title="Activity is not the same as learning" eyebrow="Evaluation">
 
-CK-12's [analysis of student dialogue](https://info.ck12.org/impact-team-studies/the-dialogue-that-drives-learning-with-ai-opportunities-for-growth-and-intervention) examined a sample of 5,000 students and selected 15 cases for closer qualitative study. It distinguishes deeper learning-oriented exchanges from more superficial use: students who grew asked follow-ups and checked their understanding, and students who did not tended to copy and paste.
+CK-12's [analysis of student dialogue](https://info.ck12.org/impact-team-studies/the-dialogue-that-drives-learning-with-ai-opportunities-for-growth-and-intervention) sampled 5,000 students and studied 15 cases closely. Students who grew asked follow-ups. Students who did not tended to copy and paste.
 
-Inside Adaptive Practice, Flexi offers "Give Me a Hint" and "Clarify This" and does not reveal the answer. There, direct answer-seeking questions fell from 72% of students' first questions to 52% by the eighth, and learning-oriented questions rose from 11% to 26%.
+In Adaptive Practice, Flexi offers "Give Me a Hint" and "Clarify This" and does not reveal the answer. There, direct answer-seeking questions fell from 72% of students' first questions to 52% by the eighth. Learning-oriented questions rose from 11% to 26%.
 
-That supports designing for the quality of a conversation, not its length. The analysis is descriptive and was run by CK-12: it does not isolate the effect of this interface or establish that my design caused an academic gain.
+The analysis is descriptive. It does not show that my design caused a learning gain. It does support designing for conversation quality over length.
 
 </CaseStudySection>
 
-<CaseStudySection id="learnings" title="Test whether the student can carry the understanding forward" eyebrow="Next question">
+<CaseStudySection id="learnings" title="Test whether the understanding carries forward" eyebrow="Next question">
 
-I would evaluate follow-up choices with a task that requires students to explain or apply what they learned afterward. The question is whether the support helps them proceed independently, not whether it increases message volume.
+I would test follow-up choices by asking students to explain or apply what they learned. The question is whether they can proceed on their own.
 
 </CaseStudySection>
