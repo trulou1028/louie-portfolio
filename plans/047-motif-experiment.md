@@ -25,6 +25,19 @@ Status: shipped to branch, 2026-10-10. Awaiting Louie's review.
    customer deployment.
 6. **Claim ledger.** Source M and claims M01 to M03.
 
+## Follow-up, same day (Louie's review)
+
+7. **Homepage.** Motif joins the Selected work grid after Neuron Shift.
+   Five tiles leave one alone in the last row, so that tile uses a new
+   `wide` shape: copy on the left, screenshot on the right, full row.
+8. **Studio screenshot** re-captured on the Settings view instead of Blog.
+9. **CK-12 placeholder removed.** The "early sketch" asset request is gone
+   from the CK-12 gallery. It only ever showed on the dev server.
+10. **Contact in the header.** A Contact button opens a panel with the email
+    address as text (with Copy), LinkedIn, Book time, and Resume. The mobile
+    menu shows the same list under its nav. Built on a new
+    `components/ui/popover.tsx` (upstream shadcn, Base UI).
+
 ## Open for Louie
 
 - `TODO(content)` in `content/experiments/motif.mdx`: the plan for the first

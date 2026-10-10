@@ -23,8 +23,8 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  * companies and years, and two ways in (the work, or a job-description
  * check). The hero pairs the headline with a looping recording of the live
  * Neuron Shift prototype (Plan 041); "Clear decisions." carries the case
- * studies' amber redline (Plan 039), and all four projects follow in a bento
- * grid (Plan 038).
+ * studies' amber redline (Plan 039), and the projects follow in a bento
+ * grid (Plan 038): case studies, then the prototype experiments.
  */
 
 /* Bento rhythm: large, small / small, large. Static strings for Tailwind. */
@@ -44,8 +44,13 @@ const PRINCIPLES = [
 
 export default function Home() {
   const [firstSentence] = profile.positioning.primary.split(/(?<=\.)\s/);
-  const neuron = experiments.find((e) => e.slug === "neuron-shift" && e.status === "prototype");
-  const layout = (index: number) => TILE_LAYOUT[index % TILE_LAYOUT.length];
+  const featuredExperiments = experiments.filter((e) => e.status === "prototype");
+  const tileCount = workProjects.length + featuredExperiments.length;
+  // A tile alone in the last row spans the grid in the wide shape.
+  const layout = (index: number) =>
+    index === tileCount - 1 && tileCount % 2 === 1
+      ? ({ size: "wide", span: "@4xl/canvas:col-span-12" } as const)
+      : TILE_LAYOUT[index % TILE_LAYOUT.length];
 
   return <Canvas width="wide" className="flex flex-col gap-14 sm:gap-16">
     <section aria-label="Introduction">
@@ -96,7 +101,9 @@ export default function Home() {
         {workProjects.map((project, index) => (
           <ProjectTile key={project.slug} project={project} size={layout(index).size} className={layout(index).span} eager={index === 0} />
         ))}
-        {neuron ? <ExperimentTile experiment={neuron} size={layout(workProjects.length).size} className={layout(workProjects.length).span} /> : null}
+        {featuredExperiments.map((experiment, index) => (
+          <ExperimentTile key={experiment.slug} experiment={experiment} size={layout(workProjects.length + index).size} className={layout(workProjects.length + index).span} />
+        ))}
       </div>
     </section>
 

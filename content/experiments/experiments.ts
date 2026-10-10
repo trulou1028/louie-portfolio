@@ -52,7 +52,7 @@ export const experiments: readonly Experiment[] = [
     slug: "motif",
     name: "Motif",
     // Captured from the live site, 2026-10-10 (Snappy preset, dark theme).
-    image: { src: "/work/motif/studio.webp", alt: "The Motif studio. On the left, Find your feel: Work tools is picked as the kind of product, a style row picks Rise, Spring, Cascade, and Squeeze, and three sliders read energy 0.70, bounce 0.20, distance 0.40. On the right, a live app window shows a blog post, with settles 383 ms, overshoot 0.3%, and travel 15 px in its footer.", width: 2880, height: 1910 },
+    image: { src: "/work/motif/studio.webp", alt: "The Motif studio. On the left, Find your feel: Work tools is picked as the kind of product, a style row picks Rise, Spring, Cascade, and Squeeze, and three sliders read energy 0.70, bounce 0.20, distance 0.40. On the right, a live app window shows a Settings page with notification switches, tabs, and shared files, with settles 383 ms, overshoot 0.3%, and travel 15 px in its footer.", width: 2880, height: 1910 },
     demoUrl: "https://motif-ui-kappa.vercel.app/",
     demoLabel: "Try Motif",
     plate: "motif",

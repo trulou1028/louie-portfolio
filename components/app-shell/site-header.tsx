@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { AskLouieTrigger } from "@/components/ai/ask-louie-dialog";
+import { ContactMenu } from "@/components/app-shell/contact-menu";
 import { NavItem } from "@/components/app-shell/nav-item";
 import { NAV_ITEMS } from "@/lib/routes";
 import { profile } from "@/content/profile";
@@ -35,7 +36,10 @@ function SiteHeader() {
           ))}
         </nav>
 
-        <AskLouieTrigger variant="primary" className="rounded-full" />
+        <div className="flex items-center gap-2">
+          <ContactMenu />
+          <AskLouieTrigger variant="primary" className="rounded-full" />
+        </div>
       </div>
     </header>
   );

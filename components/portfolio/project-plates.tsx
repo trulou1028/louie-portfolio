@@ -46,7 +46,7 @@ export function ExperimentPlate({ experiment, index = 0 }: { experiment: Experim
 }
 
 /** A case study as a bento tile on the homepage (Plan 038). */
-export function ProjectTile({ project, size, eager = false, className }: { project: WorkProject; size: "large" | "small"; eager?: boolean; className?: string }) {
+export function ProjectTile({ project, size, eager = false, className }: { project: WorkProject; size: "large" | "small" | "wide"; eager?: boolean; className?: string }) {
   return (
     <WorkTile
       tone={project.plate}
@@ -63,7 +63,7 @@ export function ProjectTile({ project, size, eager = false, className }: { proje
 }
 
 /** An experiment as a bento tile, with its live demo as a second link. */
-export function ExperimentTile({ experiment, size, className }: { experiment: Experiment; size: "large" | "small"; className?: string }) {
+export function ExperimentTile({ experiment, size, className }: { experiment: Experiment; size: "large" | "small" | "wide"; className?: string }) {
   return (
     <WorkTile
       tone={experiment.plate ?? "neuron"}

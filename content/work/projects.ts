@@ -109,7 +109,6 @@ export const workProjects: readonly WorkProject[] = [
     gallery: [
       { src: "/work/ck12-analytics/insights.png", alt: "Insights demo-class scatterplot separating skill from engagement, with a student detail panel.", width: 1280, height: 768 },
       { src: "/work/ck12-analytics/not-enough-data.webp", alt: "Foresights with too little data: no prediction, a message saying what data it needs, and grey per-question bars.", width: 2000, height: 1200 },
-      { need: "Early sketch or the rejected single-score concept" },
     ],
     imageMarks: [{ x: 21, y: 31.5, w: 45.5, h: 39.5, label: "A range, not a verdict" }],
   },

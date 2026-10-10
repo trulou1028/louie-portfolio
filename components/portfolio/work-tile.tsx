@@ -18,6 +18,9 @@ import { cn } from "@/lib/utils";
  * The screenshot runs 12px past the tile's bottom edge, where the tile clips
  * it. The hover lift (6px) therefore never opens a gap under the image.
  *
+ * Wide: a tile alone in the last row spans the grid. Copy sits left and the
+ * screenshot right, so the row is not one very tall image.
+ *
  * One link: the title, whose `::after` covers the tile. `extra` renders above
  * that overlay (`relative z-10`), so a second link such as a live demo stays
  * clickable.
@@ -29,7 +32,7 @@ type WorkTileProps = {
   title: string;
   meta: string | null;
   image: { src: string; alt: string; width: number; height: number } | null;
-  size: "large" | "small";
+  size: "large" | "small" | "wide";
   eager?: boolean;
   extra?: React.ReactNode;
   className?: string;
@@ -37,11 +40,13 @@ type WorkTileProps = {
 
 function WorkTile({ tone, href, brand, title, meta, image, size, eager = false, extra, className }: WorkTileProps) {
   const t = TONES[tone];
-  const large = size === "large";
+  const large = size !== "small";
+  const wide = size === "wide";
 
   return (
     <MotionReveal className={cn("h-full", className)}>
-      <article className={cn("group relative flex h-full flex-col overflow-hidden rounded-panel px-6 pt-6 sm:px-8 sm:pt-8", !image && "pb-8", t.field, t.ink)}>
+      <article className={cn("group relative flex h-full flex-col overflow-hidden rounded-panel px-6 pt-6 sm:px-8 sm:pt-8", !image && "pb-8", wide && "@4xl/canvas:grid @4xl/canvas:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] @4xl/canvas:gap-x-10", t.field, t.ink)}>
+        <div className={cn(wide && "@4xl/canvas:pb-8")}>
         <div className="flex items-start justify-between gap-4">
           {brand}
           <span aria-hidden="true" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-current/25 transition-colors duration-(--duration-fast) group-hover:border-current">
@@ -57,10 +62,12 @@ function WorkTile({ tone, href, brand, title, meta, image, size, eager = false, 
             {extra ? <span className="relative z-10">{extra}</span> : null}
           </p>
         ) : null}
+        </div>
         {image ? (
           <div
             className={cn(
               "relative mt-7 -mb-3",
+              wide && "@4xl/canvas:mt-0 @4xl/canvas:self-end",
               // Large tiles size the row from the image's own aspect ratio.
               // Small tiles fill what is left, with a floor on narrow screens.
               large ? "" : "aspect-[16/10] @4xl/canvas:aspect-auto @4xl/canvas:min-h-56 @4xl/canvas:flex-1",
@@ -72,7 +79,7 @@ function WorkTile({ tone, href, brand, title, meta, image, size, eager = false, 
               width={image.width}
               height={image.height}
               loading={eager ? "eager" : "lazy"}
-              sizes={large ? "(min-width: 1024px) 720px, 90vw" : "(min-width: 1024px) 520px, 90vw"}
+              sizes={wide ? "(min-width: 1024px) 760px, 90vw" : large ? "(min-width: 1024px) 720px, 90vw" : "(min-width: 1024px) 520px, 90vw"}
               className={cn(
                 "w-full rounded-t-md shadow-shot ring-1 ring-foreground/10 transition-transform duration-(--duration-deliberate) group-hover:-translate-y-1.5 motion-reduce:transition-none",
                 large ? "block h-auto" : "absolute inset-0 h-full object-cover object-left-top",

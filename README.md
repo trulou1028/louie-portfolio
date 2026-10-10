@@ -778,3 +778,8 @@ Experiments now carry their own name, plate, badge, and demo label, so the
 experiment page, plates, and tiles no longer special-case Neuron Shift.
 Motif is a prototype, so `/work` lists it under Neuron Shift; the homepage is
 unchanged.
+
+Same day: Motif is on the homepage (a five-tile grid, the last tile in a new
+wide shape), the header has a Contact button with the email address, copy,
+LinkedIn, booking, and resume, and the CK-12 "early sketch" placeholder is
+removed.

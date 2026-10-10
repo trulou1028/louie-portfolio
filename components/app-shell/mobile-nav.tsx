@@ -15,7 +15,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { NavItem } from "@/components/app-shell/nav-item";
-import { InlineLink } from "@/components/system/inline-link";
+import { ContactLinks } from "@/components/app-shell/contact-menu";
 import { NAV_ITEMS } from "@/lib/routes";
 import { profile } from "@/content/profile";
 
@@ -75,18 +75,10 @@ function MobileNav() {
             ))}
           </nav>
 
-          {profile.links.linkedin || profile.links.email ? (
-            <div className="mt-auto flex flex-col gap-3 px-6 pb-8 text-body-sm">
-              {profile.links.linkedin ? (
-                <InlineLink href={profile.links.linkedin}>LinkedIn</InlineLink>
-              ) : null}
-              {profile.links.email ? (
-                <InlineLink href={`mailto:${profile.links.email}`}>
-                  Email
-                </InlineLink>
-              ) : null}
-            </div>
-          ) : null}
+          <section aria-labelledby="mobile-contact-label" className="mt-6 border-t border-border-subtle px-3 pt-5">
+            <h2 id="mobile-contact-label" className="px-2 pb-1 text-body-sm text-foreground-muted">Contact</h2>
+            <ContactLinks resume={false} />
+          </section>
         </SheetContent>
       </Sheet>
       </div>
