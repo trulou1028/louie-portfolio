@@ -16,6 +16,8 @@ export type Experiment = {
   demoLabel?: string;
   /** The project's own brand field on plates and tiles. */
   plate?: "neuron" | "motif";
+  /** The project's wordmark: `dark` for its plate, `light` for the canvas. */
+  logo?: { dark: string; light: string; width: number; height: number };
   /** The chip beside the name on plates and tiles. */
   badge?: string;
   /** The short line under the title on a homepage tile. */
@@ -56,6 +58,8 @@ export const experiments: readonly Experiment[] = [
     demoUrl: "https://motif-ui-kappa.vercel.app/",
     demoLabel: "Try Motif",
     plate: "motif",
+    // Louie's wordmark, as cropped for the Motif site (motifui public/brand).
+    logo: { dark: "/brands/motif-on-dark.png", light: "/brands/motif-on-light.png", width: 425, height: 96 },
     badge: "Independent project",
     meta: "Live site, no outside users yet",
     brief: {

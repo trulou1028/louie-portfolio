@@ -18,8 +18,8 @@ test("homepage leads with Offboard then analytics in the bento grid", async ({ p
   expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics", "/work/flexi"]);
   await expect(featured.locator('a[href="/experiments/neuron-shift"]')).toHaveCount(1);
   await expect(featured.locator('a[href="/experiments/motif"]')).toHaveCount(1);
-  // Case-study tiles: a wordmark and a screenshot each. Experiments: a screenshot.
-  await expect(featured.locator("img")).toHaveCount(8);
+  // Case-study tiles and Motif: a wordmark and a screenshot each. Neuron Shift: a screenshot.
+  await expect(featured.locator("img")).toHaveCount(9);
   await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
   await page.waitForTimeout(1_000);
   // Plan 038: large + small tiles share a row on desktop and stack on mobile.

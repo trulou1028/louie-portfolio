@@ -8,6 +8,7 @@ import { MOTIF_ANCHORS, NEURON_ANCHORS, isRoute, type Anchor } from "@/lib/route
 import { TrackView } from "@/components/system/track-view";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
@@ -67,7 +68,14 @@ export default async function ExperimentPage({
     >
       <DeepLinkHighlight />
       <article className="max-w-[760px]">
-        <SectionLabel>{writeUp ? `${experiment.name} / Experiment` : "Experiment"}</SectionLabel>
+        {experiment.logo ? (
+          <div className="flex min-h-8 flex-wrap items-center gap-4">
+            <Image src={experiment.logo.light} alt={experiment.name} width={experiment.logo.width} height={experiment.logo.height} loading="eager" className="h-auto w-28 object-contain" />
+            <span className="border-l border-border-subtle pl-4 text-body-sm text-foreground-muted">Experiment</span>
+          </div>
+        ) : (
+          <SectionLabel>{writeUp ? `${experiment.name} / Experiment` : "Experiment"}</SectionLabel>
+        )}
 
         <h1 className="mt-5 max-w-[20ch] font-display text-display-lg text-balance text-foreground">
           {experiment.title}

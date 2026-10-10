@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-// "/" (Plan 038 bento): three case-study tiles (wordmark + screenshot) and
-// two experiments (screenshot each): eight images. "/work" (Plan 037 plates): the
-// same plus the real gallery images and the Motif plate: fourteen. Offboard
-// has three (resume review, Layoff Plan, risk gate), CK-12 two, and Flexi one.
-for (const [path, count] of [["/", 8], ["/work", 14]] as const) {
+// "/" (Plan 038 bento): three case-study tiles (wordmark + screenshot),
+// Neuron Shift (screenshot), and Motif (wordmark + screenshot): nine images.
+// "/work" (Plan 037 plates): the same plus the real gallery images: fifteen.
+// Offboard has three (resume review, Layoff Plan, risk gate), CK-12 two, and
+// Flexi one.
+for (const [path, count] of [["/", 9], ["/work", 15]] as const) {
   test(`${path} loads and its project images decode`, async ({ page }) => {
     await page.goto(path);
     const images = page.locator("main article img");

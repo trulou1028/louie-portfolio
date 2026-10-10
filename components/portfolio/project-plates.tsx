@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { WorkPlate } from "@/components/portfolio/work-plate";
 import { WorkTile } from "@/components/portfolio/work-tile";
 import { ProjectBrand } from "@/components/portfolio/project-brand";
@@ -23,6 +24,21 @@ export function ProjectPlate({ project, index = 0, eager = false }: { project: W
   );
 }
 
+/** The wordmark when there is one, else the name; then the badge. */
+function ExperimentBrand({ experiment }: { experiment: Experiment }) {
+  const { logo } = experiment;
+  return (
+    <p className="flex min-h-8 flex-wrap items-center gap-3 text-body-sm">
+      {logo ? (
+        <Image src={logo.dark} alt={experiment.name} width={logo.width} height={logo.height} className="h-auto w-28 object-contain" />
+      ) : (
+        <span className="font-display text-body-lg font-bold">{experiment.name}</span>
+      )}
+      {experiment.badge ? <span className="rounded-full border border-current px-2.5 py-0.5 font-medium">{experiment.badge}</span> : null}
+    </p>
+  );
+}
+
 /** An experiment on its own plate, with its live demo linked below. */
 export function ExperimentPlate({ experiment, index = 0 }: { experiment: Experiment; index?: number }) {
   return (
@@ -30,10 +46,7 @@ export function ExperimentPlate({ experiment, index = 0 }: { experiment: Experim
       tone={experiment.plate ?? "neuron"}
       href={`/experiments/${experiment.slug}`}
       brand={
-        <p className="flex flex-wrap items-center gap-3 text-body-sm">
-          <span className="font-display text-body-lg font-bold">{experiment.name}</span>
-          {experiment.badge ? <span className="rounded-full border border-current px-2.5 py-0.5 font-medium">{experiment.badge}</span> : null}
-        </p>
+        <ExperimentBrand experiment={experiment} />
       }
       title={experiment.title}
       summary={experiment.summary}
@@ -69,10 +82,7 @@ export function ExperimentTile({ experiment, size, className }: { experiment: Ex
       tone={experiment.plate ?? "neuron"}
       href={`/experiments/${experiment.slug}`}
       brand={
-        <p className="flex flex-wrap items-center gap-3 text-body-sm">
-          <span className="font-display text-body-lg font-bold">{experiment.name}</span>
-          {experiment.badge ? <span className="rounded-full border border-current px-2.5 py-0.5 font-medium">{experiment.badge}</span> : null}
-        </p>
+        <ExperimentBrand experiment={experiment} />
       }
       title={experiment.title}
       meta={experiment.meta ?? null}
