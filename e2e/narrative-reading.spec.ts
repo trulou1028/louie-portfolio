@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { CASE_STUDY_ANCHORS } from "../lib/routes";
 
-test("all four stories remain readable without JavaScript", async ({ browser }) => {
+test("every story remains readable without JavaScript", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
   for (const [path, anchors] of Object.entries(CASE_STUDY_ANCHORS)) {

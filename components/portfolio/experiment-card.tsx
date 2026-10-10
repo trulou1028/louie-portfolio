@@ -56,7 +56,7 @@ function ExperimentCard({ experiment, href = "/experiments", className }: Experi
         ))}
       </ul>
     </Surface>
-    {experiment.demoUrl ? <p className="mt-3 text-body-sm"><InlineLink href={experiment.demoUrl}>Try the simulated demo</InlineLink></p> : null}
+    {experiment.demoUrl ? <p className="mt-3 text-body-sm"><InlineLink href={experiment.demoUrl}>{experiment.demoLabel ?? "Try the demo"}</InlineLink></p> : null}
     </MotionReveal>
   );
 }

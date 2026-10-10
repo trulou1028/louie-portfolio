@@ -768,3 +768,13 @@ through container queries; the thinking line shares the avatar's row; and
 the header shows Louie's photo. Then: the canvas is warm off-white
 (#f9f7ef), answer links always open the page their text names, and the
 job comparison moved into the panel with a shorter result.
+
+## Motif experiment (Plan 047), October 10, 2026
+
+`/experiments/motif` is a case study for Motif, Louie's motion design system.
+Claims come from the Motif repository (private) and the live site; see
+`plans/047-motif-experiment.md` and claims M01 to M03 in the ledger.
+Experiments now carry their own name, plate, badge, and demo label, so the
+experiment page, plates, and tiles no longer special-case Neuron Shift.
+Motif is a prototype, so `/work` lists it under Neuron Shift; the homepage is
+unchanged.

@@ -18,6 +18,7 @@ export const ROUTES = [
   "/ai-systems",
   "/experiments",
   "/experiments/neuron-shift",
+  "/experiments/motif",
   "/writing",
   "/about",
   "/resume",
@@ -87,9 +88,20 @@ export const NEURON_ANCHORS = [
   { id: "limits", label: "Limits and next test" },
 ] as const satisfies readonly Anchor[];
 
+export const MOTIF_ANCHORS = [
+  { id: "premise", label: "The problem" },
+  { id: "system", label: "The system" },
+  { id: "feel", label: "What I cut" },
+  { id: "ai-rules", label: "The AI rules file" },
+  { id: "use", label: "Getting it into an app" },
+  { id: "technical", label: "Building it" },
+  { id: "limits", label: "Limits and next steps" },
+] as const satisfies readonly Anchor[];
+
 export const CASE_STUDY_ANCHORS: Record<string, readonly Anchor[]> = {
   "/work/ck12-analytics": ANALYTICS_ANCHORS,
   "/experiments/neuron-shift": NEURON_ANCHORS,
+  "/experiments/motif": MOTIF_ANCHORS,
   "/work/offboard": OFFBOARD_ANCHORS,
   "/work/flexi": FLEXI_ANCHORS,
 };

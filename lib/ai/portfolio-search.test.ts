@@ -178,6 +178,9 @@ describe("starter questions (Plan 042)", () => {
     ["Why isn't Neuron Shift a chat box?", "neuron-shift-chat"],
     ["What does red mean in Neuron Shift?", "neuron-shift-color"],
     ["Was Neuron Shift built for a real customer?", "neuron-shift-prototype"],
+    ["How do Motif's three sliders become motion tokens?", "motif-system"],
+    ["Can an AI agent follow Motif's motion rules?", "motif-ai-rules"],
+    ["Has anyone outside the project used Motif?", "motif-prototype"],
     ["How do you design AI people trust?", "flexi-expose-uncertainty"],
     ["Can you build what you design?", "career-technical-fluency"],
     ["What have you shipped at scale?", "career-ck12-scale"],
@@ -192,6 +195,7 @@ describe("starter questions (Plan 042)", () => {
       "analytics-prediction", "analytics-uncertainty", "analytics-evaluation",
       "flexi-next-step", "flexi-check", "flexi-research",
       "neuron-chat", "neuron-color", "neuron-customer",
+      "motif-system", "motif-ai", "motif-users",
     ]);
     for (const page of PAGE_QUESTIONS) for (const q of page.questions) expect(tested.has(q.slug), q.slug).toBe(true);
   });

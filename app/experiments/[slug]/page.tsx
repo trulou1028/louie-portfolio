@@ -1,9 +1,10 @@
 import { CreativeWorkSchema } from "@/components/system/structured-data";
 import NeuronContent from "@/content/experiments/neuron-shift.mdx";
+import MotifContent from "@/content/experiments/motif.mdx";
 import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
 import { TableOfContents, TableOfContentsInline } from "@/components/portfolio/table-of-contents";
 import { AskAboutProject } from "@/components/ai/ask-about-project";
-import { NEURON_ANCHORS } from "@/lib/routes";
+import { MOTIF_ANCHORS, NEURON_ANCHORS, isRoute, type Anchor } from "@/lib/routes";
 import { TrackView } from "@/components/system/track-view";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -17,6 +18,12 @@ import { SectionLabel } from "@/components/system/section-label";
 import { StatusDot } from "@/components/system/status-dot";
 import { Tag } from "@/components/system/tag";
 import { experiments } from "@/content/experiments/experiments";
+
+/** Experiments with a full write-up: its content and section anchors. */
+const WRITE_UPS: Record<string, { Content: React.ComponentType; anchors: readonly Anchor[] }> = {
+  "neuron-shift": { Content: NeuronContent, anchors: NEURON_ANCHORS },
+  motif: { Content: MotifContent, anchors: MOTIF_ANCHORS },
+};
 
 /** Static params so each experiment gets its own stable URL (spec §28). */
 export function generateStaticParams() {
@@ -46,19 +53,21 @@ export default async function ExperimentPage({
   const { slug } = await params;
   const experiment = experiments.find((e) => e.slug === slug);
   if (!experiment) notFound();
+  const writeUp = WRITE_UPS[slug];
+  const href = `/experiments/${slug}`;
 
   return (
     <Canvas
-      rail={slug === "neuron-shift" ? (
+      rail={writeUp ? (
         <ContextualRail aria-label="Case study contents">
-          <TableOfContents anchors={NEURON_ANCHORS} />
+          <TableOfContents anchors={writeUp.anchors} />
           <AskAboutProject />
         </ContextualRail>
       ) : undefined}
     >
       <DeepLinkHighlight />
       <article className="max-w-[760px]">
-        <SectionLabel>{slug === "neuron-shift" ? "Neuron Shift / Experiment" : "Experiment"}</SectionLabel>
+        <SectionLabel>{writeUp ? `${experiment.name} / Experiment` : "Experiment"}</SectionLabel>
 
         <h1 className="mt-5 max-w-[20ch] font-display text-display-lg text-balance text-foreground">
           {experiment.title}
@@ -102,14 +111,14 @@ export default async function ExperimentPage({
           />
         )}
 
-        {slug === "neuron-shift" ? <>
-          <CreativeWorkSchema project={{ title: experiment.title, name: "Neuron Shift", href: "/experiments/neuron-shift", summary: experiment.summary ?? "", tags: experiment.tags }} />
-          <TrackView event="portfolio_project_opened" properties={{ project: "neuron-shift" }} />
+        {writeUp ? <>
+          <CreativeWorkSchema project={{ title: experiment.title, name: experiment.name, href: isRoute(href) ? href : "/experiments", summary: experiment.summary ?? "", tags: experiment.tags }} />
+          <TrackView event="portfolio_project_opened" properties={{ project: slug }} />
           <div className="mt-8 flex flex-col gap-3 @5xl/canvas:hidden">
-            <TableOfContentsInline anchors={NEURON_ANCHORS} />
+            <TableOfContentsInline anchors={writeUp.anchors} />
             <AskAboutProject variant="inline" />
           </div>
-          <NeuronContent />
+          <writeUp.Content />
         </> : null}
 
         <div className="mt-10 flex flex-wrap gap-3">

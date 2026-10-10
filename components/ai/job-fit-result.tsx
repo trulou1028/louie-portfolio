@@ -30,6 +30,7 @@ const PAGE_NAMES: Record<string, string> = {
   "/work/ck12-analytics": "CK-12 Foresights",
   "/work/flexi": "Flexi",
   "/experiments/neuron-shift": "Neuron Shift",
+  "/experiments/motif": "Motif",
   "/resume": "Resume",
   "/about": "About",
 };

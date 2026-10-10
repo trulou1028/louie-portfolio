@@ -53,6 +53,7 @@ const PROJECT_PAGES: readonly { route: string; name: RegExp }[] = [
   { route: "/work/ck12-analytics", name: /\b(foresights|insights)\b/i },
   { route: "/work/flexi", name: /\bflexi\b/i },
   { route: "/experiments/neuron-shift", name: /\bneuron\b/i },
+  { route: "/experiments/motif", name: /\bmotif\b/i },
 ];
 
 /**

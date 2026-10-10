@@ -14,6 +14,7 @@ export const SOURCES = [
   { key: "foresights", label: "Foresights", routes: ["/work/ck12-analytics"], image: "/work/ck12-analytics/foresights.png", tone: "bg-plate-foresights" },
   { key: "flexi", label: "Flexi", routes: ["/work/flexi"], image: "/work/flexi/follow-up.webp", tone: "bg-plate-flexi" },
   { key: "neuron", label: "Neuron Shift", routes: ["/experiments/neuron-shift"], image: "/work/neuron-shift/tour.webp", tone: "bg-plate-neuron" },
+  { key: "motif", label: "Motif", routes: ["/experiments/motif"], image: "/work/motif/studio.webp", tone: "bg-plate-motif" },
   { key: "resume", label: "Resume", routes: ["/resume", "/about"], image: null, tone: "bg-surface" },
 ] as const;
 

@@ -68,6 +68,15 @@ export const PAGE_QUESTIONS: readonly PageQuestions[] = [
       { text: "Was Neuron Shift built for a real customer?", slug: "neuron-customer" },
     ],
   },
+  {
+    route: "/experiments/motif",
+    name: "Motif",
+    questions: [
+      { text: "How do Motif's three sliders become motion tokens?", slug: "motif-system" },
+      { text: "Can an AI agent follow Motif's motion rules?", slug: "motif-ai" },
+      { text: "Has anyone outside the project used Motif?", slug: "motif-users" },
+    ],
+  },
 ];
 
 export function pageQuestionsFor(pathname: string | null): PageQuestions | null {

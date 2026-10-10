@@ -75,6 +75,11 @@
   --plate-neuron: 230 12% 12%;
   --plate-neuron-ink: 230 10% 93%;        /* 14.4:1 */
   --plate-neuron-muted: 230 6% 70%;       /* 7.8:1 */
+  /* Motif: the site's near-black zinc canvas (dark theme, October 2026),
+     so its dark screenshots sit on the plate without a second frame. */
+  --plate-motif: 240 6% 4%;
+  --plate-motif-ink: 240 5% 93%;         /* 16.8:1 */
+  --plate-motif-muted: 240 4% 68%;       /* 8.6:1 */
 
   --danger: 0 72% 45%;
   --success: 145 55% 30%;
@@ -242,6 +247,9 @@
   --color-plate-neuron: hsl(var(--plate-neuron));
   --color-plate-neuron-ink: hsl(var(--plate-neuron-ink));
   --color-plate-neuron-muted: hsl(var(--plate-neuron-muted));
+  --color-plate-motif: hsl(var(--plate-motif));
+  --color-plate-motif-ink: hsl(var(--plate-motif-ink));
+  --color-plate-motif-muted: hsl(var(--plate-motif-muted));
 
   /* shadcn semantic names, mapped onto the same palette */
   --color-background: var(--background);

@@ -23,16 +23,16 @@ export function ProjectPlate({ project, index = 0, eager = false }: { project: W
   );
 }
 
-/** An experiment on the graphite plate, with its live demo linked below. */
+/** An experiment on its own plate, with its live demo linked below. */
 export function ExperimentPlate({ experiment, index = 0 }: { experiment: Experiment; index?: number }) {
   return (
     <WorkPlate
-      tone="neuron"
+      tone={experiment.plate ?? "neuron"}
       href={`/experiments/${experiment.slug}`}
       brand={
         <p className="flex flex-wrap items-center gap-3 text-body-sm">
-          <span className="font-display text-body-lg font-bold">{experiment.slug === "neuron-shift" ? "Neuron Shift" : "Experiment"}</span>
-          <span className="rounded-full border border-current px-2.5 py-0.5 font-medium">Independent prototype</span>
+          <span className="font-display text-body-lg font-bold">{experiment.name}</span>
+          {experiment.badge ? <span className="rounded-full border border-current px-2.5 py-0.5 font-medium">{experiment.badge}</span> : null}
         </p>
       }
       title={experiment.title}
@@ -40,7 +40,7 @@ export function ExperimentPlate({ experiment, index = 0 }: { experiment: Experim
       image={experiment.image ?? null}
       cta="Read the write-up"
       flip={index % 2 === 1}
-      after={experiment.demoUrl ? <p className="mt-3 text-body-sm"><InlineLink href={experiment.demoUrl}>Try the simulated demo</InlineLink></p> : null}
+      after={experiment.demoUrl ? <p className="mt-3 text-body-sm"><InlineLink href={experiment.demoUrl}>{experiment.demoLabel ?? "Try the demo"}</InlineLink></p> : null}
     />
   );
 }
@@ -66,19 +66,19 @@ export function ProjectTile({ project, size, eager = false, className }: { proje
 export function ExperimentTile({ experiment, size, className }: { experiment: Experiment; size: "large" | "small"; className?: string }) {
   return (
     <WorkTile
-      tone="neuron"
+      tone={experiment.plate ?? "neuron"}
       href={`/experiments/${experiment.slug}`}
       brand={
         <p className="flex flex-wrap items-center gap-3 text-body-sm">
-          <span className="font-display text-body-lg font-bold">{experiment.slug === "neuron-shift" ? "Neuron Shift" : "Experiment"}</span>
-          <span className="rounded-full border border-current px-2.5 py-0.5 font-medium">Independent prototype</span>
+          <span className="font-display text-body-lg font-bold">{experiment.name}</span>
+          {experiment.badge ? <span className="rounded-full border border-current px-2.5 py-0.5 font-medium">{experiment.badge}</span> : null}
         </p>
       }
       title={experiment.title}
-      meta="Simulated data"
+      meta={experiment.meta ?? null}
       image={experiment.image ?? null}
       size={size}
-      extra={experiment.demoUrl ? <InlineLink href={experiment.demoUrl} className="text-current decoration-current/40">Try the simulated demo</InlineLink> : null}
+      extra={experiment.demoUrl ? <InlineLink href={experiment.demoUrl} className="text-current decoration-current/40">{experiment.demoLabel ?? "Try the demo"}</InlineLink> : null}
       className={className}
     />
   );

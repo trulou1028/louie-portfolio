@@ -15,6 +15,7 @@ Reviewed September 19, 2026. Implementation authorized by Louie's request to sta
 | G | [Student dialogue analysis](https://info.ck12.org/impact-team-studies/the-dialogue-that-drives-learning-with-ai-opportunities-for-growth-and-intervention), reviewed 2026-09-19 | August 2024-June 2025 sample, 5,000 students, 15 selected qualitative cases. CK-12 research. |
 | H | [Neuron case study](https://neuron-shift.vercel.app/case-study#premise) and [demo](https://neuron-shift.vercel.app/), reviewed 2026-09-19 | Independent interview-preparation prototype. Demo inspected and captured. |
 | R | Existing supplied resume and authoritative implementation spec | Existing career source; employment dates are not feature launch dates. |
+| M | Motif repository `~/code/motifui` (private): SPEC.md, NOTES.md, dogfood/REPORT.md, git log; live site motif-ui-kappa.vercel.app, reviewed 2026-10-10 | Built Oct 7-9, 2026. Louie authored the spec; Claude Code wrote most of the code under his review. |
 
 ## Reviewed claims
 
@@ -42,6 +43,9 @@ Reviewed September 19, 2026. Implementation authorized by Louie's request to sta
 | O07 Offboard | Vite/React/TypeScript; Supabase/Postgres/RLS; Deno functions. Technical. | R, spec, current architecture model | Louie's full-stack implementation. | Retain technical section as product architecture, not usage evidence. | supported |
 | N01 Neuron | Independent prototype; simulated data; no interviews/model/telemetry/backend/auth. Status. | H / observed 2026-09-19 | Louie exploration for interviews; no company affiliation or endorsement. | State on entry and in AI evidence. No customer/safety/adoption claims. | supported |
 | N02 Neuron | Asset context, reversibility, recorded reasons; local persistence and graph reachability. Interaction/technical. | H / prototype | Louie prototype design/build. | Simplified topology; generators not modeled. Not operational validation. | supported |
+| M01 Motif | Independent project; live site; no outside users; name not cleared; repo private. Status. | M / observed 2026-10-10 | Louie spec, review, and product/design calls; AI-written code. | State on entry and in AI evidence. No adoption, revenue, or user-research claims. | supported |
+| M02 Motif | One AI-agent test passed both spec checks (recipes used, no raw motion values). Technical. | M / dogfood/REPORT.md, 2026-10-08 | Louie designed the test; a separate Claude Code session wrote the components. | One preset, two components. Not a study; the 15-minute goal is untimed. | supported |
+| M03 Motif | Eye exam cut because Louie found A/B feels hard to compare from memory. Design judgment. | M / NOTES.md, 2026-10-08 | Louie's review. | Owner judgment, not user research. | supported |
 | L01 career | Managed or mentored experienced designers; resolved a named team conflict. Leadership. | No concrete episode supplied | Unknown. | TODO(content): collect real episode. Do not infer from title or solo build. | owner-confirmation-needed |
 
 ## Outstanding owner input

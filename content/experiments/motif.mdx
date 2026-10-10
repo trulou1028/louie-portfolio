@@ -1,0 +1,118 @@
+import { CaseStudySection } from "@/components/portfolio/case-study-section";
+import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
+import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagram";
+
+{/* Source: Louie's Motif repository (~/code/motifui, private): SPEC.md
+    (Oct 7, 2026), NOTES.md, dogfood/REPORT.md, and the git log, 23 commits
+    from Oct 7 to Oct 9, 2026. Screenshots captured from the live site on
+    Oct 10, 2026. Wording is condensed from those sources; no new claims. */}
+
+<p className="mt-6 text-body text-foreground-muted">Independent project. No company, client, or outside users. The site is live; the name is not yet cleared and the repository is private.</p>
+
+<ArtifactFrame url="motif-ui-kappa.vercel.app" src="/work/motif/studio.webp" alt="The Motif studio. On the left, Find your feel: Work tools is picked as the kind of product, a style row picks Rise, Spring, Cascade, and Squeeze, and three sliders read energy 0.70, bounce 0.20, distance 0.40. On the right, a live app window shows a blog post entering block by block, with settles 383 ms, overshoot 0.3%, and travel 15 px in its footer." width={2880} height={1910} caption="The studio on the homepage. Every control changes the live app beside it, and the whole site." />
+
+<p className="mt-6">[Try Motif](https://motif-ui-kappa.vercel.app/) · [Use it in your app](https://motif-ui-kappa.vercel.app/use)</p>
+
+<div className="mt-12 flex flex-col gap-12">
+<CaseStudySection id="premise" title="Motion is the part of a design system nobody owns" eyebrow="Premise">
+
+Teams want every button press, menu, dialog, and list in their product to move the same way, without tuning each one by hand. Without a system, each component gets its own duration and curve, chosen by whoever built it.
+
+Motif applies the shadcn/ui idea to motion: tune a motion personality, watch a kit of real interactions update, then export tokens and code the team owns. No runtime package, no lock-in.
+
+The spec set three goals for the first version:
+
+1. **The settings feel different.** Someone watching Calm, then Snappy, then Playful tells them apart at once.
+2. **The export works.** A preset dropped into a real React app makes its motion consistent.
+3. **The AI rules file works.** An AI coding agent, given only the exported rules, builds new components that move the same way.
+
+</CaseStudySection>
+
+<CaseStudySection id="system" title="Three sliders generate every token" eyebrow="The system">
+
+A person should not have to pick a spring stiffness. So three sliders, each 0 to 1, generate every value: **Energy** (how fast things move and settle), **Bounce** (how much they overshoot), and **Distance** (how far they travel and scale). A preset is only a saved slider position.
+
+<SystemDiagram title="From a feel to code" description="Three sliders produce tokens. Recipes read only tokens. Four exporters turn the same recipes into files the team owns.">
+  <FlowDiagram stages={[
+    { node: { label: "3 sliders + a style" } },
+    { node: { label: "Motion tokens" } },
+    { node: { label: "11 recipes", tone: "accent" } },
+    { node: { label: "4 exports" } },
+  ]} />
+</SystemDiagram>
+
+Each of the 11 interactions is a recipe named by intent: press, toggle, overlay, notify, reveal, switch, menu, tooltip, drawer, expand, and lift. A recipe may not contain a raw number. Every value points to a token, and four rules hold for all of them:
+
+- **Movement springs, fades tween.** Position and scale use springs. Opacity and color never do.
+- **Exits are faster than enters,** and never overshoot.
+- **Every animation can be interrupted.** Reversing mid-way continues from where it is.
+- **Reduced motion is designed per recipe,** not switched off.
+
+<ArtifactFrame url="motif-ui-kappa.vercel.app/playground" src="/work/motif/playground.webp" alt="The Motif playground. The left column has seven presets, four style rows, the Energy, Bounce, and Distance sliders, and a spring curve that settles in 383 ms with 0.3% overshoot. The stage shows demo cards for button, switch, modal, toast, list, tabs, dropdown, tooltip, and drawer, each with a replay button and a reduced-motion checkbox." width={2880} height={1800} caption="The playground: tune on the left, replay the whole kit in the middle, export on the right." />
+
+</CaseStudySection>
+
+<CaseStudySection id="feel" title="People cannot compare two feels from memory" eyebrow="What I cut">
+
+My first way to find a feel was an eye exam: play motion A, then motion B, and pick one, six times. I found it confusing to use. Close settings felt the same, even played one after the other on the same stage. People cannot hold a feel in memory long enough to compare it.
+
+I cut it. Finding a feel now starts from something people already know: **the kind of product they are building.** Banking and health starts calm, work tools start snappy, social apps start playful. Then three sliders with plain words at each end, Calmer to Livelier, Firmer to Bouncier, Subtler to Bolder, and the live app replays after each change.
+
+Then the presets still felt alike. The sliders changed how much the same movement happened, not its shape. So I added a **style**: how things enter (rise, pop, slide, blur, unfold), the curve (spring, glide, crisp), how groups arrive (together, cascade, wave, from the click), and how a press responds (squeeze, squish, sink, glow).
+
+<ArtifactFrame frame="none" src="/work/motif/presets.webp" alt="Same dialog, 7 feels. Seven cards for Calm, Snappy, Playful, Minimal, Crisp, Cinematic, and Bouncy, each with a one-line description, an Open dialog stage, and a frame-by-frame strip with its settle time and overshoot, from Crisp at 312 ms and 0% to Bouncy at 755 ms and 21%." width={2864} height={2454} caption="The same dialog in all seven presets. Each card states its settle time and overshoot." />
+
+</CaseStudySection>
+
+<CaseStudySection id="ai-rules" title="A rules file an AI agent follows" eyebrow="The AI rules file">
+
+An AI coding agent that does not know the motion system invents values. So one of the four exports is `MOTION.md`: hard rules written as instructions, a table that maps each kind of element to a recipe, the token values, and one wrong-versus-right example.
+
+<ArtifactFrame frame="none" src="/work/motif/export.webp" alt="One tune, four files you own. Four file cards: motif.tokens.json, motif.css, motif.ts, and MOTION.md, the last described as rules for Claude Code and Cursor. Beside them, the generated motif.css with spring curves written as linear() easings and durations in milliseconds." width={2864} height={1548} caption="One tune, four files. The CSS turns each spring into a linear() curve, so it needs no JavaScript." />
+
+**The test.** I exported the Snappy preset into a fresh React app with a one-line rule: follow `MOTION.md` for all motion. A new Claude Code session, with no context from the Motif build, was asked for a dropdown menu and a delete confirmation dialog. The request did not mention motion.
+
+**The result: both checks in the spec passed with no edits.** Both components used Motif recipes, the agent mapped the menu to the overlay recipe on its own, and a scanner found no raw durations or easings in the new code. In the browser, the panels moved by Snappy's token values, focus moved at once, and reduced motion removed all travel.
+
+This was one test, with one preset and two components.
+
+</CaseStudySection>
+
+<CaseStudySection id="use" title="Built for people who do not write the code" eyebrow="Getting it into an app">
+
+The guide is for people who build with AI tools, not only in a code editor. "Use it in your app" starts with one question, where do you build, and gives numbered steps for each answer: files to upload, or one prompt to paste. It ends with a test prompt and what to look for if it worked.
+
+<ArtifactFrame url="motif-ui-kappa.vercel.app/use" src="/work/motif/use.webp" alt="The Use it in your app guide. Step 1, Where do you build, offers four cards: Claude.ai Projects, Claude Code, Cursor, or Codex, Lovable, v0, Bolt, or Replit, and I write the code myself. A side column shows the current feel and its seven values. Step 2 starts with buttons to download MOTION.md, motif.css, and motif.ts." width={2880} height={1800} caption="The guide reads the current feel and fills every step with it." />
+
+For developers, each feel installs with one shadcn command, with five components wired to it. One problem took real work: the installer merges CSS rule by rule and never deletes, so a second feel left the first one's rules behind. Every style now writes the same set of rules, and only the values change. Installing one feel over another now gives the same stylesheet as a clean install.
+
+</CaseStudySection>
+
+<CaseStudySection id="technical" title="Where the engineering went" eyebrow="Building it">
+
+**The site is the demo.** It runs on its own tokens. Switch the preset and every hover, menu, and page transition on the site changes with it.
+
+**The math is tested, not trusted.** The token core is pure TypeScript with no React, enforced by a lint rule, so it can become a package. Springs use the exact formula, not a step-by-step simulation. Tests check every preset against the spec, every one of the 240 style combinations against the recipe rules, and that the exports compile at each preset.
+
+**Every frame on one picture.** Each interaction page draws every 60 fps frame of its movement on top of each other. Wide gaps are fast. Frames past the dashed outline are overshoot.
+
+<ArtifactFrame frame="none" src="/work/motif/frames.webp" alt="The drawer's movement in the Bouncy preset, drawn frame by frame: 47 overlapping outlines of a violet bar, several past its resting place, labeled 47 frames and 755 ms." width={992} height={440} caption="The drawer in Bouncy: 47 frames, 755 ms, 21% overshoot." className="mx-auto max-w-md" />
+
+**How it was built.** I wrote the spec, its acceptance checks, and the milestone order, and built it with Claude Code over three days, October 7 to 9, 2026. I reviewed each milestone before the next one started and made every product and design call; each change from the spec is logged with its reason. The AI wrote most of the code.
+
+</CaseStudySection>
+
+<CaseStudySection id="limits" title="It works for an agent. It is untested with people." eyebrow="Limits and next steps">
+
+Nobody outside the project has used Motif yet. The spec's second goal, a consistent app in under 15 minutes, has not been timed with a real team. The AI test used one preset and two components.
+
+{/* TODO(content): Louie's plan for the first test with real users. */}
+
+Open items:
+
+1. Clear the name and move the site to the motifui.dev domain.
+2. A Tailwind `@theme` export, deferred from the first version.
+3. Native exports (SwiftUI, Jetpack Compose) were parked for later. Springs are stored as physical values so each platform can convert them.
+
+</CaseStudySection>
+</div>
