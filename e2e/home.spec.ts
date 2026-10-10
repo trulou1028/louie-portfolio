@@ -18,14 +18,15 @@ test("homepage leads with Offboard then analytics in the bento grid", async ({ p
   expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics", "/work/flexi"]);
   await expect(featured.locator('a[href="/experiments/neuron-shift"]')).toHaveCount(1);
   await expect(featured.locator('a[href="/experiments/motif"]')).toHaveCount(1);
-  // Case-study tiles and Motif: a wordmark and a screenshot each. Neuron Shift: a screenshot.
-  await expect(featured.locator("img")).toHaveCount(9);
+  await expect(featured.locator('a[href="/experiments/transfersight"]')).toHaveCount(1);
+  // Case-study tiles, Motif, and TransferSight: a wordmark and a screenshot each. Neuron Shift: a screenshot.
+  await expect(featured.locator("img")).toHaveCount(11);
   await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
   await page.waitForTimeout(1_000);
   // Plan 038: large + small tiles share a row on desktop and stack on mobile.
   const tiles = featured.locator("article");
-  await expect(tiles).toHaveCount(5);
-  const [first, second, third, , fifth] = await Promise.all([0, 1, 2, 3, 4].map((i) => tiles.nth(i).boundingBox()));
+  await expect(tiles).toHaveCount(6);
+  const [first, second, third] = await Promise.all([0, 1, 2].map((i) => tiles.nth(i).boundingBox()));
   if (testInfo.project.name === "mobile") {
     expect(Math.abs(second!.x - first!.x)).toBeLessThan(2);
     expect(second!.y).toBeGreaterThan(first!.y + first!.height);
@@ -34,8 +35,6 @@ test("homepage leads with Offboard then analytics in the bento grid", async ({ p
     expect(second!.x).toBeGreaterThan(first!.x + first!.width);
     expect(first!.width).toBeGreaterThan(second!.width);
     expect(third!.y).toBeGreaterThan(first!.y + first!.height);
-    // The odd last tile spans the row (the wide shape).
-    expect(Math.abs(fifth!.width - (second!.x + second!.width - first!.x))).toBeLessThan(2);
   }
   const allWork = featured.getByRole("link", { name: "All work →" });
   await expect(allWork).toHaveAttribute("href", "/work");

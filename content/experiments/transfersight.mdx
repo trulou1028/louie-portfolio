@@ -1,0 +1,125 @@
+import { CaseStudySection } from "@/components/portfolio/case-study-section";
+import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
+import { PhoneScreens } from "@/components/portfolio/phone-screens";
+
+{/* Source: Louie's TransferSight repository (~/code/transfersight, private):
+    CLAUDE.md, ROADMAP.md, docs/prototype.md, docs/distribution-plan.md,
+    docs/image-prompts.md, plans/README.md, landing/index.html, and the git
+    log (38 commits to Oct 5, 2026). Phone screens rendered from
+    docs/prototype-screens with the design canvas's own runtime, Oct 10, 2026.
+    Landing screenshots from www.transfersight.com, Oct 10, 2026. The landing
+    page's "Why this exists" quote is marked a draft in ROADMAP.md and is not
+    used. Wording is condensed from those sources; no new claims. */}
+
+<p className="mt-6 text-body text-foreground-muted">My own product, in progress. The landing page and waitlist are live; the app is designed but not built. Every athlete, school, and number in the screens is demo data. Not affiliated with the NCAA or any school.</p>
+
+<ArtifactFrame frame="none" src="/work/transfersight/flow.webp" alt="Three phone screens from the TransferSight prototype, all demo data. Left: Is this you?, a profile card for a sample wide receiver with each field and its source. Middle: 11 programs where you'd project as a starter, with five blurred top fits and their fit scores. Right: the number 1 fit, a position room showing who is graduating, in the portal, returning, and where the athlete slots in." width={3200} height={2000} caption="The app flow, designed at phone size. Confirm your profile, get your number, then read each fit." eager />
+
+<p className="mt-6">[Visit the live site](https://www.transfersight.com/)</p>
+
+<div className="mt-12 flex flex-col gap-12">
+<CaseStudySection id="premise" title="A transfer decision made in days, on a coach's pitch" eyebrow="The problem">
+
+College football players who sit behind upperclassmen, the backups and rotation players, can leave through the transfer portal. The next football window is expected to open in January 2027 and run about 10 days. Transfer decisions happen in days, usually on a coach's pitch.
+
+The facts that would answer "where would I actually start?" are public: school roster pages, published season stats, and who is graduating. Nobody puts them together for the athlete.
+
+TransferSight does. An athlete enters a name and a school. It finds their roster page, stats, film, and recruiting history; they confirm it and answer 6 questions; they get a free number, how many programs they'd project as a starter at, and a "stay or go" read. The full ranked report is paid.
+
+{/* TODO(content): Louie's own story of why he started TransferSight, and how his years at Utah shaped it. The landing page quote is a draft (ROADMAP.md). */}
+
+Three groups use it: **athletes** weighing a transfer, **parents**, who are probably the ones who pay, and **private trainers**, who can refer athletes for a share of each sale.
+
+</CaseStudySection>
+
+<CaseStudySection id="flow" title="Five steps, designed on a phone" eyebrow="The app flow">
+
+The app is for 19 to 23 year old athletes and their parents, and its flow is drawn at phone size, 390 points wide. Each screen does one job, and a step counter says how far along you are.
+
+<PhoneScreens screens={[
+  { src: "/work/transfersight/phone-main.webp", alt: "Step 1 of 5: Where would you actually start? A form with your name, current school with an autocomplete showing University of Utah selected, sport chips with Football selected, and a Find my profile button. Below it: free to see your number, $29 for the full report.", width: 1170, height: 2532, caption: "1. Start. The school list comes from our own list of programs, so the roster page is already known." },
+  { src: "/work/transfersight/phone-searching.webp", alt: "Step 2 of 5: Scouting you. 5 of 6 sources found, with a progress bar. Rows for roster page, season stats, recruiting history, film, and socials are marked found; depth chart is still checking.", width: 1170, height: 2532, caption: "2. Scouting you. Each source fills in as the search runs, with where it came from." },
+  { src: "/work/transfersight/phone-confirm.webp", alt: "Step 3 of 5: Is this you? A profile card for a sample wide receiver, number 14, with height, weight, and class, marked demo data. Below, hometown, high school, major, 2025 stats, recruiting, film, and socials, each with its source and an Edit button.", width: 1170, height: 3060, caption: "3. Is this you? Every field shows its source and can be fixed before anything is scored." },
+  { src: "/work/transfersight/phone-questions.webp", alt: "Step 4 of 5: 6 quick questions. Years of eligibility left, set to 3. Where you are on the depth chart, set to Backup. Rank what matters most: playing time, NIL money, academics, close to home. How far from home, set to Anywhere. Major you need to keep. Any dealbreakers.", width: 1170, height: 3300, caption: "4. Six questions. The ranking sets the weights, so two receivers with the same stats can get different lists." },
+  { src: "/work/transfersight/phone-results.webp", alt: "Step 5 of 5: 11 programs where you'd project as a starter, with a Share my number button. Your top fits, marked demo data: five rows with the program name blurred, but the conference, projection, and fit score showing. Then the full fit report offer for $29.", width: 1170, height: 3360, caption: "5. The number. Free, and made to share. Program names stay blurred until you pay." },
+  { src: "/work/transfersight/phone-report.webp", alt: "The full report, fit 1 of 11: a program placeholder with a fit of 94, marked demo data. Why you'd start: the top 2 receivers are gone. A position room table with the graduating senior, the junior in the portal, the returning sophomore, and you in an open spot. A fit breakdown, then your next moves, ending with check your compliance office's rules before any contact.", width: 1170, height: 3540, caption: "The report. The position room a coach would draw on a whiteboard, with you in it." },
+]} />
+
+Three decisions shape the flow:
+
+- **Confirm before scoring.** The search is automatic, so it can be wrong. The athlete sees every field with its source and fixes anything wrong before it is scored, and a match the system is unsure about lands here instead of being trusted. Data the athlete confirms is never overwritten by a later scrape.
+- **The athlete sets the weights.** Ranking playing time, NIL money, academics, and distance sets how much each counts.
+- **The number is free; the names are paid.** The free result shows how many programs fit, with each one's conference, projection, and fit score. Only the program names wait for payment.
+
+</CaseStudySection>
+
+<CaseStudySection id="trust" title="Built for the parent who pays" eyebrow="Trust">
+
+Parents are probably the buyers, and they will ask why their kid got a 94. So the fit score is plain math with no AI model in it: six signals, each with a weight the family can see. AI handles fuzzy jobs, such as matching a player's name to a roster row, and writes the summary for each program, but it never sets the score. Anything it is unsure about goes back to the athlete to confirm.
+
+Other rules come from the same place:
+
+- **Honest when the answer is stay.** Every report includes a stay-or-go read.
+- **No contact with coaches.** TransferSight never reaches out to programs, and the report tells athletes to check with their compliance office first.
+- **Private.** Nobody at the athlete's school is told who ran a lookup.
+- **No ID photos or selfies.** A verified athlete confirms a code sent to their school email instead. Photos would add friction and a paid vendor or manual review, and would mean holding biometric data on 17 to 22 year olds.
+- **Labeled.** Every projection says it is a projection, and every sample says it is sample data.
+
+The six signals, with sample weights for an athlete who ranked playing time first:
+
+- **Room opening, 0.30:** production leaving at your position.
+- **Competition, 0.22:** returning depth, signees, and committed transfers.
+- **Your production, 0.18:** per-game efficiency, games played, recruiting rating.
+- **Eligibility fit, 0.12:** your seasons left.
+- **Academics, 0.10:** your major offered, credits likely to transfer.
+- **Distance, 0.08:** how far from home you're willing to go.
+
+</CaseStudySection>
+
+<CaseStudySection id="share" title="A number made to be posted" eyebrow="Growth">
+
+TransferSight is meant to run with one to three people, so nothing can depend on daily posting. The result screen ends on **Share my number**. The planned card is 9:16 for Instagram stories, where teammates look, with the athlete's number, position, and jersey number, and a link that traces every signup back to the card. Program names never appear on it.
+
+The other channel is free public pages, one per program and position group, built from the same data. They show counts and percentages only, never a named player.
+
+</CaseStudySection>
+
+<CaseStudySection id="landing" title="The part that is live" eyebrow="The landing page">
+
+The landing page went live on September 30, 2026, with a waitlist. It uses the "scouting data" direction I picked from three: dark, data-forward, numbers in a monospace face, and one orange accent. It shows a sample report, labeled as sample data, so a family sees the output before signing up.
+
+<div className="mt-8 grid items-start gap-4 sm:grid-cols-[minmax(0,2.6fr)_minmax(0,1fr)]">
+<ArtifactFrame url="transfersight.com" src="/work/transfersight/landing-desktop.webp" alt="The TransferSight landing page on desktop. The headline reads The roster math behind your transfer, with a waitlist form. Beside it, a sample report: 11 projected starts, five programs named Program A to E with conference, room status, and fit score, a production chart, and a stay-or-go read that says lean go. Labeled sample data." width={2880} height={1800} caption="The live landing page on desktop, with its labeled sample report." className="mt-0" />
+<PhoneScreens className="mt-0 mx-auto max-w-56 grid-cols-1 sm:max-w-none sm:grid-cols-1" screens={[{ src: "/work/transfersight/landing-mobile.webp", alt: "The same landing page on a phone: the logo, a countdown to the portal window, the headline, and the waitlist form stacked in one column.", width: 1170, height: 2532, caption: "The same page on a phone, in one column." }]} />
+</div>
+
+The photos on it are AI-generated, of fictional athletes, with no logos or school marks.
+
+</CaseStudySection>
+
+<CaseStudySection id="system" title="The data underneath" eyebrow="Building it">
+
+The report is only as good as its data, so the data work started first. History cannot be collected later.
+
+- **Every FBS program, every week.** All 138 programs are in the database. A weekly job stores every roster page as raw HTML, then a parser turns it into clean rows: position group, class year, height, weight, and hometown. The first full cycle, on October 3, 2026, stored and parsed all 138.
+- **Fail safe.** A run that finds fewer than 70 or more than 200 players fails and keeps last week's data instead of loading a broken page.
+- **No person in the loop.** The plan is that my one weekly job is a digest email of failed or flagged pages. Anything that would need someone every week is stopped before it is built.
+
+The stack is Supabase for the database and scheduled jobs, a static landing page on Vercel, and Next.js for the app when it is built.
+
+</CaseStudySection>
+
+<CaseStudySection id="limits" title="Designed, not yet proven" eyebrow="Limits and next steps">
+
+The app is not built. The prototype uses an early navy and orange look; the real app will use the landing page's dark direction, with the same flow, fields, and copy. The prototype also shows an NIL estimate that I removed from the landing page until there is a data source for it.
+
+No reports have been sold, and the interviews with athletes and parents have not happened. The price is not tested, and the scoring has to pass a test against past seasons of real transfers before the paid report ships.
+
+Next:
+
+1. Interview 5 athletes and 5 parents. The key question: would you trust a report that told you to stay?
+2. Season stats and the scoring engine, then the backtest.
+3. The public room pages, then the lookup flow.
+
+</CaseStudySection>
+</div>

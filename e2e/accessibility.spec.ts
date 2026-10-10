@@ -17,6 +17,7 @@ const ROUTES = [
   "/work/ck12-analytics",
   "/experiments/neuron-shift",
   "/experiments/motif",
+  "/experiments/transfersight",
   "/work/offboard",
   "/work/flexi",
   "/ai-systems",

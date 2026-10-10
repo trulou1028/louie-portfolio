@@ -19,6 +19,7 @@ export const ROUTES = [
   "/experiments",
   "/experiments/neuron-shift",
   "/experiments/motif",
+  "/experiments/transfersight",
   "/writing",
   "/about",
   "/resume",
@@ -98,10 +99,21 @@ export const MOTIF_ANCHORS = [
   { id: "limits", label: "Limits and next steps" },
 ] as const satisfies readonly Anchor[];
 
+export const TRANSFERSIGHT_ANCHORS = [
+  { id: "premise", label: "The problem" },
+  { id: "flow", label: "The app flow" },
+  { id: "trust", label: "Trust" },
+  { id: "share", label: "Growth" },
+  { id: "landing", label: "The landing page" },
+  { id: "system", label: "Building it" },
+  { id: "limits", label: "Limits and next steps" },
+] as const satisfies readonly Anchor[];
+
 export const CASE_STUDY_ANCHORS: Record<string, readonly Anchor[]> = {
   "/work/ck12-analytics": ANALYTICS_ANCHORS,
   "/experiments/neuron-shift": NEURON_ANCHORS,
   "/experiments/motif": MOTIF_ANCHORS,
+  "/experiments/transfersight": TRANSFERSIGHT_ANCHORS,
   "/work/offboard": OFFBOARD_ANCHORS,
   "/work/flexi": FLEXI_ANCHORS,
 };

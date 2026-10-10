@@ -26,7 +26,7 @@ import { track } from "@/lib/analytics";
 const MIN_LENGTH = 200;
 
 /** What the comparison reads from. Every evidence entry belongs to one. */
-const SOURCES = ["Offboard", "CK-12 Foresights", "Flexi", "Neuron Shift", "Motif", "Resume"];
+const SOURCES = ["Offboard", "CK-12 Foresights", "Flexi", "Neuron Shift", "Motif", "TransferSight", "Resume"];
 
 type Phase =
   | { status: "idle" }

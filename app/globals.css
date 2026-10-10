@@ -80,6 +80,10 @@
   --plate-motif: 240 6% 4%;
   --plate-motif-ink: 240 5% 93%;         /* 16.8:1 */
   --plate-motif-muted: 240 4% 68%;       /* 8.6:1 */
+  /* TransferSight: its "scouting data" background (#0C0E11) and text. */
+  --plate-transfersight: 216 17% 6%;
+  --plate-transfersight-ink: 220 9% 92%;  /* about 16:1 */
+  --plate-transfersight-muted: 215 8% 64%; /* about 7.4:1 */
 
   --danger: 0 72% 45%;
   --success: 145 55% 30%;
@@ -250,6 +254,9 @@
   --color-plate-motif: hsl(var(--plate-motif));
   --color-plate-motif-ink: hsl(var(--plate-motif-ink));
   --color-plate-motif-muted: hsl(var(--plate-motif-muted));
+  --color-plate-transfersight: hsl(var(--plate-transfersight));
+  --color-plate-transfersight-ink: hsl(var(--plate-transfersight-ink));
+  --color-plate-transfersight-muted: hsl(var(--plate-transfersight-muted));
 
   /* shadcn semantic names, mapped onto the same palette */
   --color-background: var(--background);

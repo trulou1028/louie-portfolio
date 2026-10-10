@@ -158,6 +158,8 @@ describe("basic recruiter questions", () => {
     ["How technical are you?", "career-technical-fluency"],
     ["Where are you based?", "career-contact-availability"],
     ["Are you available for full-time roles?", "career-contact-availability"],
+    ["Do you have mobile design experience?", "transfersight-flow"],
+    ["Have you designed for phones?", "transfersight-flow"],
     ["What is your career background?", "career-experience-arc"],
   ])("retrieves published evidence for %s", (query, id) => {
     expect(searchEvidence({ query }).results.map(item => item.id)).toContain(id);
@@ -181,6 +183,9 @@ describe("starter questions (Plan 042)", () => {
     ["How do Motif's three sliders become motion tokens?", "motif-system"],
     ["Can an AI agent follow Motif's motion rules?", "motif-ai-rules"],
     ["Has anyone outside the project used Motif?", "motif-prototype"],
+    ["Why is TransferSight designed for phones first?", "transfersight-flow"],
+    ["How does TransferSight earn a parent's trust?", "transfersight-trust"],
+    ["How much of TransferSight is built?", "transfersight-status"],
     ["How do you design AI people trust?", "flexi-expose-uncertainty"],
     ["Can you build what you design?", "career-technical-fluency"],
     ["What have you shipped at scale?", "career-ck12-scale"],
@@ -196,6 +201,7 @@ describe("starter questions (Plan 042)", () => {
       "flexi-next-step", "flexi-check", "flexi-research",
       "neuron-chat", "neuron-color", "neuron-customer",
       "motif-system", "motif-ai", "motif-users",
+      "transfersight-mobile", "transfersight-trust", "transfersight-status",
     ]);
     for (const page of PAGE_QUESTIONS) for (const q of page.questions) expect(tested.has(q.slug), q.slug).toBe(true);
   });

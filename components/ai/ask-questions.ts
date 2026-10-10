@@ -60,6 +60,15 @@ export const PAGE_QUESTIONS: readonly PageQuestions[] = [
     ],
   },
   {
+    route: "/experiments/transfersight",
+    name: "TransferSight",
+    questions: [
+      { text: "Why is TransferSight designed for phones first?", slug: "transfersight-mobile" },
+      { text: "How does TransferSight earn a parent's trust?", slug: "transfersight-trust" },
+      { text: "How much of TransferSight is built?", slug: "transfersight-status" },
+    ],
+  },
+  {
     route: "/experiments/neuron-shift",
     name: "Neuron Shift",
     questions: [

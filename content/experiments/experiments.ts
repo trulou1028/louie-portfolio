@@ -15,7 +15,7 @@ export type Experiment = {
   /** Link text for `demoUrl`. */
   demoLabel?: string;
   /** The project's own brand field on plates and tiles. */
-  plate?: "neuron" | "motif";
+  plate?: "neuron" | "motif" | "transfersight";
   /** The project's wordmark: `dark` for its plate, `light` for the canvas. */
   logo?: { dark: string; light: string; width: number; height: number };
   /** The chip beside the name on plates and tiles. */
@@ -49,6 +49,29 @@ export const experiments: readonly Experiment[] = [
     tags: ["Design systems", "Design engineering"],
     status: "prototype",
     date: "2026-10-09",
+  },
+  {
+    slug: "transfersight",
+    name: "TransferSight",
+    // The six app screens are Louie's phone prototype (docs/prototype-screens
+    // in the transfersight repo), rendered 2026-10-10 with their demo data.
+    image: { src: "/work/transfersight/flow.webp", alt: "Three phone screens from the TransferSight prototype, all demo data. Left: Is this you?, a profile card for a sample wide receiver with each field and its source. Middle: 11 programs where you'd project as a starter, with five blurred top fits and their fit scores. Right: the number 1 fit, a position room showing who is graduating, in the portal, returning, and where the athlete slots in.", width: 3200, height: 2000 },
+    demoUrl: "https://www.transfersight.com/",
+    demoLabel: "Visit the live site",
+    plate: "transfersight",
+    logo: { dark: "/brands/transfersight-on-dark.png", light: "/brands/transfersight-on-light.png", width: 596, height: 108 },
+    badge: "In development",
+    meta: "Landing page live, app designed",
+    brief: {
+      problem: "College football players who sit behind upperclassmen often pick a transfer school in a few days, on a coach's pitch. The rosters and stats that show where they would actually play are on public school pages, but nobody puts them together for the athlete.",
+      did: "I'm designing and building my own product: a phone-first flow from an athlete's name to a ranked fit report, a live landing page with a waitlist, and a data pipeline that stores every FBS roster page each week.",
+      result: "The landing page and waitlist have been live since September 30, 2026, and all 138 FBS roster pages have been stored and parsed weekly since October 3. The app is designed, not built, and the athlete and parent interviews have not happened yet.",
+    },
+    title: "Roster math for athletes deciding whether to transfer",
+    summary: "TransferSight: a report that tells a college football player where they'd project to start, and whether staying is the better call. My own product, in progress: the landing page and data pipeline are live; the app is designed, not built.",
+    tags: ["Mobile", "Product design", "Data product"],
+    status: "prototype",
+    date: null,
   },
   {
     slug: "neuron-shift",

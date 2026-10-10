@@ -1,10 +1,11 @@
 import { CreativeWorkSchema } from "@/components/system/structured-data";
 import NeuronContent from "@/content/experiments/neuron-shift.mdx";
 import MotifContent from "@/content/experiments/motif.mdx";
+import TransferSightContent from "@/content/experiments/transfersight.mdx";
 import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
 import { TableOfContents, TableOfContentsInline } from "@/components/portfolio/table-of-contents";
 import { AskAboutProject } from "@/components/ai/ask-about-project";
-import { MOTIF_ANCHORS, NEURON_ANCHORS, isRoute, type Anchor } from "@/lib/routes";
+import { MOTIF_ANCHORS, NEURON_ANCHORS, TRANSFERSIGHT_ANCHORS, isRoute, type Anchor } from "@/lib/routes";
 import { TrackView } from "@/components/system/track-view";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -24,6 +25,7 @@ import { experiments } from "@/content/experiments/experiments";
 const WRITE_UPS: Record<string, { Content: React.ComponentType; anchors: readonly Anchor[] }> = {
   "neuron-shift": { Content: NeuronContent, anchors: NEURON_ANCHORS },
   motif: { Content: MotifContent, anchors: MOTIF_ANCHORS },
+  transfersight: { Content: TransferSightContent, anchors: TRANSFERSIGHT_ANCHORS },
 };
 
 /** Static params so each experiment gets its own stable URL (spec §28). */

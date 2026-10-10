@@ -31,6 +31,7 @@ const PAGE_NAMES: Record<string, string> = {
   "/work/flexi": "Flexi",
   "/experiments/neuron-shift": "Neuron Shift",
   "/experiments/motif": "Motif",
+  "/experiments/transfersight": "TransferSight",
   "/resume": "Resume",
   "/about": "About",
 };

@@ -789,3 +789,10 @@ removed.
 At Louie's request Motif comes before Neuron Shift on `/work`,
 `/experiments`, and the homepage, and the homepage hero now plays a screen
 recording of the live Motif studio. See `plans/048-motif-first.md`.
+
+## TransferSight case study (Plan 049), October 10, 2026
+
+`/experiments/transfersight` presents Louie's own product in progress: the
+phone-first app flow (six prototype screens, demo data), the live landing
+page, and the data pipeline. It sits between Motif and Neuron Shift. See
+`plans/049-transfersight.md` and claims T01 to T02.

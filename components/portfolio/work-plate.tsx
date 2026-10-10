@@ -19,7 +19,7 @@ import type { GalleryItem } from "@/content/work/projects";
  * site never shows an unfinished frame.
  */
 
-type PlateTone = "offboard" | "foresights" | "flexi" | "neuron" | "motif";
+type PlateTone = "offboard" | "foresights" | "flexi" | "neuron" | "motif" | "transfersight";
 
 /* Static class strings so Tailwind can see every token. */
 export const TONES: Record<PlateTone, { field: string; ink: string; muted: string; rule: string }> = {
@@ -27,6 +27,7 @@ export const TONES: Record<PlateTone, { field: string; ink: string; muted: strin
   foresights: { field: "bg-plate-foresights", ink: "text-plate-foresights-ink", muted: "text-plate-foresights-muted", rule: "border-plate-foresights-ink/30" },
   flexi: { field: "bg-plate-flexi", ink: "text-plate-flexi-ink", muted: "text-plate-flexi-muted", rule: "border-plate-flexi-ink/25" },
   neuron: { field: "bg-plate-neuron", ink: "text-plate-neuron-ink", muted: "text-plate-neuron-muted", rule: "border-plate-neuron-muted/30" },
+  transfersight: { field: "bg-plate-transfersight", ink: "text-plate-transfersight-ink", muted: "text-plate-transfersight-muted", rule: "border-plate-transfersight-muted/30" },
   motif: { field: "bg-plate-motif", ink: "text-plate-motif-ink", muted: "text-plate-motif-muted", rule: "border-plate-motif-muted/30" },
 };
 

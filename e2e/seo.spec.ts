@@ -18,6 +18,7 @@ test("sitemap lists every public page and no internal ones", async ({ request })
     "/work/ck12-analytics",
   "/experiments/neuron-shift",
   "/experiments/motif",
+  "/experiments/transfersight",
   "/work/offboard",
     "/work/flexi",
     "/ai-systems",
@@ -54,6 +55,7 @@ test("every page has a distinct title and description", async ({ page }) => {
     "/work/ck12-analytics",
   "/experiments/neuron-shift",
   "/experiments/motif",
+  "/experiments/transfersight",
   "/work/offboard",
     "/work/flexi",
     "/ai-systems",
@@ -128,7 +130,7 @@ test("OpenGraph metadata is present", async ({ page }) => {
 });
 
 const PUBLIC_PATHS = [
-  "/", "/work", "/work/ck12-analytics", "/experiments/neuron-shift", "/experiments/motif", "/work/offboard", "/work/flexi", "/ai-systems",
+  "/", "/work", "/work/ck12-analytics", "/experiments/neuron-shift", "/experiments/motif", "/experiments/transfersight", "/work/offboard", "/work/flexi", "/ai-systems",
   "/experiments", "/writing", "/about", "/resume",
 ];
 
