@@ -71,8 +71,8 @@ export default function Home() {
             webm="/work/motif/hero-loop.webm"
             poster="/work/motif/hero-loop-poster.jpg"
             width={1600}
-            height={1102}
-            label="Screen recording of the Motif studio: picking Kids & games, then Banking & health, then Shuffle changes the motion settings, and the same settings app replays each time with a bouncier or calmer feel. A menu opens and a switch flips between changes."
+            height={1000}
+            label="Screen recording of the Motif studio, two parts of it side by side: the question What are you building?, and a settings page. Picking Kids & games, then Banking & health, then Work tools replays the same settings page with a bouncier, a calmer, then a quicker feel."
           />
           <figcaption className="mt-3 text-body-sm text-foreground-muted">
             <span className="font-semibold text-foreground">Motif</span>, a motion design system. Recorded from the live site.{" "}

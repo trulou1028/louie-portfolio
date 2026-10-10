@@ -5,16 +5,20 @@
  *
  *   node scripts/record-motif-hero.cjs [url] [outDir]
  *
- * Writes JPEG frames plus an ffmpeg concat list to outDir/frames. The crop
- * keeps the studio and drops the page margin around it. Encode as in
- * scripts/record-neuron-hero.cjs (an ffmpeg with libx264 and libvpx-vp9, for
- * example the `ffmpeg-static` npm package), from outDir:
+ * Writes JPEG frames plus an ffmpeg concat list to outDir/frames. Then keep
+ * two parts of each frame, the "What are you building?" block and the app's
+ * settings area, and place them as two cards on scripts/motif-hero/backdrop.html
+ * (rendered to bg.png at 1600x1000). With an ffmpeg that has libx264 and
+ * libvpx-vp9 (for example the `ffmpeg-static` npm package), from outDir:
  *
- *   ffmpeg -f concat -safe 0 -i frames/list.txt -vf "fps=30,crop=1376:948:112:14,scale=1600:1102:flags=lanczos,format=yuv420p" -c:v libx264 -crf 14 raw.mp4
+ *   ffmpeg -loop 1 -i bg.png -f concat -safe 0 -i frames/list.txt -filter_complex "[1:v]fps=30,split[a][b];[a]crop=412:240:172:150,scale=494:288:flags=lanczos,format=rgba,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='255*min(1\,min(min(X\,W-1-X)\,min(Y\,H-1-Y))/18)'[ca];[b]crop=700:554:856:82,scale=840:665:flags=lanczos[cb];[0:v][ca]overlay=85:356:shortest=1[t];[t][cb]overlay=679:167,format=yuv420p" -c:v libx264 -crf 14 raw.mp4
  *   # Crossfade the tail into the head (X = 0.6s, L = raw length) so it loops seamlessly:
- *   ffmpeg -i raw.mp4 -filter_complex "[0]split[a][b];[a]trim=0:X,setpts=PTS-STARTPTS[h];[b]trim=X,setpts=PTS-STARTPTS[t];[t][h]xfade=transition=fade:duration=X:offset=L-2X" -an -c:v libx264 -profile:v high -crf 27 -preset slow -pix_fmt yuv420p -movflags +faststart hero-loop.mp4
- *   ffmpeg -i hero-loop.mp4 -an -c:v libvpx-vp9 -b:v 0 -crf 40 -row-mt 1 hero-loop.webm
+ *   ffmpeg -i raw.mp4 -filter_complex "[0]split[a][b];[a]trim=0:X,setpts=PTS-STARTPTS[h];[b]trim=X,setpts=PTS-STARTPTS[t];[t][h]xfade=transition=fade:duration=X:offset=L-2X" -an -c:v libx264 -profile:v high -crf 26 -preset slow -pix_fmt yuv420p -movflags +faststart hero-loop.mp4
+ *   ffmpeg -i hero-loop.mp4 -an -c:v libvpx-vp9 -b:v 0 -crf 38 -row-mt 1 hero-loop.webm
  *   ffmpeg -i hero-loop.mp4 -frames:v 1 -q:v 3 hero-loop-poster.jpg
+ *
+ * The crop coordinates assume the 1600x1000 viewport and 1.3 pinch zoom
+ * below; check them against frames/f00000.jpg after any site change.
  *
  * Copy the three outputs to public/work/motif/.
  */
@@ -26,32 +30,21 @@ const url = process.argv[2] ?? "https://motif-ui-kappa.vercel.app/";
 const outDir = path.resolve(process.argv[3] ?? "motif-hero-recording");
 
 /**
- * The sequence: change the kind of product three times, so the same app
- * replays as Kids & games (bouncy), Banking & health (calm), and a shuffled
- * style; open a menu and flip a switch between them; end on Work tools, the
- * opening feel, so the loop closes.
+ * The sequence (Plan 050): one choice at a time, held long enough to see the
+ * app replay. Work tools (snappy), Kids & games (bouncy), Banking & health
+ * (calm), then back to Work tools so the loop closes. Nothing else moves.
  */
 async function choreography(p, studio) {
   const wait = (ms) => p.waitForTimeout(ms);
-  const pick = (name) => studio.getByRole("radio", { name, exact: true }).click();
-  await wait(900);
+  // Pinch zoom (below) shifts pointer coordinates, so click in the page.
+  const pick = (name) => studio.getByRole("radio", { name, exact: true }).evaluate((el) => el.click());
+  await wait(1800);
   await pick("Kids & games");
-  await wait(3200);
-  await studio.getByRole("button", { name: "Options" }).click();
-  await wait(1300);
-  await p.keyboard.press("Escape");
-  await wait(700);
+  await wait(3600);
   await pick("Banking & health");
-  await wait(3200);
-  const alerts = studio.getByRole("switch").nth(1);
-  await alerts.click();
-  await wait(1100);
-  await studio.getByRole("button", { name: "Shuffle" }).click();
-  await wait(3200);
-  await alerts.click();
-  await wait(600);
+  await wait(3600);
   await pick("Work tools");
-  await wait(3000);
+  await wait(3200);
 }
 
 (async () => {
@@ -59,8 +52,9 @@ async function choreography(p, studio) {
   fs.rmSync(frameDir, { recursive: true, force: true });
   fs.mkdirSync(frameDir, { recursive: true });
   const browser = await chromium.launch();
-  // 16:10, the hero frame's shape. At this width the studio fits on screen.
-  const context = await browser.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 });
+  // 16:10. The screencast captures at 1x, so the studio is magnified with
+  // pinch zoom (pageScaleFactor), which keeps the layout and stays sharp.
+  const context = await browser.newContext({ viewport: { width: 1600, height: 1000 } });
   const page = await context.newPage();
   await page.goto(url, { waitUntil: "networkidle" });
   // Let the first-load tour finish, then open Settings, the view the loop shows.
@@ -70,11 +64,13 @@ async function choreography(p, studio) {
   await page.addStyleTag({ content: "header{display:none!important}" });
   const panel = page.locator("#feel-title").locator("xpath=ancestor::*[contains(@class,'rounded')][1]");
   const top = await panel.evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
-  await page.evaluate((y) => window.scrollTo(0, y), Math.max(0, top - 22));
+  await page.evaluate((y) => window.scrollTo(0, y), Math.max(0, top - 16));
   await page.mouse.move(2, 2);
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(1500);
 
   const cdp = await context.newCDPSession(page);
+  await cdp.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1.3 });
+  await page.waitForTimeout(600);
   const frames = [];
   cdp.on("Page.screencastFrame", async (frame) => {
     frames.push({ t: frame.metadata.timestamp, data: frame.data });

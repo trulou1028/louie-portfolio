@@ -796,3 +796,7 @@ recording of the live Motif studio. See `plans/048-motif-first.md`.
 phone-first app flow (six prototype screens, demo data), the live landing
 page, and the data pipeline. It sits between Motif and Neuron Shift. See
 `plans/049-transfersight.md` and claims T01 to T02.
+
+Later the same day (Plan 050): the hero loop shows only the "What are you
+building?" choice and the app's settings, one change at a time, so it reads
+as one decision and its result.
