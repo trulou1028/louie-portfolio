@@ -6,9 +6,9 @@ import { Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * The homepage hero loop (Plan 041): a silent screen recording of the live
- * Neuron Shift prototype. Every frame is the real app; nothing is redrawn.
- * `scripts/record-neuron-hero.cjs` re-records it.
+ * The homepage hero loop (Plan 041, Plan 048): a silent screen recording of
+ * the live Motif studio. Every frame is the real site; nothing is redrawn.
+ * `scripts/record-motif-hero.cjs` re-records it.
  *
  * Motion rules:
  * - Reduced motion: never plays. The poster (the loop's first frame) stays.
@@ -69,7 +69,7 @@ function HeroLoop({
   }, [reduced, userPaused, inView]);
 
   return (
-    <div className={cn("relative overflow-hidden rounded-lg bg-plate-neuron shadow-shot ring-1 ring-foreground/10", className)}>
+    <div className={cn("relative overflow-hidden rounded-lg bg-plate-motif shadow-shot ring-1 ring-foreground/10", className)}>
       <video
         ref={videoRef}
         className="block h-auto w-full"
@@ -99,7 +99,7 @@ function HeroLoop({
             }
           }}
           aria-label={playing ? "Pause the recording" : "Play the recording"}
-          className="focus-ring absolute bottom-3 right-3 inline-flex size-9 items-center justify-center rounded-full bg-plate-neuron/80 text-plate-neuron-ink ring-1 ring-plate-neuron-ink/20 backdrop-blur-sm transition-colors duration-(--duration-fast) hover:bg-plate-neuron"
+          className="focus-ring absolute bottom-3 right-3 inline-flex size-9 items-center justify-center rounded-full bg-plate-motif/80 text-plate-motif-ink ring-1 ring-plate-motif-ink/20 backdrop-blur-sm transition-colors duration-(--duration-fast) hover:bg-plate-motif"
         >
           {playing ? <Pause aria-hidden="true" className="size-4" /> : <Play aria-hidden="true" className="size-4" />}
         </button>

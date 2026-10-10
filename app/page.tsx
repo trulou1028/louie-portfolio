@@ -22,7 +22,7 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  * The first view answers a recruiter's questions: the positioning line, the
  * companies and years, and two ways in (the work, or a job-description
  * check). The hero pairs the headline with a looping recording of the live
- * Neuron Shift prototype (Plan 041); "Clear decisions." carries the case
+ * Motif studio (Plan 041, Plan 048); "Clear decisions." carries the case
  * studies' amber redline (Plan 039), and the projects follow in a bento
  * grid (Plan 038): case studies, then the prototype experiments.
  */
@@ -55,7 +55,7 @@ export default function Home() {
   return <Canvas width="wide" className="flex flex-col gap-14 sm:gap-16">
     <section aria-label="Introduction">
       {/* Plan 041: work-led hero. The headline sits beside a looping screen
-          recording of the live Neuron Shift prototype. */}
+          recording of the live Motif studio (Plan 048). */}
       <div className="grid items-center gap-10 @5xl/canvas:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] @5xl/canvas:gap-14">
         <MotionReveal stagger className="@container"><div>
           <RevealHeading as="h1" quietWords={firstSentence.split(" ").length} markLabel="the job" className="font-display text-home-hero text-balance text-foreground">{profile.positioning.primary}</RevealHeading>
@@ -67,16 +67,16 @@ export default function Home() {
 
         <MotionReveal><figure>
           <HeroLoop
-            mp4="/work/neuron-shift/hero-loop.mp4"
-            webm="/work/neuron-shift/hero-loop.webm"
-            poster="/work/neuron-shift/hero-loop-poster.jpg"
+            mp4="/work/motif/hero-loop.mp4"
+            webm="/work/motif/hero-loop.webm"
+            poster="/work/motif/hero-loop-poster.jpg"
             width={1600}
-            height={1000}
-            label="Screen recording of the Neuron Shift prototype: an operator takes the shift, traces the affected power path, previews two failures, and approves a recommendation after four checks. All data is simulated."
+            height={1102}
+            label="Screen recording of the Motif studio: picking Kids & games, then Banking & health, then Shuffle changes the motion settings, and the same settings app replays each time with a bouncier or calmer feel. A menu opens and a switch flips between changes."
           />
           <figcaption className="mt-3 text-body-sm text-foreground-muted">
-            <span className="font-semibold text-foreground">Neuron Shift</span> prototype, simulated data.{" "}
-            <InlineLink href="/experiments/neuron-shift">Read the write-up</InlineLink>
+            <span className="font-semibold text-foreground">Motif</span>, a motion design system. Recorded from the live site.{" "}
+            <InlineLink href="/experiments/motif">Read the write-up</InlineLink>
           </figcaption>
         </figure></MotionReveal>
       </div>

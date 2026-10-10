@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /**
- * Re-records the homepage hero loop from the live Neuron Shift prototype
- * (Plan 041). Every frame is the real app; nothing is redrawn.
+ * Re-records the Neuron Shift loop from the live prototype (Plan 041). It
+ * was the homepage hero until Plan 048 moved the hero to Motif; the files
+ * stay in public/work/neuron-shift/. Every frame is the real app.
  *
  *   node scripts/record-neuron-hero.cjs [url] [outDir]
  *

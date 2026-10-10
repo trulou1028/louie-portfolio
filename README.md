@@ -783,3 +783,9 @@ Same day: Motif is on the homepage (a five-tile grid, the last tile in a new
 wide shape), the header has a Contact button with the email address, copy,
 LinkedIn, booking, and resume, and the CK-12 "early sketch" placeholder is
 removed.
+
+## Motif leads (Plan 048), October 10, 2026
+
+At Louie's request Motif comes before Neuron Shift on `/work`,
+`/experiments`, and the homepage, and the homepage hero now plays a screen
+recording of the live Motif studio. See `plans/048-motif-first.md`.
