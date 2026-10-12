@@ -16,6 +16,10 @@ const eslintConfig = defineConfig([
     // output; linting them reports thousands of errors from generated
     // bundles that are not this project's source.
     ".claude/**",
+    // Playwright output. A failing run's HTML report bundles the trace
+    // viewer's JavaScript, which is not this project's source.
+    "playwright-report/**",
+    "test-results/**",
   ]),
 ]);
 

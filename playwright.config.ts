@@ -16,7 +16,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? "github" : [["list"]],
+  // CI also writes the HTML report, which embeds the traces recorded on
+  // retry. Without it the workflow's failure upload had nothing to upload,
+  // and a flaky test left no evidence of what hung.
+  reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : [["list"]],
   use: {
     baseURL,
     trace: "on-first-retry",
@@ -45,6 +48,8 @@ export default defineConfig({
       OPENAI_API_KEY: "test-key-never-used",
       OPENAI_MODEL: "test-model-never-used",
       NEXT_PUBLIC_SITE_URL: baseURL,
+      // Serve images as-is; see `images` in next.config.ts.
+      PORTFOLIO_E2E: "1",
     },
   },
 });

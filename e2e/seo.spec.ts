@@ -64,7 +64,9 @@ test("every page has a distinct title and description", async ({ page }) => {
     "/about",
     "/resume",
   ]) {
-    await page.goto(path);
+    // Head metadata is in the server HTML, so do not wait for images: a slow
+    // image on one of thirteen pages used to spend this test's whole budget.
+    await page.goto(path, { waitUntil: "domcontentloaded" });
 
     const title = await page.title();
     expect(title.length, `${path} has no title`).toBeGreaterThan(10);
@@ -136,7 +138,7 @@ const PUBLIC_PATHS = [
 
 test("every page's canonical is its own URL", async ({ page, baseURL }) => {
   for (const path of PUBLIC_PATHS) {
-    await page.goto(path);
+    await page.goto(path, { waitUntil: "domcontentloaded" });
     const href = await page.locator('link[rel="canonical"]').getAttribute("href");
     // Playwright sets NEXT_PUBLIC_SITE_URL to baseURL, so this is exact.
     expect(href, `${path} canonical`).toBe(`${baseURL}${path === "/" ? "" : path}`);

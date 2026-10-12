@@ -66,11 +66,13 @@ export default function Home() {
         {/* The flagship, not a side project, in the most-viewed slot. The
             plate matches the backdrop of packet-panels.webp, so the panels
             float on it without a second frame. Hidden on phones, where the
-            Offboard tile is one scroll below. */}
+            Offboard tile is one scroll below; `lazy` so phones never fetch
+            it (a hidden eager or preloaded image still downloads). On
+            desktop it sits in the first view, so it loads at once anyway. */}
         {lead.image ? (
           <figure className="max-sm:hidden">
             <div className="overflow-hidden rounded-panel bg-plate-offboard p-4 sm:p-6">
-              <Image src={lead.image} alt={lead.imageAlt} width={lead.imageWidth} height={lead.imageHeight} preload loading="eager" sizes="(min-width: 1280px) 680px, 90vw" className="h-auto w-full" />
+              <Image src={lead.image} alt={lead.imageAlt} width={lead.imageWidth} height={lead.imageHeight} loading="lazy" sizes="(min-width: 1280px) 680px, 90vw" className="h-auto w-full" />
             </div>
             <figcaption className="mt-3 text-body-sm text-foreground-muted">
               <span className="font-semibold text-foreground">{lead.name}</span>, designed and engineered end to end as founding designer.
