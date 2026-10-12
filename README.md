@@ -800,3 +800,49 @@ page, and the data pipeline. It sits between Motif and Neuron Shift. See
 Later the same day (Plan 050): the hero loop shows only the "What are you
 building?" choice and the app's settings, one change at a time, so it reads
 as one decision and its result.
+
+## Homepage audit, October 12, 2026
+
+A design audit of louiesakoda.com against Mobbin references, approved by
+Louie. Changes:
+
+- **The hero renders without an entrance animation.** On a 375 px phone the
+  masked headline was still hidden 3 seconds after load on production. The
+  hero (headline, ask bar, Offboard figure, experience strip) is now static
+  on first paint. Sections below still reveal on scroll.
+- **The hero links to the work.** Under the ask bar: "See selected work"
+  (to `#work`) and "Book time". The ask bar shows two starter questions, not
+  three; the panel's empty state keeps all three.
+- **Offboard leads the hero, not Motif.** The figure shows
+  `packet-panels.webp` on the Offboard plate, hidden on phones where the
+  Offboard tile is one scroll below. This reverses Plan 048's hero choice;
+  Motif stays on the homepage as an independent project. `HeroLoop` is now
+  unused but kept, with its recording scripts, in case the loop returns.
+- **Two groups instead of one bento grid.** "Case studies": Offboard full
+  width, then the CK-12 pair at equal width. "Independent projects": Motif,
+  TransferSight, and Neuron Shift as three equal, smaller tiles. Size now
+  follows evidence.
+- **Case-study tiles show the one-line summary** from `content/work/projects.ts`.
+- **"Clear decisions." keeps its amber box without the "the job" tag.**
+  `RevealHeading` gains `mark` (box only); `markLabel` still adds the tag.
+- **"14+ years designing digital products" moved** from How I work to the
+  label above the experience strip, which is two columns on phones.
+- **The phone header keeps "Louie Sakoda" on one line.**
+
+Not changed: the site footer still repeats Book time, Email, and LinkedIn
+under the homepage's closing panel. The footer is shared by every page, and
+other pages have no closing panel.
+
+Follow-up the same day, from Louie's review:
+
+- **The hero has one link.** "See selected work" stays; "Book time" and the
+  figure caption's case-study link are gone (booking is in the header's
+  Contact menu and the closing panel; the Offboard tile is one scroll
+  below). The hero now offers the ask bar, two questions, and one link.
+- **The experience record left the hero.** It is its own section on a
+  `bg-surface-muted` band, in `text-body-sm`, with thin column dividers on
+  wide screens, so it reads as reference rather than a call to action.
+- **The thumbnail strip under each `/work` plate is gone**, at Louie's
+  request: it added little. Each plate keeps its one large screenshot. The
+  `gallery` field and its `TODO(asset)` requests (two for Flexi) are removed
+  from `content/work/projects.ts`; the images stay, used by the case studies.

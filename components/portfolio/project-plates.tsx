@@ -17,7 +17,6 @@ export function ProjectPlate({ project, index = 0, eager = false }: { project: W
       summary={project.summary}
       facts={project.facts}
       image={project.image ? { src: project.image, alt: project.imageAlt, width: project.imageWidth, height: project.imageHeight } : null}
-      gallery={project.gallery}
       flip={index % 2 === 1}
       eager={eager}
     />
@@ -66,6 +65,7 @@ export function ProjectTile({ project, size, eager = false, className }: { proje
       href={project.href}
       brand={<ProjectBrand project={project} onPlate />}
       title={project.title}
+      summary={project.summary}
       meta={project.role}
       image={project.tileImage ?? (project.image ? { src: project.image, alt: project.imageAlt, width: project.imageWidth, height: project.imageHeight } : null)}
       size={size}

@@ -1,11 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-// "/" (Plan 038 bento): three case-study tiles, Motif, and TransferSight
-// (wordmark + screenshot each), and Neuron Shift (screenshot): eleven images.
-// "/work" (Plan 037 plates): the same plus the real gallery images: seventeen.
-// Offboard has three (resume review, Layoff Plan, risk gate), CK-12 two, and
-// Flexi one.
-for (const [path, count] of [["/", 11], ["/work", 17]] as const) {
+// "/": three case-study tiles, Motif, and TransferSight (wordmark +
+// screenshot each), and Neuron Shift (screenshot): eleven images. The hero's
+// Offboard figure is not an article, so it is not counted.
+// "/work" (Plan 037 plates): the same eleven. The plates' thumbnail strips
+// were removed in October 2026; supporting images live in the case studies.
+for (const [path, count] of [["/", 11], ["/work", 11]] as const) {
   test(`${path} loads and its project images decode`, async ({ page }) => {
     await page.goto(path);
     const images = page.locator("main article img");

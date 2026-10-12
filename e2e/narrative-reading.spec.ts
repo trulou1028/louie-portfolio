@@ -30,7 +30,10 @@ test("assistant and evidence navigation work with reduced motion", async ({ page
 test("entrances finish visibly and reduced motion skips their animation", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
+  // The hero has no entrance (it is the first paint); check the first
+  // revealed block below it once it scrolls into view.
   const hero = page.locator("[data-motion-reveal]").first();
+  await hero.scrollIntoViewIfNeeded();
   await expect(hero).toHaveCSS("opacity", "1");
   await expect(hero).toHaveCSS("transform", "none");
   await page.emulateMedia({ reducedMotion: "reduce" });

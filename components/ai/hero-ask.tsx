@@ -17,8 +17,11 @@ import { track } from "@/lib/analytics";
  * - The bar is a field with two controls inset 8px: "Job description" (the
  *   recruiter path, amber) and Send. Field 16px, controls 8px: the outer
  *   radius is the inner radius plus the gap (AGENTS.md, Radius).
- * - Under it, "Try asking" and the starter questions. Each question ends in
- *   the Send arrow, so it reads as "this sends", not as a tag.
+ * - Under it, "Try asking" and the first two starter questions. Each ends
+ *   in the Send arrow, so it reads as "this sends", not as a tag. Two, not
+ *   all three: the hero also links to the work, and five asks next to one
+ *   link buried the link (homepage audit, October 2026). The panel's empty
+ *   state still offers the full set.
  */
 function HeroAsk({ className }: { className?: string }) {
   const { openAsk } = useAskLouie();
@@ -71,7 +74,7 @@ function HeroAsk({ className }: { className?: string }) {
       <div className="mt-4">
         <p id="hero-try-asking" className="text-body-sm text-foreground-muted">Try asking</p>
         <ul aria-labelledby="hero-try-asking" className="mt-2 flex flex-wrap gap-2">
-          {STARTER_QUESTIONS.map((question) => (
+          {STARTER_QUESTIONS.slice(0, 2).map((question) => (
             <li key={question.slug}>
               <button
                 type="button"

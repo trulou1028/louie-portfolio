@@ -2,15 +2,6 @@ import type { DecisionMarkSpec } from "@/lib/decision-mark";
 import type { Route } from "@/lib/routes";
 import type { CaseStudyBriefContent } from "@/components/portfolio/case-study-brief";
 
-/**
- * A secondary image for the homepage plate. `need` entries are open asset
- * requests: they render as labeled empty slots in development only, so a
- * production build never shows an unfinished frame (Plan 037).
- */
-export type GalleryItem =
-  | { src: string; alt: string; width: number; height: number }
-  | { need: string };
-
 /** Canonical editorial metadata. Claims and assets: plans/portfolio-strategy/. */
 export type WorkProject = {
   slug: "ck12-analytics" | "offboard" | "flexi";
@@ -38,7 +29,6 @@ export type WorkProject = {
   plate: "offboard" | "foresights" | "flexi";
   /** Quick facts for the plate and case-study header. Resume-stated only. */
   facts: readonly { label: string; value: string }[];
-  gallery: readonly GalleryItem[];
   /** Decision marks on the hero image. Labels restate the caption or case study. */
   imageMarks: readonly DecisionMarkSpec[];
 };
@@ -72,11 +62,6 @@ export const workProjects: readonly WorkProject[] = [
       { label: "Years", value: "2025 to now" },
       { label: "Team", value: "Six-person startup" },
     ],
-    gallery: [
-      { src: "/work/offboard/resume-review.webp", alt: "The tailored resume in an Offboard packet, with each changed line shown: the original struck through above the rewrite. Contact details blurred.", width: 2000, height: 999 },
-      { src: "/work/offboard/layoff-plan.webp", alt: "Offboard's Layoff Plan: steps that fit the person's situation, in groups, done in any order. 5 of 24 done.", width: 2000, height: 999 },
-      { src: "/work/offboard/risk-gate.webp", alt: "An Offboard packet paused by the risk gate: High Ghost Risk Detected, 84/100, with Continue Anyway, Save Application Only, and Discard. A test packet.", width: 2000, height: 1472 },
-    ],
     imageMarks: [{ x: 75.3, y: 20.6, w: 18.7, h: 40.5, label: "The pipeline stays visible" }],
   },
   {
@@ -106,10 +91,6 @@ export const workProjects: readonly WorkProject[] = [
       { label: "At CK-12", value: "2016 to 2025" },
       { label: "Platform", value: "20M+ users" },
     ],
-    gallery: [
-      { src: "/work/ck12-analytics/insights.png", alt: "Insights demo-class scatterplot separating skill from engagement, with a student detail panel.", width: 1280, height: 768 },
-      { src: "/work/ck12-analytics/not-enough-data.webp", alt: "Foresights with too little data: no prediction, a message saying what data it needs, and grey per-question bars.", width: 2000, height: 1200 },
-    ],
     imageMarks: [{ x: 21, y: 31.5, w: 45.5, h: 39.5, label: "A range, not a verdict" }],
   },
   {
@@ -138,11 +119,6 @@ export const workProjects: readonly WorkProject[] = [
       { label: "Role", value: "Lead UX Designer" },
       { label: "At CK-12", value: "2016 to 2025" },
       { label: "Platform", value: "20M+ users" },
-    ],
-    gallery: [
-      { src: "/work/flexi/photosynthesis.webp", alt: "Flexi photosynthesis explanation with AI-generated and CK-12 Library labels and follow-up learning actions.", width: 1920, height: 1136 },
-      { need: "Flexi on a phone, inside a lesson" },
-      { need: "Research artifact from the classroom study" },
     ],
     imageMarks: [{ x: 30.4, y: 32.4, w: 19, h: 43.6, label: "Different ways into an explanation" }],
   },

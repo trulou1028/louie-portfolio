@@ -7,7 +7,7 @@ const NAV = [
   { label: "Resume", path: "/resume" },
 ];
 
-test("homepage leads with Offboard then analytics in the bento grid", async ({ page }, testInfo) => {
+test("homepage leads with Offboard, then the CK-12 pair, then independent projects", async ({ page }, testInfo) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "Complex workflows. Clear decisions." })).toBeVisible();
   await expect(page.locator("main canvas")).toHaveCount(0);
@@ -16,29 +16,65 @@ test("homepage leads with Offboard then analytics in the bento grid", async ({ p
   const projectLinks = featured.locator('a[href^="/work/"]');
   const destinations = await projectLinks.evaluateAll((els) => els.map((el) => el.getAttribute("href")));
   expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics", "/work/flexi"]);
-  await expect(featured.locator('a[href="/experiments/neuron-shift"]')).toHaveCount(1);
-  await expect(featured.locator('a[href="/experiments/motif"]')).toHaveCount(1);
-  await expect(featured.locator('a[href="/experiments/transfersight"]')).toHaveCount(1);
-  // Case-study tiles, Motif, and TransferSight: a wordmark and a screenshot each. Neuron Shift: a screenshot.
-  await expect(featured.locator("img")).toHaveCount(11);
+  // Case studies: a wordmark and a screenshot each.
+  await expect(featured.locator("img")).toHaveCount(6);
+  // Each case-study tile carries its one-line summary.
+  await expect(featured.getByText("Separate prediction from diagnosis.", { exact: false })).toBeVisible();
+
+  const independent = page.getByTestId("independent-work");
+  for (const slug of ["motif", "transfersight", "neuron-shift"]) {
+    await expect(independent.locator(`a[href="/experiments/${slug}"]`)).toHaveCount(1);
+  }
+  await expect(featured.locator('a[href^="/experiments/"]')).toHaveCount(0);
+  // Motif and TransferSight: a wordmark and a screenshot. Neuron Shift: a screenshot.
+  await expect(independent.locator("img")).toHaveCount(5);
   await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
   await page.waitForTimeout(1_000);
-  // Plan 038: large + small tiles share a row on desktop and stack on mobile.
+
+  // Offboard spans the row; the CK-12 pair shares the next row on desktop
+  // and stacks on mobile.
   const tiles = featured.locator("article");
-  await expect(tiles).toHaveCount(6);
+  await expect(tiles).toHaveCount(3);
   const [first, second, third] = await Promise.all([0, 1, 2].map((i) => tiles.nth(i).boundingBox()));
+  expect(second!.y).toBeGreaterThan(first!.y + first!.height);
   if (testInfo.project.name === "mobile") {
-    expect(Math.abs(second!.x - first!.x)).toBeLessThan(2);
-    expect(second!.y).toBeGreaterThan(first!.y + first!.height);
+    expect(Math.abs(third!.x - second!.x)).toBeLessThan(2);
+    expect(third!.y).toBeGreaterThan(second!.y + second!.height);
   } else {
-    expect(Math.abs(second!.y - first!.y)).toBeLessThan(2);
-    expect(second!.x).toBeGreaterThan(first!.x + first!.width);
-    expect(first!.width).toBeGreaterThan(second!.width);
-    expect(third!.y).toBeGreaterThan(first!.y + first!.height);
+    expect(first!.width).toBeGreaterThan(second!.width * 1.8);
+    expect(Math.abs(third!.y - second!.y)).toBeLessThan(2);
+    expect(Math.abs(third!.width - second!.width)).toBeLessThan(2);
   }
   const allWork = featured.getByRole("link", { name: "All work →" });
   await expect(allWork).toHaveAttribute("href", "/work");
   await expect(allWork).not.toHaveAttribute("role", "button");
+});
+
+test("the hero keeps its choices few and leads with Offboard", async ({ page, isMobile }) => {
+  await page.goto("/");
+  const hero = page.getByRole("region", { name: "Introduction" });
+  await expect(hero.getByRole("link", { name: "See selected work" })).toHaveAttribute("href", "#work");
+  // One link; booking lives in the header's Contact menu and the closing panel.
+  await expect(hero.getByRole("link")).toHaveCount(1);
+  // Two starter questions, not three.
+  await expect(hero.getByRole("list", { name: "Try asking" }).getByRole("listitem")).toHaveCount(2);
+  await expect(hero.locator("video")).toHaveCount(0);
+  const figure = hero.locator("figure");
+  if (isMobile) await expect(figure).toBeHidden();
+  else await expect(figure).toContainText("Offboard");
+  // The work record is its own section, outside the hero.
+  await expect(hero.getByRole("list", { name: "Experience" })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: /Experience/ }).getByRole("list", { name: "Experience" })).toHaveCount(1);
+});
+
+test("the headline is visible on first paint, on any viewport", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const heading = page.getByRole("heading", { level: 1 });
+  // No entrance on the hero: every word sits in place at once.
+  const offsets = await heading.locator("[data-motion-word]").evaluateAll((words) => words.map((word) => getComputedStyle(word).transform));
+  expect(offsets.every((value) => value === "none")).toBe(true);
+  await expect(heading.locator("xpath=ancestor::*[@data-motion-reveal]")).toHaveCount(0);
 });
 
 test("the headline marks its decision without changing its accessible name", async ({ page }) => {
@@ -46,7 +82,8 @@ test("the headline marks its decision without changing its accessible name", asy
   const heading = page.getByRole("heading", { level: 1 });
   await expect(heading).toHaveAccessibleName("Complex workflows. Clear decisions.");
   await expect(heading.locator(".headline-mark")).toContainText("Clear");
-  await expect(heading.locator(".headline-mark-tag")).toHaveText("the job");
+  // The tag needs the case studies to explain it, so the homepage omits it.
+  await expect(heading.locator(".headline-mark-tag")).toHaveCount(0);
 });
 
 test("the hero record lists employers from the resume", async ({ page }) => {

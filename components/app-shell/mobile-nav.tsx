@@ -40,7 +40,7 @@ function MobileNav() {
         {profile.avatar ? (
           <Image src={profile.avatar} alt="" width={32} height={32} loading="eager" className="size-8 rounded-full object-cover ring-1 ring-foreground/10" />
         ) : null}
-        <span className="font-display text-heading-md leading-none text-foreground">
+        <span className="whitespace-nowrap font-display text-heading-md leading-none text-foreground">
           {profile.name}
         </span>
       </Link>

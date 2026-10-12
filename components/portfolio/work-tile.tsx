@@ -9,7 +9,9 @@ import { cn } from "@/lib/utils";
 /**
  * A project tile for the homepage bento grid (Plan 038). Same plate colors
  * as `WorkPlate`, reduced to what a scan needs: brand, a two-line title, the
- * role, and the screenshot. Summaries and facts live on the case study.
+ * one-line summary (case studies only), the role, and the screenshot. The
+ * summary is the argument; without it a tile names the role, not the
+ * thinking (homepage audit, October 2026). Facts live on the case study.
  *
  * Height: in each grid row the large tile sets the height; the small tile's
  * screenshot fills whatever space remains (anchored top-left, cropped at the
@@ -30,6 +32,7 @@ type WorkTileProps = {
   href: string;
   brand: React.ReactNode;
   title: string;
+  summary?: string | null;
   meta: string | null;
   image: { src: string; alt: string; width: number; height: number } | null;
   size: "large" | "small" | "wide";
@@ -38,7 +41,7 @@ type WorkTileProps = {
   className?: string;
 };
 
-function WorkTile({ tone, href, brand, title, meta, image, size, eager = false, extra, className }: WorkTileProps) {
+function WorkTile({ tone, href, brand, title, summary, meta, image, size, eager = false, extra, className }: WorkTileProps) {
   const t = TONES[tone];
   const large = size !== "small";
   const wide = size === "wide";
@@ -56,6 +59,7 @@ function WorkTile({ tone, href, brand, title, meta, image, size, eager = false, 
         <h3 className={cn("mt-5 max-w-[30ch] font-display text-balance", large ? "text-heading-lg" : "text-heading-md")}>
           <Link href={href} className="focus-ring rounded-xs after:absolute after:inset-0 after:content-['']">{title}</Link>
         </h3>
+        {summary ? <p className={cn("mt-2.5 max-w-[52ch] text-body text-pretty", t.muted)}>{summary}</p> : null}
         {meta || extra ? (
           <p className={cn("mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-body-sm", t.muted)}>
             {meta ? <span>{meta}</span> : null}
