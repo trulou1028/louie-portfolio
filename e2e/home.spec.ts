@@ -166,6 +166,9 @@ test.describe("responsive shell", () => {
     await expect(page.getByRole("dialog")).toBeHidden();
   });
   test("no route overflows horizontally", async ({ page }) => {
+    // Nine full page loads in one test: triple the budget (it failed in CI
+    // when one slow load spent the default 30s).
+    test.slow();
     for (const path of [...NAV.map((item) => item.path), "/work/ck12-analytics", "/work/offboard", "/work/flexi", "/experiments/neuron-shift"]) {
       await page.goto(path);
       expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1), path).toBe(false);
@@ -173,6 +176,9 @@ test.describe("responsive shell", () => {
   });
   test("Ask dialog remains usable around the former rail breakpoint", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== "desktop", "desktop viewport resize");
+    // Five full page loads in one test: triple the budget (CI failed it
+    // twice, in September and October 2026, on the default 30s).
+    test.slow();
     for (const width of [390, 768, 1023, 1025, 1440]) {
       // Resize on a blank page. Resizing a loaded page makes it request new
       // image sizes, and navigating away at once cancels them; `next start`'s

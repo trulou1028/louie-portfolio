@@ -563,6 +563,17 @@ WebKit on an iPhone 13 profile — WebKit because a portfolio gets opened on
 Macs and iPhones, and it is the engine most likely to differ. No API keys are
 needed; every suite must pass without them (spec §31).
 
+The test build serves images as-is (`PORTFOLIO_E2E=1` sets
+`images.unoptimized` in `next.config.ts`). `next start`'s built-in image
+optimizer sometimes never answered a resize request under the test load, so
+a page never fired `load` and the test timed out on every retry; that made
+the CI Playwright job fail on four of seven `main` pushes from September 20
+to October 12, 2026. Production is unaffected: Vercel resizes images with its
+own service. Tests that only read text or head metadata navigate with
+`waitUntil: "domcontentloaded"`, and the no-JavaScript reading test runs once
+per story. On failure, CI uploads the HTML report and `test-results/`, which
+hold the traces recorded on retry.
+
 ## September 19 portfolio follow-up
 
 User-requested motion uses the existing Motion package (`motion/react-mini`) for once-per-view hero, card, case-study header, and article-section entrances. Server HTML stays visible, scroll positions remain native, and reduced-motion preferences disable entrances, including changes during an animation. Timings and travel distance use global tokens. The reveal timing is 700ms with 1.5rem travel, a soft ease-out curve, and 90ms stagger steps; timing parsing accepts both `ms` and `s` because production CSS minification changes units. This extends spec §24 at the owner’s request.

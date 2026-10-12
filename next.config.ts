@@ -53,6 +53,16 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
 
+  // The end-to-end build serves images as-is. Under the test load,
+  // `next start`'s built-in optimizer sometimes never answers a resize
+  // request (a trace on 2026-10-12: packet-stopped.webp at w=828), so the
+  // page never fires `load` and the test times out, on every retry. Production does not use
+  // that optimizer: Vercel resizes images with its own service. Only
+  // playwright.config.ts sets PORTFOLIO_E2E.
+  images: {
+    unoptimized: process.env.PORTFOLIO_E2E === "1",
+  },
+
   async headers() {
     return [
       {

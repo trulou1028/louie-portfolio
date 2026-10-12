@@ -1,19 +1,22 @@
 import { test, expect } from "@playwright/test";
 import { CASE_STUDY_ANCHORS } from "../lib/routes";
 
-test("every story remains readable without JavaScript", async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
-  const page = await context.newPage();
-  for (const [path, anchors] of Object.entries(CASE_STUDY_ANCHORS)) {
-    await page.goto(path);
+// One test per story, so each page gets its own time budget. Without
+// JavaScript there is nothing to wait for but images, and the check is about
+// text, so each page is read as soon as its HTML is parsed.
+for (const [path, anchors] of Object.entries(CASE_STUDY_ANCHORS)) {
+  test(`${path} remains readable without JavaScript`, async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+    const page = await context.newPage();
+    await page.goto(path, { waitUntil: "domcontentloaded" });
     await expect(page.locator("article h1")).toHaveCount(1);
     for (const anchor of anchors) {
       expect((await page.locator(`#${anchor.id}`).innerText()).length).toBeGreaterThan(50);
     }
     await expect(page.locator("[data-pending-content], [data-pending-asset]")).toHaveCount(0);
-  }
-  await context.close();
-});
+    await context.close();
+  });
+}
 
 test("assistant and evidence navigation work with reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
