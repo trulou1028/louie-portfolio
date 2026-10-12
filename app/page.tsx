@@ -81,21 +81,24 @@ export default function Home() {
     </section>
 
     {/* The record sits apart from the hero, on its own quiet band, so it
-        reads as reference rather than one more thing to act on. Part of the
-        first view on desktop, so no entrance animation. */}
+        reads as reference rather than one more thing to act on. Its
+        entrance is a plain fade (no masked words), so nothing it holds is
+        hidden for long. */}
     <section aria-labelledby="experience-label" className="rounded-panel bg-surface-muted p-6 sm:p-8">
-      <h2 id="experience-label" className="text-body-sm text-foreground-muted">
-        <span className="font-semibold text-foreground">Experience</span> · {profile.brief[0]}
-      </h2>
-      <ul aria-label="Experience" className="mt-5 grid grid-cols-2 gap-x-6 gap-y-5 @4xl/canvas:grid-cols-4">
-        {resume.roles.map((role) => (
-          <li key={role.company} className="flex flex-col gap-0.5 text-body-sm @4xl/canvas:border-l @4xl/canvas:border-border-default @4xl/canvas:pl-5 @4xl/canvas:first:border-l-0 @4xl/canvas:first:pl-0">
-            <span className="font-semibold text-foreground">{role.company.replace(", Inc.", "")}</span>
-            <span className="text-foreground-muted">{role.title}</span>
-            <span className="tabular-nums text-foreground-muted">{condensePeriod(role.period)}{role.scale ? ` · ${role.scale}` : ""}</span>
-          </li>
-        ))}
-      </ul>
+      <MotionReveal>
+        <h2 id="experience-label" className="text-body-sm text-foreground-muted">
+          <span className="font-semibold text-foreground">Experience</span> · <span>{profile.brief[0]}</span>
+        </h2>
+        <ul aria-label="Experience" className="mt-5 grid grid-cols-2 gap-x-6 gap-y-5 @4xl/canvas:grid-cols-4">
+          {resume.roles.map((role) => (
+            <li key={role.company} className="flex flex-col gap-0.5 text-body-sm @4xl/canvas:border-l @4xl/canvas:border-border-default @4xl/canvas:pl-5 @4xl/canvas:first:border-l-0 @4xl/canvas:first:pl-0">
+              <span className="font-semibold text-foreground">{role.company.replace(", Inc.", "")}</span>
+              <span className="text-foreground-muted">{role.title}</span>
+              <span className="tabular-nums text-foreground-muted">{condensePeriod(role.period)}{role.scale ? ` · ${role.scale}` : ""}</span>
+            </li>
+          ))}
+        </ul>
+      </MotionReveal>
     </section>
 
     <section id="work" data-testid="featured-work" aria-labelledby="featured-work-label" className="flex scroll-mt-6 flex-col gap-5">
