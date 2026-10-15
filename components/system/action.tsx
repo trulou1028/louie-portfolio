@@ -31,9 +31,11 @@ const actionVariants = cva(
       variant: {
         primary:
           // Keep the fill and its contrast-safe label paired across themes.
-          "border-transparent bg-accent-fill text-accent-on-fill hover:bg-accent-fill-hover",
+          // `aria-expanded:` overrides the upstream ghost base, which greys a
+          // trigger out while its popover or panel is open.
+          "border-transparent bg-accent-fill text-accent-on-fill hover:bg-accent-fill-hover aria-expanded:bg-accent-fill-hover aria-expanded:text-accent-on-fill",
         secondary:
-          "border border-border-default bg-surface text-foreground hover:border-border-strong hover:bg-surface-muted",
+          "border border-border-default bg-surface text-foreground hover:border-border-strong hover:bg-surface-muted aria-expanded:border-border-strong aria-expanded:bg-surface-muted aria-expanded:text-foreground",
         ghost:
           "border border-transparent bg-transparent text-foreground-muted hover:bg-surface-muted hover:text-foreground",
       },

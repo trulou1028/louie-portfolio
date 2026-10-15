@@ -1,7 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 
 /**
- * Plan 042: the homepage ask bar and the Ask Louie side panel.
+ * Plan 042: the Ask Louie side panel. Plan 051 removed the homepage ask
+ * bar; asking starts in the panel.
  *
  * `/api/chat` is always intercepted, so no provider is called.
  */
@@ -30,30 +31,39 @@ async function mockChat(page: Page) {
   return bodies;
 }
 
-test("the hero ask bar opens the panel and asks the question once", async ({ page }) => {
+async function openPanel(page: Page) {
+  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  const panel = page.locator("#ask-ai-louie");
+  await expect(panel).toBeVisible();
+  return panel;
+}
+
+test("the panel's composer asks the question once", async ({ page }) => {
   const bodies = await mockChat(page);
   await page.goto("/");
-  await page.getByRole("textbox", { name: "Ask about my work" }).fill("Why does the Offboard packet pause for risk?");
-  await page.getByRole("button", { name: "Send question" }).click();
+  const panel = await openPanel(page);
+  await panel.getByRole("textbox", { name: "Ask anything about Louie's work" }).fill("Why does the Offboard packet pause for risk?");
+  await panel.getByRole("button", { name: "Send message" }).click();
 
-  const panel = page.locator("#ask-ai-louie");
   await expect(panel.getByText("A risk gate can pause")).toBeVisible({ timeout: 15_000 });
   expect(bodies).toHaveLength(1);
   expect(bodies[0]).toContain("Why does the Offboard packet pause for risk?");
 });
 
-test("a hero starter question opens the panel and asks it", async ({ page }) => {
+test("a starter question in the panel asks it", async ({ page }) => {
   const bodies = await mockChat(page);
   await page.goto("/");
-  await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "Can you build what you design?" }).click();
-  await expect(page.locator("#ask-ai-louie").getByText("A risk gate can pause")).toBeVisible({ timeout: 15_000 });
+  const panel = await openPanel(page);
+  await panel.getByText("Can you build what you design?", { exact: true }).click();
+  await expect(panel.getByText("A risk gate can pause")).toBeVisible({ timeout: 15_000 });
   expect(bodies[0]).toContain("Can you build what you design?");
 });
 
-test("the hero keeps the job-description comparison one click away", async ({ page }) => {
+test("the panel keeps the job-description comparison one click away", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "Paste a job description" }).click();
-  await expect(page.locator("#ask-ai-louie").getByRole("region", { name: "Compare a role" })).toBeVisible();
+  const panel = await openPanel(page);
+  await panel.getByRole("button", { name: "Paste a job description" }).click();
+  await expect(panel.getByRole("region", { name: "Compare a role" })).toBeVisible();
 });
 
 test("on a case study, the panel starts from that project", async ({ page }) => {
@@ -146,8 +156,8 @@ test("the thinking line sits on the avatar's row, with the work cards under it",
     await route.fulfill({ status: 503, json: { error: "ai_unavailable" } });
   });
   await page.goto("/");
-  await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "How do you design AI people trust?" }).click();
-  const panel = page.locator("#ask-ai-louie");
+  const panel = await openPanel(page);
+  await panel.getByText("How do you design AI people trust?", { exact: true }).click();
   // The visible status is decorative; the thread announces the sr-only copy.
   const label = panel.getByText("Reading your question", { exact: true }).first();
   await expect(label).toBeVisible({ timeout: 10_000 });

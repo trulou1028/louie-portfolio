@@ -40,8 +40,10 @@ function MobileNav() {
         {profile.avatar ? (
           <Image src={profile.avatar} alt="" width={32} height={32} loading="eager" className="size-8 rounded-full object-cover ring-1 ring-foreground/10" />
         ) : null}
-        <span className="whitespace-nowrap font-display text-heading-md leading-none text-foreground">
-          {profile.name}
+        {/* The header wordmark (Plan 051): Geist first name, serif italic surname. */}
+        <span className="flex items-baseline gap-1 whitespace-nowrap leading-none text-foreground">
+          <span className="text-body font-semibold tracking-tight">{profile.name.split(" ")[0]}</span>
+          <span className="font-display text-body-lg italic">{profile.name.split(" ").slice(1).join(" ")}</span>
         </span>
       </Link>
 

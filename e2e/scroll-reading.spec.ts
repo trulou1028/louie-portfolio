@@ -31,13 +31,16 @@ test("case-study sections visibly animate on scroll and then settle", async ({ p
   await expect(reveal).toHaveCSS("opacity", "1");
 });
 
-test("Work leads with Offboard on its own plate color", async ({ page }) => {
+test("Work leads with Offboard, on a quiet frame rather than its plate color", async ({ page }) => {
   await page.goto("/work");
   await expect(page.locator('main a[href^="/work/"]').first()).toHaveAttribute("href", "/work/offboard");
-  const plate = page.locator("main article").filter({ has: page.locator('a[href="/work/offboard"]') });
-  const [actual, expected] = await plate.evaluate((node) => {
+  // Plan 051: plate colors left the Work cards; every screenshot sits on the
+  // same neutral frame.
+  const row = page.locator("main article").filter({ has: page.locator('a[href="/work/offboard"]') });
+  const frame = row.locator("img").first().locator("xpath=..");
+  const [actual, expected] = await frame.evaluate((node) => {
     const probe = document.createElement("div");
-    probe.style.backgroundColor = "hsl(var(--plate-offboard))";
+    probe.style.backgroundColor = "hsl(var(--surface-muted))";
     document.body.append(probe);
     const token = getComputedStyle(probe).backgroundColor;
     probe.remove();

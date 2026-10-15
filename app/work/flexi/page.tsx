@@ -43,10 +43,7 @@ export default function FlexiCaseStudy() {
       <TrackView event="portfolio_project_opened" properties={{ project: "flexi" }} />
       <CreativeWorkSchema project={project} />
       <article className="max-w-[760px]">
-        <CaseStudyHeader
-          project={project}
-          lede="An AI tutor has to satisfy a student who wants the answer, a teacher who needs the learning to survive, and an institution that needs to trust both."
-        />
+        <CaseStudyHeader project={project} />
 
         <div className="mb-10 flex flex-col gap-3 @5xl/canvas:hidden">
           <TableOfContentsInline anchors={FLEXI_ANCHORS} />

@@ -11,11 +11,11 @@ export const profile = {
   role: "Founding Product Designer & AI Systems Lead",
 
   positioning: {
-    /** Plans 029-035 adopted by Louie, 2026-09-19. */
-    primary: "Complex workflows. Clear decisions.",
-    /** Adopted supporting positioning, Plans 029-031. */
+    /** Supplied by Louie, 2026-10-15 (Plan 051). Replaces "Complex workflows. Clear decisions." */
+    primary: "I make complex things feel simple.",
+    /** Supplied by Louie, 2026-10-15 (Plan 051). */
     supporting:
-      "I shape AI products around the decisions people need to make, from learning tools at CK-12 to building Offboard end to end.",
+      "I design and build AI-powered products that help people learn, navigate complexity, and make better decisions.",
     /** Louie's current title at Offboard, used site-wide (owner decision, 2026-09-30). */
     eyebrow: "FOUNDING PRODUCT DESIGNER & AI SYSTEMS LEAD",
   },

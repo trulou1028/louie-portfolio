@@ -46,7 +46,9 @@ function ContextualRail({
  * of squeezing. The rail is a sticky right column when the canvas is at
  * least 64rem wide; below that it folds away and case studies show their
  * inline contents instead.
- * `width="reading"` pages without a rail keep the centered 900px column.
+ * `width="reading"` pages without a rail keep a 900px column, but inside the
+ * same frame, left-aligned, so every page's left edge lines up with the
+ * header name and the footer (Plan 051, Louie's review 2026-10-15).
  *
  * Plan 042 replaced the earlier resizable, full-bleed content and rail panes.
  * They let the page run edge to edge, out of line with the header.
@@ -95,11 +97,11 @@ function Canvas({
           </div>
         </div>
       ) : (
-        <div className={cn("w-full py-10 lg:py-14", framed ? "portfolio-wide" : "mx-auto max-w-[900px] px-6 sm:px-8", className)}>
-          {children}
+        <div className="portfolio-wide py-10 lg:py-14">
+          <div className={cn(!framed && "max-w-[900px]", className)}>{children}</div>
         </div>
       )}
-      <SiteFooter wide={framed} />
+      <SiteFooter wide />
     </div>
   );
 }

@@ -857,3 +857,82 @@ Follow-up the same day, from Louie's review:
   request: it added little. Each plate keeps its one large screenshot. The
   `gallery` field and its `TODO(asset)` requests (two for Flexi) are removed
   from `content/work/projects.ts`; the images stay, used by the case studies.
+
+## Dark, quieter, more room (Plan 051), October 15, 2026
+
+A design audit of the live site and a round of canvas mockups, approved by
+Louie. Details, measurements, and rationale:
+[Plan 051](plans/051-design-audit-breathing-room.md). These changes
+supersede the entries above where they conflict:
+
+- **Dark only, no theme switch.** `<html>` carries `dark` again, and the
+  tokens in `app/globals.css` are one dark palette: canvas #121211, ink
+  #F1EFE7. The light half is gone. Supersedes Plan 037's "Light is the
+  default theme".
+- **One accent, lime #C6FF00 with dark text**, for filled controls only
+  (Ask Louie, Book time, send) and the headline underline. `text-accent`
+  still resolves to ink. The focus ring is lime. The amber `signal` keeps
+  its one job, the decision marks on screenshots.
+- **Instrument Serif, Geist, and Geist Mono replace Archivo.** Instrument
+  Serif is `font-display` (page, section, and project titles); it has one
+  weight, so `font-synthesis-weight: none` stops faked bolds. Geist is the
+  sans for UI and body. Geist Mono carries the nav pills, meta lines, and
+  short labels. Supersedes Plan 037's Archivo note.
+- **New hero copy, supplied by Louie.** "I make complex things feel
+  simple." / "I design and build AI-powered products that help people learn,
+  navigate complexity, and make better decisions." / "Explore my work ↓".
+  Small real screenshots sit inside the headline and cycle; a neon underline
+  draws under "feel simple." (`components/portfolio/hero-headline.tsx`). The
+  entrance is CSS and finishes in under a second, so the October 12 finding
+  (a JS-gated headline hidden on phones) does not return. Reduced motion
+  shows the finished state.
+- **Ask Louie opens beside the desktop homepage on arrival** (windows 1280px and wider), without taking
+  focus. Closing it sets `localStorage["ask-louie-closed"]`, and it stays
+  closed on later visits. Other pages and phones keep it closed. The hero's
+  ask bar is gone; the panel holds the starter questions and the
+  job-description comparison. The e2e suite starts with the flag set
+  (`playwright.config.ts`); `home.spec.ts` clears it to test arrival.
+- **One card anatomy** (`components/portfolio/work-card.tsx`): the
+  screenshot on a neutral `surface-muted` frame, a mono meta line, the
+  title. No plate color, wordmark, arrow button, or summary on homepage
+  cards. The Work page uses a row version that keeps the one-sentence
+  summary. `WorkTile`, `WorkPlate`, `ProjectPlate`, `ExperimentPlate`,
+  `HeroAsk`, and `ProjectMeta` are deleted; the plate classes moved to
+  `components/portfolio/plate-tones.ts` for the next-case-study link.
+- **Spacing with contrast.** 128px between homepage sections on desktop
+  (96px on phones), 32px between cards in a row, 64px between rows.
+- **Experience is a plain list** on the canvas, no tinted band.
+- **The header shows the name alone** (the hero states the role), with mono
+  pill navigation.
+- **Case-study openings are one block:** the title, one mono meta line with
+  the facts, and the brief as unboxed rows. The logo chip, the separate lede
+  (it restated the brief's problem), and the scope line are gone.
+- **Dark-theme fixes:** decision marks dim with black, not ink, and sheet
+  and dialog backdrops are black.
+
+Not changed yet (Plan 051 R10, remaining): the case-study table of contents
+still uses its own labels instead of the section titles' words, and the
+"Ask about this project" card is still a card.
+
+Follow-up the same day, from Louie's review:
+
+- **Every page lines up with the header.** Reading-width pages (About,
+  Resume, AI Systems, Experiments, Writing, write-ups) keep their 900px
+  column but sit inside the header's frame, left-aligned, instead of centered
+  on their own. The footer uses the same frame everywhere.
+- **"Contact" is now "Let's talk"**, a plain outlined dropdown with a
+  chevron, listing email (with copy), LinkedIn, Book time, and Resume. The
+  mail icon read as "this opens my email client".
+- **The Ask Louie panel resizes.** Drag its left edge, or focus it and use
+  the arrow keys (Shift for bigger steps, Home and End for the limits).
+  360 to 720px, and the page keeps at least 600px. The width is remembered in
+  `localStorage["ask-louie-width"]`.
+- **Headline previews are sharp.** Hover shows a separate 22rem copy of the
+  screens instead of scaling the thumbnail up, which the browser had
+  rasterized at its small size.
+- **The headline line has no glow and sits behind the letters**, like a
+  highlighter stroke. It draws in once; the flicker and hum are gone.
+- **The header name is a wordmark:** the first name in Geist, the surname in
+  Instrument Serif italic. The avatar tilts and rings lime on hover.
+- **Buttons keep their fill while their popover or panel is open.** The
+  upstream button base greyed out an open trigger; `Action` now overrides it.

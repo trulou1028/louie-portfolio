@@ -13,13 +13,11 @@ describe("hero copy", () => {
   });
 
   it("still carries the exact positioning statements", () => {
-    // The headline was superseded by owner decision 2026-08-23 (Plan 011,
-    // README "Deviations" ledger) — this is no longer the spec §11 wording.
-    expect(profile.positioning.primary).toBe(
-      "Complex workflows. Clear decisions.",
-    );
+    // Louie's copy, 2026-10-15 (Plan 051, README "Deviations" ledger).
+    // This is not the spec §11 wording.
+    expect(profile.positioning.primary).toBe("I make complex things feel simple.");
     expect(profile.positioning.supporting).toBe(
-      "I shape AI products around the decisions people need to make, from learning tools at CK-12 to building Offboard end to end.",
+      "I design and build AI-powered products that help people learn, navigate complexity, and make better decisions.",
     );
   });
 });

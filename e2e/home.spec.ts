@@ -9,25 +9,25 @@ const NAV = [
 
 test("homepage leads with Offboard, then the CK-12 pair, then independent projects", async ({ page }, testInfo) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1, name: "Complex workflows. Clear decisions." })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "I make complex things feel simple." })).toBeVisible();
   await expect(page.locator("main canvas")).toHaveCount(0);
   const featured = page.getByTestId("featured-work");
   await expect(featured).toHaveCount(1);
   const projectLinks = featured.locator('a[href^="/work/"]');
   const destinations = await projectLinks.evaluateAll((els) => els.map((el) => el.getAttribute("href")));
   expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics", "/work/flexi"]);
-  // Case studies: a wordmark and a screenshot each.
-  await expect(featured.locator("img")).toHaveCount(6);
-  // Each case-study tile carries its one-line summary.
-  await expect(featured.getByText("Separate prediction from diagnosis.", { exact: false })).toBeVisible();
+  // Plan 051: one card anatomy. A screenshot, a meta line, and the title;
+  // no wordmark, no plate, and no summary (the title carries the argument).
+  await expect(featured.locator("img")).toHaveCount(3);
+  await expect(featured.getByText("Separate prediction from diagnosis.", { exact: false })).toHaveCount(0);
+  await expect(featured.getByText("CK-12 Foresights & Insights · Lead Product Designer")).toBeVisible();
 
   const independent = page.getByTestId("independent-work");
   for (const slug of ["motif", "transfersight", "neuron-shift"]) {
     await expect(independent.locator(`a[href="/experiments/${slug}"]`)).toHaveCount(1);
   }
   await expect(featured.locator('a[href^="/experiments/"]')).toHaveCount(0);
-  // Motif and TransferSight: a wordmark and a screenshot. Neuron Shift: a screenshot.
-  await expect(independent.locator("img")).toHaveCount(5);
+  await expect(independent.locator("img")).toHaveCount(3);
   await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
   await page.waitForTimeout(1_000);
 
@@ -50,40 +50,68 @@ test("homepage leads with Offboard, then the CK-12 pair, then independent projec
   await expect(allWork).not.toHaveAttribute("role", "button");
 });
 
-test("the hero keeps its choices few and leads with Offboard", async ({ page, isMobile }) => {
+test("the hero is the headline, one sentence, and one link", async ({ page }) => {
   await page.goto("/");
   const hero = page.getByRole("region", { name: "Introduction" });
-  await expect(hero.getByRole("link", { name: "See selected work" })).toHaveAttribute("href", "#work");
-  // One link; booking lives in the header's Contact menu and the closing panel.
+  await expect(hero.getByRole("link", { name: "Explore my work" })).toHaveAttribute("href", "#work");
+  // One link. Asking lives in the Ask Louie panel (Plan 051).
   await expect(hero.getByRole("link")).toHaveCount(1);
-  // Two starter questions, not three.
-  await expect(hero.getByRole("list", { name: "Try asking" }).getByRole("listitem")).toHaveCount(2);
-  await expect(hero.locator("video")).toHaveCount(0);
-  const figure = hero.locator("figure");
-  if (isMobile) await expect(figure).toBeHidden();
-  else await expect(figure).toContainText("Offboard");
+  await expect(hero.getByRole("button")).toHaveCount(0);
+  await expect(hero.getByRole("textbox")).toHaveCount(0);
+  await expect(hero.getByText("I design and build AI-powered products that help people learn, navigate complexity, and make better decisions.")).toBeVisible();
   // The work record is its own section, outside the hero.
   await expect(hero.getByRole("list", { name: "Experience" })).toHaveCount(0);
   await expect(page.getByRole("region", { name: /Experience/ }).getByRole("list", { name: "Experience" })).toHaveCount(1);
 });
 
-test("the headline is visible on first paint, on any viewport", async ({ page }) => {
+test("the headline lands quickly, without waiting on JavaScript", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
   const heading = page.getByRole("heading", { level: 1 });
-  // No entrance on the hero: every word sits in place at once.
-  const offsets = await heading.locator("[data-motion-word]").evaluateAll((words) => words.map((word) => getComputedStyle(word).transform));
-  expect(offsets.every((value) => value === "none")).toBe(true);
+  // No JS-gated reveal around the hero (audit finding 1).
   await expect(heading.locator("xpath=ancestor::*[@data-motion-reveal]")).toHaveCount(0);
+  // The entrance is CSS and short. Check its configured timing rather than
+  // the wall clock, which a parallel test run stretches: every word's delay
+  // plus duration ends within 1.3s of first paint.
+  const ends = await heading.evaluate((h) => [...h.querySelectorAll(".hero-word")].map((word) => {
+    const style = getComputedStyle(word);
+    return (parseFloat(style.animationDelay) + parseFloat(style.animationDuration)) * 1000;
+  }));
+  expect(ends).toHaveLength(6);
+  for (const end of ends) expect(end).toBeLessThanOrEqual(1_300);
+  // And it finishes visible.
+  await expect.poll(() => heading.locator(".hero-word").evaluateAll((words) => words.every((word) => getComputedStyle(word).opacity === "1")), { timeout: 5_000 }).toBe(true);
 });
 
-test("the headline marks its decision without changing its accessible name", async ({ page }) => {
+test("the headline reads as one sentence, with its screens and underline for sighted visitors", async ({ page, isMobile }) => {
   await page.goto("/");
   const heading = page.getByRole("heading", { level: 1 });
-  await expect(heading).toHaveAccessibleName("Complex workflows. Clear decisions.");
-  await expect(heading.locator(".headline-mark")).toContainText("Clear");
-  // The tag needs the case studies to explain it, so the homepage omits it.
-  await expect(heading.locator(".headline-mark-tag")).toHaveCount(0);
+  await expect(heading).toHaveAccessibleName("I make complex things feel simple.");
+  // Two stacks of three real screens, decorative only.
+  await expect(heading.locator(".hero-shot")).toHaveCount(2);
+  await expect(heading.locator(".hero-shot img")).toHaveCount(6);
+  for (const alt of await heading.locator(".hero-shot img").evaluateAll((imgs) => imgs.map((img) => img.getAttribute("alt")))) expect(alt).toBe("");
+  // The lime line sits behind "feel simple."
+  await expect(heading.locator(".hero-neon")).toHaveText("feel simple.");
+  // Hover previews are laid out at full size, not scaled-up thumbnails, so
+  // they stay sharp. Touch screens have no hover and render none.
+  const preview = await heading.locator(".hero-preview").first().evaluate((el) => (el as HTMLElement).offsetWidth);
+  if (isMobile) expect(preview).toBe(0);
+  else expect(preview).toBeGreaterThanOrEqual(320);
+});
+
+test("with reduced motion, the headline is simply there", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const heading = page.getByRole("heading", { level: 1 });
+  const state = await heading.evaluate((h) => ({
+    words: [...h.querySelectorAll(".hero-word")].map((word) => getComputedStyle(word).opacity),
+    firstShots: [...h.querySelectorAll(".hero-shot img:first-child")].map((img) => getComputedStyle(img).opacity),
+    underline: getComputedStyle(h.querySelector(".hero-neon")!, "::after").transform,
+  }));
+  expect(state.words.every((opacity) => opacity === "1")).toBe(true);
+  expect(state.firstShots).toEqual(["1", "1"]);
+  expect(state.underline).toBe("none");
 });
 
 test("the hero record lists employers from the resume", async ({ page }) => {
@@ -111,6 +139,47 @@ test("Ask Louie is closed on arrival and preserves a draft across closes", async
   await expect(input).toHaveValue("Show me teacher analytics");
   await dialog.getByRole("button", { name: "Close", exact: true }).click();
   await expect(dialog).toBeHidden();
+});
+
+test.describe("arrival on the desktop homepage", () => {
+  // A first-time visitor: no remembered close (see playwright.config.ts).
+  test.use({ storageState: { cookies: [], origins: [] } });
+
+  test("Ask Louie opens beside the page without taking focus, and stays closed once closed", async ({ page, isMobile }) => {
+    await page.goto("/");
+    const dialog = page.getByRole("dialog", { name: "Ask Louie", exact: true });
+    if (isMobile) {
+      // Phones keep the page: the panel would cover it.
+      await expect(dialog).toHaveCount(0);
+      return;
+    }
+    await expect(dialog).toBeVisible();
+    expect(await page.evaluate(() => Boolean(document.activeElement?.closest("#ask-ai-louie")))).toBe(false);
+    // Docked: the page narrows beside it.
+    expect(await page.evaluate(() => document.documentElement.hasAttribute("data-ask-docked"))).toBe(true);
+    await dialog.getByRole("button", { name: "Close", exact: true }).click();
+    await expect(dialog).toBeHidden();
+    await page.reload();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.waitForTimeout(500);
+    await expect(dialog).toHaveCount(0);
+  });
+
+  test("other pages do not open it", async ({ page }) => {
+    await page.goto("/work");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.waitForTimeout(500);
+    await expect(page.getByRole("dialog", { name: "Ask Louie", exact: true })).toHaveCount(0);
+  });
+
+  test("a narrow desktop window keeps the page instead", async ({ page, isMobile }) => {
+    test.skip(isMobile, "desktop widths only");
+    await page.setViewportSize({ width: 1100, height: 900 });
+    await page.goto("/");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.waitForTimeout(500);
+    await expect(page.getByRole("dialog", { name: "Ask Louie", exact: true })).toHaveCount(0);
+  });
 });
 
 test("the existing Ask Louie deep link opens its dialog", async ({ page }) => {
@@ -245,10 +314,51 @@ test("homepage centers its frame and aligns header, content, and footer", async 
   }
 });
 
+test("every page's content starts at the header's left edge", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the desktop header");
+  test.slow();
+  for (const path of ["/about", "/resume", "/ai-systems", "/experiments", "/writing", "/experiments/motif", "/work", "/work/offboard"]) {
+    await page.goto(path);
+    const name = await page.getByRole("link", { name: /Louie Sakoda, home/ }).boundingBox();
+    const title = await page.locator("main h1").boundingBox();
+    expect(Math.abs(title!.x - name!.x), path).toBeLessThanOrEqual(2);
+  }
+});
+
+test("the Ask Louie panel resizes by dragging its edge or with the keyboard", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the panel docks on desktop only");
+  await page.goto("/work/offboard");
+  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  const panel = page.locator("#ask-ai-louie");
+  await expect(panel).toBeVisible();
+  const handle = page.getByRole("separator", { name: "Resize Ask Louie panel" });
+  await expect(handle).toHaveAttribute("aria-valuenow", "420");
+  await page.waitForTimeout(400);
+  const box = (await handle.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + 300);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 - 180, box.y + 300, { steps: 6 });
+  await page.mouse.up();
+  await expect.poll(async () => Math.round((await panel.boundingBox())!.width)).toBeGreaterThanOrEqual(590);
+  // The page narrows by the same amount.
+  await expect.poll(async () => {
+    const scroller = (await page.locator("[data-canvas-scroll]").boundingBox())!;
+    return scroller.x + scroller.width <= (await panel.boundingBox())!.x + 1;
+  }).toBe(true);
+  // Remembered across a reload.
+  await page.reload();
+  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  await expect(page.getByRole("separator", { name: "Resize Ask Louie panel" })).toHaveAttribute("aria-valuenow", /^(59\d|60\d)$/);
+  // Keyboard: Home is the narrowest width.
+  await page.getByRole("separator", { name: "Resize Ask Louie panel" }).focus();
+  await page.keyboard.press("Home");
+  await expect(page.getByRole("separator", { name: "Resize Ask Louie panel" })).toHaveAttribute("aria-valuenow", "360");
+});
+
 test("contact details are one click away on every page", async ({ page, isMobile }) => {
   await page.goto("/work/flexi");
   if (isMobile) await page.getByRole("button", { name: "Open navigation menu" }).click();
-  else await page.getByRole("button", { name: "Contact" }).click();
+  else await page.getByRole("button", { name: "Let’s talk" }).click();
   const email = page.getByRole("link", { name: "louie.sakoda@gmail.com" });
   await expect(email).toBeVisible();
   await expect(email).toHaveAttribute("href", "mailto:louie.sakoda@gmail.com");

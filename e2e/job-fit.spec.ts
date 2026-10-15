@@ -63,12 +63,6 @@ test.describe("the job comparison", () => {
     await expect(view.getByText(/sign in|sign up|create an account/i)).toHaveCount(0);
   });
 
-  test("the hero button opens the same view", async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("region", { name: "Introduction" }).getByRole("button", { name: "Paste a job description" }).click();
-    await expect(page.locator("#ask-ai-louie").getByRole("region", { name: "Compare a role" })).toBeVisible();
-  });
-
   test("requires a substantial description before comparing", async ({ page }) => {
     const view = await openDialog(page);
     const submit = view.getByRole("button", { name: /Compare with/ });

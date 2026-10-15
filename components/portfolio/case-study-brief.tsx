@@ -17,16 +17,19 @@ const ROWS = [
  * and the result, before the hero image. A hiring manager who reads only
  * this still leaves with the story. Every line restates the case study;
  * the brief adds no claim of its own.
+ *
+ * Plan 051: no box. Rules between rows, on the page itself.
  */
 function CaseStudyBrief({ brief, className }: { brief: CaseStudyBriefContent; className?: string }) {
   return (
-    <dl className={cn("@container rounded-lg border border-border-subtle bg-surface p-5 sm:p-6", className)}>
+    <dl className={cn("@container border-t border-border-default", className)}>
       {ROWS.map((row, index) => (
         <div
           key={row.key}
           className={cn(
             "grid gap-1 @xl:grid-cols-[8.5rem_minmax(0,1fr)] @xl:gap-6",
-            index > 0 && "mt-4 border-t border-border-subtle pt-4",
+            "py-4",
+            index > 0 && "border-t border-border-subtle",
           )}
         >
           <dt className="text-body-sm font-semibold text-foreground @xl:pt-0.5">{row.label}</dt>

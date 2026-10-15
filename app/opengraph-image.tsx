@@ -26,8 +26,8 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 72,
-          background: "#0c0a09",
-          color: "#fafaf9",
+          background: "#121211",
+          color: "#f1efe7",
           fontFamily: "sans-serif",
         }}
       >
@@ -38,7 +38,7 @@ export default function OpenGraphImage() {
           {profile.positioning.primary}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 20, fontSize: 30 }}>
-          <div style={{ width: 14, height: 14, borderRadius: 999, background: "#ff9900" }} />
+          <div style={{ width: 14, height: 14, borderRadius: 999, background: "#c6ff00" }} />
           <span>{profile.name}</span>
           <span style={{ color: "#a8a29e" }}>· {profile.role}</span>
         </div>

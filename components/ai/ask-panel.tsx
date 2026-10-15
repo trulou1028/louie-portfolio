@@ -25,7 +25,7 @@ function AskPanel({ headerEnd }: { headerEnd?: React.ReactNode }) {
           <AssistantAvatar className="size-9 self-center" />
           <div className="min-w-0">
             {/* Keep the assistant title intact at narrow widths. */}
-            <h2 className="whitespace-nowrap font-display text-body-lg font-bold leading-tight text-foreground">
+            <h2 className="whitespace-nowrap text-body-lg font-semibold leading-tight text-foreground">
               Ask Louie
             </h2>
             <p className="truncate text-body-sm text-foreground-muted">Answers from my case studies</p>
