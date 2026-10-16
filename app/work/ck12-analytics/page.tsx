@@ -43,10 +43,7 @@ export default function AnalyticsCaseStudy() {
       <TrackView event="portfolio_project_opened" properties={{ project: "ck12-analytics" }} />
       <CreativeWorkSchema project={project} />
       <article className="max-w-[760px]">
-        <CaseStudyHeader
-          project={project}
-          lede="Helping teachers decide when and how to support a student, without confusing a prediction with an explanation."
-        />
+        <CaseStudyHeader project={project} />
 
         <div className="mb-10 flex flex-col gap-3 @5xl/canvas:hidden">
           <TableOfContentsInline anchors={ANALYTICS_ANCHORS} />

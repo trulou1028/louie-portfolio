@@ -43,10 +43,7 @@ export default function OffboardCaseStudy() {
       <TrackView event="portfolio_project_opened" properties={{ project: "offboard" }} />
       <CreativeWorkSchema project={project} />
       <article className="max-w-[760px]">
-        <CaseStudyHeader
-          project={project}
-          lede="Job seekers lose most of their time to work that has nothing to do with the job: rebuilding the same context across a dozen tools that do not talk to each other."
-        />
+        <CaseStudyHeader project={project} />
 
         <div className="mb-10 flex flex-col gap-3 @5xl/canvas:hidden">
           <TableOfContentsInline anchors={OFFBOARD_ANCHORS} />

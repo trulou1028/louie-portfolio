@@ -12,11 +12,14 @@ import { extendTailwindMerge } from "tailwind-merge";
  * sizes here keeps colors and sizes independent.
  */
 export const TYPE_SCALE = [
+  "home-hero",
   "display-xl",
   "display-lg",
   "heading-xl",
   "heading-lg",
   "heading-md",
+  "project-title",
+  "lead",
   "body-lg",
   "body",
   "body-sm",

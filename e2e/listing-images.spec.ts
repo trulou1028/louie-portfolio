@@ -1,11 +1,9 @@
 import { test, expect } from "@playwright/test";
 
-// "/": three case-study tiles, Motif, and TransferSight (wordmark +
-// screenshot each), and Neuron Shift (screenshot): eleven images. The hero's
-// Offboard figure is not an article, so it is not counted.
-// "/work" (Plan 037 plates): the same eleven. The plates' thumbnail strips
-// were removed in October 2026; supporting images live in the case studies.
-for (const [path, count] of [["/", 11], ["/work", 11]] as const) {
+// Plan 051: one screenshot per work card. "/": three case studies and three
+// independent projects. The headline's small screens are not in an article,
+// so they are not counted. "/work": the same six.
+for (const [path, count] of [["/", 6], ["/work", 6]] as const) {
   test(`${path} loads and its project images decode`, async ({ page }) => {
     await page.goto(path);
     const images = page.locator("main article img");
@@ -17,14 +15,14 @@ for (const [path, count] of [["/", 11], ["/work", 11]] as const) {
   });
 }
 
-test("project plates put copy beside the screenshot on desktop and above it on mobile", async ({ page, isMobile }) => {
+test("Work rows put copy beside the screenshot on desktop and below it on mobile", async ({ page, isMobile }) => {
   await page.goto("/work");
   const plate = page.locator("main article").filter({ has: page.locator('a[href="/work/offboard"]') });
   await plate.scrollIntoViewIfNeeded();
   const image = await plate.locator('img[alt*="Offboard application packet"]').boundingBox();
-  const title = await plate.locator("h3").boundingBox();
+  const title = await plate.locator("h2").boundingBox();
   expect(image).not.toBeNull();
   expect(title).not.toBeNull();
-  if (isMobile) expect(image!.y).toBeGreaterThan(title!.y + title!.height);
-  else expect(image!.x).toBeGreaterThan(title!.x + title!.width);
+  if (isMobile) expect(title!.y).toBeGreaterThan(image!.y + image!.height);
+  else expect(title!.x).toBeGreaterThan(image!.x + image!.width);
 });

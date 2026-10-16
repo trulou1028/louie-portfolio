@@ -23,6 +23,14 @@ export default defineConfig({
   use: {
     baseURL,
     trace: "on-first-retry",
+    // Plan 051: the desktop homepage opens Ask Louie on arrival. Every test
+    // starts as a visitor who closed it before, so suites that open the
+    // panel themselves see it closed first. `home.spec.ts` clears this to
+    // test the arrival behavior.
+    storageState: {
+      cookies: [],
+      origins: [{ origin: baseURL, localStorage: [{ name: "ask-louie-closed", value: "1" }] }],
+    },
   },
   projects: [
     {

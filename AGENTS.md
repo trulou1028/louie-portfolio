@@ -65,12 +65,13 @@ styling and semantics belong in wrappers: `components/system/`,
 `components/portfolio/`, `components/app-shell/`, `components/ai/`
 (spec §33). Do not scatter raw `Button`/`Card`/`Badge` through pages.
 
-**Fonts.** One family, Archivo, in two roles (Plan 037). `font-display`
-(also `--font-heading`) runs the wide width axis for display statements and
-project titles only. `font-sans` is the same face at default width for UI and
-body. Geist Mono (`font-mono`) for short system labels and decision-mark tags
-only — never paragraphs (spec §7). Both load through `next/font/google` in
-`app/layout.tsx`.
+**Fonts.** Three families (Plan 051). `font-display` is Instrument Serif,
+for page, section, and project titles; it has one weight (400) and
+`font-synthesis-weight: none` keeps the browser from faking a bold, so never
+pair it with `font-bold`. `font-sans` is Geist for UI and body, at 400 and
+600. Geist Mono (`font-mono`) for nav pills, meta lines, and short system
+labels only — never paragraphs (spec §7). All load through `next/font/google`
+in `app/layout.tsx`.
 
 **Card anatomy.** One padding scale, no in-between values: compact card
 `p-4`, standard card `p-5`, panel `p-6` (a panel may step up to `sm:p-8`).
@@ -98,18 +99,20 @@ metadata rows. Decorative icons always `aria-hidden`.
 job-fit dialog, which previews its four result sections). No bare spinners
 without text, and no skeleton that misrepresents what is coming.
 
-**Theme.** Light is the default (Plan 037); the dark half stays in
-`app/globals.css` for a future toggle, but nothing sets `.dark`. Do not add
-`dark:` variants in portfolio components — write against the tokens. The
-shell is neutral ink on a warm off-white canvas (#f9f7ef); color belongs to the work:
+**Theme.** Dark only, with no switch (Plan 051): `<html>` carries `.dark`
+and `app/globals.css` holds one palette. Do not add `dark:` variants in
+portfolio components — write against the tokens. The shell is warm off-white
+ink on a near-black canvas (#121211); color belongs to the work:
 
 - `bg-plate-*` / `text-plate-*-ink` / `text-plate-*-muted`: each project's
-  own brand field. Use them only for that project.
+  own brand field. Use them only for that project (case study pages, the
+  next-case-study link). Work cards use the neutral `bg-surface-muted` frame.
 - `signal` (amber): reserved for `DecisionMark`, the redline drawn over a
   real screenshot. Mark labels restate the caption, alt text, or case study.
-- The split accent still holds: `text-accent` for text and markers,
-  `bg-accent-fill` (+ `text-accent-on-fill`) for filled controls. In light
-  both resolve to ink, so `InlineLink` is always underlined.
+- The split accent still holds: `text-accent` for text and markers (it
+  resolves to ink, so `InlineLink` is always underlined), `bg-accent-fill`
+  (+ `text-accent-on-fill`) for filled controls: lime #C6FF00 with dark text.
+  Lime is for primary actions and the headline underline only.
 
 ## Content integrity — the rule that matters most
 

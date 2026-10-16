@@ -134,7 +134,7 @@ function JobCompare() {
   return (
     <section aria-labelledby="job-compare-title" className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center justify-between gap-3 pb-4">
-        <h3 id="job-compare-title" className="font-display text-body-lg font-bold text-foreground">
+        <h3 id="job-compare-title" className="text-body-lg font-semibold text-foreground">
           Compare a role
         </h3>
         <button

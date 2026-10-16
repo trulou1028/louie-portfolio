@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { ProjectBrand } from "@/components/portfolio/project-brand";
-import { TONES } from "@/components/portfolio/work-plate";
+import { TONES } from "@/components/portfolio/plate-tones";
 import { workProjects, type WorkProject } from "@/content/work/projects";
 import { cn } from "@/lib/utils";
 

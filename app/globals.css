@@ -2,55 +2,55 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Registers the `dark` variant for upstream shadcn components. Light is the
-   default theme; the dark half below is kept so a theme toggle stays a
-   one-line change, but nothing sets `.dark` today. */
+/* Registers the `dark` variant for upstream shadcn components. The site is
+   dark only (Plan 051, Louie, 2026-10-15): `<html>` carries `.dark`, so
+   upstream components use their dark styles, and the tokens below are the
+   one palette. There is no theme switch. */
 @custom-variant dark (&:is(.dark *));
 
 /* ---------------------------------------------------------------------------
    Design tokens — source of truth.
 
-   Direction A "The work, framed" (Plan 037, September 2026). The shell is
-   quiet: a warm off-white canvas, near-black ink, no brand hue of its own.
-   Color belongs to the work. Each project brings its own plate color, and one
-   signal color (amber) has one job: marking the decision inside a real
-   screenshot, the way a designer redlines a spec.
+   Plan 051 (October 2026): a near-black warm canvas, warm off-white ink, and
+   one accent, lime #C6FF00, which always carries dark text. Color still
+   belongs to the work: project plates stay for the case study pages, and the
+   amber signal keeps its one job, the redline on real screenshots.
 
-   Accent split (unchanged contract): `text-accent` for text and markers,
-   `bg-accent-fill` + `text-accent-on-fill` for filled controls. In the light
-   theme both resolve to ink, so links carry an underline to stay findable.
-   `accent-muted` / `accent-soft` are amber tints: the deep-link wash and AI
-   surfaces share the signal color's family.
+   Accent split (unchanged contract): `text-accent` for text and markers
+   resolves to ink, so links keep their underline; `bg-accent-fill` +
+   `text-accent-on-fill` is lime with dark text, for primary actions only.
+   `accent-muted` / `accent-soft` are lime tints for the deep-link wash and
+   AI surfaces.
 
    Colors are HSL triplets consumed as hsl(var(--token)). Radii are spec §9.
    Motion durations are spec §24.
 --------------------------------------------------------------------------- */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  /* Warm off-white canvas, #f9f7ef (Louie, 2026-09-29). Cards stay pure
-     white on it; tints and borders lean the same warm way. */
-  --canvas: 48 45% 95.7%;
-  --surface: 0 0% 100%;
-  --surface-muted: 46 24% 92%;
-  --surface-raised: 0 0% 100%;
-  --foreground: 230 8% 10%;         /* 16.6:1 on canvas */
-  --foreground-muted: 230 5% 36%;   /* 6.6:1 on canvas — body copy */
-  --foreground-subtle: 230 4% 60%;  /* non-text only */
-  --foreground-quiet: 230 4% 50%;   /* 3.9:1 — display-size text only */
+  /* Near-black warm canvas, #121211. Frames and panels step up in lightness;
+     borders stay low so spacing, not lines, does the grouping. */
+  --canvas: 60 3% 7%;
+  --surface: 60 4% 9%;
+  --surface-muted: 50 5% 11%;
+  --surface-raised: 45 6% 13%;
+  --foreground: 48 26% 93%;         /* #F1EFE7, 16.5:1 on canvas */
+  --foreground-muted: 45 5% 61%;    /* #A3A097, 7.4:1 on canvas — body copy */
+  --foreground-subtle: 45 4% 40%;   /* non-text only */
+  --foreground-quiet: 45 4% 52%;    /* 4.9:1 — display-size text only */
 
-  --border-subtle: 45 16% 88%;
-  --border-default: 44 11% 82%;
-  --border-strong: 42 6% 70%;
+  --border-subtle: 45 5% 16%;
+  --border-default: 50 5% 21%;
+  --border-strong: 48 5% 32%;
 
-  --accent: 230 8% 10%;
-  --accent-hover: 230 6% 32%;
-  --accent-fill: 230 8% 10%;
-  --accent-fill-hover: 230 7% 24%;
-  --accent-on-fill: 0 0% 100%;
-  --accent-muted: 42 92% 80%;
-  --accent-soft: 45 100% 95%;
-  --accent-foreground: 32 80% 26%;  /* 7.5:1 on accent-soft */
+  --accent: 48 26% 93%;
+  --accent-hover: 45 5% 75%;
+  --accent-fill: 74 100% 50%;       /* lime #C6FF00 */
+  --accent-fill-hover: 74 100% 62%;
+  --accent-on-fill: 60 3% 7%;       /* 16:1 on lime */
+  --accent-muted: 74 45% 22%;
+  --accent-soft: 74 30% 11%;
+  --accent-foreground: 74 100% 62%; /* 12:1 on accent-soft */
 
   /* The redline. Used only by DecisionMark and the marks it draws. */
   --signal: 41 91% 57%;
@@ -85,8 +85,8 @@
   --plate-transfersight-ink: 220 9% 92%;  /* about 16:1 */
   --plate-transfersight-muted: 215 8% 64%; /* about 7.4:1 */
 
-  --danger: 0 72% 45%;
-  --success: 145 55% 30%;
+  --danger: 0 72% 60%;
+  --success: 145 45% 55%;
 
   /* Geometry — spec §9 */
   --radius-xs: 6px;
@@ -103,9 +103,9 @@
 
   /* Elevation. Border first, background second, shadow last (spec §9). */
   --shadow-soft:
-    0 1px 2px hsl(0 0% 0% / 0.35), 0 8px 24px hsl(0 0% 0% / 0.35);
-  /* A product screenshot lifted off its project plate (Plan 037). */
-  --shadow-shot: 0 30px 60px -30px hsl(230 30% 5% / 0.55);
+    0 1px 2px hsl(0 0% 0% / 0.4), 0 8px 24px hsl(0 0% 0% / 0.4);
+  /* A product screenshot lifted off its frame (Plan 037, Plan 051). */
+  --shadow-shot: 0 30px 60px -30px hsl(0 0% 0% / 0.8);
 
   /* Motion — spec §24 */
   --duration-instant: 90ms;
@@ -119,12 +119,12 @@
 
   /* Plan 036: the homepage product sculpture. These values bridge the DOM
      poster and WebGL scene so the fallback and live model stay in one palette. */
-  --hero-system-layer: 24 8% 84%;
-  --hero-system-layer-highlight: 24 10% 96%;
-  --hero-system-edge: 24 6% 58%;
-  --hero-system-mark: 24 8% 34%;
+  --hero-system-layer: 20 7% 12%;
+  --hero-system-layer-highlight: 24 7% 22%;
+  --hero-system-edge: 24 5% 48%;
+  --hero-system-mark: 27 6% 68%;
   --hero-system-accent: var(--accent);
-  --hero-system-shadow: 20 14% 4%;
+  --hero-system-shadow: 0 0% 0%;
   --hero-system-label-duration: 380ms;
 
   /* ---- shadcn/Base UI semantic bridge -------------------------------------
@@ -147,65 +147,6 @@
   --input: hsl(var(--border-default));
   --ring: hsl(var(--accent));
 }
-
-/* Dark half, kept for a future theme toggle. Nothing sets `.dark` today. */
-.dark {
-  color-scheme: dark;
-
-  --canvas: 20 14% 4%;             /* preset background #0c0a09 */
-  --surface: 24 10% 10%;           /* preset card #1c1917 */
-  --surface-muted: 12 6% 15%;      /* preset muted #292524 */
-  --surface-raised: 24 10% 12%;
-  --foreground: 60 9% 98%;         /* 18.9:1 on canvas */
-  --foreground-muted: 27 6% 66%;   /* Brighter secondary copy, September 2026 feedback. */
-  --foreground-subtle: 25 5% 45%;  /* non-text only */
-  --foreground-quiet: 27 5% 58%;
-
-  --border-subtle: 12 5% 20%;
-  --border-default: 20 5% 26%;
-  --border-strong: 24 5% 36%;
-
-  /* Amber replaces the former violet so both halves share one signal. */
-  --accent: 41 91% 62%;
-  --accent-hover: 41 91% 72%;
-  --accent-fill: 41 91% 62%;
-  --accent-fill-hover: 41 91% 70%;
-  --accent-on-fill: 35 60% 10%;
-  --accent-muted: 38 40% 25%;
-  --accent-soft: 38 30% 12%;
-  --accent-foreground: 41 91% 62%;
-
-  --hero-system-layer: 20 7% 12%;
-  --hero-system-layer-highlight: 24 7% 22%;
-  --hero-system-edge: 24 5% 48%;
-  --hero-system-mark: 27 6% 68%;
-  --hero-system-accent: var(--accent);
-  --hero-system-shadow: 0 0% 0%;
-
-  --danger: 0 72% 60%;
-  --success: 145 45% 55%;
-
-  --shadow-soft:
-    0 1px 2px hsl(0 0% 0% / 0.4), 0 8px 24px hsl(0 0% 0% / 0.4);
-
-  /* Bridge values that differ in dark. */
-  --background: hsl(var(--canvas));
-  --card: hsl(var(--surface));
-  --card-foreground: hsl(var(--foreground));
-  --popover: hsl(var(--surface-raised));
-  --popover-foreground: hsl(var(--foreground));
-  --primary: hsl(var(--accent-fill));
-  --primary-foreground: hsl(var(--accent-on-fill));
-  --secondary: hsl(var(--surface-muted));
-  --secondary-foreground: hsl(var(--foreground));
-  --muted: hsl(var(--surface-muted));
-  --muted-foreground: hsl(var(--foreground-muted));
-  --destructive: hsl(var(--danger));
-  --border: hsl(var(--border-default));
-  --input: hsl(var(--border-default));
-  --ring: hsl(var(--accent));
-}
-
 
 @theme inline {
   /* Portfolio color utilities */
@@ -275,58 +216,58 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Typography — spec §7, revised by Plan 037. One family (Archivo); the
-     width axis separates display from body. `font-display` is the display
-     role (hero, project titles, section statements); `font-heading` is the
-     same face for upstream shadcn titles. Geist Mono stays for short
-     machine-ish labels only. */
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  /* Typography — spec §7, revised by Plan 051. Instrument Serif is the
+     display role (hero, page and section titles, project titles); it has one
+     weight, and `font-synthesis-weight: none` (base layer) stops the browser
+     faking a bold. Geist carries UI and body copy, at 400 and 600. Geist Mono
+     is for short labels, meta lines, and the nav pills only. `font-heading`
+     is the sans face for upstream shadcn titles. */
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-display--font-variation-settings: "wdth" 112;
-  --font-heading: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-heading--font-variation-settings: "wdth" 106;
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-heading: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 
-  /* Type scale — spec §8. Display and heading sizes scale fluidly. */
-  --text-display-xl: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
-  --text-display-xl--line-height: 0.95;
-  --text-display-xl--letter-spacing: -0.035em;
-  --text-display-xl--font-weight: 800;
+  /* Type scale — spec §8, revised by Plan 051. Display sizes are set in
+     Instrument Serif (one weight, 400); heading sizes are Geist at 600 when
+     used alone, or Instrument Serif when paired with `font-display`. */
+  --text-display-xl: clamp(2.75rem, 1.6rem + 5vw, 5rem);
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.015em;
+  --text-display-xl--font-weight: 400;
 
-  /* Plan 039: sized to the hero's text column (a size container), not the
-     viewport. "Clear decisions." stays on one line inside its mark and runs
-     about 8.7em wide, so 11cqi keeps it within the column at every width. */
-  --text-home-hero: clamp(1.625rem, 11cqi, 4.75rem);
-  --text-home-hero--line-height: 0.95;
-  --text-home-hero--letter-spacing: -0.035em;
-  --text-home-hero--font-weight: 820;
+  /* The homepage headline (Plan 051): "I make complex things / feel simple."
+     with small screenshots set inside the line. */
+  --text-home-hero: clamp(2.75rem, 1.4rem + 5vw, 5.75rem);
+  --text-home-hero--line-height: 1.04;
+  --text-home-hero--letter-spacing: -0.015em;
+  --text-home-hero--font-weight: 400;
 
-  --text-project-title: clamp(1.5rem, 1.25rem + 0.4vw, 1.625rem);
-  --text-project-title--line-height: 1.2;
+  --text-project-title: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  --text-project-title--line-height: 1.25;
   --text-project-title--letter-spacing: -0.015em;
-  --text-project-title--font-weight: 750;
+  --text-project-title--font-weight: 500;
 
-  --text-display-lg: clamp(2rem, 1.3rem + 3.5vw, 3.5rem);
-  --text-display-lg--line-height: 1;
-  --text-display-lg--letter-spacing: -0.03em;
-  --text-display-lg--font-weight: 780;
+  --text-display-lg: clamp(2.5rem, 1.7rem + 3.2vw, 4rem);
+  --text-display-lg--line-height: 1.02;
+  --text-display-lg--letter-spacing: -0.012em;
+  --text-display-lg--font-weight: 400;
 
-  --text-heading-xl: clamp(1.75rem, 1.3rem + 2.2vw, 2.625rem);
+  --text-heading-xl: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
   --text-heading-xl--line-height: 1.05;
-  --text-heading-xl--letter-spacing: -0.025em;
-  --text-heading-xl--font-weight: 760;
+  --text-heading-xl--letter-spacing: -0.01em;
+  --text-heading-xl--font-weight: 600;
 
-  --text-heading-lg: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
+  --text-heading-lg: clamp(1.625rem, 1.3rem + 1.4vw, 2.375rem);
   --text-heading-lg--line-height: 1.1;
-  --text-heading-lg--letter-spacing: -0.02em;
-  --text-heading-lg--font-weight: 720;
+  --text-heading-lg--letter-spacing: -0.01em;
+  --text-heading-lg--font-weight: 600;
 
   --text-heading-md: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --text-heading-md--line-height: 1.2;
+  --text-heading-md--line-height: 1.25;
   --text-heading-md--letter-spacing: -0.015em;
-  --text-heading-md--font-weight: 650;
+  --text-heading-md--font-weight: 600;
 
-  /* The homepage lead under the display statement (Plan 044). */
+  /* The homepage lead under the display statement (Plans 044, 051). */
   --text-lead: 1.25rem;
   --text-lead--line-height: 1.5;
 
@@ -366,7 +307,7 @@
    visibly focusable without each component reinventing it (spec §26). */
 @utility focus-ring {
   &:focus-visible {
-    outline: 2px solid hsl(var(--accent));
+    outline: 2px solid hsl(var(--accent-fill));
     outline-offset: 2px;
   }
 }
@@ -472,9 +413,26 @@
 @keyframes ask-sheet-in {
   from { opacity: 0; transform: translateY(1.5rem); }
 }
+/* With the panel docked below 1280px the header has about 600px. The avatar
+   alone links home (it carries the name as its label), so the nav and both
+   buttons still fit (Plan 051). */
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+  html[data-ask-docked] [data-header-name] {
+    display: none;
+  }
+}
 @media (min-width: 1024px) {
   [data-app-frame] {
     transition: padding-right var(--duration-standard) cubic-bezier(var(--motion-reveal-ease));
+  }
+  /* While the panel's edge is dragged, the page follows the pointer exactly. */
+  html[data-ask-resizing] [data-app-frame] {
+    transition: none;
+  }
+  html[data-ask-resizing],
+  html[data-ask-resizing] * {
+    cursor: col-resize !important;
+    user-select: none;
   }
   html[data-ask-docked] [data-app-frame] {
     padding-right: var(--ask-panel-width);
@@ -498,6 +456,8 @@
   }
   html {
     @apply font-sans;
+    /* Instrument Serif has one weight; never fake a bold or italic-bold. */
+    font-synthesis-weight: none;
   }
   body {
     @apply bg-canvas text-foreground;
@@ -544,7 +504,9 @@
    the mark lands as its image scrolls into view; otherwise, and for reduced
    motion, it is simply there. The final state is always the default. */
 .decision-mark {
-  box-shadow: 0 0 0 200vmax hsl(var(--foreground) / 0.22);
+  /* Dim outside the mark with black: on the dark theme the ink is light,
+     and an ink wash would brighten the screenshot instead (Plan 051). */
+  box-shadow: 0 0 0 200vmax hsl(0 0% 0% / 0.4);
 }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
@@ -615,4 +577,135 @@
 [data-motion-state="running"] .headline-mark::before,
 [data-motion-state="running"] .headline-mark-tag {
   opacity: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Homepage headline (Plan 051): "I make complex things / feel simple." with
+   small project screenshots set inside the line, and a lime line drawn
+   behind "feel simple."
+
+   - Words rise in, a few at a time. The whole entrance is pure CSS and
+     finishes in under a second, so the headline never waits on JavaScript
+     (homepage audit, finding 1: a JS-gated headline stayed hidden on phones).
+   - Each screenshot pops in after its words, then cycles through three real
+     screens from the work, 3 seconds each.
+   - Hover shows a preview: a separate, full-size copy that is laid out at
+     its real size, so it stays sharp. (Scaling the small thumbnail blurred
+     it: the browser rasterizes at layout size.)
+   - The underline draws left to right once. It sits behind the letters, like
+     a highlighter stroke, with no glow (Louie's review, 2026-10-15).
+   - Reduced motion: no entrance and no cycling. The first screen of each set
+     and the finished underline are simply there.
+--------------------------------------------------------------------------- */
+.hero-word {
+  display: inline-block;
+  animation: hero-rise 700ms cubic-bezier(var(--motion-reveal-ease)) backwards;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(0.3em); }
+}
+
+.hero-shot-wrap {
+  position: relative;
+  display: inline-block;
+  margin-inline: 0.06em 0.18em;
+  vertical-align: -0.04em;
+  /* `backwards`, not `both`: once the entrance ends it lets go of
+     `transform`. */
+  animation: hero-pop 600ms cubic-bezier(0.2, 0.9, 0.3, 1.3) backwards;
+  animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+}
+@keyframes hero-pop {
+  from { opacity: 0; transform: scale(0.3) rotate(-6deg); }
+}
+.hero-shot,
+.hero-preview {
+  overflow: hidden;
+  background: hsl(var(--surface-muted));
+}
+.hero-shot {
+  position: relative;
+  display: block;
+  width: 1.36em;
+  height: 0.8em;
+  border-radius: 0.12em;
+  box-shadow: 0 0 0 1px hsl(var(--border-default));
+}
+.hero-preview {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: -0.1em;
+  width: 22rem;
+  aspect-ratio: 5 / 3;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 24px 50px -16px hsl(0 0% 0% / 0.85), 0 0 0 1px hsl(var(--border-strong));
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) scale(0.35);
+  transform-origin: 50% 100%;
+  transition:
+    opacity var(--duration-standard) ease,
+    transform var(--duration-deliberate) cubic-bezier(var(--motion-reveal-ease));
+}
+/* Touch screens have no hover, so they never get a preview to lay out. */
+@media (hover: none) {
+  .hero-preview { display: none; }
+}
+.hero-shot-wrap:hover .hero-preview {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+.hero-shot img,
+.hero-preview img {
+  opacity: 0;
+  animation: hero-cycle 9s linear infinite;
+  animation-delay: calc(var(--k, 0) * 3s);
+}
+@keyframes hero-cycle {
+  0% { opacity: 0; }
+  3%, 33% { opacity: 1; }
+  36%, 100% { opacity: 0; }
+}
+
+.hero-neon {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  white-space: nowrap;
+}
+.hero-neon::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-inline: -0.04em;
+  bottom: 0.1em;
+  height: 0.16em;
+  border-radius: 0.04em;
+  background: hsl(var(--accent-fill));
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: neon-draw 800ms cubic-bezier(0.65, 0, 0.25, 1) 900ms forwards;
+}
+@keyframes neon-draw {
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word,
+  .hero-shot-wrap,
+  .hero-shot img,
+  .hero-preview img,
+  .hero-neon::after {
+    animation: none !important;
+  }
+  .hero-shot img:first-child,
+  .hero-preview img:first-child,
+  .hero-word {
+    opacity: 1;
+  }
+  .hero-neon::after {
+    transform: none;
+  }
 }

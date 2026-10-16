@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { CalendarDays, Check, Copy, FileText, Mail } from "lucide-react";
+import { CalendarDays, Check, ChevronDown, Copy, FileText, Mail } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
 import { Action } from "@/components/system/action";
@@ -16,12 +16,19 @@ import { cn } from "@/lib/utils";
  * Recruiters look for an email address first, so the address is shown as
  * text with a Copy button, not hidden behind a mailto link. The same list
  * renders in the desktop header popover and the mobile menu.
+ *
+ * Plan 051 (Louie's review, 2026-10-15): "Contact" with a mail icon read as
+ * "this opens my email client". It is now "Let's talk", a plain dropdown
+ * of the same contact links.
  */
 
 const row = "focus-ring flex min-h-11 items-center gap-3 rounded-control px-2 text-body-sm text-foreground hover:bg-surface-muted";
 
-/** `resume`: off in the mobile menu, whose nav already lists Resume. */
-function ContactLinks({ className, onNavigate, resume = true }: { className?: string; onNavigate?: () => void; resume?: boolean }) {
+/**
+ * `resume`: off in the mobile menu, whose nav already lists Resume.
+ * `book`: off in the header card, which shows booking as its main button.
+ */
+function ContactLinks({ className, onNavigate, resume = true, book = true }: { className?: string; onNavigate?: () => void; resume?: boolean; book?: boolean }) {
   const { email, linkedin, calendly } = profile.links;
   const [copied, setCopied] = React.useState(false);
 
@@ -59,7 +66,7 @@ function ContactLinks({ className, onNavigate, resume = true }: { className?: st
           </a>
         </li>
       ) : null}
-      {calendly ? (
+      {calendly && book ? (
         <li>
           <a href={calendly} target="_blank" rel="noreferrer noopener" className={row}>
             <CalendarDays aria-hidden="true" className="size-4 shrink-0 text-foreground-muted" />
@@ -81,12 +88,12 @@ function ContactMenu() {
   const [open, setOpen] = React.useState(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger render={<Action variant="secondary" className="rounded-full" />}>
-        <Mail aria-hidden="true" className="size-4" />
-        Contact
+      <PopoverTrigger render={<Action variant="secondary" className="group rounded-full" />}>
+        Let’s talk
+        <ChevronDown aria-hidden="true" className="size-4 transition-transform duration-(--duration-fast) group-aria-expanded:rotate-180" />
       </PopoverTrigger>
-      <PopoverContent align="end" sideOffset={8} className="w-80 p-2">
-        <PopoverTitle className="px-2 pt-2 pb-1 text-body-sm text-foreground-muted">Get in touch</PopoverTitle>
+      <PopoverContent align="end" sideOffset={8} className="w-72 p-1.5">
+        <PopoverTitle className="sr-only">Let’s talk</PopoverTitle>
         <ContactLinks onNavigate={() => setOpen(false)} />
       </PopoverContent>
     </Popover>
