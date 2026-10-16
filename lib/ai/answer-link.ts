@@ -49,7 +49,9 @@ function allowedExternalHrefs(): string[] {
  * behind the answer lives on the resume.
  */
 const PROJECT_PAGES: readonly { route: string; name: RegExp }[] = [
-  { route: "/work/offboard", name: /\boffboard\b/i },
+  { route: "/work/offboard", name: /\boffboard\b(?!\s+lumo)/i },
+  { route: "/work/lumo", name: /\blumo\b(?!\s+bench)/i },
+  { route: "/work/lumo-evals", name: /\blumo\s+bench\b/i },
   { route: "/work/ck12-analytics", name: /\b(foresights|insights)\b/i },
   { route: "/work/flexi", name: /\bflexi\b/i },
   { route: "/experiments/neuron-shift", name: /\bneuron\b/i },

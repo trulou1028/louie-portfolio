@@ -171,6 +171,12 @@ describe("starter questions (Plan 042)", () => {
     ["Why does the Offboard packet pause for risk?", "offboard-risk-gate"],
     ["What stays under the person's control in Offboard?", "offboard-hitl-actions"],
     ["Why did Offboard move from packet-first to plan-first?", "offboard-entry-point"],
+    ["Why does LUMO ask before it changes anything?", "lumo-confirm-cards"],
+    ["What did reading real LUMO conversations show?", "lumo-gap-audit"],
+    ["Why does LUMO sit beside the page?", "lumo-panel"],
+    ["Why test LUMO instead of training a model?", "lumo-bench-not-training"],
+    ["Why did LUMO keep its model after the GPT-6 test?", "lumo-model-gate"],
+    ["How was the LUMO Bench grader checked?", "lumo-grader-check"],
     ["Why separate prediction from diagnosis in Foresights?", "analytics-prediction-diagnosis"],
     ["How does Foresights show uncertainty?", "analytics-uncertainty"],
     ["What did the Foresights evaluation find?", "analytics-evaluation"],
@@ -197,6 +203,8 @@ describe("starter questions (Plan 042)", () => {
     const { PAGE_QUESTIONS } = await import("@/components/ai/ask-questions");
     const tested = new Set([
       "offboard-risk", "offboard-control", "offboard-entry",
+      "lumo-confirm", "lumo-audit", "lumo-panel",
+      "lumo-bench-training", "lumo-bench-models", "lumo-bench-grader",
       "analytics-prediction", "analytics-uncertainty", "analytics-evaluation",
       "flexi-next-step", "flexi-check", "flexi-research",
       "neuron-chat", "neuron-color", "neuron-customer",

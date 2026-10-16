@@ -11,6 +11,7 @@ import type { UIMessage } from "ai";
  */
 export const SOURCES = [
   { key: "offboard", label: "Offboard", routes: ["/work/offboard"], image: "/work/offboard/packet.webp", tone: "bg-plate-offboard" },
+  { key: "lumo", label: "LUMO", routes: ["/work/lumo", "/work/lumo-evals"], image: "/work/lumo/chat.webp", tone: "bg-plate-offboard" },
   { key: "foresights", label: "Foresights", routes: ["/work/ck12-analytics"], image: "/work/ck12-analytics/foresights.png", tone: "bg-plate-foresights" },
   { key: "flexi", label: "Flexi", routes: ["/work/flexi"], image: "/work/flexi/follow-up.webp", tone: "bg-plate-flexi" },
   { key: "neuron", label: "Neuron Shift", routes: ["/experiments/neuron-shift"], image: "/work/neuron-shift/tour.webp", tone: "bg-plate-neuron" },

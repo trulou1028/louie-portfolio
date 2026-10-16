@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-import { OFFBOARD_ANCHORS, FLEXI_ANCHORS, ANALYTICS_ANCHORS, NEURON_ANCHORS, MOTIF_ANCHORS, TRANSFERSIGHT_ANCHORS } from "../lib/routes";
+import { OFFBOARD_ANCHORS, LUMO_ANCHORS, LUMO_EVALS_ANCHORS, FLEXI_ANCHORS, ANALYTICS_ANCHORS, NEURON_ANCHORS, MOTIF_ANCHORS, TRANSFERSIGHT_ANCHORS } from "../lib/routes";
 
 /**
  * Case studies (spec §13, §14, §25, §26, §34).
@@ -11,22 +11,24 @@ import { OFFBOARD_ANCHORS, FLEXI_ANCHORS, ANALYTICS_ANCHORS, NEURON_ANCHORS, MOT
  * break links that were already published.
  */
 const STUDIES = [
-  { name: "CK-12 Analytics", path: "/work/ck12-analytics", anchors: ANALYTICS_ANCHORS, title: "Turning learning predictions into teacher decisions" },
+  { name: "CK-12 Teacher Analytics", path: "/work/ck12-analytics", anchors: ANALYTICS_ANCHORS, title: "CK-12 Teacher Analytics" },
   { name: "Neuron Shift", path: "/experiments/neuron-shift", anchors: NEURON_ANCHORS, title: "Preserving operator judgment across shift changes" },
   { name: "Motif", path: "/experiments/motif", anchors: MOTIF_ANCHORS, title: "Giving a whole product one way to move" },
   { name: "TransferSight", path: "/experiments/transfersight", anchors: TRANSFERSIGHT_ANCHORS, title: "Roster math for athletes deciding whether to transfer" },
   {
-    name: "Offboard",
+    name: "Offboard Job Search Platform",
     path: "/work/offboard",
     anchors: OFFBOARD_ANCHORS,
-    title: "Building a career-transition product around the next useful step",
+    title: "Offboard Job Search Platform",
   },
+  { name: "LUMO Career Agent", path: "/work/lumo", anchors: LUMO_ANCHORS, title: "LUMO Career Agent" },
+  { name: "LUMO Bench & Evals System", path: "/work/lumo-evals", anchors: LUMO_EVALS_ANCHORS, title: "LUMO Bench & Evals System" },
   {
-    name: "CK-12 Flexi",
+    name: "CK-12 Flexi AI Tutor",
     path: "/work/flexi",
     anchors: FLEXI_ANCHORS,
     title:
-      "Helping students get unstuck without doing the learning for them",
+      "CK-12 Flexi AI Tutor",
   },
 ];
 
@@ -240,4 +242,52 @@ test("the work index links to both case studies", async ({ page }) => {
   for (const study of STUDIES) {
     await expect(page.locator(`a[href="${study.path}"]`).first()).toBeVisible();
   }
+});
+
+test.describe("LUMO graphics", () => {
+  test("the tool gate offers write tools only on a tracker request, and changes nothing until Confirm", async ({ page }) => {
+    await page.goto("/work/lumo");
+    const gate = page.locator("figure", { hasText: "Try it: what the model is offered" });
+    await gate.scrollIntoViewIfNeeded();
+    await expect(gate.getByText("create_application (not offered)")).toHaveCount(1);
+    await gate.getByRole("button", { name: "Add this job to my tracker." }).click();
+    await expect(gate.getByText("create_application (called)")).toHaveCount(1);
+    await expect(gate.getByText("Added. The tracker changed only now.")).toHaveCount(0);
+    await gate.getByRole("button", { name: "Confirm" }).click();
+    await expect(gate.getByText("Added. The tracker changed only now.")).toBeVisible();
+  });
+
+  test("the money switch hides every money fact but the offer's company and title", async ({ page }) => {
+    await page.goto("/work/lumo");
+    const toggle = page.getByRole("switch", { name: "Let LUMO use my money details" });
+    await toggle.scrollIntoViewIfNeeded();
+    await expect(toggle).toHaveAttribute("aria-checked", "true");
+    await toggle.click();
+    await expect(toggle).toHaveAttribute("aria-checked", "false");
+    const figure = page.locator("figure", { hasText: "Try it: the money switch" });
+    await expect(figure.getByText("Hidden", { exact: true })).toHaveCount(4);
+  });
+
+  test("the panel wireframe opens beside the page, and as a sheet on a small screen", async ({ page }) => {
+    await page.goto("/work/lumo");
+    const demo = page.locator("figure", { hasText: "Try it: LUMO beside the page" });
+    await demo.scrollIntoViewIfNeeded();
+    await expect(demo.getByRole("complementary", { name: "LUMO panel" })).toBeVisible();
+    await demo.getByRole("button", { name: "Small screen" }).click();
+    await expect(demo.getByRole("complementary", { name: "LUMO sheet" })).toBeVisible();
+    // The panel leaves with an exit animation; close the sheet once it has gone.
+    await expect(demo.getByRole("complementary", { name: "LUMO panel" })).toHaveCount(0);
+    await demo.getByRole("complementary", { name: "LUMO sheet" }).getByRole("button", { name: "Close LUMO" }).click();
+    await expect(demo.getByRole("complementary", { name: "LUMO sheet" })).toHaveCount(0);
+  });
+
+  test("the bench graphics plot every case and say so in text", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/work/lumo-evals");
+    const runs = page.locator("figure", { hasText: "Four runs, same code" });
+    await expect(runs.locator("[title$='passed'], [title$='missed']")).toHaveCount(4 * 32);
+    await expect(runs.getByText("Run 3: 30 of 32 passed, missed L16 and W2.", { exact: false })).toHaveCount(1);
+    const hard = page.locator("figure", { hasText: "No room to measure a gain" });
+    await expect(hard.locator("[title$='passed'], [title$='missed']")).toHaveCount(2 * 31);
+  });
 });

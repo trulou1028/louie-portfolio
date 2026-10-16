@@ -7,7 +7,7 @@ const NAV = [
   { label: "Resume", path: "/resume" },
 ];
 
-test("homepage leads with Offboard, then the CK-12 pair, then independent projects", async ({ page }, testInfo) => {
+test("homepage leads with Offboard, then the LUMO pair, the CK-12 pair, and independent projects", async ({ page }, testInfo) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "I make complex things feel simple." })).toBeVisible();
   await expect(page.locator("main canvas")).toHaveCount(0);
@@ -15,10 +15,10 @@ test("homepage leads with Offboard, then the CK-12 pair, then independent projec
   await expect(featured).toHaveCount(1);
   const projectLinks = featured.locator('a[href^="/work/"]');
   const destinations = await projectLinks.evaluateAll((els) => els.map((el) => el.getAttribute("href")));
-  expect(destinations).toEqual(["/work/offboard", "/work/ck12-analytics", "/work/flexi"]);
+  expect(destinations).toEqual(["/work/offboard", "/work/lumo", "/work/lumo-evals", "/work/ck12-analytics", "/work/flexi"]);
   // Plan 051: one card anatomy. A screenshot, a meta line, and the title;
   // no wordmark, no plate, and no summary (the title carries the argument).
-  await expect(featured.locator("img")).toHaveCount(3);
+  await expect(featured.locator("img")).toHaveCount(5);
   await expect(featured.getByText("Separate prediction from diagnosis.", { exact: false })).toHaveCount(0);
   await expect(featured.getByText("CK-12 Foresights & Insights · Lead Product Designer")).toBeVisible();
 
@@ -31,10 +31,10 @@ test("homepage leads with Offboard, then the CK-12 pair, then independent projec
   await expect(page.locator("[data-pending-asset]")).toHaveCount(0);
   await page.waitForTimeout(1_000);
 
-  // Offboard spans the row; the CK-12 pair shares the next row on desktop
-  // and stacks on mobile.
+  // Offboard spans the row; the LUMO pair shares the next row on desktop
+  // and stacks on mobile. The CK-12 pair follows the same way.
   const tiles = featured.locator("article");
-  await expect(tiles).toHaveCount(3);
+  await expect(tiles).toHaveCount(5);
   const [first, second, third] = await Promise.all([0, 1, 2].map((i) => tiles.nth(i).boundingBox()));
   expect(second!.y).toBeGreaterThan(first!.y + first!.height);
   if (testInfo.project.name === "mobile") {

@@ -18,7 +18,7 @@ import { FLEXI_ANCHORS } from "@/lib/routes";
 const project = workProjects.find((p) => p.slug === "flexi")!;
 
 export const metadata: Metadata = {
-  title: project.name,
+  title: project.title,
   description: project.summary ?? project.title,
   openGraph: {
     type: "article",

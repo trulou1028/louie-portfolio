@@ -936,3 +936,56 @@ Follow-up the same day, from Louie's review:
   Instrument Serif italic. The avatar tilts and rings lime on hover.
 - **Buttons keep their fill while their popover or panel is open.** The
   upstream button base greyed out an open trigger; `Action` now overrides it.
+
+## Two Offboard case studies: LUMO and LUMO Bench, October 15, 2026
+
+Louie asked for Offboard's own work to lead, ahead of the older CK-12
+studies. Two new case studies, written from Offboard's repository
+(`lumo-plan-builder`, `origin/main` on 2026-10-15): product specs, the
+September 2026 conversation audit, decision records in `coach/decisions/`,
+and the run reports in `documentation/qa/ai-runs/`. Every number is quoted
+from those files.
+
+- **`/work/lumo`**: the assistant. The conversation audit, the "propose,
+  then confirm" rule for write tools, the LUMO-only side panel, and the
+  limits on what LUMO reads and claims.
+- **`/work/lumo-evals`**: the evaluation system. The bench instead of
+  training, the model swaps it stopped, the hard set and its tuning rules,
+  and the grader agreement check.
+- **Order.** `workProjects` is now Offboard, LUMO, LUMO Bench, CK-12
+  Foresights, Flexi. The homepage shows Offboard full width, then the LUMO
+  pair, then the CK-12 pair.
+- **Images.** The LUMO hero is a product screenshot from Offboard's
+  repository (`public/employee-experience/lumo-chat.png`, April 2026). The
+  repository has no screenshot of the current LUMO panel; a newer one would
+  be better. The LUMO Bench image is a chart drawn for this site from the run
+  reports, captioned as such and shown without a browser bar
+  (`WorkProject.imageFrame: "none"`).
+- **Evidence.** Eleven entries cover both pages; they use `project:
+  "offboard"`, so a search scoped to Offboard finds them.
+
+Follow-up the same day, from Louie's review:
+
+- **No real user numbers anywhere.** Louie does not publish Offboard usage:
+  no member, message, account, signup, or conversation counts, and no usage
+  percentages. The LUMO pages, the Offboard outcomes, the Offboard brief, and
+  the evidence index now describe those findings in words. Test and system
+  results stay (cases passed, grader agreement, model cost and speed, server
+  functions, automated tests).
+- **Graphics on both LUMO pages** (`components/portfolio/lumo/`), each inside
+  a `SystemDiagram` with a plain-language caption:
+  - LUMO: one turn before and after the audit fix; a "try it" tool gate (pick
+    a message, see which of LUMO's ten real tools are offered, confirm the
+    card); a wireframe of the panel and the small-screen sheet; the money
+    switch.
+  - LUMO Bench: four release-gate runs and two hard-set runs as one dot per
+    case, from the run files (`content/work/lumo-bench-data.ts`); the GPT-6
+    Luna scorecard and the Claude screen; the 25 grader verdicts with the one
+    disagreement.
+  - Each plays once when it scrolls into view and shows its end state under
+    reduced motion. The illustrations say they are not product screens.
+- **Case-study headlines are product names** (Louie, October 16, 2026):
+  Offboard Job Search Platform, LUMO Career Agent, LUMO Bench & Evals System,
+  CK-12 Teacher Analytics, CK-12 Flexi AI Tutor. They live in
+  `WorkProject.title` and also set the browser tab title. The short names
+  (`WorkProject.name`) stay in the mono meta line above each headline.

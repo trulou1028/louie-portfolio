@@ -42,6 +42,24 @@ export const PAGE_QUESTIONS: readonly PageQuestions[] = [
     ],
   },
   {
+    route: "/work/lumo",
+    name: "LUMO Career Agent",
+    questions: [
+      { text: "Why does LUMO ask before it changes anything?", slug: "lumo-confirm" },
+      { text: "What did reading real LUMO conversations show?", slug: "lumo-audit" },
+      { text: "Why does LUMO sit beside the page?", slug: "lumo-panel" },
+    ],
+  },
+  {
+    route: "/work/lumo-evals",
+    name: "LUMO Bench & Evals System",
+    questions: [
+      { text: "Why test LUMO instead of training a model?", slug: "lumo-bench-training" },
+      { text: "Why did LUMO keep its model after the GPT-6 test?", slug: "lumo-bench-models" },
+      { text: "How was the LUMO Bench grader checked?", slug: "lumo-bench-grader" },
+    ],
+  },
+  {
     route: "/work/ck12-analytics",
     name: "CK-12 Foresights",
     questions: [

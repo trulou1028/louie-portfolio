@@ -1,0 +1,97 @@
+import { CaseStudySection } from "@/components/portfolio/case-study-section";
+import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagram";
+import { RegressionRuns, ModelScorecard, HardSetRuns, GraderAgreement } from "@/components/portfolio/lumo/bench-graphics";
+
+<CaseStudySection id="context" title="Every change was judged by hand" eyebrow="Context and ownership">
+
+[LUMO](/work/lumo) is the AI assistant inside Offboard. Until September 2026, every LUMO change ended with a 45-minute check by hand, and the result was a judgment written in a sprint doc. A new model or a prompt change had no gate that could say "this got worse".
+
+The usual answer for a weak assistant is more data and training. An early product does not have the volume of conversations that training needs. I set the evaluation strategy, made each model and tuning call, and built the tooling with AI coding agents in the loop.
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-bench" title="A bench, not training" eyebrow="Decision 01">
+
+Harvey, the legal AI company, published how it improved its agent: a benchmark with pass-or-fail criteria first, every change run through it, and training last. At Offboard's stage, I chose to copy the first half and skip the training, which would not pay back. A bench run costs about a dollar.
+
+- **Pass or fail, not a feeling.** Each case has criteria a run passes or fails. A case passes only when every criterion passes.
+- **The real assistant, not a copy.** A script sends each case to the deployed LUMO. Some control cases are built to fail, which shows that the checks can fail.
+- **Run twice, compare the misses.** Two cases flip between runs on the same code. So the bench compares which cases miss, not only the total.
+- **One release gate.** The regression set has 32 cases. On unchanged code it scored 31, 31, 30, and 32 of 32 across four runs.
+
+<SystemDiagram title="Four runs, same code" description="Each dot is one of the 32 release cases in one run, from the run files of September 26, 2026. Runs 1 and 2 missed W2. Run 3 missed L16 and W2. Run 4 passed all 32. The total moved by two, and the misses moved with it, which is why the bench compares which cases miss. The three control cases failed in every run, as built.">
+  <RegressionRuns />
+</SystemDiagram>
+
+<SystemDiagram title="The release gate" description="Conceptual flow: a model or prompt change runs the 32-case regression set twice against the deployed assistant. If a required case fails, the change does not ship. If the misses match the baseline, it can ship.">
+  <FlowDiagram stages={[
+    { node: { label: "Model or prompt change" } },
+    { node: { label: "Run the 32 cases twice" } },
+    { node: { label: "Compare misses with the baseline", tone: "accent" } },
+    { node: { label: "Required case fails?" }, branch: { condition: "Yes", outcome: "The change does not ship" } },
+    { node: { label: "Ship" } },
+  ]} />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-models" title="A cheaper model still has to pass" eyebrow="Decision 02">
+
+The gate earned its place on model decisions.
+
+- **September 2026.** GPT-5.6 Luna was the only setup to pass 29 of 29 cases, and it was the fastest and cheapest. Every setup that set a reasoning level failed the same case. LUMO moved to it.
+- **GPT-6 Luna.** On the same 26 cases, the newer model's estimated token cost was 46.5% lower and its median first reply 12.6% faster. Then, after a member's crisis statement, it called the tool that reads upcoming interviews before it gave a crisis answer. That case is required. LUMO kept its model.
+- **Claude models.** A text-only screen in October 2026 showed no clear win: GPT-5.6 Luna passed 18 of 19, Claude Sonnet 5.5 passed 12 of 14 to 12 of 16, at about 15 times the cost per turn without caching. The screen could not score tool use. A fair test would need a new provider path in LUMO and days of work. I chose to stay on OpenAI models and screen the next one when it ships.
+
+<SystemDiagram title="Cheaper is not enough" description="GPT-6 Luna against the current model on the same 26 cases: estimated token cost 46.5% lower, median first reply 12.6% faster, slowest replies 21.4% slower. It failed the required safety case, so the current model stayed. Below, the October 2026 text-only screen: GPT-5.6 Luna passed 18 of 19, Claude Sonnet 5.5 passed 12 of 16 to 12 of 14, and Claude Haiku 5.5 passed 12 of 16 to 14 of 18.">
+  <ModelScorecard />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-hard-set" title="A test that can show a gain" eyebrow="Decision 03">
+
+A gate that scores 31 of 32 can catch LUMO getting worse. It cannot show LUMO getting better. So I added a separate hard set, built from real use.
+
+- **Sources.** Real member conversations, read for failure signals, plus open bug reports. Only aggregate notes went into the repository, never member text.
+- **Seeds.** 21 seeds: 13 from real conversations, 3 from bug reports, and 5 written from career-coaching knowledge. I approved all 21. The set later grew to 31 cases.
+- **Rules against teaching to the test.** Cases are split into a working set and a held-out set. During tuning, nobody reads held-out replies. A test fails if LUMO's prompt contains any six-word run from a hard case. Each round makes one change, and keeps it only when the working set rises by more than run-to-run noise and the held-out set does not drop.
+
+<SystemDiagram title="No room to measure a gain" description="Two hard-set runs on October 1, 2026, split into the working set and the held-out set. Run 1 passed 28 of 31 and run 2 passed 26 of 31. The mean, 87%, sits above the 85% line where tuning may start, so tuning did not start.">
+  <HardSetRuns />
+</SystemDiagram>
+
+The tuning rules need 85% or less, because above that line a gain cannot be told apart from noise. At 87%, I paused prompt tuning. The bench had also shown a real data bug: LUMO saved its own suggestions as facts about the member. I fixed that first, and two cases now guard it.
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-grader" title="Check the grader, too" eyebrow="Decision 04">
+
+The bench uses an AI grader for criteria a script cannot check. A grader that is wrong makes every score wrong, so I measured how often it agrees with a careful reader.
+
+The plan was for me to label 25 grader verdicts. I started, and found the questions hard to answer with confidence. Some were phrased so that "no" was the good answer, and some used legal wording. I changed the method: Claude labelled all 25 without seeing the grader's answers, and every disagreement came to me as one plain product question.
+
+<SystemDiagram title="25 verdicts, one disagreement" description="Each square is one grader verdict: 16 from the hard set and 9 from the regression set. Claude and the grader agreed on 24. The outlined square is the one disagreement, hard-set case H04: Claude said yes, the grader said no and then yes when asked again, and Louie ruled yes.">
+  <GraderAgreement />
+</SystemDiagram>
+
+- **Agreement: 24 of 25, Cohen's kappa 0.92.** With 25 items the range is wide, so this is a first check, not a precise accuracy figure. Two models can share a blind spot. The two came from different vendors, and a person ruled on every disagreement.
+- **The one disagreement was a product question.** A member had said they never worked in compliance. LUMO suggested a line about experience with "regulated or carefully reviewed customer communications", with a caveat to use it only if true. I ruled that it nudges the member to overstate. LUMO should suggest only claims the member has made.
+- **The questions changed.** New grader questions put "yes" as the good answer, check one property, and avoid legal wording.
+
+</CaseStudySection>
+
+<CaseStudySection id="outcomes" title="Decisions the bench made" eyebrow="Outcome">
+
+- **One model swap stopped.** GPT-6 Luna was cheaper per turn and failed a required safety case, so it did not ship.
+- **One provider switch declined.** A Claude screen showed no clear gain for the cost of a new provider path.
+- **Tuning paused for a real bug.** The hard set showed no room to measure a gain. The memory bug it exposed was fixed on October 1, 2026.
+- **The grader is trusted, for now.** 24 of 25 agreement, with the check repeated after a grader change or 10 or more new questions.
+
+</CaseStudySection>
+
+<CaseStudySection id="learnings" title="A small product still needs a scoreboard" eyebrow="Reflection">
+
+The bench is the one signal that arrives every week, whatever the traffic. Its most useful results were refusals: a cheaper model that did not ship, a tuning round that did not start. Next, I would refill the hard set from new real conversations each month, and start tuning again when the score falls to 85% or less.
+
+</CaseStudySection>

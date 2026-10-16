@@ -17,6 +17,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/work": 0.9,
     "/work/ck12-analytics": 0.9,
     "/work/offboard": 0.9,
+    "/work/lumo": 0.9,
+    "/work/lumo-evals": 0.9,
     "/work/flexi": 0.9,
     "/ai-systems": 0.7,
     "/resume": 0.7,
