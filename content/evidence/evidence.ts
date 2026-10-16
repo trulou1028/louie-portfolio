@@ -241,9 +241,9 @@ export const evidence: EvidenceItem[] = [
 {
   "id": "offboard-outcome-limits",
   "project": "offboard",
-  "title": "Live product with early usage signal, reported as shares",
-  "summary": "Offboard is live; Louie designed and built it end to end. In an August 2026 signup cohort of 38 people, 92% finished onboarding, 47% uploaded a resume, 45% ran a ghost check, and 8% built a packet in their first days. Of members who had built a full packet by September 2026, 72% had built only one.",
-  "detail": "Other measured results (September 2026): one LinkedIn post drove 150 public ghost checks in 24 hours; the public ghost checker ran about 500 analyses in its first five weeks; job search found the right role in the top ten for all 20 test queries, up from one; the LUMO assistant passed 29 of 29 test cases, 22% faster, at about 80% lower model cost per test run; the backend (188 functions, 175 tables) moved to a new Supabase project with about six minutes of downtime and no data lost; the product runs more than 200 server functions and about 4,500 automated tests. The numbers are early and small. They do not establish revenue, long-term retention, or a measured effect of the plan-first change. Do not state revenue, subscriber, or account counts.",
+  "title": "Live product with early usage signal",
+  "summary": "Offboard is live; Louie designed and built it end to end. Most people who signed up in August 2026 finished onboarding and ran a ghost check, but few built a packet in their first days. Most members who built a full packet built only one.",
+  "detail": "Other results (September 2026): one LinkedIn post drove a burst of public ghost checks within a day; job search found the right role in the top ten for all 20 test queries, up from one; the LUMO assistant passed 29 of 29 test cases, 22% faster, at about 80% lower model cost per test run; the backend (188 functions, 175 tables) moved to a new Supabase project with about six minutes of downtime and no data lost; the product runs more than 200 server functions and about 4,500 automated tests. The numbers are early and small. They do not establish revenue, long-term retention, or a measured effect of the plan-first change. Do not state user or usage numbers: no signup, member, account, subscriber, revenue, or usage counts or percentages.",
   "route": "/work/offboard",
   "anchor": "outcomes",
   "tags": [
@@ -500,6 +500,164 @@ export const evidence: EvidenceItem[] = [
       "Deno edge functions",
     ],
     evidenceType: "technical",
+  },
+
+  // -------------------------------------------------------- LUMO Career Agent
+  {
+    id: "lumo-context",
+    project: "offboard",
+    title: "LUMO, the AI assistant inside Offboard",
+    summary:
+      "LUMO reads a member's own job search and can add to and update their tracker. Louie designed and built it from October 2025.",
+    detail:
+      "LUMO reads the member's profile, applications, interviews, network, and the memories they allow. Because it has write access to the tracker, it has two jobs: answer the question that was asked, and change nothing the person did not choose. Built with AI coding tools in the loop.",
+    route: "/work/lumo",
+    anchor: "context",
+    tags: ["ai assistant", "lumo", "chat", "context", "agents"],
+    skills: ["AI Product Design", "Conversational UX", "Design Engineering"],
+    evidenceType: "product",
+  },
+  {
+    id: "lumo-gap-audit",
+    project: "offboard",
+    title: "Reading real LUMO conversations before changing anything",
+    summary:
+      "An audit of real conversations found a classifier replacing LUMO's answer with a tracker card, and members confirming none of those cards.",
+    detail:
+      "The September 2026 audit also found LUMO asking members to paste documents already on file, and interview-prep conversations finding no interview on file. The failures were missing tools and context, not a weak model. Quotes in the audit are paraphrased; no member text is published.",
+    route: "/work/lumo",
+    anchor: "audit",
+    tags: ["research", "conversation audit", "real conversations", "lumo", "failure analysis"],
+    skills: ["Research", "AI Product Design"],
+    evidenceType: "research",
+  },
+  {
+    id: "lumo-confirm-cards",
+    project: "offboard",
+    title: "LUMO proposes a change; the member confirms it",
+    summary:
+      "LUMO asks before it changes anything: a card appears only when the model calls a write tool with a concrete subject, and the tracker changes only when the member confirms.",
+    detail:
+      "Louie deleted four classifier takeover flows. The write tools return a card instead of writing. On writing-help turns (tailor, rewrite, simplify) the write tools are not offered at all, and one turn can produce one card. A confirmed change runs through the same code Offboard's connector for outside AI agents uses.",
+    route: "/work/lumo",
+    anchor: "decision-cards",
+    tags: ["confirmation", "write tools", "tool calling", "lumo", "cards"],
+    skills: ["AI Product Design", "Interaction Design", "Systems Design"],
+    evidenceType: "product",
+  },
+  {
+    id: "lumo-panel",
+    project: "offboard",
+    title: "LUMO sits beside the page and says what it sees",
+    summary:
+      "The right panel holds only LUMO. It opens beside any page, and one line says what LUMO is looking at, never more than the page context it receives.",
+    detail:
+      "Before, asking about a page meant leaving it for a separate chat page. The bet was written before the build, with a target for members asking from the panel and a switch back below a floor. Do not give usage numbers. The 30-day result was not in when the case study was written.",
+    route: "/work/lumo",
+    anchor: "decision-panel",
+    tags: ["panel", "context", "lumo", "layout", "bet", "page context"],
+    skills: ["Interaction Design", "Product Strategy"],
+    evidenceType: "product",
+  },
+  {
+    id: "lumo-limits",
+    project: "offboard",
+    title: "Limits on what LUMO reads and claims",
+    summary:
+      "One switch controls every money fact LUMO reads, outside agents never see offers, and LUMO never claims to cancel or refund.",
+    detail:
+      "With the money switch off, LUMO sees only the company and title of each offer. A database rule returns no offer rows to a connected AI agent. Support answers come from the Help page's own answers. A required test case checks that LUMO does not reach for the interview schedule after a crisis statement.",
+    route: "/work/lumo",
+    anchor: "decision-limits",
+    tags: ["privacy", "guardrails", "safety", "lumo", "money", "support"],
+    skills: ["AI Product Design", "Systems Design"],
+    evidenceType: "product",
+  },
+  {
+    id: "lumo-outcome-limits",
+    project: "offboard",
+    title: "What LUMO's numbers do and do not show",
+    summary:
+      "LUMO is live in Offboard. Its published numbers are test results, not usage.",
+    detail:
+      "On unchanged code LUMO scores 30 to 32 of its 32 release cases, at about half a cent a turn. The numbers show quality checks, not usage, revenue, or retention. Louie does not publish LUMO usage numbers. Do not claim the panel bet succeeded; its result was pending.",
+    route: "/work/lumo",
+    anchor: "outcomes",
+    tags: ["outcome", "usage", "limits", "lumo"],
+    skills: ["Product Strategy"],
+    evidenceType: "outcome",
+  },
+
+  // ------------------------------------------------- LUMO Bench & Evals System
+  {
+    id: "lumo-bench-context",
+    project: "offboard",
+    title: "Why LUMO needed an evaluation system",
+    summary:
+      "Every LUMO change ended with a 45-minute check by hand, with no gate for a model or prompt change, and too little data to train a model.",
+    detail:
+      "Louie set the evaluation strategy and made each model and tuning call for LUMO Bench, building the tooling with AI coding agents in the loop.",
+    route: "/work/lumo-evals",
+    anchor: "context",
+    tags: ["evaluation", "evals", "lumo bench", "testing", "ai quality"],
+    skills: ["AI Evaluation", "Product Strategy"],
+    evidenceType: "strategy",
+  },
+  {
+    id: "lumo-bench-not-training",
+    project: "offboard",
+    title: "A bench instead of training a model",
+    summary:
+      "An early product has too few conversations for training to pay back, so LUMO is tested with pass-or-fail cases run against the deployed assistant instead.",
+    detail:
+      "Each case passes only when every criterion passes. Control cases are built to fail. Each change runs twice and the bench compares which cases miss, because two cases flip on the same code. The release gate has 32 cases and scored 31, 31, 30, and 32 of 32 on unchanged code. A run costs about a dollar.",
+    route: "/work/lumo-evals",
+    anchor: "decision-bench",
+    tags: ["evaluation", "benchmark", "regression testing", "training", "evals", "lumo bench"],
+    skills: ["AI Evaluation", "Systems Design"],
+    evidenceType: "technical",
+  },
+  {
+    id: "lumo-model-gate",
+    project: "offboard",
+    title: "Model swaps have to pass the same gate",
+    summary:
+      "After the GPT-6 test, LUMO kept its model: GPT-6 Luna was cheaper and faster but failed a required safety case.",
+    detail:
+      "On 26 cases, GPT-6 Luna's estimated token cost was 46.5% lower and its median first reply 12.6% faster. After a crisis statement it called the upcoming-interviews tool before its crisis answer, which fails a required case. Earlier, GPT-5.6 Luna was the only setup to pass 29 of 29. A text-only Claude screen showed no clear win at about 15 times the cost per turn, so Louie kept LUMO on OpenAI models.",
+    route: "/work/lumo-evals",
+    anchor: "decision-models",
+    tags: ["model selection", "gpt-6", "claude", "safety", "cost", "evaluation"],
+    skills: ["AI Evaluation", "Product Judgment"],
+    evidenceType: "technical",
+  },
+  {
+    id: "lumo-hard-set",
+    project: "offboard",
+    title: "A hard set that can show LUMO getting better",
+    summary:
+      "A gate scoring 31 of 32 cannot show a gain, so a separate hard set came from real conversations, with rules that stop the prompt learning the test.",
+    detail:
+      "Sources: real member conversations and open bug reports; only aggregate notes went into the repository. 21 seeds grew to 31 cases, split into working and held-out sets. A test fails if the prompt holds any six-word run from a hard case. LUMO passed 87% of the hard set, above the 85% tuning line, so Louie paused tuning and fixed a memory bug first: LUMO saved its own suggestions as member facts.",
+    route: "/work/lumo-evals",
+    anchor: "decision-hard-set",
+    tags: ["hard set", "held-out", "overfitting", "evaluation", "real conversations", "tuning"],
+    skills: ["AI Evaluation", "Research"],
+    evidenceType: "technical",
+  },
+  {
+    id: "lumo-grader-check",
+    project: "offboard",
+    title: "How the LUMO Bench grader was checked",
+    summary:
+      "Claude labelled 25 grader verdicts blind and Louie ruled on each disagreement: 24 of 25 agreed, Cohen's kappa 0.92.",
+    detail:
+      "Louie started labelling and found the questions hard to answer with confidence, so the method changed. The one disagreement was a product question: a suggested line nudged a member to overstate compliance experience, and Louie ruled that LUMO should suggest only claims the member has made. With 25 items the range is wide; this is a first check, model plus owner review, not a human panel.",
+    route: "/work/lumo-evals",
+    anchor: "decision-grader",
+    tags: ["grader", "llm judge", "human labels", "agreement", "evaluation", "lumo bench"],
+    skills: ["AI Evaluation", "Product Judgment"],
+    evidenceType: "research",
   },
 
   // ------------------------------------------------------------------- Flexi

@@ -20,6 +20,8 @@ test("sitemap lists every public page and no internal ones", async ({ request })
   "/experiments/motif",
   "/experiments/transfersight",
   "/work/offboard",
+    "/work/lumo",
+    "/work/lumo-evals",
     "/work/flexi",
     "/ai-systems",
     "/experiments",
@@ -57,6 +59,8 @@ test("every page has a distinct title and description", async ({ page }) => {
   "/experiments/motif",
   "/experiments/transfersight",
   "/work/offboard",
+    "/work/lumo",
+    "/work/lumo-evals",
     "/work/flexi",
     "/ai-systems",
     "/experiments",
@@ -116,7 +120,7 @@ test("case studies expose CreativeWork matching the visible title", async ({
 
   expect(work).toBeDefined();
   expect(work.name).toBe(
-    "Building a career-transition product around the next useful step",
+    "Offboard Job Search Platform",
   );
   // Structured data that disagrees with the page is worse than none.
   await expect(page.getByRole("heading", { level: 1, name: work.name })).toBeVisible();
@@ -132,7 +136,7 @@ test("OpenGraph metadata is present", async ({ page }) => {
 });
 
 const PUBLIC_PATHS = [
-  "/", "/work", "/work/ck12-analytics", "/experiments/neuron-shift", "/experiments/motif", "/experiments/transfersight", "/work/offboard", "/work/flexi", "/ai-systems",
+  "/", "/work", "/work/ck12-analytics", "/experiments/neuron-shift", "/experiments/motif", "/experiments/transfersight", "/work/offboard", "/work/lumo", "/work/lumo-evals", "/work/flexi", "/ai-systems",
   "/experiments", "/writing", "/about", "/resume",
 ];
 

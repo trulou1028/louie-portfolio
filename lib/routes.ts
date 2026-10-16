@@ -14,6 +14,8 @@ export const ROUTES = [
   "/work",
   "/work/ck12-analytics",
   "/work/offboard",
+  "/work/lumo",
+  "/work/lumo-evals",
   "/work/flexi",
   "/ai-systems",
   "/experiments",
@@ -51,6 +53,26 @@ export const OFFBOARD_ANCHORS = [
   { id: "decision-entry-point", label: "Changing the entry point" },
   { id: "architecture", label: "Architecture" },
   { id: "product", label: "Product" },
+  { id: "outcomes", label: "Outcomes" },
+  { id: "learnings", label: "Learnings" },
+] as const satisfies readonly Anchor[];
+
+export const LUMO_ANCHORS = [
+  { id: "context", label: "Context" },
+  { id: "audit", label: "Reading real conversations" },
+  { id: "decision-cards", label: "Propose, then confirm" },
+  { id: "decision-panel", label: "Beside the page" },
+  { id: "decision-limits", label: "What it reads and claims" },
+  { id: "outcomes", label: "Outcomes" },
+  { id: "learnings", label: "Learnings" },
+] as const satisfies readonly Anchor[];
+
+export const LUMO_EVALS_ANCHORS = [
+  { id: "context", label: "Context" },
+  { id: "decision-bench", label: "A bench, not training" },
+  { id: "decision-models", label: "Model swaps" },
+  { id: "decision-hard-set", label: "A set that can show gains" },
+  { id: "decision-grader", label: "Checking the grader" },
   { id: "outcomes", label: "Outcomes" },
   { id: "learnings", label: "Learnings" },
 ] as const satisfies readonly Anchor[];
@@ -115,6 +137,8 @@ export const CASE_STUDY_ANCHORS: Record<string, readonly Anchor[]> = {
   "/experiments/motif": MOTIF_ANCHORS,
   "/experiments/transfersight": TRANSFERSIGHT_ANCHORS,
   "/work/offboard": OFFBOARD_ANCHORS,
+  "/work/lumo": LUMO_ANCHORS,
+  "/work/lumo-evals": LUMO_EVALS_ANCHORS,
   "/work/flexi": FLEXI_ANCHORS,
 };
 

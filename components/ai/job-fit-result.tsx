@@ -27,6 +27,8 @@ const VISIBLE = 3;
 
 const PAGE_NAMES: Record<string, string> = {
   "/work/offboard": "Offboard",
+  "/work/lumo": "LUMO Career Agent",
+  "/work/lumo-evals": "LUMO Bench & Evals System",
   "/work/ck12-analytics": "CK-12 Foresights",
   "/work/flexi": "Flexi",
   "/experiments/neuron-shift": "Neuron Shift",

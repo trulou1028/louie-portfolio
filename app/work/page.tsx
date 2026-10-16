@@ -18,7 +18,7 @@ export default function WorkIndex() {
   return <Canvas width="wide">
     <MotionReveal>
     <RevealHeading as="h1" className="max-w-[18ch] font-display text-display-lg text-balance text-foreground">Different systems. Decisions people can make.</RevealHeading>
-    <p className="mt-6 max-w-[52ch] text-body-lg text-foreground-muted">Teacher judgment, a job seeker’s next step, and a student’s understanding. Three product stories, then three projects built on my own.</p></MotionReveal>
+    <p className="mt-6 max-w-[52ch] text-body-lg text-foreground-muted">A job seeker’s next step, the AI assistant beside it and how it is tested, a teacher’s judgment, and a student’s understanding. Five product stories, then three projects built on my own.</p></MotionReveal>
     <section className="mt-16 flex flex-col gap-24 sm:mt-24 sm:gap-28" aria-label="Product case studies">
       {workProjects.map((project, index) => (
         <WorkRow

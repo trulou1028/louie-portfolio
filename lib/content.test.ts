@@ -26,10 +26,10 @@ describe("project copy", () => {
   it("uses the adopted narrative titles", () => {
     const bySlug = Object.fromEntries(workProjects.map((p) => [p.slug, p]));
     expect(bySlug.offboard.title).toBe(
-      "Building a career-transition product around the next useful step",
+      "Offboard Job Search Platform",
     );
     expect(bySlug.flexi.title).toBe(
-      "Helping students get unstuck without doing the learning for them",
+      "CK-12 Flexi AI Tutor",
     );
   });
 

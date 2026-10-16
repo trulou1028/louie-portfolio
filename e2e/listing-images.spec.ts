@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 
-// Plan 051: one screenshot per work card. "/": three case studies and three
+// Plan 051: one screenshot per work card. "/": five case studies and three
 // independent projects. The headline's small screens are not in an article,
-// so they are not counted. "/work": the same six.
-for (const [path, count] of [["/", 6], ["/work", 6]] as const) {
+// so they are not counted. "/work": the same eight.
+for (const [path, count] of [["/", 8], ["/work", 8]] as const) {
   test(`${path} loads and its project images decode`, async ({ page }) => {
     await page.goto(path);
     const images = page.locator("main article img");

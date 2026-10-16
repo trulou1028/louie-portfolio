@@ -26,8 +26,9 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  * bar of its own.
  *
  * Every work card has the same anatomy: screenshot on a quiet frame, a mono
- * meta line, the title (`WorkCard`). Offboard leads at full width; the CK-12
- * pair shares the next row; the independent projects run three across.
+ * meta line, the title (`WorkCard`). Offboard leads at full width; its two
+ * LUMO studies share the next row, ahead of the older CK-12 pair; the
+ * independent projects run three across.
  */
 
 /** How I work: each principle, the sentence that shows it, and where. */

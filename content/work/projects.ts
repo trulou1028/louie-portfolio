@@ -4,7 +4,7 @@ import type { CaseStudyBriefContent } from "@/components/portfolio/case-study-br
 
 /** Canonical editorial metadata. Claims and assets: plans/portfolio-strategy/. */
 export type WorkProject = {
-  slug: "ck12-analytics" | "offboard" | "flexi";
+  slug: "ck12-analytics" | "offboard" | "lumo" | "lumo-evals" | "flexi";
   name: string;
   title: string;
   tags: readonly string[];
@@ -18,6 +18,8 @@ export type WorkProject = {
   /** A different screenshot for the homepage tile, when `image` is styled
    *  differently from the other tiles' flat screenshots. */
   tileImage?: { src: string; alt: string; width: number; height: number };
+  /** `none` when `image` is a chart, not a browser window (no address bar). */
+  imageFrame?: "browser" | "none";
   role: string;
   scope: string;
   status: string;
@@ -37,7 +39,7 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "offboard",
     name: "Offboard",
-    title: "Building a career-transition product around the next useful step",
+    title: "Offboard Job Search Platform",
     tags: ["Product strategy", "Agentic workflows", "Design engineering"],
     href: "/work/offboard",
     summary: "One workspace for a role, with research and drafts that stay connected. Automation does the repeated work; the person decides what goes out.",
@@ -53,7 +55,7 @@ export const workProjects: readonly WorkProject[] = [
     brief: {
       problem: "People in a career transition rebuild the same context across a dozen disconnected tools. AI that only writes more documents can push them toward roles that are not worth it.",
       did: "As founding designer, I designed and engineered Offboard end to end: a workspace for each opportunity, an AI pipeline that checks a role before tailoring anything, drafts the person reviews before use, and a plan-first start for people not yet ready to apply.",
-      result: "A live product. In an early signup cohort, 92% finished onboarding and 45% ran a ghost check, but only 8% built a packet in their first days. That gap is the case for starting with a plan.",
+      result: "A live product. In early signups, most people finished onboarding and ran a ghost check, but few built a packet in their first days. That gap is the case for starting with a plan.",
     },
     featured: true,
     plate: "offboard",
@@ -65,9 +67,68 @@ export const workProjects: readonly WorkProject[] = [
     imageMarks: [{ x: 75.3, y: 20.6, w: 18.7, h: 40.5, label: "The pipeline stays visible" }],
   },
   {
+    slug: "lumo",
+    name: "Offboard LUMO",
+    title: "LUMO Career Agent",
+    tags: ["AI assistant", "Conversational UX", "Agentic workflows"],
+    href: "/work/lumo",
+    summary: "LUMO is the assistant inside Offboard. It reads the person’s own search, sits beside the page they are on, and turns every change into a card they confirm.",
+    image: "/work/lumo/chat.webp",
+    imageAlt: "LUMO's full chat page in Offboard, April 2026. The empty state reads: Advice grounded in your real search. Lumo uses the Offboard context you already keep current, like your profile, applications, interviews, network, reflections you allow for personalization, and saved chat memories. A card under it reads: Lumo has strong context across your job search, 5/6 automatic context sources ready, with a What Lumo knows button. The composer at the bottom reads Ask Lumo anything about your career, with two suggestions: Follow up on Function Health, and Check my progress.",
+    imageCaption: "Before the first message, LUMO says what it reads and how much of that context is ready. LUMO’s full chat page, April 2026. Product screenshot.",
+    imageWidth: 1536, imageHeight: 864,
+    role: "Founding Product Designer & AI Systems Lead",
+    scope: "Product direction, conversation and tool design, evaluation, and full-stack implementation",
+    status: "Live in Offboard",
+    result: "Live. Every change runs through a release gate before it ships.",
+    brief: {
+      problem: "In real conversations, a classifier that ran before the chat replaced LUMO’s answer with a tracker card, and members confirmed none of those cards. Asking about a page also meant leaving it.",
+      did: "I designed and built LUMO end to end: the conversation, the tools, and the rules for when it may act. A card now appears only when the model calls a write tool with a concrete subject, and nothing changes until the person confirms. LUMO moved to a panel beside every page that says what it is looking at.",
+      result: "Live in Offboard. On unchanged code, LUMO scores 30 to 32 of the 32 release cases, at about half a cent a turn.",
+    },
+    featured: true,
+    plate: "offboard",
+    facts: [
+      { label: "Role", value: "Founding Product Designer & AI Systems Lead" },
+      { label: "Years", value: "2025 to now" },
+      { label: "Team", value: "Six-person startup" },
+    ],
+    imageMarks: [{ x: 39.6, y: 48.7, w: 37.5, h: 8.8, label: "Says what it reads before you ask" }],
+  },
+  {
+    slug: "lumo-evals",
+    name: "LUMO Bench",
+    title: "LUMO Bench & Evals System",
+    tags: ["AI evaluation", "Model selection", "Product judgment"],
+    href: "/work/lumo-evals",
+    summary: "Training a model needs far more conversations than an early product has. So every LUMO change runs through pass-or-fail cases, a harder set from real conversations, and a check on the grader itself.",
+    image: "/work/lumo-evals/bench.webp",
+    imageAlt: "A chart titled Four checks before a LUMO change ships. Release gate: 32 cases, unchanged code, four runs on 2026-09-26, scoring 31, 31, 30, and 32 of 32. Hard set: 31 harder cases, two runs on 2026-10-01, scoring 28 and 26 of 31, against a line at 85%: tune only when the mean is at or below this line. Grader check: 25 verdicts labelled blind on 2026-09-30, 24 of 25 agree with the grader, Cohen's kappa 0.92, and the one disagreement went to Louie. Model swap: the GPT-6 Luna requalification on 2026-09-23 kept the current model, because the candidate cost less per turn but failed a required safety case.",
+    imageCaption: "The four checks and their numbers. A chart drawn for this page from the run reports in Offboard’s repository, not a product screen.",
+    imageWidth: 2000, imageHeight: 1200,
+    imageFrame: "none",
+    role: "Founding Product Designer & AI Systems Lead",
+    scope: "Evaluation strategy, test case design, grader checks, and model decisions",
+    status: "In use for every LUMO change",
+    result: "Two model swaps stopped at the gate, and prompt tuning paused when the hard set showed no room to measure a gain.",
+    brief: {
+      problem: "Every LUMO change ended with a 45-minute check by hand, and the result was a judgment in a sprint doc. A model swap or prompt change had no regression gate, and an early product has too little data to train a model.",
+      did: "I chose a bench over training: test cases with pass-or-fail criteria, a runner against the deployed assistant, a hard set built from real conversations, rules that stop the prompt from learning the test, and a check on how often the grader agrees with a careful reader.",
+      result: "A cheaper GPT-6 Luna failed a required safety case, so LUMO kept its model. When LUMO passed 87% of the hard set, above the 85% line where a gain can be measured, I paused prompt tuning and fixed a memory bug first.",
+    },
+    featured: true,
+    plate: "offboard",
+    facts: [
+      { label: "Role", value: "Founding Product Designer & AI Systems Lead" },
+      { label: "Years", value: "2026" },
+      { label: "Team", value: "Six-person startup" },
+    ],
+    imageMarks: [],
+  },
+  {
     slug: "ck12-analytics",
     name: "CK-12 Foresights & Insights",
-    title: "Turning learning predictions into teacher decisions",
+    title: "CK-12 Teacher Analytics",
     tags: ["Systems design", "Learning analytics", "Product judgment"],
     href: "/work/ck12-analytics",
     summary: "Separate prediction from diagnosis. Make uncertainty visible. Help teachers decide where to look next.",
@@ -96,7 +157,7 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "flexi",
     name: "CK-12 Flexi",
-    title: "Helping students get unstuck without doing the learning for them",
+    title: "CK-12 Flexi AI Tutor",
     tags: ["Conversational UX", "Learning", "Research"],
     href: "/work/flexi",
     summary: "An answer begins the interaction. Clarification, source choices, and a next challenge give students ways to keep learning.",

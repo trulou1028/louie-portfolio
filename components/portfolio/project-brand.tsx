@@ -11,9 +11,10 @@ import { cn } from "@/lib/utils";
  * plate, CK-12 on white when it sits on a colored plate (Plan 037).
  */
 export function ProjectBrand({ project, onPlate = false, className }: { project: WorkProject; onPlate?: boolean; className?: string }) {
-  const offboard = project.slug === "offboard";
+  const offboard = project.plate === "offboard";
   const chip = offboard ? !onPlate : onPlate;
-  const product = project.name.replace("CK-12 ", "");
+  // The product name beside the wordmark, when it is not the brand itself.
+  const product = project.slug === "offboard" ? null : project.name.replace(/^(CK-12|Offboard) /, "");
 
   return (
     <div className={cn("flex min-h-8 flex-wrap items-center gap-4", className)} aria-label={project.name}>
@@ -25,9 +26,9 @@ export function ProjectBrand({ project, onPlate = false, className }: { project:
           height={offboard ? 353 : 26}
           className={offboard ? "h-auto w-28 object-contain" : "h-auto w-18 object-contain"}
         />
-        {!offboard && onPlate ? <span className="border-l border-border-default pl-3 text-body-sm font-medium text-foreground">{product}</span> : null}
+        {product && onPlate ? <span className={cn("border-l pl-3 text-body-sm font-medium", offboard ? "border-plate-offboard-muted/40 text-plate-offboard-ink" : "border-border-default text-foreground")}>{product}</span> : null}
       </span>
-      {!offboard && !onPlate ? <span className="border-l border-border-subtle pl-4 text-body-sm text-foreground-muted">{product}</span> : null}
+      {product && !onPlate ? <span className="border-l border-border-subtle pl-4 text-body-sm text-foreground-muted">{product}</span> : null}
     </div>
   );
 }

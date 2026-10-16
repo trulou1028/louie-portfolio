@@ -1,0 +1,88 @@
+import { CaseStudySection } from "@/components/portfolio/case-study-section";
+import { SystemDiagram } from "@/components/portfolio/system-diagram";
+import { TurnCompare } from "@/components/portfolio/lumo/turn-compare";
+import { ToolGate } from "@/components/portfolio/lumo/tool-gate";
+import { PanelDemo } from "@/components/portfolio/lumo/panel-demo";
+import { MoneySwitch } from "@/components/portfolio/lumo/money-switch";
+
+<CaseStudySection id="context" title="An assistant that can change someone's job search" eyebrow="Context and ownership">
+
+LUMO is the AI assistant inside Offboard. It reads the member's own search: profile, applications, interviews, network, and the memories they allow. It can also add to and update their tracker. I designed and built it, from the first chat in October 2025 to the version that runs today, with AI coding tools in the loop.
+
+An assistant with write access to someone's job search has two jobs. It must answer the question that was asked, and it must not change anything the person did not choose.
+
+</CaseStudySection>
+
+<CaseStudySection id="audit" title="Read the real conversations before changing anything" eyebrow="Method">
+
+In September 2026 I started with an audit of real member conversations, each read in full. Quotes stayed paraphrased, and no member text left the audit.
+
+- **A classifier took over the turn.** It ran before the chat. When it guessed "tracker", a card replaced the answer. A request for help with a cover letter, sent with a job link, came back as an add-to-tracker card.
+- **Members confirmed none of the tracker cards.**
+- **LUMO asked for documents it already had.** It asked members to paste a resume or cover letter that was already on file.
+- **Interview prep found no interview.** Members rarely log their interviews, so prep conversations fell back to a questionnaire.
+
+<SystemDiagram title="One turn, before and after" description="An illustration of the pattern the audit found, not a product screen. Before, a classifier read a request for cover letter help as a tracker request and showed an add-to-tracker card with an unknown company and role; the letter was never written. After, the write tools are not offered on a writing turn, and LUMO answers in the chat.">
+  <TurnCompare />
+</SystemDiagram>
+
+The failures were missing tools and missing context, not a weak model. That set the order of the work.
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-cards" title="The model proposes, the person confirms" eyebrow="Decision 01">
+
+I deleted the four takeover flows and set one rule: a card appears only when the model chooses to call a write tool with a concrete subject, such as a link or a company and title.
+
+The write tools do not write. They return a card. The tracker changes only when the person clicks to confirm. On a turn that asks for writing help, such as tailor, rewrite, or simplify, the write tools are not offered to the model at all. One turn can produce one card.
+
+A confirmed change goes through the same code that Offboard's connector for outside AI agents uses, so chat and a connected agent write the same rows in the same way.
+
+<SystemDiagram title="Try it: what the model is offered" description="Pick a message. A writing request offers the model only LUMO's six read tools, so no card can appear. A tracker request offers all ten; the model calls a write tool, which returns a card, and the tracker changes only when you press Confirm. A question uses a read tool and changes nothing. Tool names are LUMO's own; the messages are examples, not member quotes.">
+  <ToolGate />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-panel" title="Help beside the page, honest about what it sees" eyebrow="Decision 02">
+
+LUMO used to share the right side of the screen with page information, and it showed only on wide screens. The "Ask LUMO" button opened a separate chat page, so asking about a page meant leaving it. Members who wanted help opened the full chat page, lost the page they were on, and retyped what they had been looking at.
+
+I gave the right panel to LUMO alone. The "Ask LUMO" button opens it beside any page: a panel at 1280px and wider, a sheet on smaller screens. The page stays where it was. One line says what LUMO is looking at, for example "Looking at: Lyft · Product Design Manager". That line never claims more than the page context each message sends.
+
+<SystemDiagram title="Try it: LUMO beside the page" description="A wireframe, not a screenshot. Press Ask LUMO and LUMO opens beside the page while the page stays in place. Switch to a small screen and it opens as a sheet over the page instead. The panel names what LUMO is looking at, here the spec's example: Lyft, Product Design Manager.">
+  <PanelDemo />
+</SystemDiagram>
+
+The bet was written down before the build: a target for members asking from the panel in the first 30 days, and a floor below which a switch returns the old button.
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-limits" title="Limits on what LUMO reads and what it claims" eyebrow="Decision 03">
+
+- **Money is one switch.** One setting, "Let LUMO use my money details", controls every money fact LUMO reads: runway, benefits, target salary, and offer terms. With it off, LUMO sees only the company and title of each offer.
+- **Outside agents never see offers.** A database rule returns no offer rows to a connected AI agent.
+- **Support answers come from the Help page.** LUMO links the page where the person acts. It never claims to cancel, refund, or change an email address, and never promises a refund.
+- **A crisis turn gets a crisis answer.** One required test case checks that LUMO does not reach for the person's interview schedule after a crisis statement. That case later kept a cheaper model out of production (see [LUMO Bench](/work/lumo-evals#decision-models)).
+
+<SystemDiagram title="Try it: the money switch" description="One setting, Let LUMO use my money details, controls every money fact LUMO reads: runway, weekly unemployment benefit, target salary range, and offer terms. Turn it off and LUMO keeps only each offer's company and title. Connected AI agents never read offers.">
+  <MoneySwitch />
+</SystemDiagram>
+
+</CaseStudySection>
+
+<CaseStudySection id="outcomes" title="Live, and checked on every change" eyebrow="Outcome">
+
+LUMO is live in Offboard. The numbers below are test results, not usage, revenue, or retention.
+
+- **The panel's result is not in yet.** The 30-day read for the panel bet is due in late October 2026.
+- **Quality is measured on every change.** On unchanged code, LUMO scores 30 to 32 of the 32 release cases. A model change runs through the same cases before it ships.
+- **It is cheap to run.** A model change in September 2026 cut LUMO chat to about half a cent a turn.
+
+</CaseStudySection>
+
+<CaseStudySection id="learnings" title="Answer first, then offer to act" eyebrow="Reflection">
+
+The classifier saved one step for the few people who wanted a tracker card, and cost the answer for everyone else. An assistant with write access earns trust by doing the asked-for thing first and making every change a choice. In a young product, the next lesson comes from reading conversations, not from a dashboard.
+
+</CaseStudySection>
