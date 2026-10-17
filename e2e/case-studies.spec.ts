@@ -281,6 +281,22 @@ test.describe("LUMO graphics", () => {
     await expect(demo.getByRole("complementary", { name: "LUMO sheet" })).toHaveCount(0);
   });
 
+  test("the LUMO hero is a looping recording with a poster and a pause control", async ({ page }) => {
+    await page.goto("/work/lumo");
+    const video = page.locator("header video");
+    await expect(video).toHaveAttribute("poster", "/work/lumo/stream-poster.webp");
+    await expect(video).toHaveAttribute("aria-label", /one LUMO turn/);
+    await expect(video.locator("source")).toHaveAttribute("src", "/work/lumo/stream.mp4");
+    await expect(page.getByRole("button", { name: /the recording/ })).toBeVisible();
+  });
+
+  test("under reduced motion, the LUMO hero stays on its poster with no control", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/work/lumo");
+    await expect(page.getByRole("button", { name: /the recording/ })).toHaveCount(0);
+    expect(await page.locator("header video").evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
+  });
+
   test("the bench graphics plot every case and say so in text", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/work/lumo-evals");

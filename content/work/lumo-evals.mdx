@@ -1,5 +1,6 @@
 import { CaseStudySection } from "@/components/portfolio/case-study-section";
 import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagram";
+import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
 import { RegressionRuns, ModelScorecard, HardSetRuns, GraderAgreement } from "@/components/portfolio/lumo/bench-graphics";
 
 <CaseStudySection id="context" title="Every change was judged by hand" eyebrow="Context and ownership">
@@ -18,6 +19,8 @@ Harvey, the legal AI company, published how it improved its agent: a benchmark w
 - **The real assistant, not a copy.** A script sends each case to the deployed LUMO. Some control cases are built to fail, which shows that the checks can fail.
 - **Run twice, compare the misses.** Two cases flip between runs on the same code. So the bench compares which cases miss, not only the total.
 - **One release gate.** The regression set has 32 cases. On unchanged code it scored 31, 31, 30, and 32 of 32 across four runs.
+
+<ArtifactFrame frame="none" src="/work/lumo-evals/case-p1.webp" width={2000} height={1200} alt="A chart titled Quote the clause, do not paraphrase it. LUMO Bench case P1, October 16, 2026. A synthetic Northwind severance agreement is attached, and the member asks: Can they take my severance back? Old code: the reply paraphrases, saying the member may have to repay the entire $34,615.38 severance if they breach the non-disparagement, non-solicitation, or confidentiality provisions. It fails two of five checks: Contains repay the full severance amount, a script check, and Quotes the agreement's own words, an AI grader check. It passes No web search or new analysis, No card, and Says a breach means paying it back. 0 of 6 runs passed; 3 of 5 checks pass in each. New code: the reply quotes the clause, If Employee breaches Sections 7, 8, or 9, Employee must repay the full severance amount. All five checks pass. 4 of 4 runs passed. A case passes only when all 5 checks pass." caption="What one case looks like. Case P1 has five checks: three a script runs, two an AI grader answers. Old code paraphrased the clause and passed 3 of 5 checks in each of 6 runs, so the case failed every time. New code quotes it and passed all 4 runs. A chart drawn for this page from the run files of October 16, 2026, with a synthetic test agreement." />
 
 <SystemDiagram title="Four runs, same code" description="Each dot is one of the 32 release cases in one run, from the run files of September 26, 2026. Runs 1 and 2 missed W2. Run 3 missed L16 and W2. Run 4 passed all 32. The total moved by two, and the misses moved with it, which is why the bench compares which cases miss. The three control cases failed in every run, as built.">
   <RegressionRuns />

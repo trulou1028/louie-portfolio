@@ -89,7 +89,7 @@ export default function Home() {
           <WorkCard
             key={project.slug}
             href={project.href}
-            image={project.image ? { src: project.image, alt: project.imageAlt, width: project.imageWidth, height: project.imageHeight } : null}
+            image={project.tileImage ?? (project.image ? { src: project.image, alt: project.imageAlt, width: project.imageWidth, height: project.imageHeight } : null)}
             meta={`${project.name} · ${project.role}`}
             title={project.title}
           />

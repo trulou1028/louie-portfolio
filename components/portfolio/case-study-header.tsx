@@ -18,7 +18,7 @@ function CaseStudyHeader({ project }: { project: WorkProject }) {
     <RevealHeading as="h1" className="max-w-[22ch] font-display text-display-lg text-balance text-foreground">{project.title}</RevealHeading>
     <p className="mt-5 font-mono text-system uppercase text-foreground-muted">{meta}</p>
     <CaseStudyBrief brief={project.brief} className="mt-10" />
-    {project.image && <ArtifactFrame src={project.image} alt={project.imageAlt} width={project.imageWidth} height={project.imageHeight} caption={project.imageCaption} marks={project.imageMarks} frame={project.imageFrame} eager className="mt-12" />}
+    {project.image && <ArtifactFrame src={project.image} alt={project.imageAlt} width={project.imageWidth} height={project.imageHeight} caption={project.imageCaption} marks={project.imageMarks} frame={project.imageFrame} video={project.video} eager className="mt-12" />}
   </header></MotionReveal>;
 }
 export { CaseStudyHeader };

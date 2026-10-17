@@ -510,7 +510,7 @@ export const evidence: EvidenceItem[] = [
     summary:
       "LUMO reads a member's own job search and can add to and update their tracker. Louie designed and built it from October 2025.",
     detail:
-      "LUMO reads the member's profile, applications, interviews, network, and the memories they allow. Because it has write access to the tracker, it has two jobs: answer the question that was asked, and change nothing the person did not choose. Built with AI coding tools in the loop.",
+      "LUMO reads the member's profile, applications, interviews, network, documents and their paperwork reviews, and the memories they allow. In the case study's recording, it quotes a clause from a synthetic test agreement word for word and drafts an email asking to narrow it, sending nothing. Because it has write access to the tracker, it has two jobs: answer the question that was asked, and change nothing the person did not choose. Built with AI coding tools in the loop.",
     route: "/work/lumo",
     anchor: "context",
     tags: ["ai assistant", "lumo", "chat", "context", "agents"],
@@ -610,7 +610,7 @@ export const evidence: EvidenceItem[] = [
     summary:
       "An early product has too few conversations for training to pay back, so LUMO is tested with pass-or-fail cases run against the deployed assistant instead.",
     detail:
-      "Each case passes only when every criterion passes. Control cases are built to fail. Each change runs twice and the bench compares which cases miss, because two cases flip on the same code. The release gate has 32 cases and scored 31, 31, 30, and 32 of 32 on unchanged code. A run costs about a dollar.",
+      "Each case passes only when every criterion passes. Control cases are built to fail. Each change runs twice and the bench compares which cases miss, because two cases flip on the same code. The release gate has 32 cases and scored 31, 31, 30, and 32 of 32 on unchanged code. A run costs about a dollar. Example, case P1 (October 16, 2026): a member asks whether the company can take their severance back. Old code paraphrased the clause and passed 3 of 5 checks in each of 6 runs; new code quotes the clause and passed all 4 runs.",
     route: "/work/lumo-evals",
     anchor: "decision-bench",
     tags: ["evaluation", "benchmark", "regression testing", "training", "evals", "lumo bench"],

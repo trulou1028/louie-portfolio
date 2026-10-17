@@ -989,3 +989,24 @@ Follow-up the same day, from Louie's review:
   CK-12 Teacher Analytics, CK-12 Flexi AI Tutor. They live in
   `WorkProject.title` and also set the browser tab title. The short names
   (`WorkProject.name`) stay in the mono meta line above each headline.
+
+## New LUMO hero and case images, October 16, 2026
+
+Louie made new assets in a separate Offboard session, from production with
+the QA account and a synthetic "Northwind" severance agreement (no member
+data):
+
+- **LUMO Career Agent hero** is now a looping 8.7-second recording of one
+  LUMO turn (`public/work/lumo/stream.mp4`, poster `stream-poster.webp`).
+  `ArtifactFrame` takes a `video` prop and renders `LoopVideo`: it plays only
+  on screen, has a pause button (WCAG 2.2.2), and stays on the poster under
+  reduced motion. MP4 only: the WebM from the same session could not be
+  decoded for review here, and every current browser plays H.264.
+- **Cards** use the new still (`chat-2026-10.webp`) through `tileImage`; the
+  homepage now prefers `tileImage` for every card, like the Work page.
+- **Decision 01 on LUMO** shows the "How Lumo worked" steps crop
+  (`steps.webp`), with a mark on the quoted clause.
+- **LUMO Bench Decision 01** shows one case, P1 (`case-p1.webp`). Checked
+  against the run files: 6 old-code runs each passed 3 of 5 checks; 4
+  new-code runs passed all 5.
+- The old April 2026 screenshot (`chat.webp`) is removed.
