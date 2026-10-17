@@ -4,6 +4,7 @@ import * as React from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Check } from "lucide-react";
 
+import { LumoFace } from "@/components/portfolio/lumo/lumo-face";
 import { useReducedMotionSafe } from "@/components/portfolio/lumo/use-play";
 import { cn } from "@/lib/utils";
 
@@ -118,8 +119,10 @@ export function ToolGate() {
               animate={{ opacity: 1, y: 0 }}
               exit={reduce ? undefined : { opacity: 0, y: -4 }}
               transition={{ duration: reduce ? 0 : 0.25 }}
-              className="flex flex-col gap-3"
+              className="flex items-start gap-2.5"
             >
+              <LumoFace className="mt-1" />
+              <div className="flex min-w-0 flex-1 flex-col gap-3">
               {active.card ? (
                 <div className="rounded-sm border border-border-default bg-surface-muted p-4">
                   {confirmed ? (
@@ -144,6 +147,7 @@ export function ToolGate() {
                 </span>
               )}
               <p className="text-body-sm text-foreground-muted">{confirmed ? "The confirmed change runs through the same code a connected AI agent uses." : active.outcome}</p>
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>

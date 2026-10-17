@@ -1013,3 +1013,8 @@ data):
   against the run files: 6 old-code runs each passed 3 of 5 checks; 4
   new-code runs passed all 5.
 - The old April 2026 screenshot (`chat.webp`) is removed.
+- **LUMO's new face** (`public/work/lumo/face.webp`, from the Offboard app,
+  October 16, 2026) sits beside the titles of both LUMO case studies
+  (`WorkProject.icon`), beside "LUMO" in the next-case-study brand line, and
+  wherever LUMO replies in the LUMO graphics (`LumoFace`). In the "before"
+  half of the turn graphic it is greyed: the classifier answered, not LUMO.

@@ -4,6 +4,7 @@ import * as React from "react";
 import { AnimatePresence, motion, useInView } from "motion/react";
 import { Bot, X } from "lucide-react";
 
+import { LumoFace } from "@/components/portfolio/lumo/lumo-face";
 import { useReducedMotionSafe } from "@/components/portfolio/lumo/use-play";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +40,7 @@ function LumoBody({ onClose }: { onClose: () => void }) {
   return (
     <div className="flex h-full flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
-        <span className="font-mono text-system uppercase text-foreground">LUMO</span>
+        <span className="flex items-center gap-2 font-mono text-system uppercase text-foreground"><LumoFace className="size-6" />LUMO</span>
         <button type="button" onClick={onClose} aria-label="Close LUMO" className="focus-ring rounded-xs text-foreground-muted hover:text-foreground">
           <X aria-hidden="true" className="size-4" />
         </button>

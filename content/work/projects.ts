@@ -22,6 +22,8 @@ export type WorkProject = {
   imageFrame?: "browser" | "none";
   /** A looping MP4 of the hero screen; `image` is its poster frame. */
   video?: string;
+  /** The product's own icon, beside the case-study title and the brand line. */
+  icon?: { src: string; width: number; height: number };
   role: string;
   scope: string;
   status: string;
@@ -71,6 +73,7 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "lumo",
     name: "Offboard LUMO",
+    icon: { src: "/work/lumo/face.webp", width: 512, height: 512 },
     title: "LUMO Career Agent",
     tags: ["AI assistant", "Conversational UX", "Agentic workflows"],
     href: "/work/lumo",
@@ -102,6 +105,7 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "lumo-evals",
     name: "LUMO Bench",
+    icon: { src: "/work/lumo/face.webp", width: 512, height: 512 },
     title: "LUMO Bench & Evals System",
     tags: ["AI evaluation", "Model selection", "Product judgment"],
     href: "/work/lumo-evals",
