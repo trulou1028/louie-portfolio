@@ -101,18 +101,23 @@ without text, and no skeleton that misrepresents what is coming.
 
 **Theme.** Dark only, with no switch (Plan 051): `<html>` carries `.dark`
 and `app/globals.css` holds one palette. Do not add `dark:` variants in
-portfolio components — write against the tokens. The shell is warm off-white
-ink on a near-black canvas (#121211); color belongs to the work:
+portfolio components — write against the tokens. The shell is cool off-white
+ink on a cool near-black canvas (#101113); color belongs to the work:
 
 - `bg-plate-*` / `text-plate-*-ink` / `text-plate-*-muted`: each project's
   own brand field. Use them only for that project (case study pages, the
   next-case-study link). Work cards use the neutral `bg-surface-muted` frame.
 - `signal` (amber): reserved for `DecisionMark`, the redline drawn over a
   real screenshot. Mark labels restate the caption, alt text, or case study.
-- The split accent still holds: `text-accent` for text and markers (it
-  resolves to ink, so `InlineLink` is always underlined), `bg-accent-fill`
-  (+ `text-accent-on-fill`) for filled controls: lime #C6FF00 with dark text.
-  Lime is for primary actions and the headline underline only.
+- The accent is a duo (Louie, 2026-10-17). `text-accent` is for text and
+  markers (it resolves to ink, so `InlineLink` is always underlined).
+  `bg-accent-fill` (+ `text-accent-on-fill`) is indigo #5550F2 with light
+  text, for primary actions only. `accent-line` is lilac #BBA8FF for lines
+  and highlights: the headline underline, link and hover underlines, focus
+  rings, text selection, and chart marks in case-study graphics. Never put
+  lilac behind light text, or indigo behind dark text.
+- Offboard's own lime appears only inside Offboard screenshots and the
+  Offboard brand plate (`plate-offboard-mark`), never in charts or site UI.
 
 ## Content integrity — the rule that matters most
 

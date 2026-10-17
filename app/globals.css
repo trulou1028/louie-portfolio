@@ -11,16 +11,19 @@
 /* ---------------------------------------------------------------------------
    Design tokens — source of truth.
 
-   Plan 051 (October 2026): a near-black warm canvas, warm off-white ink, and
-   one accent, lime #C6FF00, which always carries dark text. Color still
-   belongs to the work: project plates stay for the case study pages, and the
-   amber signal keeps its one job, the redline on real screenshots.
+   Plan 051 (October 2026), palette revised October 17, 2026 (Louie chose
+   the "indigo + lilac duo"): a cool near-black canvas, cool off-white ink,
+   and two related accents. Color still belongs to the work: project plates
+   stay for the case study pages, and the amber signal keeps its one job,
+   the redline on real screenshots.
 
-   Accent split (unchanged contract): `text-accent` for text and markers
-   resolves to ink, so links keep their underline; `bg-accent-fill` +
-   `text-accent-on-fill` is lime with dark text, for primary actions only.
-   `accent-muted` / `accent-soft` are lime tints for the deep-link wash and
-   AI surfaces.
+   Accent split: `text-accent` for text and markers resolves to ink, so
+   links keep their underline. `bg-accent-fill` + `text-accent-on-fill` is
+   indigo #5550F2 with light text, for primary actions only. `accent-line`
+   is lilac #BBA8FF for lines and highlights: the headline underline, link
+   and hover underlines, focus rings, text selection, and chart marks.
+   `accent-muted` / `accent-soft` / `accent-foreground` are lilac tints for
+   the deep-link wash and AI surfaces.
 
    Colors are HSL triplets consumed as hsl(var(--token)). Radii are spec §9.
    Motion durations are spec §24.
@@ -28,29 +31,30 @@
 :root {
   color-scheme: dark;
 
-  /* Near-black warm canvas, #121211. Frames and panels step up in lightness;
-     borders stay low so spacing, not lines, does the grouping. */
-  --canvas: 60 3% 7%;
-  --surface: 60 4% 9%;
-  --surface-muted: 50 5% 11%;
-  --surface-raised: 45 6% 13%;
-  --foreground: 48 26% 93%;         /* #F1EFE7, 16.5:1 on canvas */
-  --foreground-muted: 45 5% 61%;    /* #A3A097, 7.4:1 on canvas — body copy */
-  --foreground-subtle: 45 4% 40%;   /* non-text only */
-  --foreground-quiet: 45 4% 52%;    /* 4.9:1 — display-size text only */
+  /* Near-black cool canvas, #101113. Frames and panels step up in
+     lightness; borders stay low so spacing, not lines, does the grouping. */
+  --canvas: 235 8% 7%;
+  --surface: 235 8% 9%;
+  --surface-muted: 235 7% 11%;
+  --surface-raised: 235 7% 13%;
+  --foreground: 230 25% 95%;        /* #EFF0F5, 16.6:1 on canvas */
+  --foreground-muted: 235 7% 63%;   /* #9A9BA7, 6.9:1 on canvas — body copy */
+  --foreground-subtle: 235 5% 40%;  /* non-text only */
+  --foreground-quiet: 235 5% 52%;   /* 4.8:1 — display-size text only */
 
-  --border-subtle: 45 5% 16%;
-  --border-default: 50 5% 21%;
-  --border-strong: 48 5% 32%;
+  --border-subtle: 235 7% 16%;
+  --border-default: 235 7% 21%;
+  --border-strong: 235 6% 32%;
 
-  --accent: 48 26% 93%;
-  --accent-hover: 45 5% 75%;
-  --accent-fill: 74 100% 50%;       /* lime #C6FF00 */
-  --accent-fill-hover: 74 100% 62%;
-  --accent-on-fill: 60 3% 7%;       /* 16:1 on lime */
-  --accent-muted: 74 45% 22%;
-  --accent-soft: 74 30% 11%;
-  --accent-foreground: 74 100% 62%; /* 12:1 on accent-soft */
+  --accent: 230 25% 95%;
+  --accent-hover: 235 7% 75%;
+  --accent-fill: 242 86% 63%;       /* indigo #5550F2 */
+  --accent-fill-hover: 242 80% 58%; /* darker on hover, so text stays readable */
+  --accent-on-fill: 230 25% 97%;    /* 5.1:1 on indigo, 6.2:1 on hover */
+  --accent-line: 253 100% 83%;      /* lilac #BBA8FF, 9.1:1 on canvas */
+  --accent-muted: 253 45% 22%;
+  --accent-soft: 253 30% 11%;
+  --accent-foreground: 253 100% 88%; /* 11:1 on accent-soft */
 
   /* The redline. Used only by DecisionMark and the marks it draws. */
   --signal: 41 91% 57%;
@@ -168,6 +172,7 @@
   --color-accent-hover: hsl(var(--accent-hover));
   --color-accent-fill: hsl(var(--accent-fill));
   --color-accent-fill-hover: hsl(var(--accent-fill-hover));
+  --color-accent-line: hsl(var(--accent-line));
   --color-accent-on-fill: hsl(var(--accent-on-fill));
   --color-accent-muted: hsl(var(--accent-muted));
   --color-accent-soft: hsl(var(--accent-soft));
@@ -303,11 +308,16 @@
   --radius-field: var(--radius-field);
 }
 
+/* Selected text takes a lilac tint (October 2026 palette). */
+::selection {
+  background-color: hsl(var(--accent-line) / 0.32);
+}
+
 /* One focus treatment for the whole site, so every interactive element is
    visibly focusable without each component reinventing it (spec §26). */
 @utility focus-ring {
   &:focus-visible {
-    outline: 2px solid hsl(var(--accent-fill));
+    outline: 2px solid hsl(var(--accent-line));
     outline-offset: 2px;
   }
 }
@@ -581,7 +591,7 @@
 
 /* ---------------------------------------------------------------------------
    Homepage headline (Plan 051): "I make complex things / feel simple." with
-   small project screenshots set inside the line, and a lime line drawn
+   small project screenshots set inside the line, and a lilac line drawn
    behind "feel simple."
 
    - Words rise in, a few at a time. The whole entrance is pure CSS and
@@ -694,7 +704,7 @@
   bottom: -0.01em;
   height: 0.13em;
   border-radius: 0.04em;
-  background: hsl(var(--accent-fill));
+  background: hsl(var(--accent-line));
   transform: scaleX(0);
   transform-origin: left center;
   animation: neon-draw 800ms cubic-bezier(0.65, 0, 0.25, 1) 900ms forwards;

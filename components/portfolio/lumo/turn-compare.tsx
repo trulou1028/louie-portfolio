@@ -63,11 +63,11 @@ export function TurnCompare() {
         <motion.p {...enter(3)} className="text-body-sm text-foreground-muted">The cover letter is never written. Members confirmed none of these cards.</motion.p>
       </section>
 
-      <section aria-label="After" className="flex flex-col gap-3 rounded-lg border border-plate-offboard-mark/40 bg-surface p-5">
-        <p className="font-mono text-system uppercase text-plate-offboard-mark">After · LUMO answers</p>
+      <section aria-label="After" className="flex flex-col gap-3 rounded-lg border border-accent-line/40 bg-surface p-5">
+        <p className="font-mono text-system uppercase text-accent-line">After · LUMO answers</p>
         <motion.div {...enter(0.5)}><Bubble /></motion.div>
         <motion.p {...enter(1.5)} className="flex items-center gap-2 font-mono text-system uppercase text-foreground-muted">
-          <span aria-hidden="true" className="size-1.5 rounded-full bg-plate-offboard-mark" />
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-accent-line" />
           Writing help · write tools not offered
         </motion.p>
         <motion.div {...enter(2.5)} className="flex items-start gap-2.5">

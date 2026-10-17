@@ -65,7 +65,7 @@ function Tool({ name, state }: { name: string; state: "offered" | "called" | "bl
     <li
       className={cn(
         "rounded-xs border px-2 py-1 font-mono text-system transition-[opacity,background-color,border-color] duration-(--duration-standard)",
-        state === "called" && "border-plate-offboard-mark bg-plate-offboard-mark text-canvas",
+        state === "called" && "border-accent-line bg-accent-line text-canvas",
         state === "offered" && "border-border-default text-foreground",
         state === "blocked" && "border-border-subtle text-foreground-subtle line-through opacity-50",
       )}
@@ -127,7 +127,7 @@ export function ToolGate() {
                 <div className="rounded-sm border border-border-default bg-surface-muted p-4">
                   {confirmed ? (
                     <p className="flex items-center gap-2 text-body-sm font-semibold text-foreground">
-                      <Check aria-hidden="true" className="size-4 text-plate-offboard-mark" />
+                      <Check aria-hidden="true" className="size-4 text-accent-line" />
                       Added. The tracker changed only now.
                     </p>
                   ) : (
@@ -135,7 +135,7 @@ export function ToolGate() {
                       <p className="text-body-sm font-semibold text-foreground">Add to tracker?</p>
                       <p className="mt-1 text-body-sm text-foreground-muted">The role from the link, as a pending card.</p>
                       <span className="mt-3 flex gap-2">
-                        <button type="button" onClick={() => setConfirmed(true)} className="focus-ring rounded-full bg-plate-offboard-mark px-3.5 py-1.5 text-body-sm font-semibold text-canvas">Confirm</button>
+                        <button type="button" onClick={() => setConfirmed(true)} className="focus-ring rounded-full bg-accent-line px-3.5 py-1.5 text-body-sm font-semibold text-canvas">Confirm</button>
                         <span aria-hidden="true" className="rounded-full border border-border-default px-3.5 py-1.5 text-body-sm text-foreground-muted">Not now</span>
                       </span>
                     </>

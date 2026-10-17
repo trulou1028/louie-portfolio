@@ -1031,3 +1031,23 @@ Follow-up, October 16, 2026 (Louie's review):
 - **Independent projects use product-name headlines too:** Motif Motion
   Design System, TransferSight Transfer Fit Report, Neuron Shift Operator
   Console.
+
+## Indigo and lilac palette, October 17, 2026
+
+Louie compared lime with tangerine, ice blue, lilac, periwinkle,
+ultraviolet, and indigo, rendered on the real pages with the charts
+recolored, and chose the "duo":
+
+- **Indigo #5550F2** fills primary buttons (Book time, Ask your own
+  question, the Ask Louie send button), with light text at 5.1:1.
+- **Lilac #BBA8FF** (`accent-line`) draws the headline underline, link and
+  hover underlines, focus rings, text selection, and every chart mark in the
+  LUMO graphics. It matches LUMO's face.
+- **Cool greys.** The canvas, surfaces, borders, and ink moved from warm to a
+  slightly blue near-black (#101113) and off-white (#EFF0F5), so the purple
+  family sits naturally.
+- **Charts.** The LUMO graphics use `accent-line` instead of Offboard's lime.
+  The bench chart, case P1, and the LUMO card image were re-rendered in lilac
+  on cool greys from their sources. Offboard's product screenshots and the
+  recording keep the app's own lime.
+- The social share image uses the new colors.

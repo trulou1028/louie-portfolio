@@ -45,7 +45,7 @@ function LumoBody({ onClose }: { onClose: () => void }) {
           <X aria-hidden="true" className="size-4" />
         </button>
       </div>
-      <p className="rounded-xs bg-plate-offboard-mark/15 px-2 py-1 text-system font-medium text-plate-offboard-mark">{LOOKING_AT}</p>
+      <p className="rounded-xs bg-accent-line/15 px-2 py-1 text-system font-medium text-accent-line">{LOOKING_AT}</p>
       <span aria-hidden="true" className="flex flex-col gap-2">
         <span className="h-7 rounded-full border border-border-subtle" />
         <span className="h-7 w-10/12 rounded-full border border-border-subtle" />

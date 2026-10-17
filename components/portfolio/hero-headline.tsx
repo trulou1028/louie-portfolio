@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
  * through dense screens (a class prediction chart, a skill table, an operator
  * console); after "feel simple." through calm ones (Flexi's follow-up
  * choices, Offboard's step-by-step plan, the risk pause with three clear
- * options). Hovering one shows a sharp, full-size preview. A lime line draws
+ * options). Hovering one shows a sharp, full-size preview. A lilac line draws
  * behind "feel simple." All motion is CSS in `app/globals.css` ("Homepage
  * headline").
  *
