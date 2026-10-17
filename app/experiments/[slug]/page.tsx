@@ -124,7 +124,7 @@ export default async function ExperimentPage({
         {writeUp ? <>
           <CreativeWorkSchema project={{ title: experiment.title, name: experiment.name, href: isRoute(href) ? href : "/experiments", summary: experiment.summary ?? "", tags: experiment.tags }} />
           <TrackView event="portfolio_project_opened" properties={{ project: slug }} />
-          <div className="mt-8 flex flex-col gap-3 @5xl/canvas:hidden">
+          <div className="mt-8 flex flex-col gap-3 @6xl/canvas:hidden">
             <TableOfContentsInline anchors={writeUp.anchors} />
             <AskAboutProject variant="inline" />
           </div>

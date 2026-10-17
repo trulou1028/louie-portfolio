@@ -194,7 +194,8 @@ export function AskLouieProvider({ children }: { children: React.ReactNode }) {
 }
 
 const WIDTH_KEY = "ask-louie-width";
-const MIN_WIDTH = 360;
+/** The default too (Louie, 2026-10-16): the panel opens at its narrowest. */
+const MIN_WIDTH = 350;
 const MAX_WIDTH = 720;
 /** The page keeps at least this much width beside the panel. */
 const PAGE_MIN = 600;
@@ -212,7 +213,7 @@ function clampWidth(width: number) {
  * page by the same amount, and it is remembered across visits.
  */
 function PanelResizer() {
-  const [width, setWidth] = React.useState(420);
+  const [width, setWidth] = React.useState(MIN_WIDTH);
 
   const apply = React.useCallback((next: number) => {
     const value = clampWidth(next);

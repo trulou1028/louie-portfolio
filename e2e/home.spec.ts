@@ -332,12 +332,13 @@ test("the Ask Louie panel resizes by dragging its edge or with the keyboard", as
   const panel = page.locator("#ask-ai-louie");
   await expect(panel).toBeVisible();
   const handle = page.getByRole("separator", { name: "Resize Ask Louie panel" });
-  await expect(handle).toHaveAttribute("aria-valuenow", "420");
+  await expect(handle).toHaveAttribute("aria-valuenow", "350");
+  expect(Math.abs((await panel.boundingBox())!.width - 350)).toBeLessThanOrEqual(1);
   await page.waitForTimeout(400);
   const box = (await handle.boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + 300);
   await page.mouse.down();
-  await page.mouse.move(box.x + box.width / 2 - 180, box.y + 300, { steps: 6 });
+  await page.mouse.move(box.x + box.width / 2 - 250, box.y + 300, { steps: 6 });
   await page.mouse.up();
   await expect.poll(async () => Math.round((await panel.boundingBox())!.width)).toBeGreaterThanOrEqual(590);
   // The page narrows by the same amount.
@@ -352,7 +353,7 @@ test("the Ask Louie panel resizes by dragging its edge or with the keyboard", as
   // Keyboard: Home is the narrowest width.
   await page.getByRole("separator", { name: "Resize Ask Louie panel" }).focus();
   await page.keyboard.press("Home");
-  await expect(page.getByRole("separator", { name: "Resize Ask Louie panel" })).toHaveAttribute("aria-valuenow", "360");
+  await expect(page.getByRole("separator", { name: "Resize Ask Louie panel" })).toHaveAttribute("aria-valuenow", "350");
 });
 
 test("contact details are one click away on every page", async ({ page, isMobile }) => {

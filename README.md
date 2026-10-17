@@ -925,7 +925,7 @@ Follow-up the same day, from Louie's review:
   mail icon read as "this opens my email client".
 - **The Ask Louie panel resizes.** Drag its left edge, or focus it and use
   the arrow keys (Shift for bigger steps, Home and End for the limits).
-  360 to 720px, and the page keeps at least 600px. The width is remembered in
+  350 to 720px (it opens at 350px), and the page keeps at least 600px. The width is remembered in
   `localStorage["ask-louie-width"]`.
 - **Headline previews are sharp.** Hover shows a separate 22rem copy of the
   screens instead of scaling the thumbnail up, which the browser had
@@ -1018,3 +1018,16 @@ data):
   (`WorkProject.icon`), beside "LUMO" in the next-case-study brand line, and
   wherever LUMO replies in the LUMO graphics (`LumoFace`). In the "before"
   half of the turn graphic it is greyed: the classifier answered, not LUMO.
+
+Follow-up, October 16, 2026 (Louie's review):
+
+- **Ask Louie opens at 350px**, which is also its narrowest width. The
+  case-study rail now needs a 72rem canvas (was 64rem), so with the panel
+  open on a 1440px screen the rail folds into the inline contents instead of
+  squeezing the article.
+- **The hero's lime line skips descenders.** It sits just under the
+  baseline, and a canvas-colored halo around each letter breaks it where the
+  tail of the "p" crosses it.
+- **Independent projects use product-name headlines too:** Motif Motion
+  Design System, TransferSight Transfer Fit Report, Neuron Shift Operator
+  Console.

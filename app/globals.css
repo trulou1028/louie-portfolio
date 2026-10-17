@@ -326,7 +326,7 @@
    covering it. The page reflows through container queries on the canvas
    (see Canvas). The global reduced-motion rule makes both instant. */
 :root {
-  --ask-panel-width: 420px;
+  --ask-panel-width: 350px;
 }
 .ask-panel:not([hidden]) {
   animation: ask-panel-in var(--duration-standard) cubic-bezier(var(--motion-reveal-ease));
@@ -675,13 +675,24 @@
   display: inline-block;
   white-space: nowrap;
 }
+/* Skip ink: a halo in the canvas color around each letter cuts the band
+   where a descender (the tail of the "p") crosses it, like an underline
+   that skips descenders. On the bare canvas the halo is invisible. */
+.hero-neon .hero-word {
+  --halo: hsl(var(--canvas));
+  text-shadow:
+    0.04em 0 var(--halo), -0.04em 0 var(--halo),
+    0 0.04em var(--halo), 0.028em 0.028em var(--halo),
+    -0.028em 0.028em var(--halo);
+}
 .hero-neon::after {
   content: "";
   position: absolute;
   z-index: -1;
   inset-inline: -0.04em;
-  bottom: 0.1em;
-  height: 0.16em;
+  /* Just under the baseline, so only descenders cross it. */
+  bottom: -0.01em;
+  height: 0.13em;
   border-radius: 0.04em;
   background: hsl(var(--accent-fill));
   transform: scaleX(0);
