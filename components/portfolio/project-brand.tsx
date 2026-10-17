@@ -26,7 +26,7 @@ export function ProjectBrand({ project, onPlate = false, className }: { project:
           height={offboard ? 353 : 26}
           className={offboard ? "h-auto w-28 object-contain" : "h-auto w-18 object-contain"}
         />
-        {product && onPlate ? <span className={cn("border-l pl-3 text-body-sm font-medium", offboard ? "border-plate-offboard-muted/40 text-plate-offboard-ink" : "border-border-default text-foreground")}>{product}</span> : null}
+        {product && onPlate ? <span className={cn("inline-flex items-center gap-2 border-l pl-3 text-body-sm font-medium", offboard ? "border-plate-offboard-muted/40 text-plate-offboard-ink" : "border-border-default text-foreground")}>{project.icon ? <Image src={project.icon.src} width={project.icon.width} height={project.icon.height} alt="" aria-hidden="true" sizes="32px" className="-my-1 size-6 object-contain" /> : null}{product}</span> : null}
       </span>
       {product && !onPlate ? <span className="border-l border-border-subtle pl-4 text-body-sm text-foreground-muted">{product}</span> : null}
     </div>

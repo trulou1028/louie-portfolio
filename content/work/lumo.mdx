@@ -1,5 +1,6 @@
 import { CaseStudySection } from "@/components/portfolio/case-study-section";
 import { SystemDiagram } from "@/components/portfolio/system-diagram";
+import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
 import { TurnCompare } from "@/components/portfolio/lumo/turn-compare";
 import { ToolGate } from "@/components/portfolio/lumo/tool-gate";
 import { PanelDemo } from "@/components/portfolio/lumo/panel-demo";
@@ -7,7 +8,7 @@ import { MoneySwitch } from "@/components/portfolio/lumo/money-switch";
 
 <CaseStudySection id="context" title="An assistant that can change someone's job search" eyebrow="Context and ownership">
 
-LUMO is the AI assistant inside Offboard. It reads the member's own search: profile, applications, interviews, network, and the memories they allow. It can also add to and update their tracker. I designed and built it, from the first chat in October 2025 to the version that runs today, with AI coding tools in the loop.
+LUMO is the AI assistant inside Offboard. It reads the member's own search: profile, applications, interviews, network, documents and their paperwork reviews, and the memories they allow. It can also add to and update their tracker. I designed and built it, from the first chat in October 2025 to the version that runs today, with AI coding tools in the loop.
 
 An assistant with write access to someone's job search has two jobs. It must answer the question that was asked, and it must not change anything the person did not choose.
 
@@ -41,6 +42,10 @@ A confirmed change goes through the same code that Offboard's connector for outs
 <SystemDiagram title="Try it: what the model is offered" description="Pick a message. A writing request offers the model only LUMO's six read tools, so no card can appear. A tracker request offers all ten; the model calls a write tool, which returns a card, and the tracker changes only when you press Confirm. A question uses a read tool and changes nothing. Tool names are LUMO's own; the messages are examples, not member quotes.">
   <ToolGate />
 </SystemDiagram>
+
+The same rule in a real turn. A member asks about the severance agreement they had reviewed. LUMO loads the document analysis, calls one tool to draft an email, and returns text the member edits. It sends nothing.
+
+<ArtifactFrame frame="none" src="/work/lumo/steps.webp" width={1470} height={1050} marks={[{ x: 8.8, y: 65.7, w: 82.7, h: 8.1, label: "Quotes the document, not a summary of it" }]} alt="LUMO's How Lumo worked panel, open. Its steps, each checked: Classifying your question, Understanding your question, Reviewing your profile, Loading document analysis, Formulating response, Drafting your ask email, Processing results. Under it the reply, marked Used profile and documents, begins: Yes. The agreement says: If Employee breaches Sections 7, 8, or 9, Employee must repay the full severance amount. It explains that a breach could trigger repayment of the entire $34,615.38, says this is general information, not legal advice, and that a lawyer should review it. The draft email starts below with the subject Questions about my agreement." caption="How LUMO worked: it loaded the agreement's analysis, then called one drafting tool. The reply quotes the clause, and the draft is text to edit, not an action. A synthetic test agreement, October 2026. Product screenshot." />
 
 </CaseStudySection>
 

@@ -144,7 +144,7 @@ test("on desktop, the open panel pushes the header and page instead of covering 
   }).toBeLessThanOrEqual(panel!.x + 1);
   const nav = await page.getByRole("navigation", { name: "Primary" }).last().boundingBox();
   expect(nav!.x + nav!.width).toBeLessThanOrEqual(panel!.x);
-  // The case-study rail folds away when the canvas narrows below 64rem,
+  // The case-study rail folds away when the canvas narrows below 72rem,
   // and the inline contents take its place.
   await expect(page.getByRole("complementary", { name: "Case study contents" })).toBeHidden();
   await expect(page.getByRole("group").filter({ hasText: "On this page" }).or(page.locator("details", { hasText: "On this page" }))).toBeVisible();

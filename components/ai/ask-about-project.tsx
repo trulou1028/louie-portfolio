@@ -26,7 +26,7 @@ function AskAboutProject({ variant = "rail", className }: { variant?: "rail" | "
         type="button"
         onClick={() => openAsk()}
         className={cn(
-          "focus-ring flex w-full items-center gap-3 rounded-md border border-border-default bg-surface px-4 py-3 text-left text-body-sm font-semibold text-foreground transition-colors duration-(--duration-fast) hover:border-border-strong @5xl/canvas:hidden",
+          "focus-ring flex w-full items-center gap-3 rounded-md border border-border-default bg-surface px-4 py-3 text-left text-body-sm font-semibold text-foreground transition-colors duration-(--duration-fast) hover:border-border-strong @6xl/canvas:hidden",
           className,
         )}
       >

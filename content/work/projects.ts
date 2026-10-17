@@ -20,6 +20,10 @@ export type WorkProject = {
   tileImage?: { src: string; alt: string; width: number; height: number };
   /** `none` when `image` is a chart, not a browser window (no address bar). */
   imageFrame?: "browser" | "none";
+  /** A looping MP4 of the hero screen; `image` is its poster frame. */
+  video?: string;
+  /** The product's own icon, beside the case-study title and the brand line. */
+  icon?: { src: string; width: number; height: number };
   role: string;
   scope: string;
   status: string;
@@ -69,14 +73,17 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "lumo",
     name: "Offboard LUMO",
+    icon: { src: "/work/lumo/face.webp", width: 512, height: 512 },
     title: "LUMO Career Agent",
     tags: ["AI assistant", "Conversational UX", "Agentic workflows"],
     href: "/work/lumo",
     summary: "LUMO is the assistant inside Offboard. It reads the person’s own search, sits beside the page they are on, and turns every change into a card they confirm.",
-    image: "/work/lumo/chat.webp",
-    imageAlt: "LUMO's full chat page in Offboard, April 2026. The empty state reads: Advice grounded in your real search. Lumo uses the Offboard context you already keep current, like your profile, applications, interviews, network, reflections you allow for personalization, and saved chat memories. A card under it reads: Lumo has strong context across your job search, 5/6 automatic context sources ready, with a What Lumo knows button. The composer at the bottom reads Ask Lumo anything about your career, with two suggestions: Follow up on Function Health, and Check my progress.",
-    imageCaption: "Before the first message, LUMO says what it reads and how much of that context is ready. LUMO’s full chat page, April 2026. Product screenshot.",
+    image: "/work/lumo/stream-poster.webp",
+    video: "/work/lumo/stream.mp4",
+    imageAlt: "A recording of one LUMO turn in Offboard's chat page. The member asks: Can they take my severance back? If so, draft an email asking them to narrow that. A Lumo is working panel ticks through its steps: classifying the question, reviewing the profile, loading the document analysis, drafting the ask email. The reply streams in with a Used profile and documents badge. It quotes the agreement word for word: If Employee breaches Sections 7, 8, or 9, Employee must repay the full severance amount. Then it drafts an email asking the company to narrow or remove that clause, and ends: Nothing was sent. You can edit the draft before sending.",
+    imageCaption: "One LUMO turn, recorded live. LUMO reads the member’s reviewed agreement, quotes the clause word for word, and drafts an email asking to narrow it. Nothing is sent. A synthetic test agreement, October 2026. Product recording.",
     imageWidth: 1536, imageHeight: 864,
+    tileImage: { src: "/work/lumo/card.webp", alt: "Three pieces of one LUMO turn, cut from a real screenshot. Top: the member asks, Can they take my severance back? If so, draft an email asking them to narrow that. Left: the How Lumo worked steps. Right: LUMO's reply, marked Used profile and documents. A lime line links the step Loading document analysis to the reply's quote of the agreement: If Employee breaches Sections 7, 8, or 9, Employee must repay the full severance amount. A second line links Drafting your ask email to the drafted email's subject line.", width: 2400, height: 1800 },
     role: "Founding Product Designer & AI Systems Lead",
     scope: "Product direction, conversation and tool design, evaluation, and full-stack implementation",
     status: "Live in Offboard",
@@ -93,11 +100,12 @@ export const workProjects: readonly WorkProject[] = [
       { label: "Years", value: "2025 to now" },
       { label: "Team", value: "Six-person startup" },
     ],
-    imageMarks: [{ x: 39.6, y: 48.7, w: 37.5, h: 8.8, label: "Says what it reads before you ask" }],
+    imageMarks: [],
   },
   {
     slug: "lumo-evals",
     name: "LUMO Bench",
+    icon: { src: "/work/lumo/face.webp", width: 512, height: 512 },
     title: "LUMO Bench & Evals System",
     tags: ["AI evaluation", "Model selection", "Product judgment"],
     href: "/work/lumo-evals",

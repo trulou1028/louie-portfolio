@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ArrowLeft, ArrowRight, Lock, RotateCw } from "lucide-react";
 
 import { DecisionMark } from "@/components/portfolio/decision-mark";
+import { LoopVideo } from "@/components/portfolio/loop-video";
 import type { DecisionMarkSpec } from "@/lib/decision-mark";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +38,11 @@ type ArtifactFrameProps = {
   frame?: "browser" | "none";
   /** The address shown in the bar. Only a real, published address; left empty otherwise. */
   url?: string;
+  /**
+   * A looping MP4 recording of the same screen. `src` is then its poster:
+   * the frame shown before it plays and under reduced motion.
+   */
+  video?: string;
   className?: string;
 };
 
@@ -83,6 +89,7 @@ function ArtifactFrame({
   eager = false,
   frame = "browser",
   url,
+  video,
   className,
 }: ArtifactFrameProps) {
   // Screen readers get each mark's label from the caption. Skip any label
@@ -99,7 +106,7 @@ function ArtifactFrame({
           {/* Marks are placed in percent of the image, so they stay inside
               this box and never count the browser bar. */}
           <div className="relative">
-          <Image
+          {video ? <LoopVideo src={video} poster={src} label={alt ?? ""} width={width} height={height} /> : <Image
             src={src}
             alt={alt ?? ""}
             width={width}
@@ -107,7 +114,7 @@ function ArtifactFrame({
             loading={eager ? "eager" : "lazy"}
             className="block h-auto w-full"
             sizes="(min-width: 1024px) 760px, 100vw"
-          />
+          />}
           {marks?.map((mark) => <DecisionMark key={mark.label} mark={mark} />)}
           </div>
         </div>

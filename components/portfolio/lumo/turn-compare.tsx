@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { Link2 } from "lucide-react";
 
+import { LumoFace } from "@/components/portfolio/lumo/lumo-face";
 import { usePlay } from "@/components/portfolio/lumo/use-play";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +46,9 @@ export function TurnCompare() {
           <span aria-hidden="true" className="size-1.5 rounded-full bg-danger" />
           Classifier guesses “tracker”
         </motion.p>
-        <motion.div {...enter(2)} className="rounded-sm border border-border-default bg-surface-muted p-4">
+        <motion.div {...enter(2)} className="flex items-start gap-2.5">
+          <LumoFace className="mt-1 opacity-60 grayscale" />
+          <div className="min-w-0 flex-1 rounded-sm border border-border-default bg-surface-muted p-4">
           <p className="text-body-sm font-semibold text-foreground">Add to tracker?</p>
           <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-body-sm">
             <dt className="text-foreground-muted">Company</dt><dd className="text-foreground">Unknown</dd>
@@ -55,6 +58,7 @@ export function TurnCompare() {
             <span className="h-7 w-20 rounded-full bg-foreground/15" />
             <span className="h-7 w-16 rounded-full border border-border-default" />
           </span>
+          </div>
         </motion.div>
         <motion.p {...enter(3)} className="text-body-sm text-foreground-muted">The cover letter is never written. Members confirmed none of these cards.</motion.p>
       </section>
@@ -66,8 +70,11 @@ export function TurnCompare() {
           <span aria-hidden="true" className="size-1.5 rounded-full bg-plate-offboard-mark" />
           Writing help · write tools not offered
         </motion.p>
-        <motion.div {...enter(2.5)} className="rounded-sm bg-surface-muted p-4">
-          <Lines widths={["w-11/12", "w-full", "w-10/12", "w-9/12", "w-full", "w-7/12"]} />
+        <motion.div {...enter(2.5)} className="flex items-start gap-2.5">
+          <LumoFace className="mt-1" />
+          <div className="min-w-0 flex-1 rounded-sm bg-surface-muted p-4">
+            <Lines widths={["w-11/12", "w-full", "w-10/12", "w-9/12", "w-full", "w-7/12"]} />
+          </div>
         </motion.div>
         <motion.p {...enter(3.5)} className="text-body-sm text-foreground-muted">LUMO drafts the letter in the chat. No card appears.</motion.p>
       </section>

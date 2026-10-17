@@ -12,9 +12,9 @@ import { OFFBOARD_ANCHORS, LUMO_ANCHORS, LUMO_EVALS_ANCHORS, FLEXI_ANCHORS, ANAL
  */
 const STUDIES = [
   { name: "CK-12 Teacher Analytics", path: "/work/ck12-analytics", anchors: ANALYTICS_ANCHORS, title: "CK-12 Teacher Analytics" },
-  { name: "Neuron Shift", path: "/experiments/neuron-shift", anchors: NEURON_ANCHORS, title: "Preserving operator judgment across shift changes" },
-  { name: "Motif", path: "/experiments/motif", anchors: MOTIF_ANCHORS, title: "Giving a whole product one way to move" },
-  { name: "TransferSight", path: "/experiments/transfersight", anchors: TRANSFERSIGHT_ANCHORS, title: "Roster math for athletes deciding whether to transfer" },
+  { name: "Neuron Shift", path: "/experiments/neuron-shift", anchors: NEURON_ANCHORS, title: "Neuron Shift Operator Console" },
+  { name: "Motif", path: "/experiments/motif", anchors: MOTIF_ANCHORS, title: "Motif Motion Design System" },
+  { name: "TransferSight", path: "/experiments/transfersight", anchors: TRANSFERSIGHT_ANCHORS, title: "TransferSight Transfer Fit Report" },
   {
     name: "Offboard Job Search Platform",
     path: "/work/offboard",
@@ -132,10 +132,10 @@ test("exactly one table of contents renders at the rail breakpoint", async ({
   // Plan 015: `TableOfContentsInline`'s collapsed disclosure used to hide at
   // `xl:hidden` (1280px) while the rail pane itself switched on at the same
   // threshold — so the two guards agreed and never doubled up. Both are now
-  // `lg` (1024px); 1100px sits just inside that breakpoint and would show
-  // both the rail and the disclosure at once if the two guards ever drift
-  // apart again.
-  await page.setViewportSize({ width: 1100, height: 800 });
+  // the canvas container query (72rem, 1152px, since October 16, 2026);
+  // 1200px sits just inside it and would show both the rail and the
+  // disclosure at once if the two guards ever drift apart again.
+  await page.setViewportSize({ width: 1200, height: 800 });
   await page.goto("/work/offboard");
 
   const rail = page.locator('nav[aria-label="On this page"]');
@@ -279,6 +279,22 @@ test.describe("LUMO graphics", () => {
     await expect(demo.getByRole("complementary", { name: "LUMO panel" })).toHaveCount(0);
     await demo.getByRole("complementary", { name: "LUMO sheet" }).getByRole("button", { name: "Close LUMO" }).click();
     await expect(demo.getByRole("complementary", { name: "LUMO sheet" })).toHaveCount(0);
+  });
+
+  test("the LUMO hero is a looping recording with a poster and a pause control", async ({ page }) => {
+    await page.goto("/work/lumo");
+    const video = page.locator("header video");
+    await expect(video).toHaveAttribute("poster", "/work/lumo/stream-poster.webp");
+    await expect(video).toHaveAttribute("aria-label", /one LUMO turn/);
+    await expect(video.locator("source")).toHaveAttribute("src", "/work/lumo/stream.mp4");
+    await expect(page.getByRole("button", { name: /the recording/ })).toBeVisible();
+  });
+
+  test("under reduced motion, the LUMO hero stays on its poster with no control", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/work/lumo");
+    await expect(page.getByRole("button", { name: /the recording/ })).toHaveCount(0);
+    expect(await page.locator("header video").evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
   });
 
   test("the bench graphics plot every case and say so in text", async ({ page }) => {

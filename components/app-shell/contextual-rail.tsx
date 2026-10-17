@@ -41,11 +41,13 @@ function ContextualRail({
  * button.
  *
  * The scroller is a size container named `canvas`. Page layouts inside it
- * respond to its width (`@4xl/canvas:`, `@5xl/canvas:`), not the viewport's,
+ * respond to its width (`@4xl/canvas:`, `@6xl/canvas:`), not the viewport's,
  * because the docked Ask Louie panel narrows it: the page reflows instead
  * of squeezing. The rail is a sticky right column when the canvas is at
- * least 64rem wide; below that it folds away and case studies show their
- * inline contents instead.
+ * least 72rem wide; below that it folds away and case studies show their
+ * inline contents instead. 72rem, not 64rem: with the 350px panel open on a
+ * 1440px screen, the page has 1090px, and the rail beside it squeezed the
+ * article and repeated the panel's questions.
  * `width="reading"` pages without a rail keep a 900px column, but inside the
  * same frame, left-aligned, so every page's left edge lines up with the
  * header name and the footer (Plan 051, Louie's review 2026-10-15).
@@ -90,9 +92,9 @@ function Canvas({
       className="@container/canvas relative h-full min-w-0 overflow-y-auto"
     >
       {rail ? (
-        <div className="portfolio-wide py-10 lg:py-14 @5xl/canvas:grid @5xl/canvas:grid-cols-[minmax(0,1fr)_17rem] @5xl/canvas:gap-16">
+        <div className="portfolio-wide py-10 lg:py-14 @6xl/canvas:grid @6xl/canvas:grid-cols-[minmax(0,1fr)_17rem] @6xl/canvas:gap-16">
           <div className={cn("min-w-0", className)}>{children}</div>
-          <div className="hidden @5xl/canvas:block">
+          <div className="hidden @6xl/canvas:block">
             <div className="sticky top-10 max-h-[calc(100dvh-9rem)] overflow-y-auto pb-2">{rail}</div>
           </div>
         </div>

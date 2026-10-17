@@ -45,7 +45,7 @@ export default function LumoCaseStudy() {
       <article className="max-w-[760px]">
         <CaseStudyHeader project={project} />
 
-        <div className="mb-10 flex flex-col gap-3 @5xl/canvas:hidden">
+        <div className="mb-10 flex flex-col gap-3 @6xl/canvas:hidden">
           <TableOfContentsInline anchors={LUMO_ANCHORS} />
           <AskAboutProject variant="inline" />
         </div>

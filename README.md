@@ -925,7 +925,7 @@ Follow-up the same day, from Louie's review:
   mail icon read as "this opens my email client".
 - **The Ask Louie panel resizes.** Drag its left edge, or focus it and use
   the arrow keys (Shift for bigger steps, Home and End for the limits).
-  360 to 720px, and the page keeps at least 600px. The width is remembered in
+  350 to 720px (it opens at 350px), and the page keeps at least 600px. The width is remembered in
   `localStorage["ask-louie-width"]`.
 - **Headline previews are sharp.** Hover shows a separate 22rem copy of the
   screens instead of scaling the thumbnail up, which the browser had
@@ -989,3 +989,45 @@ Follow-up the same day, from Louie's review:
   CK-12 Teacher Analytics, CK-12 Flexi AI Tutor. They live in
   `WorkProject.title` and also set the browser tab title. The short names
   (`WorkProject.name`) stay in the mono meta line above each headline.
+
+## New LUMO hero and case images, October 16, 2026
+
+Louie made new assets in a separate Offboard session, from production with
+the QA account and a synthetic "Northwind" severance agreement (no member
+data):
+
+- **LUMO Career Agent hero** is now a looping 8.7-second recording of one
+  LUMO turn (`public/work/lumo/stream.mp4`, poster `stream-poster.webp`).
+  `ArtifactFrame` takes a `video` prop and renders `LoopVideo`: it plays only
+  on screen, has a pause button (WCAG 2.2.2), and stays on the poster under
+  reduced motion. MP4 only: the WebM from the same session could not be
+  decoded for review here, and every current browser plays H.264.
+- **The LUMO card** (`card.webp`, via `tileImage`) is a composition cut from
+  the real still and the steps crop: the question, the "How Lumo worked"
+  steps, and the reply, with lime lines from "Loading document analysis" to
+  the quoted clause and from "Drafting your ask email" to the draft. The
+  homepage now prefers `tileImage` for every card, like the Work page.
+- **Decision 01 on LUMO** shows the "How Lumo worked" steps crop
+  (`steps.webp`), with a mark on the quoted clause.
+- **LUMO Bench Decision 01** shows one case, P1 (`case-p1.webp`). Checked
+  against the run files: 6 old-code runs each passed 3 of 5 checks; 4
+  new-code runs passed all 5.
+- The old April 2026 screenshot (`chat.webp`) is removed.
+- **LUMO's new face** (`public/work/lumo/face.webp`, from the Offboard app,
+  October 16, 2026) sits beside the titles of both LUMO case studies
+  (`WorkProject.icon`), beside "LUMO" in the next-case-study brand line, and
+  wherever LUMO replies in the LUMO graphics (`LumoFace`). In the "before"
+  half of the turn graphic it is greyed: the classifier answered, not LUMO.
+
+Follow-up, October 16, 2026 (Louie's review):
+
+- **Ask Louie opens at 350px**, which is also its narrowest width. The
+  case-study rail now needs a 72rem canvas (was 64rem), so with the panel
+  open on a 1440px screen the rail folds into the inline contents instead of
+  squeezing the article.
+- **The hero's lime line skips descenders.** It sits just under the
+  baseline, and a canvas-colored halo around each letter breaks it where the
+  tail of the "p" crosses it.
+- **Independent projects use product-name headlines too:** Motif Motion
+  Design System, TransferSight Transfer Fit Report, Neuron Shift Operator
+  Console.
