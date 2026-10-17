@@ -1002,7 +1002,10 @@ data):
   on screen, has a pause button (WCAG 2.2.2), and stays on the poster under
   reduced motion. MP4 only: the WebM from the same session could not be
   decoded for review here, and every current browser plays H.264.
-- **Cards** use the new still (`chat-2026-10.webp`) through `tileImage`; the
+- **The LUMO card** (`card.webp`, via `tileImage`) is a composition cut from
+  the real still and the steps crop: the question, the "How Lumo worked"
+  steps, and the reply, with lime lines from "Loading document analysis" to
+  the quoted clause and from "Drafting your ask email" to the draft. The
   homepage now prefers `tileImage` for every card, like the Work page.
 - **Decision 01 on LUMO** shows the "How Lumo worked" steps crop
   (`steps.webp`), with a mark on the quoted clause.
