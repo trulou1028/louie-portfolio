@@ -11,12 +11,12 @@ import { cn } from "@/lib/utils";
  * rest. Color belongs to the case study pages, where there is room for it.
  *
  * The whole card is one link (the title's `::after` covers it). Hover lifts
- * the screenshot and underlines the title in lime.
+ * the screenshot and underlines the title in lilac.
  */
 type CardImage = { src: string; alt: string; width: number; height: number };
 
 const titleLink =
-  "focus-ring rounded-xs underline decoration-transparent decoration-2 underline-offset-[6px] transition-[text-decoration-color] duration-(--duration-fast) group-hover:decoration-accent-fill after:absolute after:inset-0 after:content-['']";
+  "focus-ring rounded-xs underline decoration-transparent decoration-2 underline-offset-[6px] transition-[text-decoration-color] duration-(--duration-fast) group-hover:decoration-accent-line after:absolute after:inset-0 after:content-['']";
 
 const shot =
   "h-auto w-full rounded-xs shadow-shot ring-1 ring-foreground/10 transition-transform duration-(--duration-deliberate) group-hover:-translate-y-1.5 motion-reduce:transition-none";

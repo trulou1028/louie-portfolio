@@ -282,7 +282,7 @@ function PanelResizer() {
       onKeyDown={onKeyDown}
       className="group absolute inset-y-0 left-0 z-10 hidden w-3 -translate-x-1/2 cursor-col-resize touch-none outline-none lg:block"
     >
-      <span aria-hidden="true" className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-transparent transition-colors duration-(--duration-fast) group-hover:bg-accent-fill group-focus-visible:bg-accent-fill" />
+      <span aria-hidden="true" className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-transparent transition-colors duration-(--duration-fast) group-hover:bg-accent-line group-focus-visible:bg-accent-line" />
     </div>
   );
 }

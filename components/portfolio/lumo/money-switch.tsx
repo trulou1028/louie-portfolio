@@ -33,7 +33,7 @@ export function MoneySwitch() {
         onClick={() => setOn((value) => !value)}
         className="focus-ring flex w-fit items-center gap-3 rounded-full border border-border-default py-1.5 pl-1.5 pr-4 text-body-sm text-foreground"
       >
-        <span className={cn("flex h-6 w-11 items-center rounded-full p-0.5 transition-colors duration-(--duration-standard)", on ? "justify-end bg-plate-offboard-mark" : "justify-start bg-border-default")}>
+        <span className={cn("flex h-6 w-11 items-center rounded-full p-0.5 transition-colors duration-(--duration-standard)", on ? "justify-end bg-accent-line" : "justify-start bg-border-default")}>
           <motion.span layout={!reduce} transition={{ type: "spring", stiffness: 500, damping: 32 }} className="size-5 rounded-full bg-canvas" />
         </span>
         Let LUMO use my money details
@@ -45,7 +45,7 @@ export function MoneySwitch() {
           return (
             <li key={fact.label} className="flex items-center justify-between gap-4 px-4 py-3">
               <span className={cn("text-body-sm transition-[color,opacity] duration-(--duration-standard)", read ? "text-foreground" : "text-foreground-muted line-through opacity-60")}>{fact.label}</span>
-              <span className={cn("shrink-0 font-mono text-system uppercase", read ? "text-plate-offboard-mark" : "text-foreground-muted")}>{read ? "LUMO reads" : "Hidden"}</span>
+              <span className={cn("shrink-0 font-mono text-system uppercase", read ? "text-accent-line" : "text-foreground-muted")}>{read ? "LUMO reads" : "Hidden"}</span>
             </li>
           );
         })}
