@@ -49,7 +49,7 @@ export default function Home() {
       <p className="font-mono text-system uppercase text-foreground-muted">{profile.name} · {profile.role}</p>
       <HeroHeadline className="mt-6 max-w-[15em]" />
       <p className="mt-8 max-w-[46ch] text-body-lg text-pretty text-foreground-muted sm:text-lead">{profile.positioning.supporting}</p>
-      <Link href="#work" className="focus-ring mt-6 inline-flex min-h-11 items-center gap-1.5 rounded-xs text-body font-medium text-foreground underline decoration-accent-fill decoration-2 underline-offset-[6px]">
+      <Link href="#work" className="focus-ring mt-6 inline-flex min-h-11 items-center gap-1.5 rounded-xs text-body font-medium text-foreground underline decoration-accent-line decoration-2 underline-offset-[6px]">
         Explore my work<ArrowDown aria-hidden="true" className="size-4" />
       </Link>
     </section>

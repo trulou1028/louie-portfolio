@@ -35,7 +35,7 @@ function Dot({ miss, title, delay, played, reduce }: { miss: boolean; title: str
       initial={reduce ? false : { scale: 0, opacity: 0 }}
       animate={played ? { scale: 1, opacity: 1 } : undefined}
       transition={reduce ? { duration: 0 } : { delay, duration: 0.3, ease }}
-      className={cn("block aspect-square w-full max-w-3 rounded-full", miss ? "border-2 border-danger" : "bg-plate-offboard-mark")}
+      className={cn("block aspect-square w-full max-w-3 rounded-full", miss ? "border-2 border-danger" : "bg-accent-line")}
     />
   );
 }
@@ -43,7 +43,7 @@ function Dot({ miss, title, delay, played, reduce }: { miss: boolean; title: str
 function Legend() {
   return (
     <p aria-hidden="true" className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-system uppercase text-foreground-muted">
-      <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-plate-offboard-mark" />Pass</span>
+      <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-accent-line" />Pass</span>
       <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full border-2 border-danger" />Miss</span>
     </p>
   );
@@ -113,10 +113,10 @@ export function ModelScorecard() {
                     animate={played ? { scaleX: 1 } : undefined}
                     transition={reduce ? { duration: 0 } : { delay: 0.2 + i * 0.15, duration: 0.6, ease }}
                     style={{ width: `${(Math.abs(m.value) / max) * 50}%`, transformOrigin: better ? "right" : "left" }}
-                    className={cn("absolute inset-y-0 rounded-full", better ? "right-1/2 bg-plate-offboard-mark" : "left-1/2 bg-danger")}
+                    className={cn("absolute inset-y-0 rounded-full", better ? "right-1/2 bg-accent-line" : "left-1/2 bg-danger")}
                   />
                 </span>
-                <span className={cn("row-start-1 text-right font-mono text-body-sm tabular-nums sm:col-start-3", better ? "text-plate-offboard-mark" : "text-danger")}>
+                <span className={cn("row-start-1 text-right font-mono text-body-sm tabular-nums sm:col-start-3", better ? "text-accent-line" : "text-danger")}>
                   {m.value > 0 ? "+" : "−"}{Math.abs(m.value)}%
                 </span>
               </li>
@@ -125,7 +125,7 @@ export function ModelScorecard() {
         </ul>
         <motion.div {...enter(3)} className="grid gap-2 rounded-sm border border-border-subtle bg-surface p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-6">
           <span className="text-body-sm text-foreground">Required safety case: no interview lookup after a crisis statement</span>
-          <span className="flex items-center gap-1.5 font-mono text-system uppercase text-foreground"><Check aria-hidden="true" className="size-3.5 text-plate-offboard-mark" />Current model passes</span>
+          <span className="flex items-center gap-1.5 font-mono text-system uppercase text-foreground"><Check aria-hidden="true" className="size-3.5 text-accent-line" />Current model passes</span>
           <span className="flex items-center gap-1.5 font-mono text-system uppercase text-danger"><X aria-hidden="true" className="size-3.5" />GPT-6 Luna fails</span>
         </motion.div>
         <motion.p {...enter(4)} className="w-fit rounded-full bg-foreground px-3.5 py-1.5 font-mono text-system uppercase text-canvas">Verdict: keep the current model</motion.p>
@@ -147,7 +147,7 @@ export function ModelScorecard() {
                     animate={played ? { opacity: 1, scaleX: 1 } : undefined}
                     transition={reduce ? { duration: 0 } : { delay: 0.3 + i * 0.15, duration: 0.6, ease }}
                     style={{ left: `${lo * 100}%`, width: `max(0.75rem, ${(hi - lo) * 100}%)`, transformOrigin: "left" }}
-                    className={cn("absolute inset-y-0 rounded-full", i === 0 ? "bg-plate-offboard-mark" : "bg-foreground/60")}
+                    className={cn("absolute inset-y-0 rounded-full", i === 0 ? "bg-accent-line" : "bg-foreground/60")}
                   />
                 </span>
                 <span className="row-start-1 whitespace-nowrap text-right font-mono text-body-sm tabular-nums text-foreground-muted sm:col-start-3">
@@ -216,13 +216,13 @@ export function HardSetRuns() {
             animate={played ? { width: pct(mean) } : undefined}
             transition={reduce ? { duration: 0 } : { delay: 0.9, duration: 0.9, ease }}
             style={reduce ? { width: pct(mean) } : undefined}
-            className="absolute inset-y-0 left-0 rounded-full bg-plate-offboard-mark"
+            className="absolute inset-y-0 left-0 rounded-full bg-accent-line"
           />
           <span className="absolute -inset-y-1.5 w-0.5 bg-foreground" style={{ left: pct(HARD_TUNING_LINE) }} />
         </span>
         <span className="flex flex-wrap justify-end gap-x-4 gap-y-1 font-mono text-system uppercase text-foreground-muted">
           <span className="flex items-center gap-1.5"><span className="h-3 w-0.5 bg-foreground" />Tune at or below 85%</span>
-          <span className="text-plate-offboard-mark">Mean {Math.round(mean * 100)}%</span>
+          <span className="text-accent-line">Mean {Math.round(mean * 100)}%</span>
         </span>
       </div>
       <Legend />
@@ -252,7 +252,7 @@ export function GraderAgreement() {
                 transition={reduce ? { duration: 0 } : { delay: i * 0.04, duration: 0.35, ease }}
                 className={cn(
                   "flex size-10 items-center justify-center rounded-xs",
-                  odd ? "border-2 border-foreground text-foreground" : hard ? "bg-plate-offboard-mark/80 text-canvas" : "bg-plate-offboard-mark/45 text-canvas",
+                  odd ? "border-2 border-foreground text-foreground" : hard ? "bg-accent-line/80 text-canvas" : "bg-accent-line/45 text-canvas",
                 )}
               >
                 {odd ? <span className="font-mono text-system">H04</span> : <Check className="size-3.5" />}
@@ -261,8 +261,8 @@ export function GraderAgreement() {
           })}
         </ol>
         <p aria-hidden="true" className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-system uppercase text-foreground-muted">
-          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-xs bg-plate-offboard-mark/80" />Hard set · {GRADER_CHECK.fromHard}</span>
-          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-xs bg-plate-offboard-mark/45" />Regression · {GRADER_CHECK.fromRegression}</span>
+          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-xs bg-accent-line/80" />Hard set · {GRADER_CHECK.fromHard}</span>
+          <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-xs bg-accent-line/45" />Regression · {GRADER_CHECK.fromRegression}</span>
         </p>
       </div>
 
