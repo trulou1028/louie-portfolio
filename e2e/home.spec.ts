@@ -20,7 +20,7 @@ test("homepage leads with Offboard, then the LUMO pair, the CK-12 pair, and inde
   // no wordmark, no plate, and no summary (the title carries the argument).
   await expect(featured.locator("img")).toHaveCount(5);
   await expect(featured.getByText("Separate prediction from diagnosis.", { exact: false })).toHaveCount(0);
-  await expect(featured.getByText("CK-12 Foresights & Insights · Lead Product Designer")).toBeVisible();
+  await expect(featured.getByText("CK-12 Foresights & Insights · Lead UX Designer")).toBeVisible();
 
   const independent = page.getByTestId("independent-work");
   for (const slug of ["motif", "transfersight", "neuron-shift"]) {
@@ -141,45 +141,17 @@ test("Ask Louie is closed on arrival and preserves a draft across closes", async
   await expect(dialog).toBeHidden();
 });
 
-test.describe("arrival on the desktop homepage", () => {
-  // A first-time visitor: no remembered close (see playwright.config.ts).
-  test.use({ storageState: { cookies: [], origins: [] } });
-
-  test("Ask Louie opens beside the page without taking focus, and stays closed once closed", async ({ page, isMobile }) => {
-    await page.goto("/");
-    const dialog = page.getByRole("dialog", { name: "Ask Louie", exact: true });
-    if (isMobile) {
-      // Phones keep the page: the panel would cover it.
-      await expect(dialog).toHaveCount(0);
-      return;
-    }
-    await expect(dialog).toBeVisible();
-    expect(await page.evaluate(() => Boolean(document.activeElement?.closest("#ask-ai-louie")))).toBe(false);
-    // Docked: the page narrows beside it.
-    expect(await page.evaluate(() => document.documentElement.hasAttribute("data-ask-docked"))).toBe(true);
-    await dialog.getByRole("button", { name: "Close", exact: true }).click();
-    await expect(dialog).toBeHidden();
-    await page.reload();
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await page.waitForTimeout(500);
-    await expect(dialog).toHaveCount(0);
-  });
-
-  test("other pages do not open it", async ({ page }) => {
-    await page.goto("/work");
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await page.waitForTimeout(500);
-    await expect(page.getByRole("dialog", { name: "Ask Louie", exact: true })).toHaveCount(0);
-  });
-
-  test("a narrow desktop window keeps the page instead", async ({ page, isMobile }) => {
-    test.skip(isMobile, "desktop widths only");
-    await page.setViewportSize({ width: 1100, height: 900 });
-    await page.goto("/");
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await page.waitForTimeout(500);
-    await expect(page.getByRole("dialog", { name: "Ask Louie", exact: true })).toHaveCount(0);
-  });
+test.describe("arrival", () => {
+  for (const size of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    test(`Ask Louie starts closed at ${size.width}px on every visit`, async ({ page }) => {
+      await page.setViewportSize(size);
+      await page.goto("/");
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await page.waitForTimeout(500);
+      await expect(page.getByRole("dialog", { name: "Ask Louie", exact: true })).toHaveCount(0);
+      expect(await page.evaluate(() => document.documentElement.hasAttribute("data-ask-docked"))).toBe(false);
+    });
+  }
 });
 
 test("the existing Ask Louie deep link opens its dialog", async ({ page }) => {

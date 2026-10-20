@@ -117,7 +117,7 @@ export const evidence: EvidenceItem[] = [
   "project": "ck12-analytics",
   "title": "Experience ownership for Foresights and Insights",
   "summary": "Louie owned experience architecture, interaction design, prototypes, and visual language.",
-  "detail": "Role: Lead Product Designer. Collaborated with educators, Product, Data Science, and Engineering. Published evaluations are CK-12 research, not evidence that Louie authored those studies. No specific management, mentoring, or conflict-resolution episode is established.",
+  "detail": "Role: Lead UX Designer. Collaborated with educators, Product, Data Science, and Engineering. Published evaluations are CK-12 research, not evidence that Louie authored those studies. No specific management, mentoring, or conflict-resolution episode is established.",
   "route": "/work/ck12-analytics",
   "anchor": "role",
   "tags": [

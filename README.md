@@ -886,12 +886,11 @@ supersede the entries above where they conflict:
   entrance is CSS and finishes in under a second, so the October 12 finding
   (a JS-gated headline hidden on phones) does not return. Reduced motion
   shows the finished state.
-- **Ask Louie opens beside the desktop homepage on arrival** (windows 1280px and wider), without taking
-  focus. Closing it sets `localStorage["ask-louie-closed"]`, and it stays
-  closed on later visits. Other pages and phones keep it closed. The hero's
-  ask bar is gone; the panel holds the starter questions and the
-  job-description comparison. The e2e suite starts with the flag set
-  (`playwright.config.ts`); `home.spec.ts` clears it to test arrival.
+- **Ask Louie opened beside the desktop homepage on arrival.** Superseded on
+  2026-10-20 (job-search fixes): the open panel hid the work on the first
+  screen, so it now starts closed on every page and width, and a visitor
+  opens it with the Ask Louie button. The hero's ask bar is gone; the panel
+  holds the starter questions and the job-description comparison.
 - **One card anatomy** (`components/portfolio/work-card.tsx`): the
   screenshot on a neutral `surface-muted` frame, a mono meta line, the
   title. No plate color, wordmark, arrow button, or summary on homepage

@@ -144,7 +144,7 @@ export const workProjects: readonly WorkProject[] = [
     imageAlt: "Foresights shows predicted skill ranges for a demo class and marks students with insufficient data.",
     imageCaption: "A range, not a verdict. Foresights keeps the uncertainty visible alongside the prediction. Student information is demo data.",
     imageWidth: 1280, imageHeight: 768,
-    role: "Lead Product Designer",
+    role: "Lead UX Designer",
     scope: "Experience architecture, interaction model, prototypes, and visual language",
     status: "Product case study",
     result: "Teachers saw value in the tools. Published reviews also found that half struggled with each tool’s central chart.",
@@ -156,7 +156,7 @@ export const workProjects: readonly WorkProject[] = [
     featured: true,
     plate: "foresights",
     facts: [
-      { label: "Role", value: "Lead Product Designer" },
+      { label: "Role", value: "Lead UX Designer" },
       { label: "At CK-12", value: "2016 to 2025" },
       { label: "Platform", value: "20M+ users" },
     ],
