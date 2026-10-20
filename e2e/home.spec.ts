@@ -154,6 +154,20 @@ test.describe("arrival", () => {
   }
 });
 
+test.describe("first screen", () => {
+  for (const size of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    test(`the first case study starts above the fold at ${size.width}x${size.height}`, async ({ page }) => {
+      await page.setViewportSize(size);
+      await page.goto("/");
+      const card = page.getByTestId("featured-work").locator("article").first();
+      await expect(card).toBeVisible();
+      // At least 150px of the card's screenshot shows before any scroll.
+      const box = await card.boundingBox();
+      expect(box!.y).toBeLessThan(size.height - 150);
+    });
+  }
+});
+
 test("the existing Ask Louie deep link opens its dialog", async ({ page }) => {
   await page.goto("/#ask-ai-louie");
   await expect(page.getByRole("dialog", { name: "Ask Louie", exact: true })).toBeVisible();

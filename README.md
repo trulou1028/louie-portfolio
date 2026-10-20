@@ -1050,3 +1050,27 @@ recolored, and chose the "duo":
   on cool greys from their sources. Offboard's product screenshots and the
   recording keep the app's own lime.
 - The social share image uses the new colors.
+
+## Job-search quick fixes, October 20, 2026
+
+From the portfolio review of 2026-10-20, ahead of this week's applications.
+
+- **One CK-12 title.** The CK-12 Analytics page, its work card, and the
+  evidence index said "Lead Product Designer". Home, About, the resume PDF,
+  and the Flexi page said "Lead UX Designer", which is the title on the
+  resume. Every page now says Lead UX Designer. The claim ledger (A01) and
+  the interview story kit match.
+- **Ask Louie starts closed** on every page and width. Plan 051 opened it
+  beside the desktop homepage, where it took about a quarter of the width
+  and hid the work. The header button opens it; drafts, the job-description
+  comparison, the deep link `/#ask-ai-louie`, and the resizer are unchanged.
+  The `ask-louie-closed` flag and the e2e storage state that set it are gone.
+- **The work reaches the first screen.** Deviation from Plan 051: the
+  experience record moved from between the hero and the case studies to
+  just after the case studies. Spacing alone could not do it: the record
+  and the gap above it are about 270px on desktop and 570px on a phone. The
+  hero also sits closer to the work (64px on phones, 80px on desktop,
+  instead of 96 and 128) and its inner margins are a step tighter. The
+  headline and its size are unchanged. At 1440x900 the Offboard card starts
+  at 677px; at 390x844 the whole Offboard screenshot shows. `home.spec.ts`
+  checks both sizes.
