@@ -92,13 +92,13 @@ export const FLEXI_ANCHORS = [
 
 export const ANALYTICS_ANCHORS = [
   { id: "context", label: "The teacher’s decision" },
-  { id: "role", label: "What I owned" },
+  { id: "role", label: "What I decided" },
   { id: "decision-prediction", label: "Prediction and diagnosis" },
   { id: "decision-uncertainty", label: "Interpreting uncertainty" },
   { id: "decision-investigation", label: "Investigating the signals" },
   { id: "system", label: "Beyond the screen" },
   { id: "evaluation", label: "Value and comprehension" },
-  { id: "learnings", label: "What I would change" },
+  { id: "learnings", label: "What shipped next" },
 ] as const satisfies readonly Anchor[];
 
 export const NEURON_ANCHORS = [

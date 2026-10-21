@@ -886,12 +886,11 @@ supersede the entries above where they conflict:
   entrance is CSS and finishes in under a second, so the October 12 finding
   (a JS-gated headline hidden on phones) does not return. Reduced motion
   shows the finished state.
-- **Ask Louie opens beside the desktop homepage on arrival** (windows 1280px and wider), without taking
-  focus. Closing it sets `localStorage["ask-louie-closed"]`, and it stays
-  closed on later visits. Other pages and phones keep it closed. The hero's
-  ask bar is gone; the panel holds the starter questions and the
-  job-description comparison. The e2e suite starts with the flag set
-  (`playwright.config.ts`); `home.spec.ts` clears it to test arrival.
+- **Ask Louie opened beside the desktop homepage on arrival.** Superseded on
+  2026-10-20 (job-search fixes): the open panel hid the work on the first
+  screen, so it now starts closed on every page and width, and a visitor
+  opens it with the Ask Louie button. The hero's ask bar is gone; the panel
+  holds the starter questions and the job-description comparison.
 - **One card anatomy** (`components/portfolio/work-card.tsx`): the
   screenshot on a neutral `surface-muted` frame, a mono meta line, the
   title. No plate color, wordmark, arrow button, or summary on homepage
@@ -1051,3 +1050,37 @@ recolored, and chose the "duo":
   on cool greys from their sources. Offboard's product screenshots and the
   recording keep the app's own lime.
 - The social share image uses the new colors.
+
+## Job-search quick fixes, October 20, 2026
+
+From the portfolio review of 2026-10-20, ahead of this week's applications.
+
+- **One CK-12 title.** The CK-12 Analytics page, its work card, and the
+  evidence index said "Lead Product Designer". Home, About, the resume PDF,
+  and the Flexi page said "Lead UX Designer", which is the title on the
+  resume. Every page now says Lead UX Designer. The claim ledger (A01) and
+  the interview story kit match.
+- **Ask Louie starts closed** on every page and width. Plan 051 opened it
+  beside the desktop homepage, where it took about a quarter of the width
+  and hid the work. The header button opens it; drafts, the job-description
+  comparison, the deep link `/#ask-ai-louie`, and the resizer are unchanged.
+  The `ask-louie-closed` flag and the e2e storage state that set it are gone.
+- **The work reaches the first screen.** Deviation from Plan 051: the
+  experience record moved from between the hero and the case studies to
+  just after the case studies. Spacing alone could not do it: the record
+  and the gap above it are about 270px on desktop and 570px on a phone. The
+  hero also sits closer to the work (64px on phones, 80px on desktop,
+  instead of 96 and 128) and its inner margins are a step tighter. The
+  headline and its size are unchanged. At 1440x900 the Offboard card starts
+  at 677px; at 390x844 the whole Offboard screenshot shows. `home.spec.ts`
+  checks both sizes.
+- **CK-12 ownership rewrite.** The CK-12 Analytics page now says what Louie
+  decided. "What I owned" became "What I decided": start years (Insights
+  2020, Foresights 2021, from Louie), live by May 2023 (CK-12's introduction
+  video), what each partner group owned, the three framing questions, and
+  the three decision rules. Decision 02 names the options rejected (a single
+  score, a raw probability). The "Next iteration" section ("Next, I would
+  put a plain-language interpretation first") became "What shipped next":
+  the team answered the chart finding with Recommendations, which shipped to
+  teachers. Sources: Louie's answers on 2026-10-20 and his earlier CK-12
+  deck. The claim ledger (A05 to A08) and Ask Louie's evidence index match.

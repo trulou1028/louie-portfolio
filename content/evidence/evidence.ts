@@ -117,7 +117,7 @@ export const evidence: EvidenceItem[] = [
   "project": "ck12-analytics",
   "title": "Experience ownership for Foresights and Insights",
   "summary": "Louie owned experience architecture, interaction design, prototypes, and visual language.",
-  "detail": "Role: Lead Product Designer. Collaborated with educators, Product, Data Science, and Engineering. Published evaluations are CK-12 research, not evidence that Louie authored those studies. No specific management, mentoring, or conflict-resolution episode is established.",
+  "detail": "Role: Lead UX Designer. Started on Insights in 2020 and Foresights in 2021; both were live for teachers by May 2023 (CK-12's introduction video). Educators gave classroom meaning, Product set scope and priorities, Data Science decided what the model could responsibly claim, and Engineering owned feasibility and delivery. Louie chose familiar skill levels shown as a range over a single score or a raw probability. Louie did not run the research: published evaluations are CK-12 research. No team size, management, mentoring, or conflict-resolution episode is established.",
   "route": "/work/ck12-analytics",
   "anchor": "role",
   "tags": [
@@ -215,6 +215,27 @@ export const evidence: EvidenceItem[] = [
     "Product Judgment"
   ],
   "evidenceType": "research"
+},
+{
+  "id": "analytics-recommendations",
+  "project": "ck12-analytics",
+  "title": "Recommendations: an action per insight",
+  "summary": "After the studies found that half the teachers struggled with the main skill chart, the team built Recommendations, and it shipped to teachers.",
+  "detail": "Recommendations gives one action button for each insight, with a next step the system recommends, for example a message that some students struggled on a part, with remedial content to assign. The skill chart becomes supporting detail. The example message is a format, not a measured result. No adoption or learning outcome for Recommendations is established.",
+  "route": "/work/ck12-analytics",
+  "anchor": "learnings",
+  "tags": [
+    "teacher analytics",
+    "recommendations",
+    "insights",
+    "foresights",
+    "next step"
+  ],
+  "skills": [
+    "Product Design",
+    "Product Strategy"
+  ],
+  "evidenceType": "product"
 },
 {
   "id": "offboard-entry-point",

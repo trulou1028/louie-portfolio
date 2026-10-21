@@ -13,9 +13,15 @@ My goal: make the model's signals useful without making them look more certain t
 
 </CaseStudySection>
 
-<CaseStudySection id="role" title="What I owned" eyebrow="Scope">
+<CaseStudySection id="role" title="What I decided" eyebrow="My role">
 
-As Lead Product Designer, I owned the experience architecture, interaction model, prototypes, and visual language. I worked with educators, Product, Data Science, and Engineering. The studies below are CK-12's published evaluations, not my research.
+As Lead UX Designer, I owned the experience architecture, interaction model, prototypes, and visual language for both tools. I started on Insights in 2020 and on Foresights in 2021. Both were live for teachers by May 2023, when CK-12 published its [introduction video](https://www.youtube.com/watch?v=4Jgzjr1mleM).
+
+I worked with four groups, and each owned a different question. Educators told us what the data meant in a classroom. Product set scope and priorities. Data Science decided what the model could responsibly claim. Engineering owned feasibility and delivery. I turned classroom needs and model limits into designs we could test, then worked with Engineering through delivery.
+
+I framed the work around three questions a teacher moves through: what might happen, what happened, and what to do next. Three rules decided close calls: lead with the takeaway and show model detail on demand; show why a signal exists and never present it as fact; suggest a next step and let the teacher decide.
+
+I did not run the research. CK-12's research team ran the focus groups and the two teacher studies below.
 
 </CaseStudySection>
 
@@ -36,7 +42,7 @@ One performance score is easy to scan but blurs two jobs: planning and investiga
 
 <CaseStudySection id="decision-uncertainty" title="Show a range, then help someone interpret it" eyebrow="Decision 02">
 
-A single predicted value is easy to overread, so Foresights shows a range (see the demo-class chart at the top). But teachers still need to know what a range lets them conclude.
+A single score was simple but misleading. A raw probability was honest but hard to read between classes. I chose the skill levels teachers already use, from Beginning to Mastery, and showed each student as a range on that scale (see the demo-class chart at the top). But teachers still need to know what a range lets them conclude.
 
 <ArtifactFrame marks={[{ x: 19, y: 36.3, w: 39.6, h: 29.7, label: "No prediction without enough data" }]} url="ck12.org" src="/work/ck12-analytics/not-enough-data.webp" alt="CK-12 Foresights for a whole class with no prediction shown. The skill level chart is greyed out behind a message: We need more performance data. To start surfacing Foresights, students need to have completed a couple of practice questions related to this subject. A Try Demo Class button sits under it. The Learning Analytics panel on the right shows its predicted missed questions bars as empty grey bars." width={2000} height={1200} caption="No prediction without enough data. Foresights says what data it needs and the bars stay grey, so missing data does not read as low ability. Supplied product screenshot." />
 
@@ -44,7 +50,7 @@ A single predicted value is easy to overread, so Foresights shows a range (see t
 
 <CaseStudySection id="decision-investigation" title="Keep skill and engagement separate" eyebrow="Decision 03">
 
-Low performance can come with different patterns of effort, and one score hides that. Insights separates skill from engagement, so a teacher can spot a class pattern, then check one student before acting.
+Low performance can come with different patterns of effort, and one score hides that. A student who works hard but is stuck needs a different move than one who understands the concept with little activity. Insights separates skill from engagement, so a teacher can spot a class pattern, then check one student before acting. Selecting a student opens the evidence behind the dot and ends in a suggested next step, which the teacher accepts or ignores.
 
 <ArtifactFrame marks={[{ x: 72.5, y: 24.5, w: 25.8, h: 69.5, label: "One student's evidence, beside the class" }]} url="ck12.org" src="/work/ck12-analytics/insights.png" alt="Insights demo-class scatterplot separating skill from engagement, with a student detail panel." width={1280} height={768} caption="One student's evidence, beside the class. Supplied demo-class view with demonstration records." />
 
@@ -52,7 +58,7 @@ Low performance can come with different patterns of effort, and one score hides 
 
 <CaseStudySection id="system" title="The interface depends on the evidence beneath it" eyebrow="System consequence">
 
-Evidence is easier to act on when it maps to one concept. Assignments that span several concepts blur the result. Chart styling cannot fix that.
+Evidence is easier to act on when it maps to one concept. Assignments that span several concepts blur the result. Chart styling cannot fix that. CK-12 later moved to one concept per assignment and named better Foresights and Insights as a benefit. That platform decision was not mine alone.
 
 <SystemDiagram title="From content to a decision" description="Concept structure informs an assignment, which produces evidence that a teacher interprets before choosing an action.">
   <FlowDiagram stages={[
@@ -76,9 +82,11 @@ Graph difficulty offsets the usefulness ratings. A valuable concept can still de
 
 </CaseStudySection>
 
-<CaseStudySection id="learnings" title="Put the explanation before the visualization" eyebrow="Next iteration">
+<CaseStudySection id="learnings" title="Answer the finding with an action, not a better chart" eyebrow="What shipped next">
 
-Next, I would put a plain-language interpretation first and the chart second. I would test whether teachers can explain the uncertainty and choose a defensible next step on a real assignment. Success means better interpretation, not a higher rating.
+Half the teachers struggled with the main skill chart. We did not answer that with a better chart. We used the findings to build Recommendations, and it shipped to teachers: one action button for each insight, with a next step the system recommends. For example: "8 of your students struggled on this part. We recommend assigning this remedial content."
+
+The teacher can act in one click. The skill chart becomes supporting detail, not the thing a teacher has to decode first.
 
 For the student side, see [Flexi: helping students get unstuck](/work/flexi).
 

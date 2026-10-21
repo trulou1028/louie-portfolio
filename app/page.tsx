@@ -21,9 +21,11 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  *
  * One idea per section and wide space between them (128px on desktop, 96px
  * on phones). The hero is Louie's own line with screenshots set inside it,
- * one sentence, and one link. On desktop the Ask Louie panel opens beside
- * the page on arrival (see `AskLouieProvider`), so the hero carries no ask
- * bar of its own.
+ * one sentence, and one link. The hero carries no ask bar: the Ask Louie
+ * button in the header opens the panel.
+ *
+ * The experience record follows the case studies, so the work starts on the
+ * first screen (job-search fixes, 2026-10-20).
  *
  * Every work card has the same anatomy: screenshot on a quiet frame, a mono
  * meta line, the title (`WorkCard`). Offboard leads at full width; its two
@@ -45,32 +47,20 @@ export default function Home() {
   const independent = experiments.filter((e) => e.status === "prototype");
 
   return <Canvas width="wide" className="flex flex-col gap-24 sm:gap-32">
-    <section aria-label="Introduction" className="pt-4 sm:pt-10">
+    {/* The hero sits closer to the work than the other sections sit to each
+        other, so the first case study starts on the first screen at 1440x900
+        and 390x844 (job-search fixes, 2026-10-20). */}
+    <div className="flex flex-col gap-16 sm:gap-20">
+    <section aria-label="Introduction" className="pt-2">
       <p className="font-mono text-system uppercase text-foreground-muted">{profile.name} · {profile.role}</p>
-      <HeroHeadline className="mt-6 max-w-[15em]" />
-      <p className="mt-8 max-w-[46ch] text-body-lg text-pretty text-foreground-muted sm:text-lead">{profile.positioning.supporting}</p>
-      <Link href="#work" className="focus-ring mt-6 inline-flex min-h-11 items-center gap-1.5 rounded-xs text-body font-medium text-foreground underline decoration-accent-line decoration-2 underline-offset-[6px]">
+      <HeroHeadline className="mt-4 max-w-[15em] sm:mt-6" />
+      <p className="mt-6 max-w-[46ch] text-body-lg text-pretty text-foreground-muted sm:text-lead">{profile.positioning.supporting}</p>
+      <Link href="#work" className="focus-ring mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-xs text-body font-medium text-foreground underline decoration-accent-line decoration-2 underline-offset-[6px]">
         Explore my work<ArrowDown aria-hidden="true" className="size-4" />
       </Link>
     </section>
 
-    {/* The record reads as reference: a plain list on the canvas, no band. */}
-    <section aria-labelledby="experience-label">
-      <MotionReveal>
-        <h2 id="experience-label" className="font-mono text-system uppercase text-foreground-muted"><span className="text-foreground">Experience</span> · <span>{profile.brief[0]}</span></h2>
-        <ul aria-label="Experience" className="mt-5 grid grid-cols-1 gap-x-8 min-[480px]:grid-cols-2 @4xl/canvas:grid-cols-4">
-          {resume.roles.map((role) => (
-            <li key={role.company} className="flex flex-col gap-1 border-t border-border-default py-4">
-              <span className="font-mono text-system uppercase tabular-nums text-foreground-muted">{condensePeriod(role.period)}</span>
-              <span className="mt-1 text-body font-semibold text-foreground">{role.company.replace(", Inc.", "")}</span>
-              <span className="text-body-sm text-foreground-muted">{role.title}</span>
-            </li>
-          ))}
-        </ul>
-      </MotionReveal>
-    </section>
-
-    <section id="work" data-testid="featured-work" aria-labelledby="featured-work-label" className="flex scroll-mt-6 flex-col gap-8">
+    <section id="work" data-testid="featured-work" aria-labelledby="featured-work-label" className="flex scroll-mt-6 flex-col gap-6 sm:gap-8">
       <MotionReveal><div className="flex items-baseline justify-between gap-4">
         <RevealHeading id="featured-work-label" className={sectionTitle}>Case studies</RevealHeading>
         <Link href="/work" className="focus-ring inline-flex min-h-11 items-center rounded-xs font-mono text-system uppercase text-foreground hover:text-foreground-muted">All work →</Link>
@@ -95,6 +85,23 @@ export default function Home() {
           />
         ))}
       </div>
+    </section>
+    </div>
+
+    {/* The record reads as reference: a plain list on the canvas, no band. */}
+    <section aria-labelledby="experience-label">
+      <MotionReveal>
+        <h2 id="experience-label" className="font-mono text-system uppercase text-foreground-muted"><span className="text-foreground">Experience</span> · <span>{profile.brief[0]}</span></h2>
+        <ul aria-label="Experience" className="mt-5 grid grid-cols-1 gap-x-8 min-[480px]:grid-cols-2 @4xl/canvas:grid-cols-4">
+          {resume.roles.map((role) => (
+            <li key={role.company} className="flex flex-col gap-1 border-t border-border-default py-4">
+              <span className="font-mono text-system uppercase tabular-nums text-foreground-muted">{condensePeriod(role.period)}</span>
+              <span className="mt-1 text-body font-semibold text-foreground">{role.company.replace(", Inc.", "")}</span>
+              <span className="text-body-sm text-foreground-muted">{role.title}</span>
+            </li>
+          ))}
+        </ul>
+      </MotionReveal>
     </section>
 
     <section data-testid="independent-work" aria-labelledby="independent-work-label" className="flex flex-col gap-8">

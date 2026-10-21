@@ -37,20 +37,11 @@ export function useAskLouie(): AskLouieContextValue {
 const DESKTOP = "(min-width: 1024px)";
 
 /**
- * Plan 051: on the desktop homepage the panel opens on arrival. A visitor who
- * closes it has said they do not want it, so this flag keeps it closed on
- * later visits. The e2e suite sets it by default (playwright.config.ts).
- */
-export const ASK_CLOSED_KEY = "ask-louie-closed";
-
-/** Opening on arrival needs room: at 1280px the page keeps 860px beside the panel. */
-const AUTO_OPEN = "(min-width: 1280px)";
-
-/**
  * Ask Louie as a side panel (Plan 042). Mounted once, on first open, so the
- * visitor's draft and transcript survive closing it. Closed at arrival,
- * except on the desktop homepage, where it opens beside the page without
- * taking focus (Plan 051) unless the visitor closed it before.
+ * visitor's draft and transcript survive closing it. Closed at arrival on
+ * every page and width: a visitor opens it with the Ask Louie button
+ * (job-search fixes, 2026-10-20). Plan 051 had it open beside the desktop
+ * homepage, where it hid the work on the first screen.
  *
  * - Desktop: a non-modal, full-height panel docked on the right. It pushes
  *   the header and page left: the page area narrows and reflows beside it, so a
@@ -65,21 +56,13 @@ export function AskLouieProvider({ children }: { children: React.ReactNode }) {
   const [desktop, setDesktop] = React.useState(false);
   const [pending, setPending] = React.useState<AskLouieContextValue["pending"]>(null);
   const [view, setView] = React.useState<"chat" | "compare">("chat");
-  // True while the panel is open because the page opened it, not the
-  // visitor: it must not pull keyboard focus away from the page.
-  const [openedByPage, setOpenedByPage] = React.useState(false);
-  const autoOpenChecked = React.useRef(false);
 
   const changeOpen = React.useCallback((next: boolean) => {
     setOpen(next);
-    setOpenedByPage(false);
     if (next) setActivated(true);
-    else {
-      // Closing returns to the chat view. That unmounts the comparison and
-      // drops any pasted job description (spec §30).
-      setView("chat");
-      try { window.localStorage.setItem(ASK_CLOSED_KEY, "1"); } catch { /* storage blocked: it simply opens again next time */ }
-    }
+    // Closing returns to the chat view. That unmounts the comparison and
+    // drops any pasted job description (spec §30).
+    else setView("chat");
   }, []);
 
   React.useEffect(() => {
@@ -89,26 +72,6 @@ export function AskLouieProvider({ children }: { children: React.ReactNode }) {
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
   }, []);
-
-  // Plan 051: open beside the desktop homepage on arrival, once per load,
-  // when the window is wide enough for the page to stay readable beside it.
-  React.useEffect(() => {
-    if (!desktop || pathname !== "/" || autoOpenChecked.current) return;
-    // In a frame, like the hash check below, so the open is not a state
-    // update inside the effect body. The flag is set in the frame too, so a
-    // cancelled frame (Strict Mode's double run) does not skip the open.
-    const frame = requestAnimationFrame(() => {
-      autoOpenChecked.current = true;
-      if (!window.matchMedia(AUTO_OPEN).matches) return;
-      let closedBefore = false;
-      try { closedBefore = window.localStorage.getItem(ASK_CLOSED_KEY) === "1"; } catch { /* treat as not closed */ }
-      if (closedBefore) return;
-      setOpen(true);
-      setActivated(true);
-      setOpenedByPage(true);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [desktop, pathname]);
 
   // Desktop: the open panel docks. `html[data-ask-docked]` narrows the app
   // frame (header and page) by the panel's width (app/globals.css), so the
@@ -180,7 +143,6 @@ export function AskLouieProvider({ children }: { children: React.ReactNode }) {
         <Primitive.Popup
           hidden={!open}
           onClick={onPanelClick}
-          initialFocus={openedByPage ? false : undefined}
           className="ask-panel fixed inset-0 z-50 flex flex-col overflow-hidden bg-canvas text-foreground outline-none lg:inset-auto lg:inset-y-0 lg:right-0 lg:w-(--ask-panel-width) lg:border-l lg:border-border-subtle"
         >
           <PanelResizer />

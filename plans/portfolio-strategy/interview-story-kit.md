@@ -17,7 +17,7 @@ For a 30-minute slot, budget roughly ten minutes per flagship, one minute for in
 
 “Teachers had predictions, but they still had to decide what those predictions meant for a student. Before an assignment, the question was who might need support. Afterward, it was what happened and what to do next.
 
-I was the Lead Product Designer for the experience architecture, interaction model, prototypes, and visual language. I worked with educators, Product, Data Science, and Engineering. I’ll focus on the interface decisions I owned, and separately attribute the published evaluation.
+I was the Lead UX Designer, and I owned the experience architecture, interaction model, prototypes, and visual language. I worked with educators, Product, Data Science, and Engineering. I’ll focus on the interface decisions I owned, and separately attribute the published evaluation.
 
 The first choice was to keep prediction and diagnosis distinct. Foresights supports planning; Insights supports investigation. The second was to show a range rather than imply that one number could be a verdict. The third was to keep skill and engagement separate, so a teacher could move from a class pattern into the evidence for a student.
 
