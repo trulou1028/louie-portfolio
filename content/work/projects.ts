@@ -147,11 +147,11 @@ export const workProjects: readonly WorkProject[] = [
     role: "Lead UX Designer",
     scope: "Experience architecture, interaction model, prototypes, and visual language",
     status: "Product case study",
-    result: "Teachers saw value in the tools. Published reviews also found that half struggled with each tool’s central chart.",
+    result: "Teachers saw value in the tools, and half struggled with each tool’s central chart. The team answered with Recommendations, one action per insight, which shipped to teachers.",
     brief: {
       problem: "A predicted skill level does not tell a teacher what to do next, and a single score is easy to overread.",
       did: "I led the experience architecture, interaction model, and visual language: predicted ranges instead of a single score, a clear no-data state, and Insights, which separates skill from engagement so a teacher can check one student before acting.",
-      result: "In CK-12’s published reviews with ten teachers each, 90% found each tool’s menu easy to interpret and 90% or more expected it to save time. Half struggled with each tool’s main chart, which set the next goal: explain before you visualize.",
+      result: "In CK-12’s published reviews with ten teachers each, 90% found each tool’s menu easy to interpret and 90% or more expected it to save time. Half struggled with each tool’s main chart. We answered with Recommendations, which shipped: one action button per insight, so the chart became supporting detail.",
     },
     featured: true,
     plate: "foresights",

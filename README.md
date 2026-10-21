@@ -1074,3 +1074,13 @@ From the portfolio review of 2026-10-20, ahead of this week's applications.
   headline and its size are unchanged. At 1440x900 the Offboard card starts
   at 677px; at 390x844 the whole Offboard screenshot shows. `home.spec.ts`
   checks both sizes.
+- **CK-12 ownership rewrite.** The CK-12 Analytics page now says what Louie
+  decided. "What I owned" became "What I decided": start years (Insights
+  2020, Foresights 2021, from Louie), live by May 2023 (CK-12's introduction
+  video), what each partner group owned, the three framing questions, and
+  the three decision rules. Decision 02 names the options rejected (a single
+  score, a raw probability). The "Next iteration" section ("Next, I would
+  put a plain-language interpretation first") became "What shipped next":
+  the team answered the chart finding with Recommendations, which shipped to
+  teachers. Sources: Louie's answers on 2026-10-20 and his earlier CK-12
+  deck. The claim ledger (A05 to A08) and Ask Louie's evidence index match.
