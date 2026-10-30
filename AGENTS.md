@@ -23,7 +23,12 @@ pnpm lint              # eslint
 pnpm test              # unit tests (vitest, lib/**/*.test.ts)
 pnpm test:e2e          # Playwright against a production build on port 3100
 pnpm validate:evidence # checks every evidence entry's route and anchor
+pnpm lane:check        # CI on this Mac while GitHub Actions is off
 ```
+
+GitHub Actions is off for the account (billing lock, 2026-10-30). Until it
+is back, run `pnpm lane:check` on a PR's branch before merging, and merge
+only on a green `mac-lane/check` status. See `scripts/lane/README.md`.
 
 `pnpm typecheck` runs `next typegen` first because Next 16 generates the
 `LayoutProps` / `PageProps` global types that route files depend on.
