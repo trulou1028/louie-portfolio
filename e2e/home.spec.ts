@@ -10,7 +10,7 @@ const NAV = [
 test("homepage stacks the work, then my own projects, then where I've worked", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "Louie Sakoda" })).toBeVisible();
-  await expect(page.getByRole("img", { name: /A line drawing of Louie/ })).toBeVisible();
+  await expect(page.getByRole("img", { name: /A pen doodle of Louie/ })).toBeVisible();
 
   const featured = page.getByTestId("featured-work");
   await expect(featured.getByRole("heading", { level: 2, name: "Work I’m proud of" })).toBeVisible();
