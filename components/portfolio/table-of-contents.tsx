@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 /**
  * Native anchors with a scroll-driven current-section indicator. Since the
  * stacked redesign it sits in the case study's left column: plain text
- * links, the current section in blue.
+ * links, the current section in ink with a rule beside it.
  */
 function TableOfContents({
   anchors,
@@ -46,8 +46,8 @@ function TableOfContents({
   }, [anchors]);
   return (
     <nav aria-label="On this page" className={className}>
-      <p aria-hidden="true" className="mb-3 text-meta text-foreground-quiet">On this page</p>
-      <ol className="flex flex-col gap-1.5 border-l border-border-default">
+      <p aria-hidden="true" className="mb-4 text-label font-bold uppercase text-foreground-muted">On this page</p>
+      <ol className="flex flex-col gap-2 border-l border-border-default">
         {anchors.map((anchor) => (
           <li key={anchor.id}>
             <a
@@ -55,7 +55,7 @@ function TableOfContents({
               aria-current={active === anchor.id ? "location" : undefined}
               // Square corners: a border on a rounded box bends into a
               // bracket at the ends (Louie, 2026-10-29). A straight line only.
-              className={cn("focus-ring -ml-px block rounded-none border-l py-0.5 pl-3 text-body-sm leading-snug transition-colors duration-(--duration-fast)", active === anchor.id ? "border-accent-line text-accent-hover" : "border-transparent text-foreground-quiet hover:text-foreground")}
+              className={cn("focus-ring -ml-px block rounded-none border-l py-0.5 pl-4 text-body-sm leading-snug transition-colors duration-(--duration-fast)", active === anchor.id ? "border-accent-line text-foreground" : "border-transparent text-foreground-quiet hover:text-foreground")}
             >
               {anchor.label}
             </a>

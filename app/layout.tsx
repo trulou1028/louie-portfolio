@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Inter, Libre_Baskerville } from "next/font/google";
+import { Caveat, Geist_Mono, Inter, Libre_Baskerville } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
 import { AppShell } from "@/components/app-shell/app-shell";
@@ -26,6 +26,15 @@ const baskerville = Libre_Baskerville({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// The handwritten notes on decision marks (Louie, 2026-10-30). Only case
+// studies draw marks, so the file is not preloaded on every page.
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: "600",
+  preload: false,
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://louiesakoda.com";
@@ -56,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${baskerville.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${baskerville.variable} ${geistMono.variable} ${caveat.variable} h-full antialiased`}
     >
       <head>
         {/*

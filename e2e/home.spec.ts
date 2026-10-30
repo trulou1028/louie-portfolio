@@ -10,7 +10,7 @@ const NAV = [
 test("homepage stacks the work, then my own projects, then where I've worked", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "Louie Sakoda" })).toBeVisible();
-  await expect(page.getByRole("img", { name: /A line drawing of Louie/ })).toBeVisible();
+  await expect(page.getByRole("img", { name: /A pen doodle of Louie/ })).toBeVisible();
 
   const featured = page.getByTestId("featured-work");
   await expect(featured.getByRole("heading", { level: 2, name: "Work I’m proud of" })).toBeVisible();
@@ -122,14 +122,29 @@ test.describe("navigation", () => {
       await expect(page.locator("main h1")).toHaveCount(1);
     });
   }
-  test("every page carries the same links in its left column", async ({ page }) => {
+  test("every page carries the same links in its top bar", async ({ page }) => {
     for (const path of ["/", "/about", "/resume", "/work/offboard"]) {
       await page.goto(path);
       await expect(page.getByRole("banner")).toHaveCount(0);
       const nav = page.getByRole("navigation", { name: "Primary" });
       await expect(nav).toBeVisible();
-      expect(await nav.getByRole("link").allTextContents(), path).toEqual(["Work", "About", "Résumé", "LinkedIn (opens in a new tab)", "louie.sakoda@gmail.com", "Book a call (opens in a new tab)"]);
+      // On a phone the bar keeps the pages, and the contact links sit under
+      // Ask Louie; on a wide screen the "Contact" list is hidden.
+      const contact = page.getByRole("navigation", { name: "Contact" });
+      const links = [...await nav.getByRole("link").allTextContents(), ...await contact.getByRole("link").allTextContents()];
+      expect(links, path).toEqual(["Work", "About", "Resume", "LinkedIn (opens in a new tab)", "Book a Call (opens in a new tab)"]);
     }
+    // Scrolled, the menu rolls up into a button that opens it again.
+    await page.locator("[data-canvas-scroll]").evaluate((el) => el.scrollTo({ top: 2000, behavior: "instant" }));
+    const menu = page.getByRole("button", { name: "Menu" });
+    await expect(menu).toBeInViewport();
+    await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "About" })).toHaveCount(0);
+    await menu.click();
+    await expect(page.getByRole("button", { name: "Close menu" })).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "About" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(menu).toHaveAttribute("aria-expanded", "false");
+    await expect(menu).toBeFocused();
     await page.goto("/about");
     await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "page");
   });
@@ -138,8 +153,8 @@ test.describe("navigation", () => {
       await page.goto(path);
       const button = page.getByRole("button", { name, exact: true });
       await expect(button, path).toBeInViewport();
-      // The blue fill (#1A10E6; the HSL token rounds by one).
-      await expect(button).toHaveCSS("background-color", /^rgb\(2[67], 16, 2(29|30)\)$/);
+      // The ink fill (#1C1C21; the HSL token can round by one).
+      await expect(button).toHaveCSS("background-color", /^rgb\(2[89], 2[89], 3[34]\)$/);
     }
   });
   test("secondary discovery remains reachable", async ({ page }) => {
@@ -243,11 +258,13 @@ test("the Ask Louie panel resizes by dragging its edge or with the keyboard", as
 });
 
 test("contact details are one click away on every page", async ({ page }) => {
+  // LinkedIn and Book a Call are in the menu (or, on a phone, under Ask
+  // Louie); the email address is on the résumé (Louie, 2026-10-30).
   for (const path of ["/", "/about", "/work/flexi"]) {
     await page.goto(path);
-    const email = page.getByRole("link", { name: "louie.sakoda@gmail.com" });
-    await expect(email, path).toBeVisible();
-    await expect(email).toHaveAttribute("href", "mailto:louie.sakoda@gmail.com");
+    await expect(page.getByRole("link", { name: /^Book a Call/ }), path).toBeVisible();
   }
+  await page.goto("/resume");
+  await expect(page.getByRole("link", { name: /louie\.sakoda@gmail\.com/ }).first()).toHaveAttribute("href", "mailto:louie.sakoda@gmail.com");
 });
 

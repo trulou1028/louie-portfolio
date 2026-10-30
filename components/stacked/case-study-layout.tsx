@@ -4,7 +4,7 @@ import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
 import { MotionReveal } from "@/components/portfolio/motion-reveal";
 import { TableOfContents, TableOfContentsInline } from "@/components/portfolio/table-of-contents";
 import { AskLouieButton } from "@/components/stacked/ask-louie-button";
-import { SiteLinks } from "@/components/stacked/site-links";
+import { ContactLinks } from "@/components/stacked/site-links";
 import { Portrait } from "@/components/stacked/portrait";
 import { StackedShell } from "@/components/stacked/stacked-shell";
 import { profile } from "@/content/profile";
@@ -51,8 +51,7 @@ function CaseStudyLayout({ label, title, lead, facts, anchors, header, children 
             </div>
           ))}
         </dl>
-        <div className="min-h-8 flex-1" />
-        <SiteLinks />
+        <ContactLinks className="mt-8" />
       </>}
     >
       <DeepLinkHighlight />

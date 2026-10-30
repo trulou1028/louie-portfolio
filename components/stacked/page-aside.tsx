@@ -2,13 +2,13 @@ import Link from "next/link";
 
 import { AskLouieButton } from "@/components/stacked/ask-louie-button";
 import { Portrait } from "@/components/stacked/portrait";
-import { SiteLinks } from "@/components/stacked/site-links";
+import { ContactLinks } from "@/components/stacked/site-links";
 import { profile } from "@/content/profile";
 
 /**
  * The left column on every page that is not the homepage or a case study:
  * About, Résumé, Work, and the rest. The small portrait and the name link
- * home; Ask Louie and the site links follow. It replaces the site header,
+ * home; Ask Louie follows. The site links are in the bar at the top right. It replaces the site header,
  * so every page starts the same way (Louie, 2026-10-29).
  */
 function PageAside() {
@@ -21,8 +21,7 @@ function PageAside() {
     </p>
     <p className="mt-1 text-meta text-foreground-quiet">{profile.role}</p>
     <AskLouieButton className="mt-6" />
-    <div className="min-h-8 flex-1" />
-    <SiteLinks />
+    <ContactLinks className="mt-6" />
   </>;
 }
 
