@@ -1212,10 +1212,21 @@ Plan 051:
   replace the thin blue box and square label. The pen draws the loop once
   when the mark comes into view (700ms), and not at all under reduced
   motion. A loop near the image edge runs on onto the mat.
-- **Site links in a top bar (Louie, 2026-10-30).** At the foot of the left
-  column the links "felt out of place". They now sit at the top right of
-  every page in a bar that stays in view while the page scrolls
-  (`.site-bar`). On a wide canvas it is a paper pill with a blur, so text
-  scrolling under it stays out of the way; on a narrow canvas it is a strip
-  across the top with only Work, About, and Résumé, and LinkedIn, email,
-  and Book a call sit under Ask Louie (`ContactLinks`).
+- **Site menu at the top right (Louie, 2026-10-30).** At the foot of the
+  left column the links "felt out of place". They now sit at the top right
+  of every page in a grey pill that stays in view (`.site-bar`,
+  `SiteLinks`): Work, About, Resume, LinkedIn, Book a Call. Louie's edits
+  from the inspector: no email address in the menu (it is on the résumé),
+  "Resume" without accents in the menu, "Book a Call", and 0.5rem by 1rem
+  padding. As the page scrolls the pill rolls up from the left into a round
+  menu button (over 220px of scroll, tied to the scroll); the button opens
+  the menu again, and Escape, a click outside, or more scrolling closes it.
+  Under reduced motion it switches between the two ends with no roll. On a
+  narrow canvas the menu keeps the three pages, and LinkedIn and Book a
+  Call sit under Ask Louie (`ContactLinks`).
+- **Room under the menu (Louie, 2026-10-30).** Pages start 9rem down, not
+  3rem, so a case study title no longer sits against the menu; the
+  homepage intro keeps its place beside the name. The case study contents
+  start 6.5rem down, under an uppercase bold "On this page", with a little
+  more space between items. The current section is ink, not the hover
+  grey.

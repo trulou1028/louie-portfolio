@@ -11,8 +11,8 @@ import { SiteLinks } from "@/components/stacked/site-links";
  * and the case studies use it, and the app shell drops the site header on
  * those pages (`usesStackedShell`), so the left column carries the name.
  *
- * The site links float in a bar at the top right (`.site-bar`), sticky,
- * over the page as it scrolls.
+ * The site menu floats at the top right (`.site-bar`), sticky, over the
+ * page as it scrolls; it rolls up into a menu button (`SiteLinks`).
  *
  * Like `Canvas`, it owns the page's scrolling: the shell locks the viewport.
  * The scroller is the `canvas` size container, so the layout reflows when
@@ -40,7 +40,7 @@ function StackedShell({ aside, rail, children }: {
       <div className="stacked-shell" data-rail={rail ? "" : undefined}>
         <div className="stacked-aside">{aside}</div>
         <div className="stacked-main">{children}</div>
-        {rail ? <div className="stacked-rail"><div className="sticky top-0 max-h-dvh overflow-y-auto pt-12 pb-6">{rail}</div></div> : null}
+        {rail ? <div className="stacked-rail"><div className="sticky top-0 max-h-dvh overflow-y-auto pt-26 pb-6">{rail}</div></div> : null}
       </div>
     </div>
   );

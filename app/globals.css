@@ -588,7 +588,8 @@
 }
 .stacked-main {
   min-width: 0;
-  padding-block: 3rem 8rem;
+  /* Room under the menu before the page starts (Louie, 2026-10-30). */
+  padding-block: 9rem 8rem;
 }
 /* A row inside the stacked column: text first, then a narrow column for
    the project name or the section label. */
@@ -599,7 +600,7 @@
 }
 /* The homepage intro starts level with the name, under the portrait. */
 .stacked-intro {
-  padding-top: calc(9.75rem + 1rem);
+  padding-top: calc(9.75rem + 1rem - 6rem);
 }
 
 /* A button label set in the serif body face sits about a pixel off center: its line
@@ -712,9 +713,9 @@
 .stacked-narrow-only {
   display: none;
 }
-/* The site links (Louie, 2026-10-30): a bar at the top right that stays in
-   view. It takes no height, so the page lays out as before and scrolls
-   under it; the pill's paper and blur keep the links readable over text. */
+/* The site menu (Louie, 2026-10-30): a pill at the top right that stays in
+   view. The bar takes no height, so the page lays out as before and
+   scrolls under it. */
 .site-bar {
   position: sticky;
   top: 0;
@@ -725,14 +726,82 @@
   height: 0;
   padding-inline: max(16px, 3vw);
 }
-.site-bar > nav {
+/* As the page scrolls, SiteLinks sets `--roll` from 0 to 1 and the pill
+   rolls up from the left into a round button at its right end: the clip
+   closes in, the links slide into the ball and blur away, and the menu
+   icon turns into place. Open, `--r` returns to 0 and the pill unrolls,
+   with the button, now a close icon, at its end. */
+.site-nav {
+  --roll: 0;
+  --r: var(--roll);
+  --ball: 2.75rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--ball);
   margin-top: 0.75rem;
-  margin-right: -0.875rem;
-  padding: 0.375rem 0.875rem;
+  margin-right: -1rem;
+  padding: 0 1rem;
   border-radius: 9999px;
-  background: hsl(var(--canvas) / 0.88);
+  background: hsl(var(--surface-muted) / 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  clip-path: inset(0 0 0 calc((100% - var(--ball)) * var(--r)) round 9999px);
+}
+.site-nav[data-open] {
+  --r: 0;
+  padding-right: calc(var(--ball) + 0.25rem);
+}
+.site-nav > ul {
+  opacity: calc(1 - var(--r) * 1.6);
+  translate: calc(var(--r) * 1.5rem) 0;
+  filter: blur(calc(var(--r) * 3px));
+}
+.site-nav-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: var(--ball);
+  height: var(--ball);
+  border-radius: 9999px;
+  opacity: clamp(0, (var(--roll) - 0.55) / 0.45, 1);
+  rotate: calc((1 - var(--roll)) * -240deg);
+}
+.site-nav-icon {
+  grid-area: 1 / 1;
+  transition:
+    opacity 160ms ease-out,
+    scale 160ms ease-out,
+    filter 160ms ease-out;
+}
+.site-nav[data-open] [data-icon="menu"],
+.site-nav:not([data-open]) [data-icon="close"] {
+  opacity: 0;
+  scale: 0.6;
+  filter: blur(2px);
+}
+@media (hover: hover) and (pointer: fine) {
+  .site-nav-toggle:hover { background: hsl(var(--foreground) / 0.06); }
+}
+/* Opening and closing animate; scrolling does not, so the roll keeps up. */
+.site-nav[data-toggling] {
+  transition:
+    clip-path 380ms cubic-bezier(0.32, 0.72, 0, 1),
+    padding 380ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.site-nav[data-toggling] > ul {
+  transition:
+    opacity 240ms ease-out,
+    translate 380ms cubic-bezier(0.32, 0.72, 0, 1),
+    filter 240ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav[data-toggling],
+  .site-nav[data-toggling] > ul {
+    transition: opacity 160ms ease-out;
+  }
 }
 /* The case study contents (Louie, 2026-10-29: the left column was crowded).
    From a 1280px canvas they float in a third column on the right, beside
@@ -756,19 +825,9 @@
 @container canvas (width <= 820px) {
   .stacked-narrow-only { display: block; }
   .site-bar-contact { display: none; }
-  /* On a narrow canvas a pill lets the text show around it: the bar is a
-     strip across the top instead. */
-  .site-bar > nav {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    margin: 0 calc(-1 * max(16px, 3vw));
-    padding: 0.625rem max(16px, 3vw);
-    border-radius: 0;
-    background: hsl(var(--canvas) / 0.96);
-  }
+  .site-nav { margin-right: 0; }
   .stacked-shell { grid-template-columns: minmax(0, 1fr); }
-  .stacked-aside { position: static; height: auto; padding-bottom: 0; }
+  .stacked-aside { position: static; height: auto; padding-block: 4.5rem 0; }
   .stacked-main { padding-top: 2.5rem; }
   .stacked-intro { padding-top: 0; }
   .stacked-row { grid-template-columns: minmax(0, 1fr); }

@@ -84,9 +84,11 @@ the trial is reverted.
 **Layout.** Every page uses the stacked layout (`components/stacked/`),
 after David Aerne's meodai.color.pizza: a left column that stays in view
 (line portrait, name, Ask Louie, and facts on a case study) beside one
-column of stacked text. The site links sit in a sticky bar at the top
-right (`.site-bar`, from `StackedShell`; Louie, 2026-10-30); on a narrow
-canvas it keeps only the pages, and the contact links sit under Ask Louie.
+column of stacked text. The site menu sits in a sticky pill at the top
+right (`.site-bar`, from `StackedShell`; Louie, 2026-10-30) and rolls up
+into a menu button as the page scrolls; on a narrow canvas it keeps only
+the pages, and the contact links sit under Ask Louie. Pages start 9rem
+down (`.stacked-main`) to leave room under it.
 There is no other header, and no footer. Pages other than the homepage and case studies get the standard
 column through `Canvas` (`PageAside`). Ask Louie is an ink pill under the
 name, the one filled control on a page. Text sits
