@@ -1179,3 +1179,10 @@ Plan 051:
   down about 15%. Baskerville has a large x-height, so body text is 16px
   with a 1.75 line height. The Caslon files stay in `app/fonts/` so the
   earlier pairing can come back.
+- **Portrait on a transparent ground (2026-10-30).** On Louie's iPhone the
+  line portrait showed as a white box: it was ink on white, blended into
+  the paper with CSS `mix-blend-mode: multiply`, and the phone browser did
+  not apply the blend. The file is now ink on transparent
+  (`public/portrait/louie-line.webp`), with the old brightness and contrast
+  baked in and the alpha set so it matches the old blend on the paper. The
+  blend CSS is gone.

@@ -590,17 +590,6 @@
   padding-top: calc(9.75rem + 1rem);
 }
 
-/* The portrait is a line drawing on white. Multiply drops the white into
-   the paper; the paper behind it is needed because the sticky column
-   isolates blending. The filter clears the drawing's faint grey ground. */
-.portrait {
-  background: hsl(var(--canvas));
-}
-.portrait img {
-  mix-blend-mode: multiply;
-  filter: brightness(1.07) contrast(1.12);
-}
-
 /* A button label set in the serif body face sits about a pixel off center: its line
    box carries more space above the capitals than below the baseline. Trim
    the box to the capitals so flex centering centers the letters you see.
