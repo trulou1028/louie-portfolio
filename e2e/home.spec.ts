@@ -128,8 +128,15 @@ test.describe("navigation", () => {
       await expect(page.getByRole("banner")).toHaveCount(0);
       const nav = page.getByRole("navigation", { name: "Primary" });
       await expect(nav).toBeVisible();
-      expect(await nav.getByRole("link").allTextContents(), path).toEqual(["Work", "About", "Résumé", "LinkedIn (opens in a new tab)", "louie.sakoda@gmail.com", "Book a call (opens in a new tab)"]);
+      // On a phone the bar keeps the pages, and the contact links sit under
+      // Ask Louie; on a wide screen the "Contact" list is hidden.
+      const contact = page.getByRole("navigation", { name: "Contact" });
+      const links = [...await nav.getByRole("link").allTextContents(), ...await contact.getByRole("link").allTextContents()];
+      expect(links, path).toEqual(["Work", "About", "Résumé", "LinkedIn (opens in a new tab)", "louie.sakoda@gmail.com", "Book a call (opens in a new tab)"]);
     }
+    // The bar stays in view as the page scrolls.
+    await page.locator("[data-canvas-scroll]").evaluate((el) => el.scrollTo({ top: 2000, behavior: "instant" }));
+    await expect(page.getByRole("navigation", { name: "Primary" })).toBeInViewport();
     await page.goto("/about");
     await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "page");
   });
