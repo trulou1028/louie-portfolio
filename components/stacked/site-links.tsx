@@ -122,7 +122,9 @@ function SiteLinks() {
       data-rolled={rolled ? "" : undefined}
       data-open={open ? "" : undefined}
       data-toggling={toggling ? "" : undefined}
-      className="site-nav text-meta text-foreground-quiet"
+      // The muted grey, not the quiet one: on the grey pill the quiet grey
+      // falls under 4.5:1.
+      className="site-nav text-meta text-foreground-muted"
     >
       <ul id="site-menu" inert={hidden} className="flex gap-x-5">
         {page("/", "Work")}

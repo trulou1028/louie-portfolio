@@ -753,9 +753,14 @@
   padding-right: calc(var(--ball) + 0.25rem);
 }
 .site-nav > ul {
-  opacity: calc(1 - var(--r) * 1.6);
+  opacity: calc(1 - var(--r) * 2);
   translate: calc(var(--r) * 1.5rem) 0;
   filter: blur(calc(var(--r) * 3px));
+}
+/* Rolled past halfway, the links are gone from view and from the
+   accessibility tree; the menu button stands for them. */
+.site-nav[data-rolled]:not([data-open]) > ul {
+  visibility: hidden;
 }
 .site-nav-toggle {
   position: absolute;
