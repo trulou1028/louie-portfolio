@@ -180,8 +180,9 @@ for (const source of ["offboard", "flexi"]) {
   test(`opening the Offboard card after ${source} outcomes starts at the top`, async ({ page }) => {
     await page.goto(`/work/${source}#outcomes`);
     await expect(page.locator("#outcomes")).toBeInViewport();
-    // Stacked redesign: the way back is the left column's "Work" link, to
-    // the homepage list.
+    // The way back is the menu's "Work" link, to the homepage list. Scrolled
+    // this far, the menu has rolled up into its button: open it first.
+    await page.getByRole("button", { name: "Menu" }).click();
     await page.getByRole("navigation", { name: "Primary", exact: true }).getByRole("link", { name: "Work", exact: true }).click();
     await expect(page).toHaveURL(/\/$/);
     await page.locator('main article a[href="/work/offboard"]').click();
