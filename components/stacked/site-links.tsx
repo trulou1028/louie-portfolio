@@ -35,7 +35,7 @@ function contactItems(itemClassName?: string) {
  * StackedShell; Louie, 2026-10-30). As the page scrolls it rolls up from
  * the left into a round menu button, so it stops sitting over the text.
  * The button opens the menu again, and it closes on Escape, on a click
- * outside, or on a link. Scrolling does not close it: images loading
+ * outside, or on a link to another page. Scrolling does not close it: images loading
  * above can move the page by itself.
  *
  * The roll follows the scroll directly: a `--roll` from 0 to 1 on the nav,

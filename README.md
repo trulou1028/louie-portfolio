@@ -1220,8 +1220,8 @@ Plan 051:
   "Resume" without accents in the menu, "Book a Call", and 0.5rem by 1rem
   padding. As the page scrolls the pill rolls up from the left into a round
   menu button (over 220px of scroll, tied to the scroll); the button opens
-  the menu again, and Escape, a click outside, a link, or the close button
-  closes it.
+  the menu again, and Escape, a click outside, a link to another page, or
+  the close button closes it.
   Under reduced motion it switches between the two ends with no roll. On a
   narrow canvas the menu keeps the three pages, and LinkedIn and Book a
   Call sit under Ask Louie (`ContactLinks`).
