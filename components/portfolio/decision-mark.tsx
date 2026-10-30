@@ -27,6 +27,28 @@ import { cn } from "@/lib/utils";
  */
 const noop = () => () => {};
 
+/**
+ * The loop's length on screen, in px. The SVG stretches to the box and the
+ * stroke does not scale, so its dashes are measured on screen; `pathLength`
+ * would count the unstretched path, and a wide box's loop drew only part
+ * of the way (Louie, 2026-10-30).
+ */
+function screenLength(path: SVGPathElement) {
+  const svg = path.ownerSVGElement;
+  if (!svg) return 0;
+  const sx = svg.clientWidth / 100;
+  const sy = svg.clientHeight / 100;
+  const total = path.getTotalLength();
+  let length = 0;
+  let last = path.getPointAtLength(0);
+  for (let i = 1; i <= 96; i++) {
+    const point = path.getPointAtLength((total * i) / 96);
+    length += Math.hypot((point.x - last.x) * sx, (point.y - last.y) * sy);
+    last = point;
+  }
+  return Math.ceil(length) + 2;
+}
+
 function DecisionMark({ mark }: { mark: DecisionMarkSpec }) {
   const labelAbove = mark.y >= 12;
   const anchorEnd = mark.labelAt ? mark.labelAt === "end" : mark.x + mark.w / 2 > 55;
@@ -37,6 +59,17 @@ function DecisionMark({ mark }: { mark: DecisionMarkSpec }) {
   // False in the server HTML and the first client render, true after.
   const mounted = React.useSyncExternalStore(noop, () => true, () => false);
   const pen = reduce || !mounted ? undefined : inView ? "drawn" : "waiting";
+
+  const pathRef = React.useRef<SVGPathElement>(null);
+  React.useLayoutEffect(() => {
+    const path = pathRef.current;
+    if (!path) return;
+    const measure = () => path.style.setProperty("--pen-length", `${screenLength(path)}px`);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(path.ownerSVGElement ?? path);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <span
@@ -54,11 +87,11 @@ function DecisionMark({ mark }: { mark: DecisionMarkSpec }) {
       <svg
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
-        className="absolute top-[calc(-6%-6px)] left-[calc(-4%-8px)] h-[calc(112%+12px)] w-[calc(108%+16px)] overflow-visible"
+        className="absolute top-[calc(-6%-10px)] left-[calc(-4%-8px)] h-[calc(112%+20px)] w-[calc(108%+16px)] overflow-visible"
       >
         <path
+          ref={pathRef}
           d="M54,4 C82,3 98,22 97,52 C96,82 74,97 47,96 C19,95 3,77 4,47 C5,20 25,4 60,7"
-          pathLength={1}
           fill="none"
           className="stroke-signal"
           strokeWidth={2.5}

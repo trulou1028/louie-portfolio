@@ -122,7 +122,7 @@ test.describe("navigation", () => {
       await expect(page.locator("main h1")).toHaveCount(1);
     });
   }
-  test("every page carries the same links in its left column", async ({ page }) => {
+  test("every page carries the same links in its top bar", async ({ page }) => {
     for (const path of ["/", "/about", "/resume", "/work/offboard"]) {
       await page.goto(path);
       await expect(page.getByRole("banner")).toHaveCount(0);

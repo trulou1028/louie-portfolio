@@ -7,7 +7,7 @@ import { LoopVideo } from "@/components/portfolio/loop-video";
 import { HomePreview, type PreviewItem } from "@/components/stacked/home-preview";
 import { AskLouieButton } from "@/components/stacked/ask-louie-button";
 import { Portrait } from "@/components/stacked/portrait";
-import { SiteLinks } from "@/components/stacked/site-links";
+import { ContactLinks } from "@/components/stacked/site-links";
 import { StackedShell } from "@/components/stacked/stacked-shell";
 import { InlineLink } from "@/components/system/inline-link";
 import { profile } from "@/content/profile";
@@ -132,7 +132,7 @@ export default function Home() {
         </p>
         <AskLouieButton className="mt-6" />
         <HomePreview items={previews} />
-        <SiteLinks className="max-[820px]:mt-6" />
+        <ContactLinks className="mt-6" />
       </>}
     >
       <div className="stacked-row stacked-intro">

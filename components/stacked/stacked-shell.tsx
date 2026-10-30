@@ -3,11 +3,16 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 
+import { SiteLinks } from "@/components/stacked/site-links";
+
 /**
  * The stacked layout (Louie, 2026-10-29, after meodai.color.pizza): a left
  * column that stays in view beside one column of stacked text. The homepage
  * and the case studies use it, and the app shell drops the site header on
  * those pages (`usesStackedShell`), so the left column carries the name.
+ *
+ * The site links float in a bar at the top right (`.site-bar`), sticky,
+ * over the page as it scrolls.
  *
  * Like `Canvas`, it owns the page's scrolling: the shell locks the viewport.
  * The scroller is the `canvas` size container, so the layout reflows when
@@ -31,6 +36,7 @@ function StackedShell({ aside, rail, children }: {
 
   return (
     <div ref={scrollRef} data-canvas-scroll className="@container/canvas relative h-full min-w-0 overflow-y-auto">
+      <header className="site-bar"><SiteLinks /></header>
       <div className="stacked-shell" data-rail={rail ? "" : undefined}>
         <div className="stacked-aside">{aside}</div>
         <div className="stacked-main">{children}</div>

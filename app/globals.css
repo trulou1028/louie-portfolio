@@ -542,8 +542,9 @@
    `data-pen="waiting"` on a mark that has not come into view yet, then
    "drawn": the pen draws the loop once, and the note lands after it. With
    no attribute (server HTML, reduced motion) both are simply there. */
+/* `--pen-length` is the loop's length on screen, set by DecisionMark. */
 .decision-mark path {
-  stroke-dasharray: 1;
+  stroke-dasharray: var(--pen-length, none);
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 700ms cubic-bezier(0.77, 0, 0.175, 1);
 }
@@ -553,7 +554,7 @@
     translate 240ms cubic-bezier(0.23, 1, 0.32, 1) 560ms;
 }
 .decision-mark[data-pen="waiting"] path {
-  stroke-dashoffset: 1;
+  stroke-dashoffset: var(--pen-length, 0);
   transition: none;
 }
 .decision-mark[data-pen="waiting"] .decision-mark-note {
@@ -711,6 +712,28 @@
 .stacked-narrow-only {
   display: none;
 }
+/* The site links (Louie, 2026-10-30): a bar at the top right that stays in
+   view. It takes no height, so the page lays out as before and scrolls
+   under it; the pill's paper and blur keep the links readable over text. */
+.site-bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  height: 0;
+  padding-inline: max(16px, 3vw);
+}
+.site-bar > nav {
+  margin-top: 0.75rem;
+  margin-right: -0.875rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  background: hsl(var(--canvas) / 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 /* The case study contents (Louie, 2026-10-29: the left column was crowded).
    From a 1280px canvas they float in a third column on the right, beside
    the article; narrower, they collapse into a disclosure above it. */
@@ -732,6 +755,18 @@
 
 @container canvas (width <= 820px) {
   .stacked-narrow-only { display: block; }
+  .site-bar-contact { display: none; }
+  /* On a narrow canvas a pill lets the text show around it: the bar is a
+     strip across the top instead. */
+  .site-bar > nav {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 calc(-1 * max(16px, 3vw));
+    padding: 0.625rem max(16px, 3vw);
+    border-radius: 0;
+    background: hsl(var(--canvas) / 0.96);
+  }
   .stacked-shell { grid-template-columns: minmax(0, 1fr); }
   .stacked-aside { position: static; height: auto; padding-bottom: 0; }
   .stacked-main { padding-top: 2.5rem; }
