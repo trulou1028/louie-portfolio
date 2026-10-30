@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { LoopVideo } from "@/components/portfolio/loop-video";
 import { HomePreview, type PreviewItem } from "@/components/stacked/home-preview";
@@ -79,11 +80,16 @@ const beforeOffboard = profile.about.intro[2].slice(0, offboardAt);
 const afterOffboard = profile.about.intro[2].slice(offboardAt + "Offboard".length);
 
 function ProjectRow({ row }: { row: Row }) {
+  // The whole row opens the case study: the name's link stretches over it
+  // (`before:inset-0`). The name carries the site's link underline and an
+  // arrow, so the row reads as a link on touch screens too, where there is
+  // no hover (Louie, 2026-10-30: the case study links were hard to find).
   return (
-    <article data-preview-id={row.id} className="group stacked-row border-b border-border-default py-8">
+    <article data-preview-id={row.id} className="group stacked-row relative border-b border-border-default py-8">
       <div>
         <p className="text-body-lg text-foreground-muted">{row.blurb}</p>
-        <div className="stacked-inline-media mt-5 overflow-hidden border border-border-default bg-surface">
+        {/* The loop's pause button sits above the stretched link. */}
+        <div className="stacked-inline-media mt-5 overflow-hidden border border-border-default bg-surface [&_button]:z-10">
           {row.loop ? (
             <LoopVideo src={row.loop.src} poster={row.loop.poster} label={row.image.alt} width={row.image.width} height={row.image.height} />
           ) : (
@@ -93,8 +99,12 @@ function ProjectRow({ row }: { row: Row }) {
       </div>
       <div className="stacked-label">
         <h3 className="font-display text-list-title text-balance text-foreground">
-          <Link href={row.href} className="focus-ring rounded-xs transition-colors duration-(--duration-fast) group-hover:text-accent-hover">
+          <Link
+            href={row.href}
+            className="focus-ring rounded-xs underline decoration-accent-line decoration-1 underline-offset-[0.2em] transition-colors duration-(--duration-fast) group-hover:text-accent-hover before:absolute before:inset-0"
+          >
             {row.name}
+            <ArrowRight aria-hidden="true" className="ml-1 inline-block size-[0.9em] align-[-0.1em] text-accent-line transition-transform duration-(--duration-fast) ease-out group-hover:translate-x-1" />
           </Link>
         </h3>
         <p className="mt-1 text-meta text-foreground-quiet tabular-nums">{row.when}</p>
@@ -103,7 +113,9 @@ function ProjectRow({ row }: { row: Row }) {
   );
 }
 
-const sectionTitle = "border-b border-border-default pb-5 font-display text-list-title text-foreground";
+// Section titles are the meta label (`SectionLabel`), smaller than the
+// project names, so a title does not read as one more project.
+const sectionTitle = "border-b border-border-default pb-3 text-meta text-foreground-quiet";
 
 export default function Home() {
   return (
@@ -143,7 +155,7 @@ export default function Home() {
         <h2 id="path-label" className={sectionTitle}>Where I’ve worked</h2>
         <ul aria-label="Experience">
           {profile.about.path.map((place) => (
-            <li key={place.company} className="stacked-row border-b border-border-default py-3 text-body-lg">
+            <li key={place.company} className="stacked-row items-baseline border-b border-border-default py-3 text-body-lg">
               <span className="text-foreground">{place.company}</span>
               <span className="text-meta text-foreground-quiet tabular-nums max-[820px]:order-none">{place.years}</span>
             </li>

@@ -1186,3 +1186,14 @@ Plan 051:
   (`public/portrait/louie-line.webp`), with the old brightness and contrast
   baked in and the alpha set so it matches the old blend on the paper. The
   blend CSS is gone.
+- **New portrait (Louie, 2026-10-30).** Louie supplied a pen doodle of
+  himself. `public/portrait/louie-doodle.webp` replaces the line portrait,
+  made the same way: ink on a transparent ground at 640px.
+- **Homepage links (Louie, 2026-10-30).** Louie found the case study links
+  hard to find: only the project name was a link, in ink with no underline.
+  Each name now has the site's blue link underline and a blue arrow, and the
+  whole row opens the case study (the link stretches over the row; a loop's
+  pause button stays on top). On hover the name turns blue and the arrow
+  moves 4px right. The section titles ("Work I'm proud of") are now the
+  grey meta label, so they no longer match the project names in size. The
+  dates in "Where I've worked" line up with the company names.
