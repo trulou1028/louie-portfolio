@@ -35,7 +35,8 @@ function contactItems(itemClassName?: string) {
  * StackedShell; Louie, 2026-10-30). As the page scrolls it rolls up from
  * the left into a round menu button, so it stops sitting over the text.
  * The button opens the menu again, and it closes on Escape, on a click
- * outside, on a link, or when the page scrolls on.
+ * outside, or on a link. Scrolling does not close it: images loading
+ * above can move the page by itself.
  *
  * The roll follows the scroll directly: a `--roll` from 0 to 1 on the nav,
  * set each frame, drives the styles in globals.css. Under reduced motion it
@@ -54,7 +55,6 @@ function SiteLinks() {
   // Transitions run only while the menu opens or closes; while scrolling,
   // the roll tracks the scroll with no lag.
   const [toggling, setToggling] = React.useState(false);
-  const openedAt = React.useRef(0);
 
   const toggle = React.useCallback((next: boolean) => {
     setToggling(true);
@@ -85,25 +85,20 @@ function SiteLinks() {
     };
   }, [reduce]);
 
-  // Close when the page scrolls on, on Escape, or on a click outside.
+  // Close on Escape or on a click outside.
   React.useEffect(() => {
     if (!open) return;
     const nav = navRef.current;
-    const scroller = nav?.closest<HTMLElement>("[data-canvas-scroll]");
-    if (!nav || !scroller) return;
-    openedAt.current = scroller.scrollTop;
-    const onScroll = () => { if (Math.abs(scroller.scrollTop - openedAt.current) > 160) toggle(false); };
+    if (!nav) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       toggle(false);
       nav.querySelector<HTMLButtonElement>(".site-nav-toggle")?.focus();
     };
     const onPointer = (event: PointerEvent) => { if (!nav.contains(event.target as Node)) toggle(false); };
-    scroller.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onPointer);
     return () => {
-      scroller.removeEventListener("scroll", onScroll);
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("pointerdown", onPointer);
     };
