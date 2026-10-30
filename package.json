@@ -11,7 +11,8 @@
     "test:e2e": "playwright test",
     "validate:evidence": "tsx scripts/validate-evidence.ts",
     "prebuild": "tsx scripts/validate-evidence.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lane:check": "bash scripts/lane/check.sh"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.45",
