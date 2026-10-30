@@ -1109,7 +1109,7 @@ Plan 051:
   Louie's review (2026-10-29): About and Résumé had a different header from
   the rest, so every page now uses the same column. The "Let's talk" menu
   and the mobile drawer are gone; the email address is in the column.
-- **Ask Louie is a blue pill button** under the name on every page ("Ask
+- **Ask Louie is a blue pill button** (ink since 2026-10-30) under the name on every page ("Ask
   about this project" on a case study). Louie found the text link hidden.
 - **Homepage.** The hero headline ("I make complex things feel simple."),
   the work cards, "How I work", and the closing call to action are gone;
@@ -1197,3 +1197,18 @@ Plan 051:
   moves 4px right. The section titles ("Work I'm proud of") are now the
   grey meta label, so they no longer match the project names in size. The
   dates in "Where I've worked" line up with the company names.
+- **Screenshots on a grey mat (Louie, 2026-10-30).** Screenshots "felt
+  plopped on to the page". Every screenshot now sits on a light grey mat
+  (`.shot-mat`), with 8px corners on the image and a hairline edge and a
+  soft shadow under it (`.shot`). The mat's corners are 20px (12px gap) and
+  16px on a narrow canvas (8px gap), by the nesting rule. The home page
+  screenshots and the hover preview use the same mat.
+- **Black accent, red pen marks (Louie, 2026-10-30).** Louie was not sure
+  about the blue across the site. The accent is now the ink: the Ask Louie
+  pill, link underlines, focus rings, selection, and chart marks. Hover
+  text steps to a grey (#5C5C66). This replaces the meodai blue
+  (#1A10E6). Decision marks are now a red pen loop around the decision
+  with a handwritten note (Caveat), to match the doodle portrait; they
+  replace the thin blue box and square label. The pen draws the loop once
+  when the mark comes into view (700ms), and not at all under reduced
+  motion. A loop near the image edge runs on onto the mat.

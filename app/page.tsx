@@ -89,12 +89,14 @@ function ProjectRow({ row }: { row: Row }) {
       <div>
         <p className="text-body-lg text-foreground-muted">{row.blurb}</p>
         {/* The loop's pause button sits above the stretched link. */}
-        <div className="stacked-inline-media mt-5 overflow-hidden border border-border-default bg-surface [&_button]:z-10">
-          {row.loop ? (
-            <LoopVideo src={row.loop.src} poster={row.loop.poster} label={row.image.alt} width={row.image.width} height={row.image.height} />
-          ) : (
-            <Image src={row.image.src} alt={row.image.alt} width={row.image.width} height={row.image.height} sizes="(min-width: 821px) 1px, 100vw" className="h-auto w-full" />
-          )}
+        <div className="stacked-inline-media shot-mat mt-5 [&_button]:z-10">
+          <div className="shot overflow-hidden">
+            {row.loop ? (
+              <LoopVideo src={row.loop.src} poster={row.loop.poster} label={row.image.alt} width={row.image.width} height={row.image.height} />
+            ) : (
+              <Image src={row.image.src} alt={row.image.alt} width={row.image.width} height={row.image.height} sizes="(min-width: 821px) 1px, 100vw" className="h-auto w-full" />
+            )}
+          </div>
         </div>
       </div>
       <div className="stacked-label">

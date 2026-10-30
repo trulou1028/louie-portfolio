@@ -138,8 +138,8 @@ test.describe("navigation", () => {
       await page.goto(path);
       const button = page.getByRole("button", { name, exact: true });
       await expect(button, path).toBeInViewport();
-      // The blue fill (#1A10E6; the HSL token rounds by one).
-      await expect(button).toHaveCSS("background-color", /^rgb\(2[67], 16, 2(29|30)\)$/);
+      // The ink fill (#1C1C21; the HSL token can round by one).
+      await expect(button).toHaveCSS("background-color", /^rgb\(2[89], 2[89], 3[34]\)$/);
     }
   });
   test("secondary discovery remains reachable", async ({ page }) => {

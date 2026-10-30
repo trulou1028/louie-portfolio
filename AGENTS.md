@@ -70,7 +70,8 @@ styling and semantics belong in wrappers: `components/system/`,
 `components/portfolio/`, `components/app-shell/`, `components/ai/`
 (spec §33). Do not scatter raw `Button`/`Card`/`Badge` through pages.
 
-**Fonts.** Three families (fonts trial, Louie, 2026-10-29). `font-display`
+**Fonts.** Three families (fonts trial, Louie, 2026-10-29), plus Caveat
+(`font-hand`) for decision mark notes only. `font-display`
 is Inter, for the name, page, section, and project titles, at 600 or 700
 with the negative tracking set in the type tokens. `font-sans` is Libre
 Baskerville, for running text, UI, and meta lines. Both load through
@@ -85,7 +86,7 @@ after David Aerne's meodai.color.pizza: a left column that stays in view
 (line portrait, name, Ask Louie, facts and contents on a case study, and
 the site links) beside one column of stacked text. There is no site header
 or footer. Pages other than the homepage and case studies get the standard
-column through `Canvas` (`PageAside`). Ask Louie is a blue pill under the
+column through `Canvas` (`PageAside`). Ask Louie is an ink pill under the
 name, the one filled control on a page. Text sits
 at a 34rem measure (`.stacked-row`, `.case-prose`), with a narrow column
 beside it for a project name or section label. Rules separate rows; there
@@ -126,14 +127,16 @@ work:
 - Text steps: `text-foreground` for names and titles,
   `text-foreground-muted` for running text, `text-foreground-quiet` for
   meta lines (role, years, labels; #6B6B75, 4.7:1).
-- One blue, #1A10E6. `text-accent` resolves to ink, so `InlineLink` is
-  always underlined; the underline is `accent-line` blue, and hover text is
-  `text-accent-hover` blue. `bg-accent-fill` (+ `text-accent-on-fill`,
-  white) is for primary actions only. Focus rings and text selection use
-  the same blue.
-- `signal` is the same blue, reserved for `DecisionMark`: a thin box and
-  label drawn over a real screenshot. Mark labels restate the caption, alt
-  text, or case study.
+- The accent is the ink (Louie, 2026-10-30: black, not blue).
+  `InlineLink` is always underlined in `accent-line` ink, and hover text
+  steps to `text-accent-hover` grey. `bg-accent-fill` (+
+  `text-accent-on-fill`, white) is for primary actions only. Focus rings
+  and text selection use the ink.
+- `signal` is a red pen (#CB2E1A), reserved for `DecisionMark`: a pen loop
+  and a handwritten note (`font-hand`, Caveat) drawn over a real
+  screenshot. Mark labels restate the caption, alt text, or case study.
+- Screenshots sit on a grey mat (`.shot-mat` around `.shot`, Louie,
+  2026-10-30). Use the pair for any new screenshot frame.
 - `bg-plate-*` / `text-plate-*-ink` / `text-plate-*-muted`: each project's
   own brand field, for that project only.
 - Offboard's own lime appears only inside Offboard screenshots and the

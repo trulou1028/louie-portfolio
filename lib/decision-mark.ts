@@ -1,5 +1,5 @@
 /**
- * A decision mark: an amber redline drawn over a real screenshot, naming the
+ * A decision mark: a red pen loop drawn over a real screenshot, naming the
  * decision the image shows (Plan 037).
  *
  * Geometry is in percent of the image's own box, so a mark stays on its

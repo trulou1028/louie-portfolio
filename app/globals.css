@@ -22,10 +22,12 @@
    The prototype's meta grey (#84848E) was 3.3:1, so it is darkened here to
    #6B6B75, 4.7:1 on paper.
 
-   Accent split: `text-accent` resolves to ink, so links keep their
-   underline. `accent-line` is the blue, for underlines, hover text, focus
-   rings, and chart marks. `bg-accent-fill` is the same blue with white
-   text, for primary actions only.
+   Accent (Louie, 2026-10-30: black, not blue): the accent is the ink.
+   Links are ink with an ink underline; hover text steps to a softer grey.
+   `accent-line` is for underlines, focus rings, and chart marks.
+   `bg-accent-fill` is ink with white text, for primary actions only. The
+   one color the site adds is the red pen of the decision marks
+   (`signal`).
 
    Colors are HSL triplets consumed as hsl(var(--token)). Radii are spec §9.
    Motion durations are spec §24.
@@ -45,21 +47,24 @@
   --border-subtle: 240 10% 91%;
   --border-default: 240 11% 86%;    /* the rule, #D9D9E0 */
   --border-strong: 240 7% 74%;
+  /* The grey mat a screenshot is mounted on (Louie, 2026-10-30). */
+  --mat: 240 10% 90%;
 
   --accent: 240 8% 12%;
-  --accent-hover: 243 87% 48%;
-  --accent-fill: 243 87% 48%;       /* blue #1A10E6 */
-  --accent-fill-hover: 243 87% 40%;
-  --accent-on-fill: 0 0% 100%;      /* 8.4:1 on blue */
-  --accent-line: 243 87% 48%;
-  --accent-muted: 243 90% 92%;
-  --accent-soft: 243 90% 97%;
-  --accent-foreground: 243 87% 40%;
+  --accent-hover: 240 5% 38%;       /* hover text #5C5C66, 6.1:1 */
+  --accent-fill: 240 8% 12%;        /* ink #1C1C21 */
+  --accent-fill-hover: 240 6% 28%;
+  --accent-on-fill: 0 0% 100%;      /* 17:1 on ink */
+  --accent-line: 240 8% 12%;
+  --accent-muted: 240 10% 88%;
+  --accent-soft: 240 10% 94%;
+  --accent-foreground: 240 8% 12%;
 
-  /* Decision marks: the blue box and label drawn over a real screenshot.
-     Used only by DecisionMark and the marks it draws. */
-  --signal: 243 87% 48%;
-  --signal-ink: 0 0% 100%;
+  /* Decision marks: a red pen loop and a handwritten note over a real
+     screenshot (Louie, 2026-10-30). Used only by DecisionMark. #CB2E1A,
+     5.0:1 on the paper behind the note. */
+  --signal: 6 78% 45%;
+  --signal-ink: 240 9% 96%;
 
   /* Project plates. Each project's own brand color, used as a full field
      behind its work on the homepage. `-ink` is body text on the plate
@@ -111,6 +116,9 @@
     0 1px 2px hsl(240 8% 12% / 0.06), 0 8px 24px hsl(240 8% 12% / 0.08);
   /* A product screenshot lifted off its frame (Plan 037, Plan 051). */
   --shadow-shot: 0 30px 60px -30px hsl(240 8% 12% / 0.25);
+  /* A screenshot on its mat: a hairline edge and a short, soft drop. */
+  --shadow-mounted:
+    0 0 0 1px hsl(240 8% 12% / 0.08), 0 12px 28px -16px hsl(240 8% 12% / 0.35);
 
   /* Motion — spec §24 */
   --duration-instant: 90ms;
@@ -231,6 +239,8 @@
   --font-sans: var(--font-baskerville), Georgia, ui-serif, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* The handwritten notes on decision marks only. */
+  --font-hand: var(--font-caveat), "Bradley Hand", cursive;
   --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   /* Type scale — spec §8, revised by the stacked redesign. Display and
@@ -300,6 +310,12 @@
   --text-label: 0.8125rem;
   --text-label--line-height: 1.3;
   --text-label--letter-spacing: 0.06em;
+
+  /* A decision mark's handwritten note (Caveat runs small): 18px on a
+     phone up to 22px. */
+  --text-hand: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --text-hand--line-height: 1.1;
+  --text-hand--font-weight: 600;
 
   --text-system: 0.6875rem;
   --text-system--line-height: 1.3;
@@ -522,33 +538,28 @@
   padding-inline: clamp(16px, 4vw, 56px);
 }
 
-/* Decision marks (Plan 037). The dim outside the mark is a spread shadow the
-   screenshot frame clips. When the browser supports scroll-driven animation,
-   the mark lands as its image scrolls into view; otherwise, and for reduced
-   motion, it is simply there. The final state is always the default. */
-.decision-mark {
-  /* Stacked redesign: no dim outside the mark. A thin blue box and its
-     label are enough on paper. */
-  box-shadow: none;
+/* Decision marks (Plan 037; red pen, Louie, 2026-10-30). DecisionMark sets
+   `data-pen="waiting"` on a mark that has not come into view yet, then
+   "drawn": the pen draws the loop once, and the note lands after it. With
+   no attribute (server HTML, reduced motion) both are simply there. */
+.decision-mark path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 700ms cubic-bezier(0.77, 0, 0.175, 1);
 }
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .decision-mark {
-      animation: decision-mark-land linear both;
-      animation-timeline: view();
-      animation-range: entry 20% cover 40%;
-    }
-  }
+.decision-mark-note {
+  transition:
+    opacity 240ms ease-out 560ms,
+    translate 240ms cubic-bezier(0.23, 1, 0.32, 1) 560ms;
 }
-@keyframes decision-mark-land {
-  from {
-    opacity: 0;
-    scale: 1.08;
-  }
-  to {
-    opacity: 1;
-    scale: 1;
-  }
+.decision-mark[data-pen="waiting"] path {
+  stroke-dashoffset: 1;
+  transition: none;
+}
+.decision-mark[data-pen="waiting"] .decision-mark-note {
+  opacity: 0;
+  translate: 0 4px;
+  transition: none;
 }
 
 /* ---------------------------------------------------------------------------
@@ -645,8 +656,6 @@
   top: 50%;
   max-height: 100%;
   overflow: hidden;
-  border: 1px solid hsl(var(--border-default));
-  background: hsl(var(--surface));
   opacity: 0;
   translate: 0 -50%;
   scale: 0.97;
@@ -664,6 +673,29 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Screenshots are mounted on a grey mat (Louie, 2026-10-30: they looked
+   "plopped on to the page"). The mat's corner is the screenshot's corner
+   plus the gap between them (AGENTS.md, Radius): 8 + 12 = 20px, and
+   8 + 8 = 16px on a narrow canvas. */
+.shot-mat {
+  --mat-gap: 12px;
+  padding: var(--mat-gap);
+  border-radius: calc(var(--radius-control) + var(--mat-gap));
+  background: hsl(var(--mat));
+}
+@container canvas (width <= 820px) {
+  .shot-mat { --mat-gap: 8px; }
+}
+/* Not clipped, so decision marks can run past the screenshot's edge; the
+   image inside clips itself to the corner. Add `overflow-hidden` where
+   nothing needs to. */
+.shot {
+  position: relative;
+  border-radius: var(--radius-control);
+  background: hsl(var(--surface));
+  box-shadow: var(--shadow-mounted);
 }
 
 /* Each row's own screenshot, for touch screens and narrow canvases, where

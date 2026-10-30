@@ -69,7 +69,8 @@ function HomePreview({ items }: { items: readonly PreviewItem[] }) {
   return (
     <div className="preview-slot stacked-wide-only" aria-hidden="true">
       {canHover ? items.map((item) => (
-        <div key={item.id} className="preview-frame" data-on={active === item.id ? "" : undefined}>
+        <div key={item.id} className="preview-frame shot-mat" data-on={active === item.id ? "" : undefined}>
+          <div className="shot overflow-hidden">
           {item.loop ? (
             <video
               ref={(el) => { if (el) videos.current.set(item.id, el); else videos.current.delete(item.id); }}
@@ -85,6 +86,7 @@ function HomePreview({ items }: { items: readonly PreviewItem[] }) {
           ) : (
             <Image src={item.image.src} width={item.image.width} height={item.image.height} alt="" sizes="30vw" />
           )}
+          </div>
         </div>
       )) : null}
     </div>
