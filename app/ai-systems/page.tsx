@@ -89,7 +89,7 @@ export default function AiSystemsPage() {
                 <p className="mt-3 max-w-[62ch] text-body text-foreground-muted">
                   {theme.question}
                 </p>
-                <ul className="mt-5 flex flex-col gap-2.5">
+                <ul className="mt-5 flex flex-col border-b border-border-default">
                   {items.map((item) => (
                     <li key={item.id}>
                       <EvidenceCard

@@ -37,7 +37,7 @@ export default function ResumePage() {
         <h1 className="mt-5 font-display text-display-lg text-balance text-foreground">
           {profile.name}
         </h1>
-        <p className="mt-3 font-mono text-label uppercase text-foreground-muted">
+        <p className="mt-3 text-meta text-foreground-quiet">
           {resume.headline}
         </p>
 
@@ -84,7 +84,7 @@ export default function ResumePage() {
                       <h2 className="text-heading-md text-foreground">
                         {role.title}
                       </h2>
-                      <span className="font-mono text-system uppercase text-foreground-muted">
+                      <span className="text-meta text-foreground-quiet tabular-nums">
                         {role.period}
                       </span>
                     </div>

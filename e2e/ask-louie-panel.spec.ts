@@ -68,7 +68,7 @@ test("the panel keeps the job-description comparison one click away", async ({ p
 
 test("on a case study, the panel starts from that project", async ({ page }) => {
   await page.goto("/work/offboard");
-  await page.getByRole("button", { name: "Ask Louie", exact: true }).first().click();
+  await page.getByRole("button", { name: "Ask about this project" }).click();
   const panel = page.locator("#ask-ai-louie");
   await expect(panel.getByText("Reading:")).toContainText("Offboard");
   await expect(panel.getByRole("button", { name: "Why does the Offboard packet pause for risk?" })).toBeVisible({ timeout: 15_000 });
@@ -79,7 +79,7 @@ test("on desktop, a cited link keeps the panel open and highlights the section",
   test.skip(isMobile, "Desktop only: on a phone the sheet closes to show the page.");
   await mockChat(page);
   await page.goto("/work/offboard");
-  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  await page.getByRole("button", { name: "Ask about this project" }).click();
   const panel = page.locator("#ask-ai-louie");
   await panel.getByRole("button", { name: "Why does the Offboard packet pause for risk?" }).click();
   await panel.getByRole("link", { name: /Decision 01/ }).click();
@@ -94,7 +94,7 @@ test("on desktop, a cited link keeps the panel open and highlights the section",
 test("on desktop, the page stays usable beside the panel", async ({ page, isMobile }) => {
   test.skip(isMobile, "Desktop only: on a phone the sheet covers the page.");
   await page.goto("/work/offboard");
-  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  await page.getByRole("button", { name: "Ask about this project" }).click();
   await expect(page.locator("#ask-ai-louie")).toBeVisible();
   // The article beside the panel still scrolls under the pointer.
   await page.locator("h1").hover();
@@ -105,49 +105,28 @@ test("on desktop, the page stays usable beside the panel", async ({ page, isMobi
   await expect(page.locator("#ask-ai-louie")).toBeHidden();
 });
 
-test("a case study offers an Ask card that starts from that project", async ({ page, isMobile }) => {
-  const bodies = await mockChat(page);
+test("a case study's left column opens the panel on that project", async ({ page }) => {
   await page.goto("/work/flexi");
-  if (isMobile) {
-    await page.getByRole("button", { name: "Ask about Flexi" }).click();
-    await expect(page.locator("#ask-ai-louie").getByText("Reading:")).toContainText("Flexi");
-    return;
-  }
-  const card = page.getByRole("region", { name: "Ask about Flexi" });
-  await card.getByRole("button", { name: "What follow-up choices does Flexi offer?" }).click();
-  await expect(page.locator("#ask-ai-louie").getByText("A risk gate can pause")).toBeVisible({ timeout: 15_000 });
-  expect(bodies[0]).toContain("What follow-up choices does Flexi offer?");
+  await page.getByRole("button", { name: "Ask about this project" }).click();
+  const panel = page.locator("#ask-ai-louie");
+  await expect(panel.getByText("Reading:")).toContainText("Flexi");
+  await expect(panel.getByRole("button", { name: "What follow-up choices does Flexi offer?" })).toBeVisible({ timeout: 15_000 });
 });
 
-test("case study content lines up with the header", async ({ page, isMobile }) => {
-  test.skip(isMobile, "Desktop frame");
-  for (const width of [1280, 1440, 1920]) {
-    await page.setViewportSize({ width, height: 900 });
-    await page.goto("/work/offboard");
-    const name = await page.getByRole("link", { name: /Louie Sakoda, home/ }).boundingBox();
-    const title = await page.locator("h1").boundingBox();
-    const ask = await page.getByRole("button", { name: "Ask Louie", exact: true }).boundingBox();
-    const rail = await page.getByRole("complementary", { name: "Case study contents" }).boundingBox();
-    expect(Math.abs(title!.x - name!.x), `left edge at ${width}`).toBeLessThanOrEqual(2);
-    expect(Math.abs(rail!.x + rail!.width - (ask!.x + ask!.width)), `right edge at ${width}`).toBeLessThanOrEqual(2);
-  }
-});
-
-test("on desktop, the open panel pushes the header and page instead of covering them", async ({ page, isMobile }) => {
+test("on desktop, the open panel pushes the page instead of covering it", async ({ page, isMobile }) => {
   test.skip(isMobile, "Desktop only: on a phone the sheet covers the page.");
   await page.goto("/work/offboard");
-  await page.getByRole("button", { name: "Ask Louie", exact: true }).click();
+  await page.getByRole("button", { name: "Ask about this project" }).click();
   const panel = await page.locator("#ask-ai-louie").boundingBox();
   await expect.poll(async () => {
     const scroller = await page.locator("[data-canvas-scroll]").boundingBox();
     return scroller!.x + scroller!.width;
   }).toBeLessThanOrEqual(panel!.x + 1);
-  const nav = await page.getByRole("navigation", { name: "Primary" }).last().boundingBox();
-  expect(nav!.x + nav!.width).toBeLessThanOrEqual(panel!.x);
-  // The case-study rail folds away when the canvas narrows below 72rem,
-  // and the inline contents take its place.
-  await expect(page.getByRole("complementary", { name: "Case study contents" })).toBeHidden();
-  await expect(page.getByRole("group").filter({ hasText: "On this page" }).or(page.locator("details", { hasText: "On this page" }))).toBeVisible();
+  // The narrowed page (about 1090px) is below the 1280px canvas where the
+  // contents get their own right column, so they fold into the disclosure
+  // above the article (stacked redesign).
+  await expect(page.getByRole("navigation", { name: "On this page" })).toBeHidden();
+  await expect(page.locator("details", { hasText: "On this page" })).toBeVisible();
 });
 
 test("the thinking line sits on the avatar's row, with the work cards under it", async ({ page }) => {

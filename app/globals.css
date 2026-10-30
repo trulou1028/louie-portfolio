@@ -3,68 +3,69 @@
 @import "shadcn/tailwind.css";
 
 /* Registers the `dark` variant for upstream shadcn components. The site is
-   dark only (Plan 051, Louie, 2026-10-15): `<html>` carries `.dark`, so
-   upstream components use their dark styles, and the tokens below are the
-   one palette. There is no theme switch. */
+   light only since the stacked redesign (Louie, 2026-10-29): `<html>` has
+   no `.dark`, so upstream components use their light styles. There is no
+   theme switch. */
 @custom-variant dark (&:is(.dark *));
 
 /* ---------------------------------------------------------------------------
    Design tokens — source of truth.
 
-   Plan 051 (October 2026), palette revised October 17, 2026 (Louie chose
-   the "indigo + lilac duo"): a cool near-black canvas, cool off-white ink,
-   and two related accents. Color still belongs to the work: project plates
-   stay for the case study pages, and the amber signal keeps its one job,
-   the redline on real screenshots.
+   Stacked redesign (Louie, 2026-10-29), after David Aerne's
+   meodai.color.pizza: ink on a cool off-white paper (#F3F3F5), one blue
+   (#1A10E6) for links, hover, focus, and decision marks, and rules instead
+   of boxes. Color still belongs to the work: project plates stay for the
+   brand fields.
 
-   Accent split: `text-accent` for text and markers resolves to ink, so
-   links keep their underline. `bg-accent-fill` + `text-accent-on-fill` is
-   indigo #5550F2 with light text, for primary actions only. `accent-line`
-   is lilac #BBA8FF for lines and highlights: the headline underline, link
-   and hover underlines, focus rings, text selection, and chart marks.
-   `accent-muted` / `accent-soft` / `accent-foreground` are lilac tints for
-   the deep-link wash and AI surfaces.
+   Text steps: `foreground` for names and titles, `foreground-muted` for
+   running text, `foreground-quiet` for meta lines (role, years, labels).
+   The prototype's meta grey (#84848E) was 3.3:1, so it is darkened here to
+   #6B6B75, 4.7:1 on paper.
+
+   Accent split: `text-accent` resolves to ink, so links keep their
+   underline. `accent-line` is the blue, for underlines, hover text, focus
+   rings, and chart marks. `bg-accent-fill` is the same blue with white
+   text, for primary actions only.
 
    Colors are HSL triplets consumed as hsl(var(--token)). Radii are spec §9.
    Motion durations are spec §24.
 --------------------------------------------------------------------------- */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Near-black cool canvas, #101113. Frames and panels step up in
-     lightness; borders stay low so spacing, not lines, does the grouping. */
-  --canvas: 235 8% 7%;
-  --surface: 235 8% 9%;
-  --surface-muted: 235 7% 11%;
-  --surface-raised: 235 7% 13%;
-  --foreground: 230 25% 95%;        /* #EFF0F5, 16.6:1 on canvas */
-  --foreground-muted: 235 7% 63%;   /* #9A9BA7, 6.9:1 on canvas — body copy */
-  --foreground-subtle: 235 5% 40%;  /* non-text only */
-  --foreground-quiet: 235 5% 52%;   /* 4.8:1 — display-size text only */
+  --canvas: 240 9% 96%;             /* paper #F3F3F5 */
+  --surface: 0 0% 100%;             /* screenshot frames */
+  --surface-muted: 240 10% 93%;
+  --surface-raised: 0 0% 100%;
+  --foreground: 240 8% 12%;         /* ink #1C1C21, 15.6:1 on paper */
+  --foreground-muted: 240 6% 25%;   /* running text #3D3D45, 9.6:1 */
+  --foreground-subtle: 240 5% 66%;  /* non-text only */
+  --foreground-quiet: 240 4% 44%;   /* meta #6B6B75, 4.7:1 */
 
-  --border-subtle: 235 7% 16%;
-  --border-default: 235 7% 21%;
-  --border-strong: 235 6% 32%;
+  --border-subtle: 240 10% 91%;
+  --border-default: 240 11% 86%;    /* the rule, #D9D9E0 */
+  --border-strong: 240 7% 74%;
 
-  --accent: 230 25% 95%;
-  --accent-hover: 235 7% 75%;
-  --accent-fill: 242 86% 63%;       /* indigo #5550F2 */
-  --accent-fill-hover: 242 80% 58%; /* darker on hover, so text stays readable */
-  --accent-on-fill: 230 25% 97%;    /* 5.1:1 on indigo, 6.2:1 on hover */
-  --accent-line: 253 100% 83%;      /* lilac #BBA8FF, 9.1:1 on canvas */
-  --accent-muted: 253 45% 22%;
-  --accent-soft: 253 30% 11%;
-  --accent-foreground: 253 100% 88%; /* 11:1 on accent-soft */
+  --accent: 240 8% 12%;
+  --accent-hover: 243 87% 48%;
+  --accent-fill: 243 87% 48%;       /* blue #1A10E6 */
+  --accent-fill-hover: 243 87% 40%;
+  --accent-on-fill: 0 0% 100%;      /* 8.4:1 on blue */
+  --accent-line: 243 87% 48%;
+  --accent-muted: 243 90% 92%;
+  --accent-soft: 243 90% 97%;
+  --accent-foreground: 243 87% 40%;
 
-  /* The redline. Used only by DecisionMark and the marks it draws. */
-  --signal: 41 91% 57%;
-  --signal-ink: 35 60% 12%;         /* label text on signal, 8.5:1 */
+  /* Decision marks: the blue box and label drawn over a real screenshot.
+     Used only by DecisionMark and the marks it draws. */
+  --signal: 243 87% 48%;
+  --signal-ink: 0 0% 100%;
 
   /* Project plates. Each project's own brand color, used as a full field
      behind its work on the homepage. `-ink` is body text on the plate
      (≥ 4.5:1); `-mark` is a small accent on the plate. */
   /* Offboard: the app's warm charcoal and its lime (September 2026 UI).
-     The plate matches the backdrop of packet-panels.webp, so the app's
+     The plate matched the backdrop of the old packet-panels.webp, so the app's
      panels float on the plate without a second frame. */
   --plate-offboard: 34 9% 15%;
   --plate-offboard-ink: 40 20% 94%;       /* 13.2:1 */
@@ -89,8 +90,8 @@
   --plate-transfersight-ink: 220 9% 92%;  /* about 16:1 */
   --plate-transfersight-muted: 215 8% 64%; /* about 7.4:1 */
 
-  --danger: 0 72% 60%;
-  --success: 145 45% 55%;
+  --danger: 0 72% 42%;
+  --success: 145 60% 28%;
 
   /* Geometry — spec §9 */
   --radius-xs: 6px;
@@ -107,9 +108,9 @@
 
   /* Elevation. Border first, background second, shadow last (spec §9). */
   --shadow-soft:
-    0 1px 2px hsl(0 0% 0% / 0.4), 0 8px 24px hsl(0 0% 0% / 0.4);
+    0 1px 2px hsl(240 8% 12% / 0.06), 0 8px 24px hsl(240 8% 12% / 0.08);
   /* A product screenshot lifted off its frame (Plan 037, Plan 051). */
-  --shadow-shot: 0 30px 60px -30px hsl(0 0% 0% / 0.8);
+  --shadow-shot: 0 30px 60px -30px hsl(240 8% 12% / 0.25);
 
   /* Motion — spec §24 */
   --duration-instant: 90ms;
@@ -221,69 +222,80 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Typography — spec §7, revised by Plan 051. Instrument Serif is the
-     display role (hero, page and section titles, project titles); it has one
-     weight, and `font-synthesis-weight: none` (base layer) stops the browser
-     faking a bold. Geist carries UI and body copy, at 400 and 600. Geist Mono
-     is for short labels, meta lines, and the nav pills only. `font-heading`
-     is the sans face for upstream shadcn titles. */
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  /* Typography — spec §7, revised by the stacked redesign. Fonts trial
+     (Louie, 2026-10-29): Inter is the display role (the name, page and
+     section titles, project titles) and Libre Baskerville carries running
+     text, UI, and meta lines. Geist Mono stays for short technical labels
+     only (tool names, chart labels). `font-heading` is the display face for
+     upstream shadcn titles. */
+  --font-sans: var(--font-baskerville), Georgia, ui-serif, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
-  --font-heading: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* Type scale — spec §8, revised by Plan 051. Display sizes are set in
-     Instrument Serif (one weight, 400); heading sizes are Geist at 600 when
-     used alone, or Instrument Serif when paired with `font-display`. */
-  --text-display-xl: clamp(2.75rem, 1.6rem + 5vw, 5rem);
-  --text-display-xl--line-height: 1;
-  --text-display-xl--letter-spacing: -0.015em;
-  --text-display-xl--font-weight: 400;
+  /* Type scale — spec §8, revised by the stacked redesign. Display and
+     heading sizes are set in Inter at 600 or 700 with negative tracking;
+     Inter is wider than the old condensed serif, so the sizes step down.
+     Libre Baskerville has a large x-height, so body sizes are smaller and
+     line heights looser than they were with Newsreader. */
+  --text-display-xl: clamp(2.25rem, 1.4rem + 4vw, 4rem);
+  --text-display-xl--line-height: 1.02;
+  --text-display-xl--font-weight: 700;
+  --text-display-xl--letter-spacing: -0.035em;
 
-  /* The homepage headline (Plan 051): "I make complex things / feel simple."
-     with small screenshots set inside the line. */
-  --text-home-hero: clamp(2.75rem, 1.4rem + 5vw, 5.75rem);
-  --text-home-hero--line-height: 1.04;
-  --text-home-hero--letter-spacing: -0.015em;
-  --text-home-hero--font-weight: 400;
+  /* The name at the top of the homepage's left column. */
+  --text-name: 1.75rem;
+  --text-name--line-height: 1.1;
+  --text-name--font-weight: 700;
+  --text-name--letter-spacing: -0.025em;
 
-  --text-project-title: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  /* A project's name in the homepage list. */
+  --text-list-title: 1.375rem;
+  --text-list-title--line-height: 1.2;
+  --text-list-title--font-weight: 600;
+  --text-list-title--letter-spacing: -0.02em;
+
+  --text-project-title: clamp(1.25rem, 1.1rem + 0.4vw, 1.4375rem);
   --text-project-title--line-height: 1.25;
+  --text-project-title--font-weight: 600;
   --text-project-title--letter-spacing: -0.015em;
-  --text-project-title--font-weight: 500;
 
-  --text-display-lg: clamp(2.5rem, 1.7rem + 3.2vw, 4rem);
-  --text-display-lg--line-height: 1.02;
-  --text-display-lg--letter-spacing: -0.012em;
-  --text-display-lg--font-weight: 400;
+  --text-display-lg: clamp(2rem, 1.4rem + 2.2vw, 3rem);
+  --text-display-lg--line-height: 1.05;
+  --text-display-lg--font-weight: 700;
+  --text-display-lg--letter-spacing: -0.03em;
 
-  --text-heading-xl: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
-  --text-heading-xl--line-height: 1.05;
-  --text-heading-xl--letter-spacing: -0.01em;
-  --text-heading-xl--font-weight: 600;
+  --text-heading-xl: clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem);
+  --text-heading-xl--line-height: 1.15;
+  --text-heading-xl--font-weight: 700;
+  --text-heading-xl--letter-spacing: -0.025em;
 
-  --text-heading-lg: clamp(1.625rem, 1.3rem + 1.4vw, 2.375rem);
-  --text-heading-lg--line-height: 1.1;
-  --text-heading-lg--letter-spacing: -0.01em;
-  --text-heading-lg--font-weight: 600;
+  --text-heading-lg: clamp(1.3125rem, 1.15rem + 0.6vw, 1.5625rem);
+  --text-heading-lg--line-height: 1.2;
+  --text-heading-lg--font-weight: 700;
+  --text-heading-lg--letter-spacing: -0.02em;
 
-  --text-heading-md: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --text-heading-md--line-height: 1.25;
-  --text-heading-md--letter-spacing: -0.015em;
-  --text-heading-md--font-weight: 600;
+  --text-heading-md: 1.125rem;
+  --text-heading-md--line-height: 1.35;
+  --text-heading-md--font-weight: 700;
+  --text-heading-md--letter-spacing: -0.01em;
 
-  /* The homepage lead under the display statement (Plans 044, 051). */
-  --text-lead: 1.25rem;
-  --text-lead--line-height: 1.5;
+  /* The lead under a case study title. */
+  --text-lead: 1.1875rem;
+  --text-lead--line-height: 1.6;
 
-  --text-body-lg: 1.125rem;
-  --text-body-lg--line-height: 1.6;
+  --text-body-lg: 1.0625rem;
+  --text-body-lg--line-height: 1.7;
 
   --text-body: 1rem;
-  --text-body--line-height: 1.65;
+  --text-body--line-height: 1.75;
 
   --text-body-sm: 0.875rem;
-  --text-body-sm--line-height: 1.55;
+  --text-body-sm--line-height: 1.6;
+
+  /* Meta lines: a role, years, a figure label. */
+  --text-meta: 0.875rem;
+  --text-meta--line-height: 1.55;
 
   --text-label: 0.8125rem;
   --text-label--line-height: 1.3;
@@ -308,9 +320,9 @@
   --radius-field: var(--radius-field);
 }
 
-/* Selected text takes a lilac tint (October 2026 palette). */
+/* Selected text takes a blue tint (stacked redesign). */
 ::selection {
-  background-color: hsl(var(--accent-line) / 0.32);
+  background-color: hsl(var(--accent-line) / 0.18);
 }
 
 /* One focus treatment for the whole site, so every interactive element is
@@ -466,8 +478,9 @@
   }
   html {
     @apply font-sans;
-    /* Instrument Serif has one weight; never fake a bold or italic-bold. */
+    /* Never fake a bold or an italic. */
     font-synthesis-weight: none;
+    font-kerning: normal;
   }
   body {
     @apply bg-canvas text-foreground;
@@ -514,9 +527,9 @@
    the mark lands as its image scrolls into view; otherwise, and for reduced
    motion, it is simply there. The final state is always the default. */
 .decision-mark {
-  /* Dim outside the mark with black: on the dark theme the ink is light,
-     and an ink wash would brighten the screenshot instead (Plan 051). */
-  box-shadow: 0 0 0 200vmax hsl(0 0% 0% / 0.4);
+  /* Stacked redesign: no dim outside the mark. A thin blue box and its
+     label are enough on paper. */
+  box-shadow: none;
 }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
@@ -538,195 +551,172 @@
   }
 }
 
-/* The homepage headline's decision mark (Plans 038, 039): the same amber
-   redline the case studies draw on screenshots, around "Clear decisions."
-   The tag hangs below the box's bottom-right corner, so the box sits tight
-   under the line above it. The tag size is fixed so it does not scale with
-   the display type. */
-.headline-mark {
-  position: relative;
-  display: inline-block;
-  padding-inline: 0.1em;
-  margin-top: 0.12em;
-  /* One line inside the box; --text-home-hero scales to fit the column. */
-  white-space: nowrap;
-}
-.headline-mark::before {
-  content: "";
-  position: absolute;
-  inset: -0.02em -0.02em -0.1em;
-  border: 3px solid hsl(var(--signal));
-  border-radius: var(--radius-xs);
-  pointer-events: none;
-}
-.headline-mark-tag {
-  position: absolute;
-  top: calc(100% + 0.1em);
-  right: -0.02em;
-  background: hsl(var(--signal));
-  color: hsl(var(--signal-ink));
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-variation-settings: normal;
-  letter-spacing: 0;
-  line-height: 1.3;
-  padding: 0.15rem 0.5rem 0.2rem;
-  border-radius: 0 0 var(--radius-xs) var(--radius-xs);
-  white-space: nowrap;
-}
-/* The mark lands after the headline words finish their entrance, so the box
-   never shows empty. Without JavaScript, or with reduced motion, there is no
-   waiting state and the mark is simply there. */
-.headline-mark::before,
-.headline-mark-tag {
-  transition: opacity var(--duration-standard) ease-out;
-}
-[data-motion-state="waiting"] .headline-mark::before,
-[data-motion-state="waiting"] .headline-mark-tag,
-[data-motion-state="running"] .headline-mark::before,
-[data-motion-state="running"] .headline-mark-tag {
-  opacity: 0;
-}
-
 /* ---------------------------------------------------------------------------
-   Homepage headline (Plan 051): "I make complex things / feel simple." with
-   small project screenshots set inside the line, and a lilac line drawn
-   behind "feel simple."
-
-   - Words rise in, a few at a time. The whole entrance is pure CSS and
-     finishes in under a second, so the headline never waits on JavaScript
-     (homepage audit, finding 1: a JS-gated headline stayed hidden on phones).
-   - Each screenshot pops in after its words, then cycles through three real
-     screens from the work, 3 seconds each.
-   - Hover shows a preview: a separate, full-size copy that is laid out at
-     its real size, so it stays sharp. (Scaling the small thumbnail blurred
-     it: the browser rasterizes at layout size.)
-   - The underline draws left to right once. It sits behind the letters, like
-     a highlighter stroke, with no glow (Louie's review, 2026-10-15).
-   - Reduced motion: no entrance and no cycling. The first screen of each set
-     and the finished underline are simply there.
+   Stacked shell (Louie, 2026-10-29, after David Aerne's meodai.color.pizza).
+   The homepage and the case studies: a left column that stays in view
+   (portrait, name, links, and on the homepage the hover preview) beside one
+   column of stacked text. It answers the canvas width, not the viewport's,
+   because the docked Ask Louie panel narrows the canvas. Below 820px the
+   left column becomes the top of the page.
 --------------------------------------------------------------------------- */
-.hero-word {
-  display: inline-block;
-  animation: hero-rise 700ms cubic-bezier(var(--motion-reveal-ease)) backwards;
-  animation-delay: calc(var(--i, 0) * 70ms);
+.stacked-shell {
+  display: grid;
+  grid-template-columns: minmax(15rem, 1fr) minmax(0, 2.4fr);
+  column-gap: clamp(2rem, 5vw, 5rem);
+  padding-inline: max(16px, 3vw);
 }
-@keyframes hero-rise {
-  from { opacity: 0; transform: translateY(0.3em); }
+.stacked-aside {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0;
+  padding-block: 3rem 1.5rem;
+}
+.stacked-main {
+  min-width: 0;
+  padding-block: 3rem 8rem;
+}
+/* A row inside the stacked column: text first, then a narrow column for
+   the project name or the section label. */
+.stacked-row {
+  display: grid;
+  grid-template-columns: minmax(0, 34rem) minmax(9rem, 1fr);
+  column-gap: clamp(2rem, 5vw, 5rem);
+}
+/* The homepage intro starts level with the name, under the portrait. */
+.stacked-intro {
+  padding-top: calc(9.75rem + 1rem);
 }
 
-.hero-shot-wrap {
-  position: relative;
-  display: inline-block;
-  margin-inline: 0.06em 0.18em;
-  vertical-align: -0.04em;
-  /* `backwards`, not `both`: once the entrance ends it lets go of
-     `transform`. */
-  animation: hero-pop 600ms cubic-bezier(0.2, 0.9, 0.3, 1.3) backwards;
-  animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+/* The portrait is a line drawing on white. Multiply drops the white into
+   the paper; the paper behind it is needed because the sticky column
+   isolates blending. The filter clears the drawing's faint grey ground. */
+.portrait {
+  background: hsl(var(--canvas));
 }
-@keyframes hero-pop {
-  from { opacity: 0; transform: scale(0.3) rotate(-6deg); }
+.portrait img {
+  mix-blend-mode: multiply;
+  filter: brightness(1.07) contrast(1.12);
 }
-.hero-shot,
-.hero-preview {
-  overflow: hidden;
-  background: hsl(var(--surface-muted));
+
+/* A button label set in the serif body face sits about a pixel off center: its line
+   box carries more space above the capitals than below the baseline. Trim
+   the box to the capitals so flex centering centers the letters you see.
+   Browsers without text-box-trim keep the untrimmed box. */
+.trim-caps {
+  text-box: trim-both cap alphabetic;
 }
-.hero-shot {
-  position: relative;
-  display: block;
-  width: 1.36em;
-  height: 0.8em;
-  border-radius: 0.12em;
-  box-shadow: 0 0 0 1px hsl(var(--border-default));
-}
-.hero-preview {
-  position: absolute;
-  z-index: 5;
-  left: 50%;
-  bottom: -0.1em;
-  width: 22rem;
-  aspect-ratio: 5 / 3;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 24px 50px -16px hsl(0 0% 0% / 0.85), 0 0 0 1px hsl(var(--border-strong));
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(-50%) scale(0.35);
-  transform-origin: 50% 100%;
+
+/* Ask Louie's pill. Hover lifts it a pixel, lays a soft blue glow under it,
+   and turns and grows the sparkle with a small overshoot; a press settles
+   it back. Hover motion only where a pointer can hover; reduced motion
+   leaves the color change alone (global rule). */
+.ask-pill {
   transition:
-    opacity var(--duration-standard) ease,
-    transform var(--duration-deliberate) cubic-bezier(var(--motion-reveal-ease));
+    background-color 200ms ease,
+    box-shadow 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    translate 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    scale 160ms ease-out;
 }
-/* Touch screens have no hover, so they never get a preview to lay out. */
-@media (hover: none) {
-  .hero-preview { display: none; }
+.ask-pill svg {
+  transition:
+    rotate 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.hero-shot-wrap:hover .hero-preview {
-  opacity: 1;
-  transform: translateX(-50%) scale(1);
+@media (hover: hover) and (pointer: fine) {
+  .ask-pill:hover {
+    translate: 0 -1px;
+    box-shadow: 0 8px 20px -8px hsl(var(--accent-fill) / 0.7);
+  }
+  .ask-pill:hover svg {
+    rotate: 72deg;
+    scale: 1.15;
+  }
 }
-.hero-shot img,
-.hero-preview img {
-  opacity: 0;
-  animation: hero-cycle 9s linear infinite;
-  animation-delay: calc(var(--k, 0) * 3s);
-}
-@keyframes hero-cycle {
-  0% { opacity: 0; }
-  3%, 33% { opacity: 1; }
-  36%, 100% { opacity: 0; }
+.ask-pill:active {
+  translate: 0 0;
+  scale: 0.97;
+  box-shadow: none;
 }
 
-.hero-neon {
+/* Homepage hover preview: one frame per project, stacked in the free space
+   of the left column. Hovering a row fades its frame in quickly and out
+   faster (Emil Kowalski's rule: exits shorter than entrances). */
+.preview-slot {
   position: relative;
-  isolation: isolate;
-  display: inline-block;
-  white-space: nowrap;
+  flex: 1;
+  min-height: 0;
+  margin-block: 2rem;
 }
-/* Skip ink: a halo in the canvas color around each letter cuts the band
-   where a descender (the tail of the "p") crosses it, like an underline
-   that skips descenders. On the bare canvas the halo is invisible. */
-.hero-neon .hero-word {
-  --halo: hsl(var(--canvas));
-  text-shadow:
-    0.04em 0 var(--halo), -0.04em 0 var(--halo),
-    0 0.04em var(--halo), 0.028em 0.028em var(--halo),
-    -0.028em 0.028em var(--halo);
-}
-.hero-neon::after {
-  content: "";
+.preview-frame {
   position: absolute;
-  z-index: -1;
-  inset-inline: -0.04em;
-  /* Just under the baseline, so only descenders cross it. */
-  bottom: -0.01em;
-  height: 0.13em;
-  border-radius: 0.04em;
-  background: hsl(var(--accent-line));
-  transform: scaleX(0);
-  transform-origin: left center;
-  animation: neon-draw 800ms cubic-bezier(0.65, 0, 0.25, 1) 900ms forwards;
+  inset-inline: 0;
+  top: 50%;
+  max-height: 100%;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border-default));
+  background: hsl(var(--surface));
+  opacity: 0;
+  translate: 0 -50%;
+  scale: 0.97;
+  transition:
+    opacity 140ms ease-out,
+    scale 140ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-@keyframes neon-draw {
-  to { transform: scaleX(1); }
+.preview-frame[data-on] {
+  opacity: 1;
+  scale: 1;
+  transition-duration: 220ms;
+}
+.preview-frame img,
+.preview-frame video {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-word,
-  .hero-shot-wrap,
-  .hero-shot img,
-  .hero-preview img,
-  .hero-neon::after {
-    animation: none !important;
+/* Each row's own screenshot, for touch screens and narrow canvases, where
+   there is no hover and no left column to show it in. */
+.stacked-inline-media {
+  display: none;
+}
+@media (hover: none) {
+  .stacked-inline-media { display: block; }
+  .preview-slot { visibility: hidden; }
+}
+
+.stacked-narrow-only {
+  display: none;
+}
+/* The case study contents (Louie, 2026-10-29: the left column was crowded).
+   From a 1280px canvas they float in a third column on the right, beside
+   the article; narrower, they collapse into a disclosure above it. */
+.stacked-rail {
+  display: none;
+}
+@container canvas (width >= 1280px) {
+  .stacked-shell[data-rail] {
+    grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr) 11rem;
   }
-  .hero-shot img:first-child,
-  .hero-preview img:first-child,
-  .hero-word {
-    opacity: 1;
-  }
-  .hero-neon::after {
-    transform: none;
-  }
+  .stacked-rail { display: block; }
+  .rail-fallback { display: none; }
+}
+/* Case study prose keeps a readable measure; figures and diagrams take the
+   whole column. */
+.case-prose > :is(p, ul, ol, h3, h4, blockquote) {
+  max-width: 34rem;
+}
+
+@container canvas (width <= 820px) {
+  .stacked-narrow-only { display: block; }
+  .stacked-shell { grid-template-columns: minmax(0, 1fr); }
+  .stacked-aside { position: static; height: auto; padding-bottom: 0; }
+  .stacked-main { padding-top: 2.5rem; }
+  .stacked-intro { padding-top: 0; }
+  .stacked-row { grid-template-columns: minmax(0, 1fr); }
+  .stacked-row > .stacked-label { order: -1; margin-bottom: 0.5rem; }
+  .stacked-wide-only { display: none; }
+  .stacked-inline-media { display: block; }
 }

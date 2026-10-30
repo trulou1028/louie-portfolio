@@ -25,11 +25,11 @@ function PendingContent({ summary, items, className }: PendingContentProps) {
     <div
       data-pending-content
       className={cn(
-        "mt-6 max-w-[68ch] rounded-md border border-dashed border-border-default bg-surface-muted/70 p-5",
+        "mt-6 max-w-[34rem] border border-dashed border-border-default p-5",
         className,
       )}
     >
-      <p className="font-mono text-system uppercase text-foreground-muted">
+      <p className="text-meta text-foreground-quiet">
         Content pending
       </p>
       <p className="mt-2 text-body-sm text-foreground">{summary}</p>

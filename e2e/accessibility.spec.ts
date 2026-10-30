@@ -61,17 +61,19 @@ for (const route of ROUTES) {
   });
 }
 
-test("footer links meet the 24px minimum tap target on mobile", async (
+test("site links meet the 24px minimum tap target on mobile", async (
   { page },
   testInfo,
 ) => {
   // WCAG 2.2 AA (2.5.8): tap targets must be at least 24px. Only meaningful
   // at a touch viewport — Plan 016.
   test.skip(testInfo.project.name !== "mobile", "mobile only");
-  await page.goto("/");
+  // No page has a footer since the stacked redesign; the left column's
+  // links are the site links.
+  await page.goto("/about");
 
   const heights = await page.evaluate(() =>
-    [...document.querySelectorAll("footer a")].map(
+    [...document.querySelectorAll('nav[aria-label="Primary"] a')].map(
       (a) => a.getBoundingClientRect().height,
     ),
   );

@@ -4,22 +4,16 @@ import * as React from "react";
 import { AskLouieProvider } from "@/components/ai/ask-louie-dialog";
 import { usePathname } from "next/navigation";
 
-import { MobileNav } from "@/components/app-shell/mobile-nav";
-import { SiteHeader } from "@/components/app-shell/site-header";
 
 /**
  * The application shell (spec §10, §25), revised by Plan 037.
  *
- * The viewport is locked to `h-dvh`: a header on top, and one content region
- * below it that never scrolls itself. Pages scroll inside `Canvas`, which is
- * also where the footer and the optional contextual right rail live.
+ * The viewport is locked to `h-dvh`, and the content region never scrolls
+ * itself: pages scroll inside `StackedShell`.
  *
- *   < lg   compact `MobileNav` header + drawer
- *   ≥ lg   `SiteHeader` with inline navigation
- *   ≥ lg   pages may additionally show a resizable contextual right rail
- *
- * The persistent left rail is gone (Plan 037): it spent a quarter of the
- * screen on four links, and the work needs the width.
+ * There is no site header (stacked redesign, Louie, 2026-10-29). Every page
+ * has a left column with the portrait, the name, Ask Louie, and the links;
+ * below 820px that column sits at the top of the page.
  */
 function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -43,8 +37,6 @@ function AppShell({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
 
-      <SiteHeader />
-      <MobileNav />
 
       <main id="main" tabIndex={-1} className="min-h-0 flex-1 overflow-hidden">
         {children}

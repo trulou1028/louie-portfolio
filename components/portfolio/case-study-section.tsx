@@ -2,7 +2,6 @@ import { RevealHeading } from "@/components/portfolio/reveal-heading";
 import { MotionReveal } from "@/components/portfolio/motion-reveal";
 import * as React from "react";
 
-import { SectionLabel } from "@/components/system/section-label";
 import { cn } from "@/lib/utils";
 
 /**
@@ -12,9 +11,11 @@ import { cn } from "@/lib/utils";
  * anchors are the deep-link contract used by evidence entries and AI
  * navigation (spec §13, §14), so they must survive a reworded heading.
  *
- * `scroll-mt` keeps the heading clear of the sticky mobile header when a deep
- * link lands here, and `tabIndex={-1}` lets Plan 005 move focus to the
- * section after AI-triggered navigation (spec §26).
+ * `tabIndex={-1}` lets Plan 005 move focus to the section after
+ * AI-triggered navigation (spec §26).
+ *
+ * Stacked redesign: the title with its label ("Decision 02") in the narrow
+ * column beside it, then the prose at a reading measure (`.case-prose`).
  */
 type CaseStudySectionProps = {
   id: string;
@@ -37,20 +38,19 @@ function CaseStudySection({
       id={id}
       tabIndex={-1}
       aria-labelledby={`${id}-heading`}
-      className={cn(
-        "scroll-mt-20 border-t border-border-subtle pt-10 focus:outline-none lg:scroll-mt-10 lg:pt-12",
-        className,
-      )}
+      className={cn("scroll-mt-8 focus:outline-none", className)}
     >
       <MotionReveal stagger>
-      {eyebrow ? <SectionLabel className="mb-3">{eyebrow}</SectionLabel> : null}
-      <RevealHeading
-        id={`${id}-heading`}
-        className="font-display text-heading-xl text-balance text-foreground"
-      >
-        {title}
-      </RevealHeading>
-      {children}
+      <div className="stacked-row">
+        <RevealHeading
+          id={`${id}-heading`}
+          className="font-display text-heading-xl text-balance text-foreground"
+        >
+          {title}
+        </RevealHeading>
+        {eyebrow ? <p className="stacked-label pt-1.5 text-meta text-foreground-quiet">{eyebrow}</p> : null}
+      </div>
+      <div className="case-prose">{children}</div>
       </MotionReveal>
     </section>
   );

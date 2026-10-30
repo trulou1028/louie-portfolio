@@ -21,7 +21,8 @@ import { cn } from "@/lib/utils";
  */
 const actionVariants = cva(
   [
-    "inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-sm",
+    // Pills, like the Ask Louie button (stacked redesign).
+    "inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full",
     "font-medium transition-colors duration-(--duration-fast) focus-ring",
     "disabled:pointer-events-none disabled:opacity-50",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -33,7 +34,9 @@ const actionVariants = cva(
           // Keep the fill and its contrast-safe label paired across themes.
           // `aria-expanded:` overrides the upstream ghost base, which greys a
           // trigger out while its popover or panel is open.
-          "border-transparent bg-accent-fill text-accent-on-fill hover:bg-accent-fill-hover aria-expanded:bg-accent-fill-hover aria-expanded:text-accent-on-fill",
+          // `hover:text-accent-on-fill` overrides the upstream ghost base's
+          // `hover:text-foreground`, which put dark text on the blue.
+          "border-transparent bg-accent-fill text-accent-on-fill hover:bg-accent-fill-hover hover:text-accent-on-fill aria-expanded:bg-accent-fill-hover aria-expanded:text-accent-on-fill",
         secondary:
           "border border-border-default bg-surface text-foreground hover:border-border-strong hover:bg-surface-muted aria-expanded:border-border-strong aria-expanded:bg-surface-muted aria-expanded:text-foreground",
         ghost:

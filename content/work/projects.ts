@@ -6,6 +6,11 @@ import type { CaseStudyBriefContent } from "@/components/portfolio/case-study-br
 export type WorkProject = {
   slug: "ck12-analytics" | "offboard" | "lumo" | "lumo-evals" | "flexi";
   name: string;
+  /** The name in the homepage list, when it differs from `name`. */
+  shortName?: string;
+  /** The homepage paragraph (stacked redesign, 2026-10-29). It restates the
+   *  brief and summary; it adds no claim of its own. */
+  blurb: string;
   title: string;
   tags: readonly string[];
   href: Route;
@@ -43,15 +48,16 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "offboard",
     name: "Offboard",
+    blurb: "People in a career transition rebuild the same context across a dozen disconnected tools. As founding designer, I designed and engineered Offboard end to end: a workspace for each opportunity, an AI pipeline that checks a role before tailoring anything, and drafts the person reviews before anything goes out.",
     title: "Offboard Job Search Platform",
     tags: ["Product strategy", "Agentic workflows", "Design engineering"],
     href: "/work/offboard",
     summary: "One workspace for a role, with research and drafts that stay connected. Automation does the repeated work; the person decides what goes out.",
-    image: "/work/offboard/packet-panels.webp",
-    imageAlt: "An Offboard application packet for a Senior Product Designer role at Clever, marked ready for review, shown as three panels: the navigation, the packet with its fit assessment and sections, and the completed nine-step pipeline.",
-    imageCaption: "Ready for review. A Job Packet keeps the role, research, and prepared materials together so the person can inspect what the workflow produced. Supplied product screenshot.",
-    imageWidth: 1538, imageHeight: 1096,
-    tileImage: { src: "/work/offboard/packet.webp", alt: "An Offboard application packet for a Senior Product Designer role at Clever, marked ready for review, in the full app window: navigation, the packet with its fit assessment and sections, and the completed nine-step pipeline.", width: 2000, height: 1073 },
+    image: "/work/offboard/packet-ready.webp",
+    imageAlt: "An Offboard Job Packet for a Senior Product Designer role at Crexi. The page opens with a fit score of 86 and the advice Go for it, apply, a two-sentence read of strengths and gaps, a Low ghost risk label, and a block titled Your packet is ready to send: the tailored resume with 12 changes for this job, the cover letter at 334 words, Apply on Greenhouse, and Mark as applied. Path to a Person shows 4 people to contact. On the right, LUMO is looking at the Crexi packet, names the biggest gap, and offers three questions.",
+    imageCaption: "Ready to send. The packet leads with fit and ghost risk, then the tailored resume and cover letter the person reviews before applying. LUMO, on the right, reads the same packet. A QA account, October 2026. Product screenshot.",
+    imageWidth: 2000, imageHeight: 1525,
+    tileImage: { src: "/work/offboard/packet-window.webp", alt: "The same Offboard Job Packet in the full app window: the navigation on the left with Packets selected, the Crexi packet with its fit score of 86 and Low ghost risk label, the tailored resume and cover letter ready to send, and LUMO open on the right.", width: 2000, height: 1250 },
     role: "Founding Product Designer & AI Systems Lead",
     scope: "Product direction, UX, interface design, full-stack implementation, and iteration",
     status: "Working product",
@@ -68,11 +74,13 @@ export const workProjects: readonly WorkProject[] = [
       { label: "Years", value: "2025 to now" },
       { label: "Team", value: "Six-person startup" },
     ],
-    imageMarks: [{ x: 75.3, y: 20.6, w: 18.7, h: 40.5, label: "The pipeline stays visible" }],
+    imageMarks: [{ x: 57.3, y: 20, w: 13.1, h: 20, label: "The packet leads with fit" }],
   },
   {
     slug: "lumo",
     name: "Offboard LUMO",
+    shortName: "LUMO",
+    blurb: "LUMO is the assistant inside Offboard. It reads the person’s own search, sits beside the page they are on, and turns every change into a card they confirm. I designed and built the conversation, the tools, and the rules for when it may act.",
     icon: { src: "/work/lumo/face.webp", width: 512, height: 512 },
     title: "LUMO Career Agent",
     tags: ["AI assistant", "Conversational UX", "Agentic workflows"],
@@ -105,6 +113,7 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "lumo-evals",
     name: "LUMO Bench",
+    blurb: "An early product has too little data to train a model, so I built a bench instead: pass-or-fail cases, a harder set from real conversations, and a check on the grader itself. When a cheaper model failed a required safety case, LUMO kept its model.",
     icon: { src: "/work/lumo/face.webp", width: 512, height: 512 },
     title: "LUMO Bench & Evals System",
     tags: ["AI evaluation", "Model selection", "Product judgment"],
@@ -136,6 +145,8 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "ck12-analytics",
     name: "CK-12 Foresights & Insights",
+    shortName: "CK-12 Foresights",
+    blurb: "A predicted skill level does not tell a teacher what to do next, and a single score is easy to overread. I led the experience architecture: predicted ranges instead of one score, a clear no-data state, and Insights, which separates skill from engagement.",
     title: "CK-12 Teacher Analytics",
     tags: ["Systems design", "Learning analytics", "Product judgment"],
     href: "/work/ck12-analytics",
@@ -165,6 +176,7 @@ export const workProjects: readonly WorkProject[] = [
   {
     slug: "flexi",
     name: "CK-12 Flexi",
+    blurb: "An AI tutor can answer the question and still skip the learning. I led UX for Flexi: follow-up actions, so a student can ask for the next kind of help without writing a better prompt, and labels that separate AI answers from CK-12 Library content.",
     title: "CK-12 Flexi AI Tutor",
     tags: ["Conversational UX", "Learning", "Research"],
     href: "/work/flexi",
@@ -194,3 +206,8 @@ export const workProjects: readonly WorkProject[] = [
 ];
 
 export const featuredWork = workProjects.filter((project) => project.featured);
+
+/** The years a project ran: its "Years" fact, or "At CK-12" for the CK-12 studies. */
+export function projectYears(project: WorkProject): string | undefined {
+  return project.facts.find((fact) => fact.label === "Years" || fact.label.startsWith("At "))?.value;
+}

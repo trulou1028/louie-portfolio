@@ -5,27 +5,27 @@ import { MotionReveal } from "@/components/portfolio/motion-reveal";
 import { cn } from "@/lib/utils";
 
 /**
- * Work cards (Plan 051). One anatomy everywhere: the screenshot on a quiet
- * frame, a mono meta line, and the title. No plate color, no logo, no
+ * Work cards (Plan 051, restyled by the stacked redesign). One anatomy
+ * everywhere: the screenshot in a plain ruled frame, a meta line, and the
+ * title. No plate color, no logo, no
  * summary: the title carries the argument, and the case study carries the
  * rest. Color belongs to the case study pages, where there is room for it.
  *
- * The whole card is one link (the title's `::after` covers it). Hover lifts
- * the screenshot and underlines the title in lilac.
+ * The whole card is one link (the title's `::after` covers it). Hover turns
+ * the title blue.
  */
 type CardImage = { src: string; alt: string; width: number; height: number };
 
 const titleLink =
-  "focus-ring rounded-xs underline decoration-transparent decoration-2 underline-offset-[6px] transition-[text-decoration-color] duration-(--duration-fast) group-hover:decoration-accent-line after:absolute after:inset-0 after:content-['']";
+  "focus-ring rounded-xs transition-colors duration-(--duration-fast) group-hover:text-accent-hover after:absolute after:inset-0 after:content-['']";
 
-const shot =
-  "h-auto w-full rounded-xs shadow-shot ring-1 ring-foreground/10 transition-transform duration-(--duration-deliberate) group-hover:-translate-y-1.5 motion-reduce:transition-none";
+const shot = "h-auto w-full";
 
-/** The neutral frame a screenshot sits on. `fit` gives every small card the same 4:3 shape. */
+/** The plain ruled frame a screenshot sits in. `fit` crops every small card to the same 4:3 shape. */
 function Frame({ image, fit, sizes, eager = false }: { image: CardImage; fit: boolean; sizes: string; eager?: boolean }) {
   return (
-    <div className={cn("overflow-hidden rounded-panel bg-surface-muted", fit ? "flex aspect-[4/3] items-center justify-center p-5 sm:p-8" : "p-5 sm:p-10")}>
-      <Image src={image.src} alt={image.alt} width={image.width} height={image.height} sizes={sizes} loading={eager ? "eager" : "lazy"} className={shot} />
+    <div className={cn("overflow-hidden border border-border-default bg-surface", fit && "aspect-[4/3]")}>
+      <Image src={image.src} alt={image.alt} width={image.width} height={image.height} sizes={sizes} loading={eager ? "eager" : "lazy"} className={cn(shot, fit && "h-full object-cover object-top-left")} />
     </div>
   );
 }
@@ -45,8 +45,8 @@ export function WorkCard({ href, image, meta, title, size = "default", eager = f
     <MotionReveal className={className}>
       <article className="group relative flex flex-col">
         {image ? <Frame image={image} fit={!lead} eager={eager} sizes={lead ? "(min-width: 1024px) 1100px, 90vw" : "(min-width: 1024px) 560px, 90vw"} /> : null}
-        <p className="mt-5 font-mono text-system uppercase text-foreground-muted">{meta}</p>
-        <h3 className={cn("mt-2 font-medium text-balance text-foreground", lead ? "max-w-[34ch] text-heading-md" : size === "small" ? "text-body-lg" : "text-project-title")}>
+        <p className="mt-4 text-meta text-foreground-quiet">{meta}</p>
+        <h3 className={cn("mt-1 font-display text-balance text-foreground", lead ? "max-w-[34ch] text-heading-lg" : size === "small" ? "text-list-title" : "text-project-title")}>
           <Link href={href} className={titleLink}>{title}</Link>
         </h3>
       </article>
@@ -68,12 +68,12 @@ export function WorkRow({ href, image, meta, title, summary, eager = false }: {
       <article className="group relative grid items-center gap-8 @4xl/canvas:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] @4xl/canvas:gap-14">
         {image ? <Frame image={image} fit={false} eager={eager} sizes="(min-width: 1024px) 720px, 90vw" /> : null}
         <div>
-          <p className="font-mono text-system uppercase text-foreground-muted">{meta}</p>
-          <h2 className="mt-3 text-heading-md font-medium text-balance text-foreground">
+          <p className="text-meta text-foreground-quiet">{meta}</p>
+          <h2 className="mt-1 font-display text-heading-lg text-balance text-foreground">
             <Link href={href} className={titleLink}>{title}</Link>
           </h2>
           <p className="mt-4 max-w-[44ch] text-body text-pretty text-foreground-muted">{summary}</p>
-          <p aria-hidden="true" className="mt-5 text-body-sm font-medium text-foreground">Read the case study →</p>
+          <p aria-hidden="true" className="mt-5 text-body-sm text-foreground underline decoration-accent-line underline-offset-[0.2em]">Read the case study →</p>
         </div>
       </article>
     </MotionReveal>

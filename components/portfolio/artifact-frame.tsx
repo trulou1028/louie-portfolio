@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  * A product screenshot with a caption connecting the UI to the argument the
  * section is making (spec §13.7).
  *
- * `marks` draws amber redlines over the decision the image shows (Plan 037).
+ * `marks` draws blue boxes over the decision the image shows (Plan 037).
  * The marks are visual; the caption carries each label for screen readers,
  * either because it already says it or because the label is prepended.
  *
@@ -32,8 +32,9 @@ type ArtifactFrameProps = {
   /** Load eagerly when the frame is above the fold (Next 16: `loading`, not `priority`). */
   eager?: boolean;
   /**
-   * `browser` (default) puts a browser window bar above a full-window
-   * screenshot. `none` is for crops and panels, which were never a window.
+   * `browser` puts a browser window bar above a full-window screenshot.
+   * `none` (default since the stacked redesign, 2026-10-29) shows the
+   * screenshot in a plain ruled frame.
    */
   frame?: "browser" | "none";
   /** The address shown in the bar. Only a real, published address; left empty otherwise. */
@@ -87,7 +88,7 @@ function ArtifactFrame({
   height = 1000,
   marks,
   eager = false,
-  frame = "browser",
+  frame = "none",
   url,
   video,
   className,
@@ -101,7 +102,7 @@ function ArtifactFrame({
   return (
     <figure className={cn("mt-8", className)}>
       {src ? (
-        <div className="overflow-hidden rounded-lg border border-border-subtle bg-surface">
+        <div className="overflow-hidden border border-border-default bg-surface">
           {frame === "browser" ? <BrowserBar url={url} /> : null}
           {/* Marks are placed in percent of the image, so they stay inside
               this box and never count the browser bar. */}
@@ -113,7 +114,7 @@ function ArtifactFrame({
             height={height}
             loading={eager ? "eager" : "lazy"}
             className="block h-auto w-full"
-            sizes="(min-width: 1024px) 760px, 100vw"
+            sizes="(min-width: 1024px) 900px, 100vw"
           />}
           {marks?.map((mark) => <DecisionMark key={mark.label} mark={mark} />)}
           </div>
@@ -132,9 +133,9 @@ function ArtifactFrame({
           </span>
         </div>
       )}
-      <figcaption className="mt-3 text-body text-foreground-muted">
+      <figcaption className="mt-3 max-w-[34rem] text-meta text-foreground-quiet">
         {unstated.length ? (
-          <span className="mr-1.5 font-medium text-foreground">
+          <span className="mr-1.5 text-foreground">
             {unstated.map((mark) => mark.label).join(". ")}.
           </span>
         ) : null}

@@ -16,9 +16,9 @@ function SectionLabel({
     <p
       data-slot="section-label"
       className={cn(
-        // Plan 037: sentence case, sans. The mono, uppercase, tracked version
-        // sat above every section and read as template scaffolding.
-        "text-body-sm font-semibold text-foreground-muted",
+        // Plan 037: sentence case, sans. Stacked redesign: the meta style,
+        // the same as the label over a case study title.
+        "text-meta text-foreground-quiet",
         className,
       )}
       {...props}

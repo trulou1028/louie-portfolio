@@ -22,10 +22,11 @@ function isInternal(href: string) {
 
 function InlineLink({ className, href, children, ...props }: InlineLinkProps) {
   const classes = cn(
-    // Always underlined: in the light theme the accent is ink, so color
-    // alone would not tell a link from body text (WCAG 1.4.1).
-    "font-medium text-accent underline decoration-border-strong decoration-1 underline-offset-4 focus-ring rounded-xs",
-    "transition-colors duration-(--duration-instant) hover:text-accent-hover hover:decoration-current",
+    // Always underlined: the accent text is ink, so color alone would not
+    // tell a link from body text (WCAG 1.4.1). Stacked redesign: a thin blue
+    // underline, and blue text on hover.
+    "text-accent underline decoration-accent-line decoration-1 underline-offset-[0.2em] focus-ring rounded-xs",
+    "transition-colors duration-(--duration-fast) hover:text-accent-hover",
     className,
   );
 

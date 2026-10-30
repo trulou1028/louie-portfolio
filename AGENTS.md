@@ -65,13 +65,26 @@ styling and semantics belong in wrappers: `components/system/`,
 `components/portfolio/`, `components/app-shell/`, `components/ai/`
 (spec §33). Do not scatter raw `Button`/`Card`/`Badge` through pages.
 
-**Fonts.** Three families (Plan 051). `font-display` is Instrument Serif,
-for page, section, and project titles; it has one weight (400) and
-`font-synthesis-weight: none` keeps the browser from faking a bold, so never
-pair it with `font-bold`. `font-sans` is Geist for UI and body, at 400 and
-600. Geist Mono (`font-mono`) for nav pills, meta lines, and short system
-labels only — never paragraphs (spec §7). All load through `next/font/google`
-in `app/layout.tsx`.
+**Fonts.** Three families (fonts trial, Louie, 2026-10-29). `font-display`
+is Inter, for the name, page, section, and project titles, at 600 or 700
+with the negative tracking set in the type tokens. `font-sans` is Libre
+Baskerville, for running text, UI, and meta lines. Both load through
+`next/font/google`. Geist Mono (`font-mono`) is for short technical labels
+only (tool names, chart labels), never nav, meta lines, or paragraphs
+(spec §7). `font-synthesis-weight: none` stops the browser faking a bold.
+The previous Libre Caslon Condensed files stay in `app/fonts/` in case
+the trial is reverted.
+
+**Layout.** Every page uses the stacked layout (`components/stacked/`),
+after David Aerne's meodai.color.pizza: a left column that stays in view
+(line portrait, name, Ask Louie, facts and contents on a case study, and
+the site links) beside one column of stacked text. There is no site header
+or footer. Pages other than the homepage and case studies get the standard
+column through `Canvas` (`PageAside`). Ask Louie is a blue pill under the
+name, the one filled control on a page. Text sits
+at a 34rem measure (`.stacked-row`, `.case-prose`), with a narrow column
+beside it for a project name or section label. Rules separate rows; there
+are no cards or boxes on these pages.
 
 **Card anatomy.** One padding scale, no in-between values: compact card
 `p-4`, standard card `p-5`, panel `p-6` (a panel may step up to `sm:p-8`).
@@ -99,23 +112,25 @@ metadata rows. Decorative icons always `aria-hidden`.
 job-fit dialog, which previews its four result sections). No bare spinners
 without text, and no skeleton that misrepresents what is coming.
 
-**Theme.** Dark only, with no switch (Plan 051): `<html>` carries `.dark`
-and `app/globals.css` holds one palette. Do not add `dark:` variants in
-portfolio components — write against the tokens. The shell is cool off-white
-ink on a cool near-black canvas (#101113); color belongs to the work:
+**Theme.** Light only, with no switch (stacked redesign, 2026-10-29):
+`<html>` has no `.dark`, and `app/globals.css` holds one palette. Do not
+add `dark:` variants in portfolio components — write against the tokens.
+Ink (#1C1C21) on a cool off-white paper (#F3F3F5); color belongs to the
+work:
 
+- Text steps: `text-foreground` for names and titles,
+  `text-foreground-muted` for running text, `text-foreground-quiet` for
+  meta lines (role, years, labels; #6B6B75, 4.7:1).
+- One blue, #1A10E6. `text-accent` resolves to ink, so `InlineLink` is
+  always underlined; the underline is `accent-line` blue, and hover text is
+  `text-accent-hover` blue. `bg-accent-fill` (+ `text-accent-on-fill`,
+  white) is for primary actions only. Focus rings and text selection use
+  the same blue.
+- `signal` is the same blue, reserved for `DecisionMark`: a thin box and
+  label drawn over a real screenshot. Mark labels restate the caption, alt
+  text, or case study.
 - `bg-plate-*` / `text-plate-*-ink` / `text-plate-*-muted`: each project's
-  own brand field. Use them only for that project (case study pages, the
-  next-case-study link). Work cards use the neutral `bg-surface-muted` frame.
-- `signal` (amber): reserved for `DecisionMark`, the redline drawn over a
-  real screenshot. Mark labels restate the caption, alt text, or case study.
-- The accent is a duo (Louie, 2026-10-17). `text-accent` is for text and
-  markers (it resolves to ink, so `InlineLink` is always underlined).
-  `bg-accent-fill` (+ `text-accent-on-fill`) is indigo #5550F2 with light
-  text, for primary actions only. `accent-line` is lilac #BBA8FF for lines
-  and highlights: the headline underline, link and hover underlines, focus
-  rings, text selection, and chart marks in case-study graphics. Never put
-  lilac behind light text, or indigo behind dark text.
+  own brand field, for that project only.
 - Offboard's own lime appears only inside Offboard screenshots and the
   Offboard brand plate (`plate-offboard-mark`), never in charts or site UI.
 

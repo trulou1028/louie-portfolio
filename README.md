@@ -1084,3 +1084,98 @@ From the portfolio review of 2026-10-20, ahead of this week's applications.
   the team answered the chart finding with Recommendations, which shipped to
   teachers. Sources: Louie's answers on 2026-10-20 and his earlier CK-12
   deck. The claim ledger (A05 to A08) and Ask Louie's evidence index match.
+
+## Stacked redesign, October 29, 2026
+
+Louie's direction after the "AI slop" review: David Aerne's
+meodai.color.pizza as the reference, light colors from his screenshot,
+stacked projects with a short paragraph each, a preview on hover, and a
+line portrait. He picked "direction A", "typeface 2", and portrait M1 from
+the review prototypes on 2026-10-29. Deviations from the spec and from
+Plan 051:
+
+- **Light only.** Plan 051 made the site dark only. The palette is now ink
+  on a cool off-white paper with one blue (#1A10E6). The prototype's meta
+  grey (#84848E, 3.3:1) failed WCAG AA, so meta text is #6B6B75 (4.7:1).
+- **Fonts.** Libre Caslon Condensed (titles) and Newsreader (text) replace
+  Instrument Serif and Geist. Caslon Condensed is self-hosted from
+  `app/fonts/` (Google Fonts latin subset, SIL OFL) because
+  `next/font/google` does not list it yet. Geist Mono stays for short
+  technical labels.
+- **No header or footer on any page.** A sticky left column holds the
+  line portrait, the name, Ask Louie, and the site links (Work, About,
+  Résumé, LinkedIn, email, Book a call); on a case study it also holds the
+  facts and the contents (spec §10 described a header and a right rail).
+  Louie's review (2026-10-29): About and Résumé had a different header from
+  the rest, so every page now uses the same column. The "Let's talk" menu
+  and the mobile drawer are gone; the email address is in the column.
+- **Ask Louie is a blue pill button** under the name on every page ("Ask
+  about this project" on a case study). Louie found the text link hidden.
+- **Homepage.** The hero headline ("I make complex things feel simple."),
+  the work cards, "How I work", and the closing call to action are gone;
+  "Book a call" moved into the left column's links.
+  The page is Louie's About intro, then three ruled lists: "Work I'm proud
+  of" (five case studies), "Built on my own" (three projects), and "Where
+  I've worked". Each project paragraph is `blurb` in the project data and
+  restates its brief; it adds no claim. Hovering a row shows its screenshot
+  or recording in the left column; touch screens and narrow windows show it
+  under the paragraph.
+- **Case studies.** The opening is a label, the title, the summary as a
+  lead, the hero screenshot, and the brief as ruled rows. Section titles
+  carry their label ("Decision 02") in a narrow column beside them.
+  Screenshots sit in a plain ruled frame: the browser bar is now opt-in
+  (`frame="browser"`). Decision marks are a thin blue box and label, with
+  no dim around them. The next-case-study link is a rule and a title, not a
+  plate.
+- **Independent project write-ups** (Motif, TransferSight, Neuron Shift)
+  use the same case study layout.
+- **Portrait.** `public/portrait/louie.webp` is an AI-drawn line portrait
+  made from Louie's photo (ElevenLabs, gpt-image), reviewed and picked by
+  him. It is drawn on white and blended into the paper with `multiply`.
+- **Polish pass (Louie, 2026-10-29).** The left column's links sit 24px
+  from the bottom, not 40px. The Ask Louie label is trimmed to its capitals
+  (`.trim-caps`, CSS `text-box`) so it centers in the pill. Every page now
+  drops the old card styling: `Tag` is plain meta text, `SectionLabel` is
+  the meta style, buttons are pills, and the Work, Experiments, AI Systems,
+  and About pages use ruled rows and plain white screenshot frames instead
+  of rounded cards. Résumé dates and the pending-content note use the meta
+  style, not uppercase mono. A 404 page uses the same layout.
+- **Deep links wait for fonts and settle.** `DeepLinkHighlight` scrolls
+  after `document.fonts.ready`, then realigns once if the smooth scroll
+  ended short and the visitor has not scrolled. Under heavy parallel load,
+  WebKit phone emulation still misses the target about once in 50 loads.
+- **New Offboard screenshots (2026-10-29).** Captured from a QA account
+  Louie signed in to, at 2x, with contact details blurred in the page
+  before capture: the packet page (`packet-ready.webp`, the case study's
+  top image), the same page in the full window (`packet-window.webp`, the
+  homepage preview and the Product section), the resume editor with its
+  changes shown (`resume-changes.webp`), the Layoff Plan
+  (`layoff-plan-steps.webp`), and the new Canvas view (`canvas.webp`, in
+  "Give each opportunity a persistent workspace"). New file names, so no
+  image cache serves the old pictures. Captions and alt text describe only
+  what each screen shows.
+- **Decision 01 screenshots replaced (Louie supplied them, 2026-10-29).**
+  The old risk-pause and stopped-packet screenshots showed an earlier
+  packet page, and the QA account had no packet in either state. Decision
+  01 now shows a packet being built, with the ghost check done before the
+  resume and cover letter (`packet-building.webp`), and the standalone
+  ghost check while it runs (`ghost-checking.webp`) and when it finishes
+  (`ghost-result.webp`). Each is cropped to the main area, which also drops
+  the account email in the app sidebar. The prose and the diagram still
+  describe the pause on a flagged role; no screenshot shows that pause now.
+  A decision mark can now set `labelAt` and `labelBelow` when its default
+  label position would cover text in the screenshot.
+- **Case study contents on the right (Louie, 2026-10-29).** The left
+  column was crowded, so from a 1280px canvas the contents float in a
+  sticky third column beside the article, with a thin line marking the
+  current section. Narrower, they fold into the "On this page" disclosure.
+- **Blue buttons keep white text on hover.** The upstream ghost button set
+  `hover:text-foreground`, which put dark text on the blue. The Ask Louie
+  pill also lifts a pixel, takes a soft blue glow, and turns its sparkle on
+  hover (`.ask-pill`).
+- **Fonts trial: Inter and Libre Baskerville (Louie, 2026-10-29).** Titles
+  are Inter at 600 to 700 with negative tracking; running text is Libre
+  Baskerville. Inter is wider than Caslon Condensed, so title sizes step
+  down about 15%. Baskerville has a large x-height, so body text is 16px
+  with a 1.75 line height. The Caslon files stay in `app/fonts/` so the
+  earlier pairing can come back.

@@ -316,10 +316,10 @@ test.describe("the AI surface", () => {
     // Closing the assistant restores the primary reading/navigation surface.
     await page.getByRole("dialog", { name: "Ask Louie", exact: true }).getByRole("button", { name: "Close", exact: true }).click();
     await page
-      .getByTestId("featured-work")
-      .getByRole("link", { name: "All work →" })
+      .getByRole("navigation", { name: "Primary", exact: true })
+      .getByRole("link", { name: "About", exact: true })
       .click();
-    await expect(page).toHaveURL(/\/work$/);
+    await expect(page).toHaveURL(/\/about$/);
     await expect(page.locator("h1")).toBeVisible();
   });
 

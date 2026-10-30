@@ -18,21 +18,17 @@ const ROWS = [
  * this still leaves with the story. Every line restates the case study;
  * the brief adds no claim of its own.
  *
- * Plan 051: no box. Rules between rows, on the page itself.
+ * Stacked redesign: each row is the text with its label in the narrow
+ * column beside it, ruled like the homepage list. The label leads in the
+ * markup (a `dt` comes before its `dd`) and moves to the side on wide
+ * canvases.
  */
 function CaseStudyBrief({ brief, className }: { brief: CaseStudyBriefContent; className?: string }) {
   return (
-    <dl className={cn("@container border-t border-border-default", className)}>
-      {ROWS.map((row, index) => (
-        <div
-          key={row.key}
-          className={cn(
-            "grid gap-1 @xl:grid-cols-[8.5rem_minmax(0,1fr)] @xl:gap-6",
-            "py-4",
-            index > 0 && "border-t border-border-subtle",
-          )}
-        >
-          <dt className="text-body-sm font-semibold text-foreground @xl:pt-0.5">{row.label}</dt>
+    <dl className={cn("border-t border-border-default", className)}>
+      {ROWS.map((row) => (
+        <div key={row.key} className="stacked-row border-b border-border-default py-5">
+          <dt className="stacked-label order-2 text-meta text-foreground-quiet">{row.label}</dt>
           <dd className="text-body text-foreground-muted">{brief[row.key]}</dd>
         </div>
       ))}

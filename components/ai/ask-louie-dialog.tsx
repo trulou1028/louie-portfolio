@@ -250,6 +250,6 @@ function PanelResizer() {
 }
 
 /** Responsive navigation triggers share one persistent panel and transcript. */
-export function AskLouieTrigger({ className, compact = false, variant }: { className?: string; compact?: boolean; variant?: "primary" | "secondary" | "ghost" }) {
-  return <DialogTrigger render={<Action variant={variant ?? (compact ? "ghost" : "secondary")} size={compact ? "sm" : "md"} className={className} />}><Sparkles aria-hidden="true" className="size-4" />Ask Louie</DialogTrigger>;
+export function AskLouieTrigger({ className, compact = false, variant, label = "Ask Louie" }: { className?: string; compact?: boolean; variant?: "primary" | "secondary" | "ghost"; label?: string }) {
+  return <DialogTrigger render={<Action variant={variant ?? (compact ? "ghost" : "secondary")} size={compact ? "sm" : "md"} className={className} />}><Sparkles aria-hidden="true" className="size-4" /><span className="trim-caps">{label}</span></DialogTrigger>;
 }

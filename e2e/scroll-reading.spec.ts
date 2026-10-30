@@ -7,7 +7,6 @@ test("the reading rail follows scrolling without changing the URL", async ({ pag
   for (const id of ["context", "decision-control", "architecture", "outcomes", "system"]) {
     await page.locator(`#${id}`).evaluate(el => el.scrollIntoView({ block: "start", behavior: "instant" }));
     await expect(nav.locator(`[href="#${id}"]`)).toHaveAttribute("aria-current", "location");
-    await expect(nav.locator(`[href="#${id}"]`)).toHaveCSS("border-left-width", "0px");
     await expect(nav.locator('[aria-current="location"]')).toHaveCount(1);
     await expect(page).toHaveURL(/\/work\/offboard$/);
   }
@@ -34,13 +33,13 @@ test("case-study sections visibly animate on scroll and then settle", async ({ p
 test("Work leads with Offboard, on a quiet frame rather than its plate color", async ({ page }) => {
   await page.goto("/work");
   await expect(page.locator('main a[href^="/work/"]').first()).toHaveAttribute("href", "/work/offboard");
-  // Plan 051: plate colors left the Work cards; every screenshot sits on the
-  // same neutral frame.
+  // Plan 051: plate colors left the Work cards. Stacked redesign: every
+  // screenshot sits in the same plain white frame.
   const row = page.locator("main article").filter({ has: page.locator('a[href="/work/offboard"]') });
   const frame = row.locator("img").first().locator("xpath=..");
   const [actual, expected] = await frame.evaluate((node) => {
     const probe = document.createElement("div");
-    probe.style.backgroundColor = "hsl(var(--surface-muted))";
+    probe.style.backgroundColor = "hsl(var(--surface))";
     document.body.append(probe);
     const token = getComputedStyle(probe).backgroundColor;
     probe.remove();
@@ -49,10 +48,3 @@ test("Work leads with Offboard, on a quiet frame rather than its plate color", a
   expect(actual).toBe(expected);
 });
 
-test("homepage section headings participate in motion and experience is current", async ({ page }) => {
-  await page.goto("/");
-  for (const heading of await page.locator("main h2").all()) {
-    expect(await heading.evaluate(el => Boolean(el.closest("[data-motion-reveal]")))).toBe(true);
-  }
-  await expect(page.getByText("14+ years designing digital products", { exact: true })).toHaveCount(1);
-});

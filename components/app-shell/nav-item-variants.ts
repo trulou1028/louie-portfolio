@@ -20,8 +20,9 @@ export const navItemVariants = cva(
       size: {
         /** Former desktop left rail; kept for any vertical nav list. */
         rail: "h-9 text-body-sm",
-        /** Desktop header (Plan 051): mono pills; the active page is a solid ink pill. */
-        bar: "h-8 rounded-full px-3.5 font-mono text-system uppercase",
+        /** Desktop header (stacked redesign): plain text links; the active
+         *  page is ink with a blue underline. */
+        bar: "h-8 rounded-xs px-2 text-meta",
         /** Mobile sheet — larger touch target (spec §26). */
         sheet: "h-11 text-body",
       },
@@ -32,8 +33,8 @@ export const navItemVariants = cva(
       },
     },
     compoundVariants: [
-      { size: "bar", active: true, class: "bg-foreground font-medium text-canvas" },
-      { size: "bar", active: false, class: "bg-surface-raised text-foreground hover:bg-border-default" },
+      { size: "bar", active: true, class: "bg-transparent font-normal text-foreground underline decoration-accent-line underline-offset-[0.3em]" },
+      { size: "bar", active: false, class: "text-foreground-quiet hover:bg-transparent hover:text-accent-hover" },
     ],
     defaultVariants: {
       size: "rail",

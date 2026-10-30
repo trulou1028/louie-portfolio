@@ -177,13 +177,14 @@ test.describe("deep links into case studies", () => {
 });
 
 for (const source of ["offboard", "flexi"]) {
-  test(`opening the Offboard card after ${source} outcomes starts at the top`, async ({ page, isMobile }) => {
+  test(`opening the Offboard card after ${source} outcomes starts at the top`, async ({ page }) => {
     await page.goto(`/work/${source}#outcomes`);
     await expect(page.locator("#outcomes")).toBeInViewport();
-    if (isMobile) await page.getByRole("button", { name: "Open navigation menu" }).click();
+    // Stacked redesign: the way back is the left column's "Work" link, to
+    // the homepage list.
     await page.getByRole("navigation", { name: "Primary", exact: true }).getByRole("link", { name: "Work", exact: true }).click();
-    await expect(page).toHaveURL(/\/work$/);
-    await page.locator('main a[href="/work/offboard"]').click();
+    await expect(page).toHaveURL(/\/$/);
+    await page.locator('main article a[href="/work/offboard"]').click();
     await expect(page).toHaveURL(/\/work\/offboard$/);
     await expect(page.locator("article h1")).toBeInViewport();
     // Wait past both smooth scrolling and entrance motion to catch late replays.
