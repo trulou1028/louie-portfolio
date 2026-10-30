@@ -32,7 +32,7 @@ export default function AboutPage() {
           {about.headline}
         </h1>
 
-        <div className="mt-6 flex flex-col gap-4 text-body-lg text-foreground-muted">
+        <div className="mt-6 flex max-w-[34rem] flex-col gap-4 text-body-lg text-foreground-muted">
           {about.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
 
@@ -43,7 +43,7 @@ export default function AboutPage() {
             width={heroPhoto.width}
             height={heroPhoto.height}
             sizes="(min-width: 1024px) 760px, 100vw"
-            className="mt-10 h-auto w-full rounded-lg border border-border-subtle"
+            className="mt-10 h-auto w-full border border-border-default"
             loading="eager"
           />
         ) : null}
@@ -53,7 +53,7 @@ export default function AboutPage() {
         </p>
 
         <section aria-labelledby="about-how" className="mt-12">
-          <h2 id="about-how" className="text-body-sm font-semibold text-foreground-muted">How I work</h2>
+          <h2 id="about-how" className="text-meta text-foreground-quiet">How I work</h2>
           <ul className="mt-4 flex flex-col">
             {about.principles.map((principle) => (
               <li key={principle.title} className="grid gap-2 border-b border-border-subtle py-5 sm:grid-cols-[14rem_minmax(0,1fr)] sm:gap-6">

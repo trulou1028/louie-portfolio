@@ -17,4 +17,11 @@ export type DecisionMarkSpec = {
   /** Height, percent of image height. */
   h: number;
   label: string;
+  /** Which end of the box the label sits at. By default the label takes the
+   *  side that keeps it inside the frame; set it when that side would cover
+   *  text the mark needs to leave readable. */
+  labelAt?: "start" | "end";
+  /** Put the label under the box instead of above it, for when the area
+   *  above holds text the mark needs to leave readable. */
+  labelBelow?: boolean;
 };

@@ -14,6 +14,8 @@ A job search splits across separate tools: research, resume, outreach, and track
 
 I made the opportunity, not a tracker row, the organizing unit. It holds the role, company, people, research, materials, preparation, tasks, and history. LUMO, the AI layer, works across that context.
 
+<ArtifactFrame src="/work/offboard/canvas.webp" alt="The Canvas view of the Crexi Senior Product Designer packet. The job sits in the middle, 5 of 5 prepared, with lines out to the ghost check (score 0 of 100), company intel, role match (86% match), people (4 paths in), the tailored resume (saved, 70% match), the cover letter (saved), and interviews (nothing scheduled). The job description is open in a panel on the left." width={2000} height={1573} caption="One opportunity as a workspace. The Canvas view shows what is attached to a role: checks, research, people, and materials. A QA account, October 2026. Product screenshot." />
+
 </CaseStudySection>
 
 <CaseStudySection id="decision-risk" title="Check the role before tailoring anything" eyebrow="Decision 01">
@@ -30,9 +32,11 @@ The packet assesses the role first. A risk gate can pause it so the person decid
   ]} />
 </SystemDiagram>
 
-<ArtifactFrame marks={[{ x: 29.9, y: 51.4, w: 35.5, h: 22.3, label: "The pause for the person's choice" }]} url="offboard.co" src="/work/offboard/risk-gate.webp" alt="An Offboard packet paused under Action Required. Job Details, Ghost Check, and Application are done, and the ghost check reads 84 out of 100, high risk. A card reads High Ghost Risk Detected, 84/100: This job posting shows signs it may not be a real, active listing. You can still proceed if you have additional information. Under it are three options: Continue Anyway, Save Application Only, and Discard. The pipeline on the right has stopped after Save Application." width={2000} height={1472} caption="The pause for the person's choice. A high ghost check score stops the packet before tailoring. The person can continue, save only the application, or discard it. A test packet with sample data and a set score. Supplied product screenshot." />
+<ArtifactFrame marks={[{ x: 10.9, y: 40.7, w: 75, h: 8.5, label: "Ghost check first", labelAt: "end", labelBelow: true }]} src="/work/offboard/packet-building.webp" alt="LUMO building a packet for a Senior Product Designer, AI role at Maintainx. 4 of 7 parts are ready. The job, Ghost check (Low risk, 11 of 100), Company, and Your fit are done. Resume reads Tailoring, checking each requirement against your resume. Cover letter reads Drafting, and A person reads Finding a person to contact at the company. A line under the list reads Saved to Applications as Saved." width={1100} height={880} caption="A packet being built. The ghost check finishes before the resume and cover letter start. A QA account, October 2026. Product screenshot." />
 
-<ArtifactFrame url="offboard.co" src="/work/offboard/packet-stopped.webp" alt="An Offboard packet that stopped. The message reads: We couldn't finish this packet. The job page did not include enough job details to build a packet. A No credits charged label sits under it, then three options: try again with this link, try a different job, or paste the job description instead. The packet pipeline on the right shows the same message at its last step." width={2000} height={999} caption="When a job page lacks the detail to assess the role, the packet stops and asks what to do next. No credits are charged. Supplied product screenshot." />
+<ArtifactFrame src="/work/offboard/ghost-checking.webp" alt="Offboard's Check a job posting page. The intro reads: Paste a public job URL to check stale listings, broken apply flows, duplicate job IDs, and other warning signs. A card shows a ghost icon and Searching for employer reviews, step 4 of 7, with a progress bar." width={1500} height={610} caption="The ghost check also runs on its own: paste a job link, and it works through seven steps. A QA account, October 2026. Product screenshot." />
+
+<ArtifactFrame src="/work/offboard/ghost-result.webp" alt="A finished ghost check for a Head of AI Design posting at Baker Tilly. The score is 0, labelled Looks Legit. The verdict reads: This posting shows few warning signs. Safe to apply. A What To Do Next card offers Add to Application Tracker. Below, a card reads No material warning signals were detected from this posting, and a Context card shows the posting snapshot: title, company, location, date posted, ATS, and source." width={1500} height={900} caption="A finished check. The result gives a score, a plain verdict, the signals found, and one next step. A QA account, October 2026. Product screenshot." />
 
 </CaseStudySection>
 
@@ -49,7 +53,7 @@ Outputs stay editable drafts. Nothing sends itself to an employer. With no resum
   ]} />
 </SystemDiagram>
 
-<ArtifactFrame marks={[{ x: 62.3, y: 48.6, w: 36, h: 27.5, label: "Each change shown, the original struck through" }]} url="offboard.co" src="/work/offboard/resume-review.webp" alt="The Tailored Resume section of an Offboard packet: Tailored for this posting, 6 changes applied, with Download tailored resume and Preview buttons and a link to view or adjust it. The preview panel on the right shows the resume. Each changed line shows the original struck through, with the rewrite highlighted under it. The contact details are blurred." width={2000} height={999} caption="A tailored resume draft: each change shown, the original struck through above its rewrite. The person previews, adjusts, and decides whether to download. Contact details blurred. Supplied product screenshot." />
+<ArtifactFrame marks={[{ x: 20, y: 83.2, w: 41.3, h: 6, label: "A removed bullet, with Put it back" }]} src="/work/offboard/resume-changes.webp" alt="A tailored resume for the Crexi role in Offboard's resume editor, with Show changes from base switched on. Rewritten lines are tinted and labelled Changed from base. A removed bullet stays on the page, struck through, labelled Removed for this job, with a Put it back link. The side panel lists 5 of 6 must-haves covered, What changed (8 lines rewritten, 2 bullets moved up or down, 4 bullets removed for this job), Answer 3 questions to make this stronger, and Held back: 4, lines Offboard left out because the resume does not back them up. The contact line is blurred." width={2000} height={1250} caption="A tailored resume with its changes shown. Rewritten lines are tinted, a removed bullet stays visible with Put it back, and Offboard holds back lines the resume does not support. Contact details blurred. A QA account, October 2026. Product screenshot." />
 
 </CaseStudySection>
 
@@ -65,7 +69,7 @@ A packet assumes the person already has a role worth pursuing. Someone new to a 
 
 So I made the start plan-first and moved packets later. The question became “Can this person take their first useful action?”
 
-<ArtifactFrame url="offboard.co" src="/work/offboard/layoff-plan.webp" alt="Offboard's Layoff Plan page. The intro reads: The steps that fit your situation. Do them in any order. Mark each one done as you finish. 5 of 24 done. The first group, Protect the first week, lists steps such as taking 20 minutes before signing or replying, saving layoff documents in one place, writing down key dates, and filing for unemployment benefits." width={2000} height={999} caption="The plan-first start. The Layoff Plan gives steps that fit the person's situation, in groups they can do in any order. Supplied product screenshot." />
+<ArtifactFrame src="/work/offboard/layoff-plan-steps.webp" alt="Offboard's Layoff Plan. It is built from: just laid off, California, last day July 1, severance a few weeks, unemployment not filed yet, Senior Product Designer. 8 of 24 steps done. Seven stages run from Protect the first week to Wrap it up. An Up next card reads File for unemployment benefits, because you haven't filed for unemployment yet and you live in California, with Start and Mark done. The list under Protect the first week starts with filing for unemployment benefits, marked File this week." width={1772} height={1800} caption="The plan-first start. The Layoff Plan is built from the person's own situation, names the next step and why, and groups the rest into seven stages. A QA account, October 2026. Product screenshot." />
 
 </CaseStudySection>
 
@@ -81,9 +85,9 @@ I built it with AI development tools in the loop. The client runs Vite, React, T
 
 <CaseStudySection id="product" title="A completed workflow becomes a reviewable packet" eyebrow="Product">
 
-The screenshot at the top shows a completed Job Packet ready for review: role, match, research, and materials together beside the pipeline.
+The screenshot at the top shows a completed Job Packet ready to send: fit, ghost risk, and materials together, with LUMO beside them.
 
-<ArtifactFrame url="offboard.co" src="/work/offboard/packet.webp" alt="The same Offboard packet in the full app window. The navigation is on the left with Packets selected. The packet shows the Clever role card with a Worth a shot label, a partial match of 58, a ghost risk of 28, and five paths, followed by the Ghost Analysis, Company Intel, and Role Match Analysis sections. The completed pipeline and the context panel are on the right." width={2000} height={1073} caption="The packet in the full app window. Each section opens in place to edit or regenerate. Supplied product screenshot." />
+<ArtifactFrame src="/work/offboard/packet-window.webp" alt="The Crexi packet in the full Offboard window. The navigation is on the left with Packets selected. The packet shows the fit score of 86, Low ghost risk, the tailored resume and cover letter ready to send, Apply on Greenhouse, and Path to a Person with 4 people to contact. LUMO is open on the right, looking at the Crexi packet." width={2000} height={1250} caption="The packet in the full app window, with LUMO open beside it. A QA account, October 2026. Product screenshot." />
 
 </CaseStudySection>
 

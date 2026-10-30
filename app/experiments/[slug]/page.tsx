@@ -3,8 +3,6 @@ import NeuronContent from "@/content/experiments/neuron-shift.mdx";
 import MotifContent from "@/content/experiments/motif.mdx";
 import TransferSightContent from "@/content/experiments/transfersight.mdx";
 import { DeepLinkHighlight } from "@/components/portfolio/deep-link-highlight";
-import { TableOfContents, TableOfContentsInline } from "@/components/portfolio/table-of-contents";
-import { AskAboutProject } from "@/components/ai/ask-about-project";
 import { MOTIF_ANCHORS, NEURON_ANCHORS, TRANSFERSIGHT_ANCHORS, isRoute, type Anchor } from "@/lib/routes";
 import { TrackView } from "@/components/system/track-view";
 import type { Metadata } from "next";
@@ -12,7 +10,9 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Canvas, ContextualRail } from "@/components/app-shell/contextual-rail";
+import { Canvas } from "@/components/app-shell/contextual-rail";
+import { CaseStudyLayout } from "@/components/stacked/case-study-layout";
+import { InlineLink } from "@/components/system/inline-link";
 import { PendingContent } from "@/components/portfolio/pending-content";
 import { CaseStudyBrief } from "@/components/portfolio/case-study-brief";
 import { Action } from "@/components/system/action";
@@ -59,15 +59,31 @@ export default async function ExperimentPage({
   const writeUp = WRITE_UPS[slug];
   const href = `/experiments/${slug}`;
 
+  // A write-up uses the stacked case study layout (2026-10-29). An
+  // exploration without one keeps the plain page and its pending note.
+  if (writeUp) {
+    return (
+      <CaseStudyLayout
+        label={[experiment.name, experiment.badge].filter(Boolean).join(" · ")}
+        title={experiment.title}
+        lead={experiment.summary}
+        facts={[
+          ...(experiment.meta ? [{ label: "Status", value: experiment.meta }] : []),
+          { label: "Topics", value: experiment.tags.join(", ") },
+          ...(experiment.demoUrl ? [{ label: "Live", value: <InlineLink href={experiment.demoUrl}>{experiment.demoLabel ?? "Visit"}</InlineLink> }] : []),
+        ]}
+        anchors={writeUp.anchors}
+        header={experiment.brief ? <CaseStudyBrief brief={experiment.brief} className="mt-14" /> : null}
+      >
+        <CreativeWorkSchema project={{ title: experiment.title, name: experiment.name, href: isRoute(href) ? href : "/experiments", summary: experiment.summary ?? "", tags: experiment.tags }} />
+        <TrackView event="portfolio_project_opened" properties={{ project: slug }} />
+        <div className="case-prose"><writeUp.Content /></div>
+      </CaseStudyLayout>
+    );
+  }
+
   return (
-    <Canvas
-      rail={writeUp ? (
-        <ContextualRail aria-label="Case study contents">
-          <TableOfContents anchors={writeUp.anchors} />
-          <AskAboutProject />
-        </ContextualRail>
-      ) : undefined}
-    >
+    <Canvas>
       <DeepLinkHighlight />
       <article className="max-w-[760px]">
         {experiment.logo ? (
@@ -76,7 +92,7 @@ export default async function ExperimentPage({
             <span className="border-l border-border-subtle pl-4 text-body-sm text-foreground-muted">Experiment</span>
           </div>
         ) : (
-          <SectionLabel>{writeUp ? `${experiment.name} / Experiment` : "Experiment"}</SectionLabel>
+          <SectionLabel>Experiment</SectionLabel>
         )}
 
         <h1 className="mt-5 max-w-[20ch] font-display text-display-lg text-balance text-foreground">
@@ -121,15 +137,6 @@ export default async function ExperimentPage({
           />
         )}
 
-        {writeUp ? <>
-          <CreativeWorkSchema project={{ title: experiment.title, name: experiment.name, href: isRoute(href) ? href : "/experiments", summary: experiment.summary ?? "", tags: experiment.tags }} />
-          <TrackView event="portfolio_project_opened" properties={{ project: slug }} />
-          <div className="mt-8 flex flex-col gap-3 @6xl/canvas:hidden">
-            <TableOfContentsInline anchors={writeUp.anchors} />
-            <AskAboutProject variant="inline" />
-          </div>
-          <writeUp.Content />
-        </> : null}
 
         <div className="mt-10 flex flex-wrap gap-3">
           <Action variant="secondary" render={<Link href="/experiments" />}>

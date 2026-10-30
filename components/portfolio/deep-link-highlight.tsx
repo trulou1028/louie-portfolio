@@ -39,6 +39,9 @@ function DeepLinkHighlight() {
 
   React.useEffect(() => {
     let timeout: ReturnType<typeof setTimeout> | undefined;
+    let settle: ReturnType<typeof setTimeout> | undefined;
+    let userScrolled = false;
+    const markUserScroll = () => { userScrolled = true; };
     let highlighted: HTMLElement | null = null;
 
     // Clears whatever is currently highlighted (timer and attribute both),
@@ -72,6 +75,17 @@ function DeepLinkHighlight() {
       // preventScroll: the scrollIntoView above already positioned the page.
       target.focus({ preventScroll: true });
 
+      // Settle pass. On a phone the smooth scroll can end short of the
+      // section (seen in WebKit about one load in five). Once it should be
+      // done, align again without animation, unless the visitor has scrolled
+      // on their own since.
+      if (settle) clearTimeout(settle);
+      userScrolled = false;
+      settle = setTimeout(() => {
+        const top = target.getBoundingClientRect().top;
+        if (!userScrolled && (top < -8 || top > 64)) target.scrollIntoView({ behavior: "auto", block: "start" });
+      }, 900);
+
       // Clear the previous target's highlight immediately rather than
       // letting two sections glow at once. Two reveals in quick succession
       // is a real sequence, not a hypothetical: setting `location.hash`
@@ -84,11 +98,21 @@ function DeepLinkHighlight() {
       timeout = setTimeout(clear, HIGHLIGHT_MS);
     };
 
-    // Defer one frame so the section exists before we look for it.
-    const frame = requestAnimationFrame(reveal);
+    // Defer one frame so the section exists before we look for it, and wait
+    // for the web fonts: a font swap after the scroll changes the height of
+    // the text above the target and pushes it out of view (seen on phones,
+    // where the left column sits above the article; stacked redesign).
+    let cancelled = false;
+    const frame = requestAnimationFrame(() => {
+      void document.fonts.ready.then(() => { if (!cancelled) reveal(); });
+    });
     window.addEventListener("hashchange", reveal);
+    for (const type of ["wheel", "touchstart", "keydown"]) window.addEventListener(type, markUserScroll, { passive: true });
 
     return () => {
+      cancelled = true;
+      if (settle) clearTimeout(settle);
+      for (const type of ["wheel", "touchstart", "keydown"]) window.removeEventListener(type, markUserScroll);
       cancelAnimationFrame(frame);
       window.removeEventListener("hashchange", reveal);
       clear();

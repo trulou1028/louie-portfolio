@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SectionLabel } from "@/components/system/section-label";
 import type { Anchor } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
-/** Native anchors with a scroll-driven current-section indicator. */
+/**
+ * Native anchors with a scroll-driven current-section indicator. Since the
+ * stacked redesign it sits in the case study's left column: plain text
+ * links, the current section in blue.
+ */
 function TableOfContents({
   anchors,
   className,
@@ -43,14 +46,16 @@ function TableOfContents({
   }, [anchors]);
   return (
     <nav aria-label="On this page" className={className}>
-      <SectionLabel className="mb-3">On this page</SectionLabel>
-      <ol className="flex flex-col gap-0.5">
+      <p aria-hidden="true" className="mb-3 text-meta text-foreground-quiet">On this page</p>
+      <ol className="flex flex-col gap-1.5 border-l border-border-default">
         {anchors.map((anchor) => (
           <li key={anchor.id}>
             <a
               href={`#${anchor.id}`}
               aria-current={active === anchor.id ? "location" : undefined}
-              className={cn("focus-ring block rounded-sm px-2 py-1.5 text-body-sm transition-colors duration-(--duration-fast)", active === anchor.id ? "bg-accent-soft text-accent" : "text-foreground-muted hover:bg-surface-muted hover:text-foreground")}
+              // Square corners: a border on a rounded box bends into a
+              // bracket at the ends (Louie, 2026-10-29). A straight line only.
+              className={cn("focus-ring -ml-px block rounded-none border-l py-0.5 pl-3 text-body-sm leading-snug transition-colors duration-(--duration-fast)", active === anchor.id ? "border-accent-line text-accent-hover" : "border-transparent text-foreground-quiet hover:text-foreground")}
             >
               {anchor.label}
             </a>
@@ -62,8 +67,8 @@ function TableOfContents({
 }
 
 /**
- * The same contents, collapsed into a disclosure for narrow screens where the
- * rail is not available (spec §25).
+ * The same contents, collapsed into a disclosure for narrow canvases, where
+ * the left column sits above the page (spec §25).
  */
 function TableOfContentsInline({
   anchors,
@@ -75,11 +80,11 @@ function TableOfContentsInline({
   return (
     <details
       className={cn(
-        "rounded-md border border-border-subtle bg-surface-muted px-4 py-3 @6xl/canvas:hidden",
+        "border-y border-border-default py-3",
         className,
       )}
     >
-      <summary className="focus-ring cursor-pointer rounded-sm text-body-sm font-semibold text-foreground-muted">
+      <summary className="focus-ring cursor-pointer rounded-xs text-meta text-foreground-quiet">
         On this page
       </summary>
       <ol className="mt-3 flex flex-col gap-0.5">
@@ -87,7 +92,7 @@ function TableOfContentsInline({
           <li key={anchor.id}>
             <a
               href={`#${anchor.id}`}
-              className="focus-ring block rounded-sm py-1.5 text-body-sm text-foreground-muted hover:text-foreground"
+              className="focus-ring block rounded-xs py-1.5 text-body-sm text-foreground-muted hover:text-accent-hover"
             >
               {anchor.label}
             </a>

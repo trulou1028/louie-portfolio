@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist_Mono, Inter, Libre_Baskerville } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
 import { AppShell } from "@/components/app-shell/app-shell";
@@ -8,17 +8,18 @@ import { TrackContactClicks } from "@/components/system/track-contact-clicks";
 import { profile } from "@/content/profile";
 import "./globals.css";
 
-// Plan 051: Instrument Serif for display, Geist for UI and body, Geist Mono
-// for short labels (see the font tokens in globals.css).
-const geist = Geist({
-  variable: "--font-geist",
+// Fonts trial (Louie, 2026-10-29): Inter for titles, Libre Baskerville for
+// running text, Geist Mono for short technical labels (see the font tokens
+// in globals.css). The earlier Libre Caslon Condensed files stay in
+// app/fonts so the previous pairing can come back without a download.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
+const baskerville = Libre_Baskerville({
+  variable: "--font-baskerville",
   subsets: ["latin"],
-  weight: "400",
   style: ["normal", "italic"],
 });
 
@@ -55,7 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`dark ${geist.variable} ${instrumentSerif.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${baskerville.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         {/*

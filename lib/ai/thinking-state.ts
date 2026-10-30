@@ -10,7 +10,7 @@ import type { UIMessage } from "ai";
  * shows true progress and never shows reasoning (spec §21).
  */
 export const SOURCES = [
-  { key: "offboard", label: "Offboard", routes: ["/work/offboard"], image: "/work/offboard/packet.webp", tone: "bg-plate-offboard" },
+  { key: "offboard", label: "Offboard", routes: ["/work/offboard"], image: "/work/offboard/packet-window.webp", tone: "bg-plate-offboard" },
   { key: "lumo", label: "LUMO", routes: ["/work/lumo", "/work/lumo-evals"], image: "/work/lumo/card.webp", tone: "bg-plate-offboard" },
   { key: "foresights", label: "Foresights", routes: ["/work/ck12-analytics"], image: "/work/ck12-analytics/foresights.png", tone: "bg-plate-foresights" },
   { key: "flexi", label: "Flexi", routes: ["/work/flexi"], image: "/work/flexi/follow-up.webp", tone: "bg-plate-flexi" },

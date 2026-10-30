@@ -4,7 +4,6 @@ import { Tag } from "@/components/system/tag";
 import { InlineLink } from "@/components/system/inline-link";
 import Link from "next/link";
 
-import { Surface } from "@/components/system/surface";
 import { StatusDot } from "@/components/system/status-dot";
 import { cn } from "@/lib/utils";
 import type { Experiment } from "@/content/experiments/experiments";
@@ -30,32 +29,30 @@ type ExperimentCardProps = {
 function ExperimentCard({ experiment, href = "/experiments", className }: ExperimentCardProps) {
   return (
     <MotionReveal className={className}>
-    <Surface
-      variant="interactive"
-      className={cn("group flex flex-col gap-2.5 p-5")}
-      render={<Link href={href} />}
-    >
-      {experiment.image ? <Image src={experiment.image.src} alt={experiment.image.alt} width={experiment.image.width} height={experiment.image.height} sizes="(min-width: 1024px) 1040px, 90vw" className="mb-4 h-auto w-full rounded-sm border border-border-subtle" /> : null}
+    {/* Stacked redesign: no card. A ruled frame for the screenshot, then the
+        status, the title (blue on hover), the summary, and the topics. */}
+    <Link href={href} className={cn("group focus-ring flex flex-col gap-2.5 rounded-xs")}>
+      {experiment.image ? <Image src={experiment.image.src} alt={experiment.image.alt} width={experiment.image.width} height={experiment.image.height} sizes="(min-width: 1024px) 1040px, 90vw" className="mb-3 h-auto w-full border border-border-default bg-surface" /> : null}
       <StatusDot
         status={experiment.status === "shipped" ? "available" : "neutral"}
         label={STATUS_LABEL[experiment.status]}
-        className="font-mono text-system uppercase"
+        className="text-meta text-foreground-quiet"
       />
 
-      <h3 className="text-heading-md text-foreground">{experiment.title}</h3>
+      <h3 className="font-display text-heading-lg text-balance text-foreground transition-colors duration-(--duration-fast) group-hover:text-accent-hover">{experiment.title}</h3>
 
       {experiment.summary ? (
         <p className="text-body-sm text-foreground-muted">{experiment.summary}</p>
       ) : null}
 
-      <ul className="mt-auto flex flex-wrap gap-x-2 gap-y-1 pt-2">
+      <ul className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-1">
         {experiment.tags.map((tag) => (
           <li key={tag} className="text-body-sm text-foreground-muted">
             <Tag>{tag}</Tag>
           </li>
         ))}
       </ul>
-    </Surface>
+    </Link>
     {experiment.demoUrl ? <p className="mt-3 text-body-sm"><InlineLink href={experiment.demoUrl}>{experiment.demoLabel ?? "Try the demo"}</InlineLink></p> : null}
     </MotionReveal>
   );

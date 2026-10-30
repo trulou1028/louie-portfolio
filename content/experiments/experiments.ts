@@ -22,6 +22,11 @@ export type Experiment = {
   badge?: string;
   /** The short line under the title on a homepage tile. */
   meta?: string;
+  /** The homepage paragraph (stacked redesign, 2026-10-29). It restates the
+   *  brief and summary; it adds no claim of its own. */
+  blurb?: string;
+  /** A short silent loop for the homepage preview; `poster` is its first frame. */
+  loop?: { src: string; poster: string };
   /** The three-line summary at the top of the write-up (Plan 045). */
   brief?: CaseStudyBriefContent;
 };
@@ -30,6 +35,8 @@ export const experiments: readonly Experiment[] = [
   {
     slug: "motif",
     name: "Motif",
+    blurb: "Teams want every button, menu, and dialog in a product to move the same way. Motif is a motion design system you tune with three sliders, watch on a live app, and export as code and as rules an AI coding agent follows. I built it in three days with Claude Code.",
+    loop: { src: "/work/motif/hero-loop.mp4", poster: "/work/motif/hero-loop-poster.jpg" },
     // Captured from the live site, 2026-10-10 (Snappy preset, dark theme).
     image: { src: "/work/motif/studio.webp", alt: "The Motif studio. On the left, Find your feel: Work tools is picked as the kind of product, a style row picks Rise, Spring, Cascade, and Squeeze, and three sliders read energy 0.70, bounce 0.20, distance 0.40. On the right, a live app window shows a Settings page with notification switches, tabs, and shared files, with settles 383 ms, overshoot 0.3%, and travel 15 px in its footer.", width: 2880, height: 1910 },
     demoUrl: "https://motif-ui-kappa.vercel.app/",
@@ -53,6 +60,7 @@ export const experiments: readonly Experiment[] = [
   {
     slug: "transfersight",
     name: "TransferSight",
+    blurb: "College football players often pick a transfer school in a few days, on a coach’s pitch. I’m building a report that shows a player where they would project to start, from public roster data. The landing page and data pipeline are live. The app is designed, not built.",
     // The six app screens are Louie's phone prototype (docs/prototype-screens
     // in the transfersight repo), rendered 2026-10-10 with their demo data.
     image: { src: "/work/transfersight/flow.webp", alt: "Three phone screens from the TransferSight prototype, all demo data. Left: Is this you?, a profile card for a sample wide receiver with each field and its source. Middle: 11 programs where you'd project as a starter, with five blurred top fits and their fit scores. Right: the number 1 fit, a position room showing who is graduating, in the portal, returning, and where the athlete slots in.", width: 3200, height: 2000 },
@@ -76,6 +84,8 @@ export const experiments: readonly Experiment[] = [
   {
     slug: "neuron-shift",
     name: "Neuron Shift",
+    blurb: "At shift change, operations systems keep what happened but lose why a person chose it. Neuron Shift is a prototype console that keeps each decision and its reason, and adds friction as an action gets harder to undo. All of its data is simulated.",
+    loop: { src: "/work/neuron-shift/hero-loop.mp4", poster: "/work/neuron-shift/hero-loop-poster.jpg" },
     // Supplied screenshot from Louie's revised case study, 2026-09-28. The
     // tour view, not the console, because the homepage hero already loops
     // the console (Plan 041).

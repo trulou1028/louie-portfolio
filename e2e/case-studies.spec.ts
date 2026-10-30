@@ -135,7 +135,9 @@ test("exactly one table of contents renders at the rail breakpoint", async ({
   // the canvas container query (72rem, 1152px, since October 16, 2026);
   // 1200px sits just inside it and would show both the rail and the
   // disclosure at once if the two guards ever drift apart again.
-  await page.setViewportSize({ width: 1200, height: 800 });
+  // Stacked redesign: the contents float in a right column from a 1280px
+  // canvas; 1300px sits just inside it.
+  await page.setViewportSize({ width: 1300, height: 800 });
   await page.goto("/work/offboard");
 
   const rail = page.locator('nav[aria-label="On this page"]');

@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-// Plan 051: one screenshot per work card. "/": five case studies and three
-// independent projects. The headline's small screens are not in an article,
-// so they are not counted. "/work": the same eight.
-for (const [path, count] of [["/", 8], ["/work", 8]] as const) {
+// "/": the stacked rows show their screenshots under the paragraph on a
+// narrow screen; three of the eight rows are recordings, not images.
+// "/work": one screenshot per work card, eight.
+for (const [path, count] of [["/", 5], ["/work", 8]] as const) {
   test(`${path} loads and its project images decode`, async ({ page }) => {
+    if (path === "/") await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(path);
     const images = page.locator("main article img");
     await expect(images).toHaveCount(count);
@@ -19,7 +20,7 @@ test("Work rows put copy beside the screenshot on desktop and below it on mobile
   await page.goto("/work");
   const plate = page.locator("main article").filter({ has: page.locator('a[href="/work/offboard"]') });
   await plate.scrollIntoViewIfNeeded();
-  const image = await plate.locator('img[alt*="Offboard application packet"]').boundingBox();
+  const image = await plate.locator('img[alt*="Offboard Job Packet"]').boundingBox();
   const title = await plate.locator("h2").boundingBox();
   expect(image).not.toBeNull();
   expect(title).not.toBeNull();

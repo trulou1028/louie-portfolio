@@ -1,153 +1,155 @@
-import { RevealHeading } from "@/components/portfolio/reveal-heading";
-import { MotionReveal } from "@/components/portfolio/motion-reveal";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown } from "lucide-react";
-import { Canvas } from "@/components/app-shell/contextual-rail";
-import { HeroHeadline } from "@/components/portfolio/hero-headline";
-import { WorkCard } from "@/components/portfolio/work-card";
-import { Action } from "@/components/system/action";
+
+import { LoopVideo } from "@/components/portfolio/loop-video";
+import { HomePreview, type PreviewItem } from "@/components/stacked/home-preview";
+import { AskLouieButton } from "@/components/stacked/ask-louie-button";
+import { Portrait } from "@/components/stacked/portrait";
+import { SiteLinks } from "@/components/stacked/site-links";
+import { StackedShell } from "@/components/stacked/stacked-shell";
 import { InlineLink } from "@/components/system/inline-link";
 import { profile } from "@/content/profile";
-import { resume } from "@/content/resume";
-import { workProjects } from "@/content/work/projects";
+import { projectYears, workProjects } from "@/content/work/projects";
 import { experiments } from "@/content/experiments/experiments";
-import { condensePeriod } from "@/lib/period";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 /**
- * Homepage, Plan 051 (October 2026 design audit).
+ * Homepage, stacked redesign (Louie, 2026-10-29, after David Aerne's
+ * meodai.color.pizza, "direction A").
  *
- * One idea per section and wide space between them (128px on desktop, 96px
- * on phones). The hero is Louie's own line with screenshots set inside it,
- * one sentence, and one link. The hero carries no ask bar: the Ask Louie
- * button in the header opens the panel.
+ * The left column stays in view: the line portrait, the name, the role, a
+ * preview slot, and the links. The right column stacks short paragraphs,
+ * each with its project's name in a narrow column beside it. Hovering a row
+ * shows its screenshot in the preview slot; touch screens and narrow
+ * windows show the screenshot under the paragraph instead.
  *
- * The experience record follows the case studies, so the work starts on the
- * first screen (job-search fixes, 2026-10-20).
- *
- * Every work card has the same anatomy: screenshot on a quiet frame, a mono
- * meta line, the title (`WorkCard`). Offboard leads at full width; its two
- * LUMO studies share the next row, ahead of the older CK-12 pair; the
- * independent projects run three across.
+ * The paragraphs are `blurb` in the project data. They restate each case
+ * study's brief and add no claim of their own.
  */
 
-/** How I work: each principle, the sentence that shows it, and where. */
-const PRINCIPLES = [
-  { title: "Make the decision clear.", line: "From a class pattern to a teacher’s next step.", project: "CK-12 Foresights", href: "/work/ck12-analytics#decision-investigation" },
-  { title: "Design the boundary of automation.", line: "Useful drafts, with the person in control.", project: "Offboard", href: "/work/offboard#decision-control" },
-  { title: "Build something that can be questioned.", line: "A working hypothesis with explicit limits.", project: "Neuron Shift", href: "/experiments/neuron-shift#limits" },
-] as const;
+type Row = {
+  id: string;
+  name: string;
+  href: string;
+  when: string;
+  blurb: string;
+  image: { src: string; alt: string; width: number; height: number };
+  loop?: { src: string; poster: string };
+};
 
-const sectionTitle = "font-display text-heading-xl text-foreground";
+const work: Row[] = workProjects.map((project) => {
+  const loop = project.video && project.image ? { src: project.video, poster: project.image } : undefined;
+  const image = loop || !project.tileImage
+    ? { src: project.image ?? "", alt: project.imageAlt, width: project.imageWidth, height: project.imageHeight }
+    : project.tileImage;
+  return {
+    id: project.slug,
+    name: project.shortName ?? project.name,
+    href: project.href,
+    when: projectYears(project) ?? "",
+    blurb: project.blurb,
+    image,
+    loop,
+  };
+});
+
+const own: Row[] = experiments.flatMap((experiment) => {
+  if (experiment.status !== "prototype" || !experiment.blurb || !experiment.image) return [];
+  const image = experiment.loop
+    ? { src: experiment.loop.poster, alt: experiment.image.alt, width: 1600, height: 1000 }
+    : experiment.image;
+  return [{
+    id: experiment.slug,
+    name: experiment.name,
+    href: `/experiments/${experiment.slug}`,
+    when: experiment.meta ?? "",
+    blurb: experiment.blurb,
+    image,
+    loop: experiment.loop,
+  }];
+});
+
+const previews: PreviewItem[] = [...work, ...own].map(({ id, image, loop }) => ({ id, image, loop }));
+
+/** Louie's own intro (About page), with Offboard linked to its case study. */
+const offboardAt = profile.about.intro[2].indexOf("Offboard");
+const beforeOffboard = profile.about.intro[2].slice(0, offboardAt);
+const afterOffboard = profile.about.intro[2].slice(offboardAt + "Offboard".length);
+
+function ProjectRow({ row }: { row: Row }) {
+  return (
+    <article data-preview-id={row.id} className="group stacked-row border-b border-border-default py-8">
+      <div>
+        <p className="text-body-lg text-foreground-muted">{row.blurb}</p>
+        <div className="stacked-inline-media mt-5 overflow-hidden border border-border-default bg-surface">
+          {row.loop ? (
+            <LoopVideo src={row.loop.src} poster={row.loop.poster} label={row.image.alt} width={row.image.width} height={row.image.height} />
+          ) : (
+            <Image src={row.image.src} alt={row.image.alt} width={row.image.width} height={row.image.height} sizes="(min-width: 821px) 1px, 100vw" className="h-auto w-full" />
+          )}
+        </div>
+      </div>
+      <div className="stacked-label">
+        <h3 className="font-display text-list-title text-balance text-foreground">
+          <Link href={row.href} className="focus-ring rounded-xs transition-colors duration-(--duration-fast) group-hover:text-accent-hover">
+            {row.name}
+          </Link>
+        </h3>
+        <p className="mt-1 text-meta text-foreground-quiet tabular-nums">{row.when}</p>
+      </div>
+    </article>
+  );
+}
+
+const sectionTitle = "border-b border-border-default pb-5 font-display text-list-title text-foreground";
 
 export default function Home() {
-  const [lead, ...caseStudies] = workProjects;
-  const independent = experiments.filter((e) => e.status === "prototype");
-
-  return <Canvas width="wide" className="flex flex-col gap-24 sm:gap-32">
-    {/* The hero sits closer to the work than the other sections sit to each
-        other, so the first case study starts on the first screen at 1440x900
-        and 390x844 (job-search fixes, 2026-10-20). */}
-    <div className="flex flex-col gap-16 sm:gap-20">
-    <section aria-label="Introduction" className="pt-2">
-      <p className="font-mono text-system uppercase text-foreground-muted">{profile.name} · {profile.role}</p>
-      <HeroHeadline className="mt-4 max-w-[15em] sm:mt-6" />
-      <p className="mt-6 max-w-[46ch] text-body-lg text-pretty text-foreground-muted sm:text-lead">{profile.positioning.supporting}</p>
-      <Link href="#work" className="focus-ring mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-xs text-body font-medium text-foreground underline decoration-accent-line decoration-2 underline-offset-[6px]">
-        Explore my work<ArrowDown aria-hidden="true" className="size-4" />
-      </Link>
-    </section>
-
-    <section id="work" data-testid="featured-work" aria-labelledby="featured-work-label" className="flex scroll-mt-6 flex-col gap-6 sm:gap-8">
-      <MotionReveal><div className="flex items-baseline justify-between gap-4">
-        <RevealHeading id="featured-work-label" className={sectionTitle}>Case studies</RevealHeading>
-        <Link href="/work" className="focus-ring inline-flex min-h-11 items-center rounded-xs font-mono text-system uppercase text-foreground hover:text-foreground-muted">All work →</Link>
-      </div></MotionReveal>
-      <div className="grid gap-x-8 gap-y-16 @4xl/canvas:grid-cols-2">
-        <WorkCard
-          href={lead.href}
-          image={lead.tileImage ?? (lead.image ? { src: lead.image, alt: lead.imageAlt, width: lead.imageWidth, height: lead.imageHeight } : null)}
-          meta={`${lead.name} · ${lead.role}`}
-          title={lead.title}
-          size="lead"
-          eager
-          className="@4xl/canvas:col-span-2"
-        />
-        {caseStudies.map((project) => (
-          <WorkCard
-            key={project.slug}
-            href={project.href}
-            image={project.tileImage ?? (project.image ? { src: project.image, alt: project.imageAlt, width: project.imageWidth, height: project.imageHeight } : null)}
-            meta={`${project.name} · ${project.role}`}
-            title={project.title}
-          />
-        ))}
+  return (
+    <StackedShell
+      aside={<>
+        <Portrait size="lg" />
+        <h1 className="mt-4 font-display text-name text-foreground">{profile.name}</h1>
+        <p className="mt-5 text-meta text-foreground-quiet">
+          {profile.role}
+          <br />
+          <InlineLink href="/work/offboard">Offboard</InlineLink>
+        </p>
+        <AskLouieButton className="mt-6" />
+        <HomePreview items={previews} />
+        <SiteLinks className="max-[820px]:mt-6" />
+      </>}
+    >
+      <div className="stacked-row stacked-intro">
+        <div className="flex flex-col gap-[1.1em] text-body-lg text-foreground-muted">
+          <p>{profile.about.intro[0]}</p>
+          <p>{beforeOffboard}<InlineLink href="/work/offboard">Offboard</InlineLink>{afterOffboard}</p>
+          <p>Before any of that, I played football at the University of Utah, and then professionally in the CFL. <InlineLink href="/about">More about me</InlineLink></p>
+        </div>
       </div>
-    </section>
-    </div>
 
-    {/* The record reads as reference: a plain list on the canvas, no band. */}
-    <section aria-labelledby="experience-label">
-      <MotionReveal>
-        <h2 id="experience-label" className="font-mono text-system uppercase text-foreground-muted"><span className="text-foreground">Experience</span> · <span>{profile.brief[0]}</span></h2>
-        <ul aria-label="Experience" className="mt-5 grid grid-cols-1 gap-x-8 min-[480px]:grid-cols-2 @4xl/canvas:grid-cols-4">
-          {resume.roles.map((role) => (
-            <li key={role.company} className="flex flex-col gap-1 border-t border-border-default py-4">
-              <span className="font-mono text-system uppercase tabular-nums text-foreground-muted">{condensePeriod(role.period)}</span>
-              <span className="mt-1 text-body font-semibold text-foreground">{role.company.replace(", Inc.", "")}</span>
-              <span className="text-body-sm text-foreground-muted">{role.title}</span>
+      <section id="work" data-testid="featured-work" aria-labelledby="work-label" className="mt-24 scroll-mt-8">
+        <h2 id="work-label" className={sectionTitle}>Work I’m proud of</h2>
+        {work.map((row) => <ProjectRow key={row.id} row={row} />)}
+      </section>
+
+      <section data-testid="independent-work" aria-labelledby="own-label" className="mt-24">
+        <h2 id="own-label" className={sectionTitle}>Built on my own</h2>
+        {own.map((row) => <ProjectRow key={row.id} row={row} />)}
+      </section>
+
+      <section aria-labelledby="path-label" className="mt-24">
+        <h2 id="path-label" className={sectionTitle}>Where I’ve worked</h2>
+        <ul aria-label="Experience">
+          {profile.about.path.map((place) => (
+            <li key={place.company} className="stacked-row border-b border-border-default py-3 text-body-lg">
+              <span className="text-foreground">{place.company}</span>
+              <span className="text-meta text-foreground-quiet tabular-nums max-[820px]:order-none">{place.years}</span>
             </li>
           ))}
         </ul>
-      </MotionReveal>
-    </section>
-
-    <section data-testid="independent-work" aria-labelledby="independent-work-label" className="flex flex-col gap-8">
-      <MotionReveal><div>
-        <RevealHeading id="independent-work-label" className={sectionTitle}>Independent projects</RevealHeading>
-        <p className="mt-3 text-body text-foreground-muted">Built on my own. Each one says how far it got.</p>
-      </div></MotionReveal>
-      <div className="grid gap-x-8 gap-y-12 @4xl/canvas:grid-cols-3">
-        {independent.map((experiment) => (
-          <WorkCard
-            key={experiment.slug}
-            href={`/experiments/${experiment.slug}`}
-            image={experiment.image ?? null}
-            meta={experiment.meta ? `${experiment.name} · ${experiment.meta}` : experiment.name}
-            title={experiment.title}
-            size="small"
-          />
-        ))}
-      </div>
-    </section>
-
-    <section aria-labelledby="how-i-work-label">
-      <MotionReveal><div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3">
-        <RevealHeading id="how-i-work-label" className={sectionTitle}>How I work</RevealHeading>
-        <p className="flex flex-wrap gap-x-6 gap-y-2"><InlineLink href="/about">About Louie</InlineLink><InlineLink href="/ai-systems">Explore the AI design decisions</InlineLink></p>
-      </div></MotionReveal>
-      <MotionReveal stagger><ul className="mt-8 border-t border-border-default">
-        {PRINCIPLES.map((principle) => (
-          <li key={principle.title} className="grid gap-2 border-b border-border-default py-6 sm:grid-cols-2 sm:items-baseline sm:gap-8">
-            <h3 className="font-display text-heading-lg text-foreground">{principle.title}</h3>
-            <p className="text-body text-foreground-muted">
-              {principle.line}{" "}
-              <InlineLink href={principle.href} className="whitespace-nowrap">{principle.project}<span aria-hidden="true"> →</span></InlineLink>
-            </p>
-          </li>
-        ))}
-      </ul></MotionReveal>
-    </section>
-
-    <section aria-labelledby="closing-label" className="pb-8">
-      <MotionReveal><h2 id="closing-label" className="max-w-[16ch] font-display text-display-lg text-balance text-foreground">Hiring for an <em>AI product?</em></h2></MotionReveal>
-      <div className="mt-8 flex flex-wrap gap-3">
-        {profile.links.calendly ? <Action size="lg" className="rounded-full" render={<a href={profile.links.calendly} target="_blank" rel="noreferrer noopener" />}>Book time<span className="sr-only"> (opens in a new tab)</span></Action> : null}
-        {profile.links.email ? <Action size="lg" variant="secondary" className="rounded-full" render={<a href={`mailto:${profile.links.email}`} />}>Email</Action> : null}
-        {profile.links.linkedin ? <Action size="lg" variant="secondary" className="rounded-full" render={<a href={profile.links.linkedin} target="_blank" rel="noreferrer noopener" />}>LinkedIn<span className="sr-only"> (opens in a new tab)</span></Action> : null}
-      </div>
-    </section>
-  </Canvas>;
+      </section>
+    </StackedShell>
+  );
 }
