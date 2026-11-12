@@ -165,7 +165,7 @@ function OutcomeChart({
         </div>
       </div>
 
-      <figcaption className="mt-3 text-body text-foreground-muted">
+      <figcaption className="mt-3 max-w-[34rem] text-meta text-foreground-quiet">
         {description}{" "}
         <span className="text-foreground-subtle">Source: {source}.</span>
       </figcaption>
