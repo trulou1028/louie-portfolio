@@ -498,6 +498,20 @@ export const evidence: EvidenceItem[] = [
     evidenceType: "product",
   },
   {
+    id: "offboard-object-model",
+    project: "offboard",
+    title: "One object model across five surfaces",
+    summary:
+      "Louie worked object-first (OOUX) so the web app, LUMO, voice, Slack, and the Claude and ChatGPT connectors share one model and one tool list.",
+    detail:
+      "Offboard has five surfaces: the web app, LUMO in the app, a voice mode, LUMO in Slack, and connectors for Claude and ChatGPT. Louie defined the objects first (plan, job, application, resume, document, contact), then their relationships, actions, and permissions, and every surface reads from that model. LUMO in the app and in Slack calls the same tool list as the Claude and ChatGPT connectors, so an action like saving a job does the same thing everywhere. The decisions are recorded in a design doc with decision records, and tests fail the build when the interface drifts from the model. When Slack was added, letting members view and change their account from a Slack direct message, with a Yes/No check before every change, took one day once the model was in place. The full Slack launch took about three weeks, from the first pull request on October 5 to launch on October 28, 2026.",
+    route: "/work/offboard",
+    anchor: "decision-object-model",
+    tags: ["information architecture", "ooux", "object model", "experience architecture", "tool calling", "slack", "connectors"],
+    skills: ["Information Architecture", "Systems Design", "AI Product Design"],
+    evidenceType: "product",
+  },
+  {
     id: "offboard-architecture",
     project: "offboard",
     title: "Offboard's system architecture",

@@ -1231,3 +1231,19 @@ Plan 051:
   start 6.5rem down, under an uppercase bold "On this page", with a little
   more space between items. The current section is ink, not the hover
   grey.
+
+## Offboard object model section, November 11, 2026
+
+- **New anchor `decision-object-model` on `/work/offboard` (Louie,
+  2026-11-11).** Spec §13 fixes the Offboard anchors; this adds one, as
+  Decision 04, after `decision-context`. It holds the object-first (OOUX)
+  story: one object model and one tool list across five surfaces (web app,
+  LUMO in the app, voice mode, LUMO in Slack, Claude and ChatGPT
+  connectors). Louie wants a direct link to this work for experience
+  architecture applications. `OFFBOARD_ANCHORS` and the evidence index
+  (`offboard-object-model`) carry it.
+- **Source of the facts.** Louie's own Claude conversation of 2026-11-10,
+  which read his Linear history: the Slack DM account tools went from ticket
+  to done on 2026-10-27 (OFF-1109), and the Slack rollout ran from the first
+  PR on 2026-10-05 to launch on 2026-10-28. The copy says "one day once the
+  model was in place" because the ticket dates do not show earlier prep work.
