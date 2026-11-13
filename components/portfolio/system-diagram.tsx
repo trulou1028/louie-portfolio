@@ -133,7 +133,7 @@ function SystemDiagram({
           {children}
         </CardContent>
       </Card>
-      <figcaption className="mt-3 text-body text-foreground-muted">
+      <figcaption className="mt-3 max-w-[34rem] text-meta text-foreground-quiet">
         {description}
       </figcaption>
     </figure>

@@ -1,5 +1,5 @@
 import { CaseStudySection } from "@/components/portfolio/case-study-section";
-import { SystemDiagram, FlowDiagram } from "@/components/portfolio/system-diagram";
+import { SystemDiagram, FlowDiagram, TreeDiagram } from "@/components/portfolio/system-diagram";
 import { ArchitectureMap } from "@/components/portfolio/architecture-map";
 import { ArtifactFrame } from "@/components/portfolio/artifact-frame";
 import { ARCHITECTURE_DESCRIPTION } from "@/content/work/offboard-architecture";
@@ -60,6 +60,29 @@ Outputs stay editable drafts. Nothing sends itself to an employer. With no resum
 <CaseStudySection id="decision-context" title="Parse the role once, reuse it everywhere" eyebrow="Decision 03">
 
 The workflow parses the role once and shares that research with resume work, outreach, and interview preparation. Reuse buys consistency at the risk of stale information.
+
+</CaseStudySection>
+
+<CaseStudySection id="decision-object-model" title="One object model for five surfaces" eyebrow="Decision 04">
+
+People use Offboard in five places: the web app, LUMO in the app, a voice mode, LUMO in Slack, and connectors for Claude and ChatGPT. Five surfaces can easily grow five vocabularies. So I worked object-first, in the OOUX style (Object-Oriented UX). I defined the objects first: plan, job, application, resume, document, and contact. Then I set how they relate, which actions each one has, and who can see or change it. Every surface reads from that one model.
+
+LUMO, in the app or in Slack, calls the same tool list as the Claude and ChatGPT connectors. “Save this job” does the same thing wherever a person says it. I recorded the decisions in a design doc with decision records. Tests fail the build when the interface drifts from the model, so engineers and AI coding tools keep to it without a design review.
+
+<SystemDiagram title="One model, five surfaces" description="Conceptual model: five surfaces read from one object model (plan, job, application, resume, document, contact) with one set of actions and permissions. LUMO in the app, LUMO in Slack, and the Claude and ChatGPT connectors call the same tool list.">
+  <TreeDiagram root={{
+    label: "One object model and tool list",
+    children: [
+      { label: "Web app" },
+      { label: "LUMO in the app" },
+      { label: "Voice mode" },
+      { label: "LUMO in Slack" },
+      { label: "Claude and ChatGPT connectors" },
+    ],
+  }} />
+</SystemDiagram>
+
+Slack, the fifth surface, tested the model. LUMO in Slack uses the existing tool list. Members can view and change their account from a Slack direct message, with a Yes/No check before every change. Once the model was in place, that part took one day to build. The full Slack launch took about three weeks, from the first pull request on October 5 to launch on October 28, 2026.
 
 </CaseStudySection>
 

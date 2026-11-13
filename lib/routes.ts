@@ -50,6 +50,7 @@ export const OFFBOARD_ANCHORS = [
   { id: "decision-risk", label: "Protecting user effort" },
   { id: "decision-control", label: "AI acts with visible control" },
   { id: "decision-context", label: "Context compounds" },
+  { id: "decision-object-model", label: "One model, five surfaces" },
   { id: "decision-entry-point", label: "Changing the entry point" },
   { id: "architecture", label: "Architecture" },
   { id: "product", label: "Product" },
